@@ -1,8 +1,8 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
     <div v-if="getToken">
-      User In. with {{getToken}}
+      <!-- User In. with {{getToken}} -->
+      <EditOrder/>
     </div>
     <div v-else>
       <Login/>
@@ -14,6 +14,9 @@
 import { mapGetters, mapActions } from 'vuex';
 
 import Login from './auth/Login.vue';
+// import Order from './sales/Order.vue';
+import EditOrder from './sales/EditOrder.vue';
+// import Report from './sales/Report.vue';
 
 export default {
   name: 'Home',
@@ -22,6 +25,9 @@ export default {
   },
   components: {
     Login,
+    // Order,
+    EditOrder,
+    // Report,
   },
   methods: {
     ...mapActions(['fetchToken']),
