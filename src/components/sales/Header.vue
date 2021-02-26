@@ -7,7 +7,8 @@
       <div class="flex-box">
         <a class="btn btn-orange btn-mr" href="/order"
         target="_blank">New Order</a>
-        <a class="btn btn-orange btn-mr">Report</a>
+        <!-- <a class="btn btn-orange btn-mr">Report</a> -->
+        <router-link to="/report" class="btn btn-orange btn-mr">Report</router-link>
         <a class="btn btn-orange btn-mr">Seetings</a>
       </div>
       <div class="flex-box">
