@@ -32,7 +32,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run test"
+      "pre-commit": "npm test"
     }
   }
 }
