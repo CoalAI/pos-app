@@ -14,9 +14,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 import Login from './auth/Login.vue';
-// import Order from './sales/Order.vue';
 import EditOrder from './sales/EditOrder.vue';
-// import Report from './sales/Report.vue';
 
 export default {
   name: 'Home',
