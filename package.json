@@ -16,6 +16,8 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.0.0",
+    "@commitlint/config-conventional": "^12.0.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
@@ -27,5 +29,10 @@
     "husky": "^5.1.1",
     "pinst": "^2.1.6",
     "vue-template-compiler": "^2.6.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run test"
+    }
   }
 }
