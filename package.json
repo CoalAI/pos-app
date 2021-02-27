@@ -8,7 +8,8 @@
     "test": "npx jest",
     "test:unit": "npx jest",
     "lint": "vue-cli-service lint",
-    "postinstall": "npx husky install"
+    "postinstall": "npx husky install",
+    "precommit": "npx jest"
   },
   "dependencies": {
     "axios": "^0.21.1",
