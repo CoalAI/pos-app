@@ -42,11 +42,5 @@
     "pinst": "^2.1.6",
     "vue-jest": "^3.0.7",
     "vue-template-compiler": "^2.6.11"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run test",
-      "pre-push": "npm run test"
-    }
   }
 }
