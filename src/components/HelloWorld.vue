@@ -2,6 +2,7 @@
   <div>
     <p>Times clicked: {{ count }}</p>
     <button @click="increment">increment</button>
+    <p>de.NO_DEALS.TITLE</p>
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/vue';
-import HelloWorld from '@/../../src/components/HelloWorld.vue';
+import HelloWorld from './components/HelloWorld.vue';
 
 describe('components/HelloWorld', () => {
   test('Renders the title', () => {
