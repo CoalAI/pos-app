@@ -45,7 +45,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "CI=true npx jest"
+      "pre-commit": "npm test"
     }
   }
 }
