@@ -45,8 +45,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npx jest",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "pre-commit": "npx jest"
     }
   }
 }
