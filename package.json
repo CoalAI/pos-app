@@ -44,5 +44,9 @@
     "vue-jest": "^3.0.7",
     "vue-template-compiler": "^2.6.11"
   },
-  "pre-commit": "npm run test"
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test"
+    }
+  }
 }
