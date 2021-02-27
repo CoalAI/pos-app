@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test": "npx jest",
+    "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "postinstall": "npx husky install"
   },
@@ -44,7 +45,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npx jest"
+      "pre-commit": "CI=true npx jest"
     }
   }
 }
