@@ -65,7 +65,7 @@ export default {
   }
 
   /* Full-width inputs */
-  input[type=text], input[type=password] {
+  input[type=text], input[type=password], input[type=date], select {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
