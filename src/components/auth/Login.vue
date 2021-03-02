@@ -5,7 +5,7 @@
         <div>Login form</div>
         <form>
           <input
-            v-model="username"
+            v-model="userName"
             label="Username"
             name="username"
             type="text"
@@ -25,23 +25,35 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { mapGetters, mapActions } from 'vuex';
 
-export default {
-  name: 'Login',
-  data() {
-    return {
-      username: '',
-      password: '',
-    };
-  },
+@Component({
   computed: mapGetters(['getUser', 'getToken']),
-  methods: {
-    ...mapActions(['loginUser']),
-    submitLogin() {
-      this.loginUser({ username: this.username, password: this.password });
-    },
-  },
-};
+})
+export default class Login extends Vue {
+  private userName: string;
+  private password: string;
+
+  loginUser: any;
+
+  constructor() {
+    super();
+    this.loginUser = mapActions(['loginUser']);
+    this.userName = '';
+    this.password = '';
+  }
+
+  // data() : {username:string, password:string} {
+  //   return {
+  //     username: '',
+  //     password: '',
+  //   };
+  // }
+
+  submitLogin() {
+    this.loginUser({ username: this.userName, password: this.password });
+  }
+}
 </script>

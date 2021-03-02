@@ -1,18 +1,20 @@
 <template>
   <div id="app">
-    <Home msg="Welcome to Your Vue.js App"/>
+    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+    <Home msg="Welcome to Your Vue.js + TypeScript App"/>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 import Home from './components/Home.vue';
 
-export default {
-  name: 'App',
+@Component({
   components: {
     Home,
   },
-};
+})
+export default class App extends Vue {}
 </script>
 
 <style>

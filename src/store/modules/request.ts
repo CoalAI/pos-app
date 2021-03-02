@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const serverRequest = async (method, url, isHeader, data = {}, params = {}) => {
+const serverRequest = async (method: any, url: any, isHeader: any, data: any = {}, params: any = {}) => {
   let headers = {};
   if (isHeader) {
     if (localStorage.token) {

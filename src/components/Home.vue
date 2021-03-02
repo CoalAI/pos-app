@@ -10,16 +10,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { mapGetters, mapActions } from 'vuex';
-
 import Login from './auth/Login.vue';
 
-export default {
-  name: 'Home',
-  props: {
-    msg: String,
-  },
+@Component({
   components: {
     Login,
   },
@@ -29,7 +25,10 @@ export default {
   computed: {
     ...mapGetters(['getToken']),
   },
-};
+})
+export default class Home extends Vue {
+  @Prop() private msg!: string;
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
