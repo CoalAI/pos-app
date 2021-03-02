@@ -1,5 +1,4 @@
 import serverRequest from './request';
-import router from '../../router';
 
 const getters = {
   getUser: (state: any) => state.user,
@@ -20,7 +19,6 @@ const actions = {
     const response = await serverRequest('post', 'obtain-jwt/', false, user);
     localStorage.token = response.data.token;
     commit('setToken', response.data.token);
-    router.push({ path: '/' });
   },
 
   async registerUser({ commit }: any, user: any) {
