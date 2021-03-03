@@ -1,13 +1,23 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
-import auth from './modules/auth';
+import { createStore } from 'vuex';
+import { createLogger, ModuleTree } from 'vuex';
+import { IRootState } from './models/root'
+import auth from './modules/auth/index';
 
 // Load Vuex
-Vue.use(Vuex);
+// Vue.use(Vuex);
 
 // Create store
-export default new Vuex.Store({
-  modules: {
-    auth,
-  },
+// export default new Vuex.Store({
+//   modules: {
+//     auth,
+//   },
+// });
+
+const modules: ModuleTree<IRootState> = {
+  auth
+};
+
+export const store = createStore<IRootState>({
+  plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : [],
+  modules
 });
