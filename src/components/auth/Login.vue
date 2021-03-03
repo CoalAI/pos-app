@@ -10,7 +10,7 @@
               <strong>Username:</strong>
             </label>
             <input
-              v-model="userName"
+              v-model="username"
               label="Username"
               name="username"
               type="text"
@@ -42,36 +42,58 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { mapGetters, mapActions } from 'vuex';
+import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
+import { ActionTypes } from '@/store/modules/auth/actions'
 
-@Component({
-  computed: mapGetters(['getUser', 'getToken']),
-})
-export default class Login extends Vue {
-  private userName: string;
-  private password: string;
+export default defineComponent({
+  name: 'Login',
+  setup() {
+    const store = useStore();
+    const username = ref('');
+    const password = ref('');
 
-  loginUser: any;
-
-  constructor() {
-    super();
-    this.loginUser = mapActions(['loginUser']);
-    this.userName = '';
-    this.password = '';
+    return {
+      username,
+      password,
+      submitLogin: () => store.dispatch(ActionTypes.LOGIN_USER, {
+        username: username.value,
+        password: password.value
+      })
+    }
   }
+});
 
-  // data() : {username:string, password:string} {
-  //   return {
-  //     username: '',
-  //     password: '',
-  //   };
-  // }
+// import { Component, Prop, Vue } from 'vue-property-decorator';
+// import { mapGetters, mapActions } from 'vuex';
 
-  submitLogin() {
-    this.loginUser({ username: this.userName, password: this.password });
-  }
-}
+// @Component({
+//   computed: mapGetters(['getUser', 'getToken']),
+// })
+// export default class Login extends Vue {
+//   private userName: string;
+//   private password: string;
+
+//   loginUser: any;
+
+//   constructor() {
+//     super();
+//     this.loginUser = mapActions(['loginUser']);
+//     this.userName = '';
+//     this.password = '';
+//   }
+
+//   // data() : {username:string, password:string} {
+//   //   return {
+//   //     username: '',
+//   //     password: '',
+//   //   };
+//   // }
+
+//   submitLogin() {
+//     this.loginUser({ username: this.userName, password: this.password });
+//   }
+// }
 </script>
 
 <style scoped>

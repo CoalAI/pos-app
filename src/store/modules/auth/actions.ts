@@ -1,6 +1,6 @@
 import { ActionContext, ActionTree } from "vuex";
 import { IRootState } from '@/store/models/root';
-import { User } from '@/store/models/user';
+import { User, Credentials } from '@/store/models/user';
 import serverRequest from '@/store/modules/request'
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
@@ -21,7 +21,7 @@ export type AugmentedActionContext = {
 
 export interface Actions {
   [ActionTypes.FETCH_TOEKN]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, user: User): void;
+  [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials): void;
   [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User): void;
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
 }
@@ -35,8 +35,9 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, user: User) {
-    const response = await serverRequest('post', 'obtain-jwt/', false, user);
+  async [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials) {
+    console.log("this is credentials =", credentials)
+    const response = await serverRequest('post', 'obtain-jwt/', false, credentials);
     localStorage.token = response.data.token;
     commit(MutationTypes.SetToken, response.data.token);
   },

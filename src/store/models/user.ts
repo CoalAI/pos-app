@@ -6,3 +6,8 @@ export interface User {
   userType?: string
   contactNumber?: number
 }
+
+export interface Credentials {
+  username?: string
+  password?: string
+}

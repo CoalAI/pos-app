@@ -2,7 +2,7 @@
   <div class="hello">
     <div v-if="getToken">
       <!-- User In. with {{getToken}} -->
-      <EditOrder/>
+      <Order/>
     </div>
     <div v-else>
       <Login/>
@@ -11,30 +11,47 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { mapGetters, mapActions } from 'vuex';
+import { defineComponent, computed } from 'vue'
+import { useStore } from 'vuex'
+import { ActionTypes } from '@/store/modules/auth/actions'
+
 import Login from './auth/Login.vue';
-// import Order from './sales/Order.vue';
-import EditOrder from './sales/EditOrder.vue';
+import Order from './sales/Order.vue';
+// import EditOrder from './sales/EditOrder.vue';
 // import Report from './sales/Report.vue';
 
-@Component({
-  components: {
+export default defineComponent({
+  name: 'App',
+  components: { 
     Login,
-    // Order,
-    EditOrder,
-    // Report,
+    Order,
   },
-  methods: {
-    ...mapActions(['fetchToken']),
-  },
-  computed: {
-    ...mapGetters(['getToken']),
-  },
-})
-export default class Home extends Vue {
-  @Prop() private msg!: string;
-}
+  setup() {
+    const store = useStore();
+
+    return {
+      getToken: computed(() => store.getters.getToken)
+    }
+  }
+});
+
+// @Component({
+//   components: {
+//     Login,
+//     // Order,
+//     EditOrder,
+//     // Report,
+//   },
+//   methods: {
+//     ...mapActions(['fetchToken']),
+//   },
+//   computed: {
+//     ...mapGetters(['getToken']),
+//   },
+// })
+// export default class Home extends Vue {
+//   @Prop() private msg!: string;
+// }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

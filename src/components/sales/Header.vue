@@ -40,15 +40,14 @@
   </div>
 </template>
 
-<script>
-// import { mapGetters, mapActions } from 'vuex';
+<script lang="ts">
+import { defineComponent } from 'vue'
+// import { useStore } from 'vuex'
+// import { ActionTypes } from '@/store/modules/auth/actions'
 
-export default {
+export default defineComponent({
   name: 'Header',
-  props: {
-    msg: String,
-  },
-};
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
