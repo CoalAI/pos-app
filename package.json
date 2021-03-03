@@ -5,7 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "test": "npx jest",
+    "test:unit": "npx jest",
+    "lint": "vue-cli-service lint",
+    "postinstall": "npx husky install"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -15,14 +18,40 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.0.0",
+    "@commitlint/config-conventional": "^12.0.0",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/vue": "^5.6.1",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/eslint-config-airbnb": "^5.0.2",
+    "@vue/test-utils": "^1.0.3",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.6.3",
+    "chai": "^4.1.2",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^24.1.5",
+    "eslint-plugin-testing-library": "^3.10.1",
     "eslint-plugin-vue": "^6.2.2",
+    "husky": "^4.3.8",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.4",
+    "pinst": "^2.1.6",
+    "vue-jest": "^3.0.7",
     "vue-template-compiler": "^2.6.11"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint . --fix",
+      "git add"
+    ],
+    "src/**/*.scss": [
+      "stylelint --syntax scss --fix",
+      "git add"
+    ]
   }
 }

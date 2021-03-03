@@ -1,40 +1,39 @@
 <template>
   <div class="hello">
-    <div v-if="getToken">
+    <!-- <div v-if="getToken"> -->
       <!-- User In. with {{getToken}} -->
-      <EditOrder/>
-    </div>
-    <div v-else>
-      <Login/>
-    </div>
+      <!-- <EditOrder/> -->
+    <!-- </div> -->
+    <!-- <div v-else> -->
+      <!-- <Login/> -->
+    <!-- </div> -->
+    <div>{{msg}}</div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+// import { mapGetters, mapActions } from 'vuex';
 
-import Login from './auth/Login.vue';
-// import Order from './sales/Order.vue';
-import EditOrder from './sales/EditOrder.vue';
-// import Report from './sales/Report.vue';
+// import Login from './auth/Login.vue';
+// import EditOrder from './sales/EditOrder.vue';
 
 export default {
   name: 'Home',
   props: {
     msg: String,
   },
-  components: {
-    Login,
-    // Order,
-    EditOrder,
-    // Report,
-  },
-  methods: {
-    ...mapActions(['fetchToken']),
-  },
-  computed: {
-    ...mapGetters(['getToken']),
-  },
+  // components: {
+  //   Login,
+  //   // Order,
+  //   EditOrder,
+  //   // Report,
+  // },
+  // methods: {
+  //   ...mapActions(['fetchToken']),
+  // },
+  // computed: {
+  //   ...mapGetters(['getToken']),
+  // },
 };
 </script>
 
