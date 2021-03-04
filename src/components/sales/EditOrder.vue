@@ -1,7 +1,10 @@
 <template>
     <div>
       <div class="pad-1">
-        <p><strong>Order Number: </strong><span>1000283</span></p>
+        <p>
+          <strong>Order Number: </strong><span>1000283</span>
+          <strong style="margin-left: 20px;">Order Date: </strong><span>12-03-2021</span>
+        </p>
         <div class="table-box">
            <table>
             <tr>
@@ -83,10 +86,10 @@
         <div class="box1">
           <div class="flex-box">
             <label class="pad-label w100" for="barcode">
-              <strong>Total Price:</strong>
+              <strong>Total Amount:</strong>
             </label>
             <input type="text"
-            placeholder="Enter total price"
+            placeholder="Enter total Amount"
             name="total_price"/>
           </div>
           <div class="flex-box">
@@ -99,10 +102,18 @@
           </div>
           <div class="flex-box">
             <label class="pad-label w100" for="barcode">
-              <strong>Amount Received:</strong>
+              <strong>Cash Received:</strong>
             </label>
             <input type="text"
-            placeholder="Enter received amount"
+            placeholder="Enter received cash"
+            name="amount_received"/>
+          </div>
+          <div class="flex-box">
+            <label class="pad-label w100" for="barcode">
+              <strong>Cash Returned:</strong>
+            </label>
+            <input type="text"
+            placeholder="Enter returned cash"
             name="amount_received"/>
           </div>
         </div>
@@ -164,7 +175,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
  table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -254,7 +265,7 @@ export default defineComponent({
 
   .modal-header {
     padding: 2px 16px;
-    background-color: #e73b2a;
+    background-color: $primary-color;
     color: white;
   }
 
@@ -262,12 +273,12 @@ export default defineComponent({
 
   .modal-footer {
     padding: 2px 16px;
-    background-color: #e73b2a;
+    background-color: $primary-color;
     color: white;
   }
 
   .w100 {
-    width: 100px;
+    width: 200px;
   }
 
   .pad-1 {

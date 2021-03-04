@@ -14,7 +14,8 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style lang="scss">
+
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -60,7 +61,7 @@ export default defineComponent({
   }
 
   .btn-orange {
-    background-color: #e73b2a;
+    background-color: $primary-color;
   }
 
   /* Full-width inputs */
@@ -71,7 +72,7 @@ export default defineComponent({
     display: inline-block;
     border: none;
     box-sizing: border-box;
-    outline-color: #e73b2a;
+    outline-color: $primary-color;
     background-color: #f5f2f2;
 
      -webkit-box-shadow: 1px 1px 10px -1px #423144;

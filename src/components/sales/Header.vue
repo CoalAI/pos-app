@@ -35,32 +35,39 @@
       </span>
     </div>
     <div class="logout">
-        <a class="btn btn-orange btn-lg">Logout</a>
+        <a class="btn btn-orange btn-lg" @click="logout">Logout</a>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-// import { useStore } from 'vuex'
-// import { ActionTypes } from '@/store/modules/auth/actions'
+import { defineComponent } from 'vue';
+import { useStore } from 'vuex';
+import { ActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
   name: 'Header',
+  setup() {
+    const store = useStore();
+
+    return {
+      logout: () => store.dispatch(ActionTypes.LOGOUT_USER)
+    }
+  }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
   .container {
-    background-color: #423144;
+    background-color: $header-color;
     padding: 1em;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 0.4fr;
     gap: 1em 1em;
     grid-template-areas:
-    "logo b b b b s s s s name name logout"
+    "logo b b b b space s s s s name logout"
   }
   .logo {
     grid-area: logo;

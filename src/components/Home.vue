@@ -13,20 +13,20 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
-// import { ActionTypes } from '@/store/modules/auth/actions'
+import { ActionTypes } from '@/store/modules/auth/actions'
 
 import Header from './sales/Header.vue';
 import Login from './auth/Login.vue';
-// import Order from './sales/Order.vue';
-// import EditOrder from './sales/EditOrder.vue';
-import Report from './sales/Report.vue';
 
 export default defineComponent({
   name: 'App',
   components: { 
     Header,
     Login,
-    Report,
+  },
+  created() {
+    const store = useStore();
+    store.dispatch(ActionTypes.FETCH_TOEKN)
   },
   setup() {
     const store = useStore();
@@ -39,7 +39,7 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
 h3 {
   margin: 40px 0 0;
 }

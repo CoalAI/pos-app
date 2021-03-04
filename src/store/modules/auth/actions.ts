@@ -9,7 +9,8 @@ export enum ActionTypes {
   FETCH_TOEKN = "FETCH_TOEKN",
   LOGIN_USER = "LOGIN_USER",
   REGISTER_USER = "REGISTER_USER",
-  UPDATE_USER = "UPDATE_USER"
+  UPDATE_USER = "UPDATE_USER",
+  LOGOUT_USER = "LOGOUT_USER"
 }
 
 export type AugmentedActionContext = {
@@ -24,6 +25,7 @@ export interface Actions {
   [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials): void;
   [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User): void;
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
+  [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -36,7 +38,6 @@ Actions = {
     }
   },
   async [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials) {
-    console.log("this is credentials =", credentials)
     const response = await serverRequest('post', 'obtain-jwt/', false, credentials);
     localStorage.token = response.data.token;
     commit(MutationTypes.SetToken, response.data.token);
@@ -48,5 +49,9 @@ Actions = {
   async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
     const response = await serverRequest('put', `user/${updUser.id}/`, true, updUser);
     commit(MutationTypes.SetUser, response.data);
+  },
+  async [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext) {
+    localStorage.clear();
+    commit(MutationTypes.SetToken, '');
   }
 };

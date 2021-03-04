@@ -1,7 +1,19 @@
 <template>
   <div>
-    <div class="mr-2" style="padding-left: 10px">
+    <div class="pad-2" style="padding-left: 10px">
       <a class="btn btn-orange btn-mr" v-on:click="openProductAddEditModal">Add New User</a>
+      <div class="float-right">
+          <form class="flex-box">
+            <input
+              label="Username"
+              name="username"
+              type="text"
+              placeholder="Enter user name to search"
+              class="order-search"
+            />
+            <button class="btn btn-orange order-search-btn">Search user</button>
+          </form>
+        </div>
     </div>
     <div class="mr-2 pad-2">
       <table>
@@ -171,7 +183,7 @@ export default defineComponent( {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .btn-mr{
     margin: 10px;
     text-align: center;
@@ -260,7 +272,7 @@ export default defineComponent( {
 
   .modal-header {
     padding: 2px 16px;
-    background-color: #e73b2a;
+    background-color: $primary-color;
     color: white;
   }
 
@@ -268,7 +280,7 @@ export default defineComponent( {
 
   .modal-footer {
     padding: 2px 16px;
-    background-color: #e73b2a;
+    background-color: $primary-color;
     color: white;
   }
 
@@ -291,11 +303,19 @@ export default defineComponent( {
     display: inline-block;
     border: none;
     box-sizing: border-box;
-    outline-color: #e73b2a;
+    outline-color: $primary-color;
     background-color: #f5f2f2;
 
      -webkit-box-shadow: 1px 1px 10px -1px #423144;
     -moz-box-shadow: 1px 1px 10px -1px  #423144;
     box-shadow: 1px 1px 10px -1px  #423144;
+  }
+
+  .order-search {
+    width: 80%;
+  }
+
+  .order-search-btn {
+    width: 20%
   }
 </style>

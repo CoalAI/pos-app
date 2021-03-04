@@ -27,7 +27,7 @@
         </div>
       </form>
       <div class="report-main" style="padding: 10px;">
-        <div style="border: 1px solid #e73b2a; height: 350px">
+        <div style="border: 1px solid #000; height: 350px">
           <h1>Report Details Shown Here</h1>
         </div>
       </div>
@@ -48,7 +48,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .pad-label{
     padding:20px;
   }

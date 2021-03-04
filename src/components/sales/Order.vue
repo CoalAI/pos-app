@@ -7,7 +7,7 @@
             <strong>Bar Code:</strong>
           </label>
           <input class="bc-i" type="text"
-          placeholder="product name" name="barcode" />
+          placeholder="Bar code" name="barcode" />
           <a class="btn btn-orange btn-mr bc-b" v-on:click="openSelectProductModal">search</a>
 
           <label class="q pad-label" for="quantity">
@@ -20,7 +20,7 @@
             <strong>Product Name:</strong>
           </label>
           <input class="pn-i" type="text"
-          placeholder="Bar code" name="productname"/>
+          placeholder="Product Name" name="productname"/>
           <a class="btn btn-orange btn-mr pn-b" v-on:click="openSelectProductModal">search</a>
 
           <label class="d pad-label" for="discount">
@@ -143,26 +143,37 @@
          <p>Invoice no</p>
          <p>Date Time</p>
         </div>
-        <div class="float-left">
-          <label class="pad-label" for="barcode">
-            <strong>Discount:</strong>
+        <div class="float-left flex-box">
+          <label class="pad-label-side" for="total_discount">
+            <strong>Total Discount:</strong>
           </label>
           <input type="text"
           placeholder="Discount on total bill"
           name="total_discount"/>
         </div>
-        <div class="float-left">
-          <label class="pad-label" for="barcode">
-            <strong>Total Amount:  <span>Rs. 1000</span></strong>
+        <div class="float-left flex-box">
+          <label class="pad-label-side" for="barcode">
+            <strong>Total Amount:</strong>
           </label>
+          <input type="text"
+          value="1000 RS"
+          name="total_amount" readonly/>
         </div>
-        <div class="float-left pad-2">
-          <label class="pad-label" for="barcode">
+        <div class="float-left flex-box">
+          <label class="pad-label-side" for="barcode">
             <strong>Cash Received:</strong>
           </label>
           <input type="text"
           placeholder="Enter Cash Received"
           name="cash_received"/>
+        </div>
+        <div class="float-left flex-box">
+          <label class="pad-label-side" for="return">
+            <strong>Cash Returned:</strong>
+          </label>
+          <input type="text"
+          value="0 Rs"
+          name="return" readonly/>
         </div>
         <div class="float-left submit-btn">
           <button class="btn btn-orange">Submit and Print</button>
@@ -284,7 +295,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .form-container {
     display: grid;
     grid-template-columns: 1fr 2.5fr 0.5fr 1fr 2fr;
@@ -407,7 +418,7 @@ export default defineComponent({
 
   .modal-header {
     padding: 2px 16px;
-    background-color: #e73b2a;
+    background-color: $primary-color;
     color: white;
   }
 
@@ -415,7 +426,7 @@ export default defineComponent({
 
   .modal-footer {
     padding: 2px 16px;
-    background-color: #e73b2a;
+    background-color: $primary-color;
     color: white;
   }
 
@@ -431,6 +442,12 @@ export default defineComponent({
   .box1-tab {
     overflow-y: auto;
     height: 350px;
+  }
+
+  .pad-label-side {
+    padding: 15px 5px;
+    text-align: left;
+    width: 40%;
   }
 
 </style>
