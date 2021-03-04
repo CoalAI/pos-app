@@ -12,9 +12,9 @@
         <a class="btn btn-orange btn-mr">Seetings</a>
       </div>
       <div class="flex-box">
-        <a class="btn btn-orange btn-mr" >extra</a>
-        <a class="btn btn-orange btn-mr">extra1</a>
-        <a class="btn btn-orange btn-mr">extra2</a>
+        <a class="btn btn-orange btn-mr">Products</a>
+        <a class="btn btn-orange btn-mr">Batches</a>
+        <a class="btn btn-orange btn-mr">Users</a>
       </div>
     </div>
     <div class="s">
