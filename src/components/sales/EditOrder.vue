@@ -1,6 +1,5 @@
 <template>
     <div>
-      <Header/>
       <div class="pad-1">
         <p><strong>Order Number: </strong><span>1000283</span></p>
         <div class="table-box">
@@ -140,15 +139,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Header from './Header.vue';
 // import { useStore } from 'vuex'
 // import { ActionTypes } from '@/store/modules/auth/actions'
 
 export default defineComponent({
   name: 'EditOrder',
-  components: {
-    Header,
-  },
   // define methods under the `methods` object
   methods: {
     openModal: (event: Event) => {

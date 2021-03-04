@@ -10,9 +10,9 @@ export enum MutationTypes {
 }
 
 export type Mutations = {
-  [MutationTypes.SetUser](state: State, user: User): void
-  [MutationTypes.SetErrors](state: State, errors: any): void
-  [MutationTypes.SetToken](state: State, token: string): void
+  [MutationTypes.SetUser](state: State, user: User): void;
+  [MutationTypes.SetErrors](state: State, errors: any): void;
+  [MutationTypes.SetToken](state: State, token: string): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {

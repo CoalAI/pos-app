@@ -1,8 +1,8 @@
 <template>
   <div class="hello">
     <div v-if="getToken">
-      <!-- User In. with {{getToken}} -->
-      <Report/>
+      <Header />
+      <router-view />
     </div>
     <div v-else>
       <Login/>
@@ -13,8 +13,9 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
-import { ActionTypes } from '@/store/modules/auth/actions'
+// import { ActionTypes } from '@/store/modules/auth/actions'
 
+import Header from './sales/Header.vue';
 import Login from './auth/Login.vue';
 // import Order from './sales/Order.vue';
 // import EditOrder from './sales/EditOrder.vue';
@@ -23,6 +24,7 @@ import Report from './sales/Report.vue';
 export default defineComponent({
   name: 'App',
   components: { 
+    Header,
     Login,
     Report,
   },
@@ -34,24 +36,6 @@ export default defineComponent({
     }
   }
 });
-
-// @Component({
-//   components: {
-//     Login,
-//     // Order,
-//     EditOrder,
-//     // Report,
-//   },
-//   methods: {
-//     ...mapActions(['fetchToken']),
-//   },
-//   computed: {
-//     ...mapGetters(['getToken']),
-//   },
-// })
-// export default class Home extends Vue {
-//   @Prop() private msg!: string;
-// }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img src="../../assets/logo.png" alt="coaldev">
+      <router-link to="/"><img src="../../assets/logo.png" alt="coaldev"></router-link>
     </div>
     <div class="b">
       <div class="flex-box">
-        <a class="btn btn-orange btn-mr" href="/order"
+        <a class="btn btn-orange btn-mr" href="/"
         target="_blank">New Order</a>
         <!-- <a class="btn btn-orange btn-mr">Report</a> -->
         <router-link to="/report" class="btn btn-orange btn-mr">Report</router-link>

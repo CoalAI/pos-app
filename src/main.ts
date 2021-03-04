@@ -8,11 +8,5 @@ import router from './router';
 const app = createApp(App)
 
 app.use(store)
-// .use(router)
+app.use(router)
 app.mount("#app");
-
-// new Vue({
-//   router,
-//   store,
-//   render: (h) => h(App),
-// }).$mount('#app');

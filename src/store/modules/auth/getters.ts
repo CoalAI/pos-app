@@ -4,9 +4,9 @@ import { User } from '@/store/models/user';
 import { State } from './state';
 
 export interface Getters {
-  getUser(state: State): User
-  getErrors(state: State): any
-  getToken(state: State): string
+  getUser(state: State): User;
+  getErrors(state: State): any;
+  getToken(state: State): string;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {

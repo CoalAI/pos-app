@@ -1,6 +1,5 @@
 <template>
     <div>
-      <Header/>
       <form>
         <div class="flex-box mr-2">
           <label class="pad-label" for="username">
@@ -41,15 +40,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Header from './Header.vue';
 // import { useStore } from 'vuex'
 // import { ActionTypes } from '@/store/modules/auth/actions'
 
 export default defineComponent({
   name: 'Report',
-  components: {
-    Header,
-  },
 });
 </script>
 
