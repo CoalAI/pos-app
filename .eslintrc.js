@@ -6,9 +6,7 @@ module.exports = {
   },
 
   parserOptions: {
-    parser: '@typescript-eslint/parser',
-    sourceType: 'module',
-    ecmaVersion: 2015,
+    parser: '@typescript-eslint/parser'
   },
 
   rules: {
@@ -17,7 +15,7 @@ module.exports = {
     'linebreak-style': ['error', process.env.NODE_ENV === 'production' ? 'unix' : 'windows']
   },
 
-  'extends': [
+  extends: [
     '@vue/typescript'
   ]
 };

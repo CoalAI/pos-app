@@ -39,15 +39,18 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import Header from './Header.vue';
+// import { useStore } from 'vuex'
+// import { ActionTypes } from '@/store/modules/auth/actions'
 
-export default {
+export default defineComponent({
   name: 'Report',
   components: {
     Header,
   },
-};
+});
 </script>
 
 <style scoped>

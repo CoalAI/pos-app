@@ -2,7 +2,7 @@
   <div class="hello">
     <div v-if="getToken">
       <!-- User In. with {{getToken}} -->
-      <Order/>
+      <Report/>
     </div>
     <div v-else>
       <Login/>
@@ -16,15 +16,15 @@ import { useStore } from 'vuex'
 import { ActionTypes } from '@/store/modules/auth/actions'
 
 import Login from './auth/Login.vue';
-import Order from './sales/Order.vue';
+// import Order from './sales/Order.vue';
 // import EditOrder from './sales/EditOrder.vue';
-// import Report from './sales/Report.vue';
+import Report from './sales/Report.vue';
 
 export default defineComponent({
   name: 'App',
   components: { 
     Login,
-    Order,
+    Report,
   },
   setup() {
     const store = useStore();
