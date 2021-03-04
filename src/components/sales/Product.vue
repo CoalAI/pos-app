@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Header/>
     <div class="mr-2" style="padding-left: 10px">
         <a class="btn btn-orange btn-mr" v-on:click="openProductAddEditModal">Add New Product</a>
     </div>
@@ -134,46 +133,45 @@
   </div>
 </template>
 
-<script>
-import Header from './Header.vue';
+<script lang="ts">
+import { defineComponent } from 'vue'
+// import { useStore } from 'vuex'
+// import { ActionTypes } from '@/store/modules/auth/actions'
 
-export default {
+export default defineComponent({
   name: 'Product',
-  components: {
-    Header,
-  },
   // define methods under the `methods` object
   methods: {
-    openModal: (event) => {
+    openModal: (event: Event) => {
       if (event) {
         // Get the modal
         const modal = document.getElementById('myModal');
-        modal.style.display = 'block';
+        modal!.style.display = 'block';
       }
     },
-    closeModal: (event) => {
+    closeModal: (event: Event) => {
       if (event) {
         // Get the modal
         const modal = document.getElementById('myModal');
-        modal.style.display = 'none';
+        modal!.style.display = 'none';
       }
     },
-    openProductAddEditModal: (event) => {
+    openProductAddEditModal: (event: Event) => {
       if (event) {
         // Get the modal
         const modal = document.getElementById('productAddEditModal');
-        modal.style.display = 'block';
+        modal!.style.display = 'block';
       }
     },
-    closeProductAddEditModal: (event) => {
+    closeProductAddEditModal: (event: Event) => {
       if (event) {
         // Get the modal
         const modal = document.getElementById('productAddEditModal');
-        modal.style.display = 'none';
+        modal!.style.display = 'none';
       }
     },
   },
-};
+});
 </script>
 
 <style scoped>

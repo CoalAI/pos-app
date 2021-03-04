@@ -12,9 +12,9 @@
         <a class="btn btn-orange btn-mr">Seetings</a>
       </div>
       <div class="flex-box">
-        <a class="btn btn-orange btn-mr">Products</a>
-        <a class="btn btn-orange btn-mr">Batches</a>
-        <a class="btn btn-orange btn-mr">Users</a>
+        <router-link to="/products" class="btn btn-orange btn-mr">Products</router-link>
+        <router-link to="/batchs" class="btn btn-orange btn-mr">Batches</router-link>
+        <router-link to="/users" class="btn btn-orange btn-mr">Users</router-link>
       </div>
     </div>
     <div class="s">
