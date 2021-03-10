@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from 'vuex';
+import { mapActions } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
@@ -73,6 +73,9 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions({
+      logoutUser: ActionTypes.LOGOUT_USER
+    }),
     searchTyped(event: Event) {
       if (this.orderSearch == ''){
         this.showResult = false;
@@ -81,13 +84,9 @@ export default defineComponent({
       // Call action from Store
       // Change results
       this.showResult = true;
-    }
-  },
-  setup() {
-    const store = useStore();
-
-    return {
-      logout: () => store.dispatch(ActionTypes.LOGOUT_USER)
+    },
+    logout() {
+      this.logoutUser();
     }
   },
 });

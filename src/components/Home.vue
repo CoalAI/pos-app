@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
-import { useStore } from 'vuex'
-import { ActionTypes } from '@/store/modules/auth/actions'
+import { defineComponent, computed } from 'vue';
+import { mapActions, mapGetters } from 'vuex';
+import { ActionTypes } from '@/store/modules/auth/actions';
 
 import Header from './sales/Header.vue';
 import Login from './auth/Login.vue';
@@ -25,17 +25,17 @@ export default defineComponent({
     Header,
     Login,
   },
-  created() {
-    const store = useStore();
-    store.dispatch(ActionTypes.FETCH_TOEKN)
+  computed: {
+    ...mapGetters(['getToken'])
   },
-  setup() {
-    const store = useStore();
-
-    return {
-      getToken: computed(() => store.getters.getToken)
-    }
-  }
+  methods: {
+    ...mapActions({
+      fetchToken: ActionTypes.FETCH_TOEKN
+    })
+  },
+  created() {
+    this.fetchToken();
+  },
 });
 </script>
 

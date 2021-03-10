@@ -42,24 +42,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useStore } from 'vuex'
-import { ActionTypes } from '@/store/modules/auth/actions'
+import { defineComponent, ref } from 'vue';
+import { mapActions } from 'vuex';
+import { ActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
   name: 'Login',
-  setup() {
-    const store = useStore();
-    const username = ref('');
-    const password = ref('');
-
+  data() {
     return {
-      username,
-      password,
-      submitLogin: () => store.dispatch(ActionTypes.LOGIN_USER, {
-        username: username.value,
-        password: password.value
-      })
+      username: '',
+      password: '',
+    }
+  },
+  methods: {
+    ...mapActions({
+      loginUser: ActionTypes.LOGIN_USER
+    }),
+    submitLogin() {
+      this.loginUser({
+        username: this.username,
+        password: this.password
+      });
     }
   }
 });
