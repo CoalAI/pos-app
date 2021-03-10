@@ -54,9 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-// import { useStore } from 'vuex'
-// import { ActionTypes } from '@/store/modules/auth/actions'
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'AddEditUser',
@@ -75,7 +73,7 @@ export default defineComponent({
   }
 
   .w100 {
-    width: 150px;
+    width: $w150;
   }
 
   label {

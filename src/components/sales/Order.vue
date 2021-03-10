@@ -322,8 +322,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
-// import { useStore } from 'vuex'
-// import { ActionTypes } from '@/store/modules/auth/actions'
 
 export default defineComponent({
   name: 'Order',
@@ -368,8 +366,6 @@ export default defineComponent({
     grid-area: ap;
     padding: 10px;
   }
-  // .bc-b {grid-area: bc-b;}
-  // .pn-b {grid-area: pn-b;}
 
   .pad-label {
     padding: 15px 5px;

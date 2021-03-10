@@ -78,8 +78,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
-// import { useStore } from 'vuex'
-// import { ActionTypes } from '@/store/modules/auth/actions'
 
 export default defineComponent( {
   name: 'User',
@@ -118,10 +116,6 @@ export default defineComponent( {
 
   .pad-label {
     padding:20px;
-  }
-
-  .w100 {
-    width: 80px;
   }
 
   .pr-var-mr {

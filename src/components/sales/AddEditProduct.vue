@@ -69,9 +69,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-// import { useStore } from 'vuex'
-// import { ActionTypes } from '@/store/modules/auth/actions'
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'AddEditProduct',
@@ -90,7 +88,7 @@ export default defineComponent({
   }
 
   .w100 {
-    width: 80px;
+    width: $w80;
   }
 
   textarea {
