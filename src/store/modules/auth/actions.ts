@@ -1,7 +1,8 @@
 import { ActionContext, ActionTree } from "vuex";
+import { AxiosResponse, AxiosError } from 'axios';
 import { IRootState } from '@/store/models/root';
 import { User, Credentials } from '@/store/models/user';
-import serverRequest from '@/store/modules/request'
+import serverRequest, { isAxiosResponse } from '@/store/modules/request'
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 
@@ -39,16 +40,22 @@ Actions = {
   },
   async [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials) {
     const response = await serverRequest('post', 'obtain-jwt/', false, credentials);
-    localStorage.token = response.data.token;
-    commit(MutationTypes.SetToken, response.data.token);
+    if (isAxiosResponse(response)) {
+      localStorage.token = response.data.token;
+      commit(MutationTypes.SetToken, response.data.token);
+    }
   },
   async [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User) {
     const response = await serverRequest('post', 'user/', false, user);
-    commit(MutationTypes.SetUser, response.data);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetUser, response.data);
+    }
   },
   async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
     const response = await serverRequest('put', `user/${updUser.id}/`, true, updUser);
-    commit(MutationTypes.SetUser, response.data);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetUser, response.data);
+    }
   },
   async [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext) {
     localStorage.clear();

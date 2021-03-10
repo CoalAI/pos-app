@@ -1,6 +1,21 @@
 import axios from 'axios';
+import { AxiosRequestConfig, AxiosResponse, AxiosError, Method } from 'axios';
 
-const serverRequest = async (method: any, url: any, isHeader: any, data: any = {}, params: any = {}) => {
+export const isAxiosResponse = (response: AxiosResponse<any> | AxiosError<any>): response is AxiosResponse => {
+  return (response as AxiosResponse).status !== undefined;
+}
+
+export const isAxiosError = (response: AxiosResponse<any> | AxiosError<any>): response is AxiosError => {
+  return (response as AxiosError).isAxiosError !== undefined;
+}
+
+const serverRequest = async (
+  method: Method,
+  url: string,
+  isHeader: boolean,
+  data: any = {},
+  params: any = {}
+  ): Promise<AxiosResponse<any> | AxiosError<any>> => {
   let headers = {};
   if (isHeader) {
     if (localStorage.token) {
@@ -12,18 +27,19 @@ const serverRequest = async (method: any, url: any, isHeader: any, data: any = {
       // TODO: check if auth fails
     }
   }
+  const config: AxiosRequestConfig = {
+    method,
+    url,
+    data,
+    params,
+    headers,
+    baseURL: 'http://127.0.0.1:8000/api/',
+  }
   try {
-    const response = await axios({
-      method,
-      url,
-      data,
-      params,
-      headers,
-      baseURL: 'http://127.0.0.1:8000/api/',
-    });
+    const response = await axios(config);
     return response;
-  } catch (e) {
-    return e;
+  } catch (error) {
+    return error;
   }
 };
 

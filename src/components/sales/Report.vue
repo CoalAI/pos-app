@@ -2,25 +2,19 @@
     <div>
       <form>
         <div class="flex-box mr-2">
-          <label class="pad-label" for="username">
+          <label class="pad-label" for="start_date">
             <strong>Start:</strong>
           </label>
           <input
-            v-model="username"
-            label="Username"
-            name="username"
-            type="text"
-            placeholder="Enter Username"
+            name="start_date"
+            type="date"
           />
-          <label class="pad-label" for="username">
+          <label class="pad-label" for="end_date">
             <strong>End:</strong>
           </label>
           <input
-            v-model="username"
-            label="Username"
-            name="username"
-            type="text"
-            placeholder="Enter Username"
+            name="end_date"
+            type="date"
           />
           <button class="btn btn-orange"
           style="margin: 10px 60px 10px 60px">Search Report</button>

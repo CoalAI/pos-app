@@ -63,49 +63,25 @@ export default defineComponent({
     }
   }
 });
-
-// import { Component, Prop, Vue } from 'vue-property-decorator';
-// import { mapGetters, mapActions } from 'vuex';
-
-// @Component({
-//   computed: mapGetters(['getUser', 'getToken']),
-// })
-// export default class Login extends Vue {
-//   private userName: string;
-//   private password: string;
-
-//   loginUser: any;
-
-//   constructor() {
-//     super();
-//     this.loginUser = mapActions(['loginUser']);
-//     this.userName = '';
-//     this.password = '';
-//   }
-
-//   // data() : {username:string, password:string} {
-//   //   return {
-//   //     username: '',
-//   //     password: '',
-//   //   };
-//   // }
-
-//   submitLogin() {
-//     this.loginUser({ username: this.userName, password: this.password });
-//   }
-// }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+    gap: 1em;
+  }
+
   .col {
     grid-column: 4/10;
-    border: 1px solid #ffffff;
+    border: 1px solid $white-color;
     border-radius: 10px;
     padding: 4em;
 
-    -webkit-box-shadow: 1px 1px 10px -1px rgba(0,0,0,0.75);
-    -moz-box-shadow: 1px 1px 10px -1px rgba(0,0,0,0.75);
-    box-shadow: 1px 1px 10px -1px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 1px 1px 10px -1px $login-shodow-color;
+    -moz-box-shadow: 1px 1px 10px -1px $login-shodow-color;
+    box-shadow: 1px 1px 10px -1px $login-shodow-color;
   }
 
   .pad-label {

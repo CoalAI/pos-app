@@ -3,6 +3,7 @@
     <div v-if="getToken">
       <Header />
       <router-view />
+      <p class="coaldev-name">Created by CoalDev</p>
     </div>
     <div v-else>
       <Login/>
@@ -51,7 +52,13 @@ li {
   display: inline-block;
   margin: 0 10px;
 }
-a {
-  color: #42b983;
+.coaldev-name {
+  font-size: 15px;
+  color: $coaldev-name-color;
+  padding: 0px 0px 5px 30px;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
 }
 </style>
