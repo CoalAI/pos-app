@@ -5,16 +5,16 @@
     </div>
     <div class="b">
       <div class="flex-box">
-        <a class="btn btn-orange btn-mr" href="/"
+        <a class="btn btn-grid btn-orange btn-mr" href="/"
         target="_blank">New Order</a>
         <!-- <a class="btn btn-orange btn-mr">Report</a> -->
-        <router-link to="/report" class="btn btn-orange btn-mr">Report</router-link>
-        <a class="btn btn-orange btn-mr">Seetings</a>
+        <router-link to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
+        <a class="btn btn-orange btn-grid btn-mr">Settings</a>
       </div>
       <div class="flex-box">
-        <router-link to="/products" class="btn btn-orange btn-mr">Products</router-link>
-        <router-link to="/batchs" class="btn btn-orange btn-mr">Batches</router-link>
-        <router-link to="/users" class="btn btn-orange btn-mr">Users</router-link>
+        <router-link to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
+        <router-link to="/batchs" class="btn btn-grid btn-orange btn-mr">Batches</router-link>
+        <router-link to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
       </div>
     </div>
     <div class="s">
@@ -49,12 +49,12 @@
       </div>
     </div>
     <div class="name user-name">
-      <span class="white-color">
+      <span>
         <strong>Omer Ali</strong>
       </span>
     </div>
     <div class="logout">
-        <a class="btn btn-orange btn-lg" @click="logout">Logout</a>
+        <button class="btn btn-orange" @click="logout">Logout</button>
     </div>
   </div>
 </template>
@@ -95,18 +95,15 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   .container {
-    background-color: $header-color;
-    padding: 1em;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 0.4fr;
     gap: 1em 1em;
     grid-template-areas:
-    "logo b b b b space s s s s name logout"
+    "logo b b b b s s s s s name logout"
   }
   .logo {
     grid-area: logo;
-    margin-top:10px;
   }
   .b {grid-area: b;}
   .s {
@@ -118,21 +115,11 @@ export default defineComponent({
 
   .logout {
     grid-area: logout;
-    margin-top: 13px;
   }
 
-  td {
-    padding: 8px;
-    text-align: left;
-  }
-
-  .btn {
-    width: 100px;
-    padding: 8px 20px;
-  }
-  .btn-mr{
-    margin: 10px;
-    text-align: center;
+  .btn-grid {
+    width: $w100;
+    margin: 2px;
   }
 
   .user-name {

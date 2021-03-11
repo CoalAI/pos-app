@@ -105,20 +105,10 @@ export default defineComponent({
 <style lang="scss" scoped>
   .btn-mr{
     margin: 10px;
-    text-align: center;
-  }
-
-  .pad-2 {
-    padding: 20px;
   }
 
   .btn-mr-inner{
     margin: 1px 1px 1px 5px;
-    text-align: center;
-  }
-
-  .pad-label {
-    padding:20px;
   }
 
   .pr-var-mr {

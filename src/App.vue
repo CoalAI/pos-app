@@ -17,7 +17,7 @@ export default defineComponent({
 <style lang="scss">
 
   #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: $font-family;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -31,23 +31,24 @@ export default defineComponent({
   }
 
   label {
-    font-size: 13px;
+    font-size: $label-font-size;
   }
 
   /* Button styles */
   .btn {
     color: $white-color;
-    padding: 8px 12px;
-    margin: 8px 0;
+    padding: $normal-btn-pad;
+    margin: $margin-btn-input;
     border: none;
     cursor: pointer;
     width: 100%;
-    font-size: 12px;
+    font-size: $btn-font-size;
+    text-align: center;
   }
 
   .btn-lg {
-    padding: 14px 20px;
-    font-size: 16px;
+    padding: $large-btn-pad;
+    font-size: $large-btn-font-size;
   }
 
   .btn:hover {
@@ -61,17 +62,13 @@ export default defineComponent({
   /* Full-width inputs */
   input[type=text], input[type=password], input[type=date], select {
     width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
+    padding: $input-pad;
+    margin: $margin-btn-input;
     display: inline-block;
     border: none;
     box-sizing: border-box;
     outline-color: $primary-color;
     background-color: $input-background-color;
-
-    -webkit-box-shadow: 1px 1px 10px -1px  $input-shadow-color;
-    -moz-box-shadow: 1px 1px 10px -1px  $input-shadow-color;
-    box-shadow: 1px 1px 10px -1px  $input-shadow-color;
   }
 
   .flex-box {
@@ -121,11 +118,11 @@ export default defineComponent({
 
   /* Search bar with button */
   .search-input {
-    width: 80%;
+    width: 80% !important;
   }
 
   .search-btn {
-    width: 20%
+    width: 20% !important;
   }
 
   /* Radio buttons styles */
@@ -190,12 +187,20 @@ export default defineComponent({
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: white;
+    background: $white-color;
   }
 
   .shadow-box {
-    -webkit-box-shadow: 1px 1px 10px -1px  $input-shadow-color;
-    -moz-box-shadow: 1px 1px 10px -1px  $input-shadow-color;
-    box-shadow: 1px 1px 10px -1px  $input-shadow-color;
+    -webkit-box-shadow: 1px 1px 6px -1px  $input-shadow-color;
+    -moz-box-shadow: 1px 1px 6px -1px  $input-shadow-color;
+    box-shadow: 1px 1px 6px -1px  $input-shadow-color;
+  }
+
+  .pad-label {
+    padding: $label-pad;
+  }
+
+  .pad-2 {
+    padding: 20px;
   }
 </style>

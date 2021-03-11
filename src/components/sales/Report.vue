@@ -41,7 +41,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.pad-label{
-    padding:20px;
-  }
 </style>

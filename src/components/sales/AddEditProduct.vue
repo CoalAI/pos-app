@@ -93,17 +93,13 @@ export default defineComponent({
 
   textarea {
     width: 100%;
-    padding: 12px 20px;
+    padding: $input-pad;
     margin: 0;
     display: inline-block;
     border: none;
     box-sizing: border-box;
     outline-color: $primary-color;
-    background-color: #f5f2f2;
-
-     -webkit-box-shadow: 1px 1px 10px -1px $input-shadow-color;
-    -moz-box-shadow: 1px 1px 10px -1px  $input-shadow-color;
-    box-shadow: 1px 1px 10px -1px  $input-shadow-color;
+    background-color: $input-background-color;
   }
 
   label {

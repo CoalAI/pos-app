@@ -181,25 +181,18 @@ export default defineComponent({
     grid-template-rows: 1fr;
     gap: 0.1em 0.1em;
   }
-  .pad-label{
-    padding:20px;
-  }
-   .btn-mr{
+
+  .btn-mr{
     margin: 60px 36px;
     padding: 14px;
-    text-align: center;
   }
 
   .w100 {
     width: $w200;
   }
 
-  .pad-1 {
-    padding: 10px;
-  }
-
   .table-box {
-    height: 250px;
+    height: $order-item-table-height;
     overflow-y: auto;
   }
 </style>

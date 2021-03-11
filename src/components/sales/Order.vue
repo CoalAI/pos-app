@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="order-page">
     <div class="product-container">
       <div class="box1">
         <div class="form-container">
@@ -10,11 +10,15 @@
           placeholder="Bar code" name="barcode" />
           <!-- <a class="btn btn-orange btn-mr bc-b" v-on:click="openSelectProductModal">search</a> -->
 
-          <label class="q pad-label" for="quantity">
+          <label class="q pad-label mr-l" for="quantity">
             <strong>Quantity:</strong>
           </label>
           <input  class="q-i" type="text"
           placeholder="quantity" name="quantity"/>
+
+          <div class="ap-e">
+            <button class="btn btn-orange ap">Clear Product</button>
+          </div>
 
           <label class="pn pad-label" for="productname">
             <strong>Product Name:</strong>
@@ -23,7 +27,7 @@
           placeholder="Product Name" name="productname"/>
           <!-- <a class="btn btn-orange btn-mr pn-b" v-on:click="openSelectProductModal">search</a> -->
 
-          <label class="d pad-label" for="discount">
+          <label class="d pad-label mr-l" for="discount">
             <strong>Discount:</strong>
           </label>
           
@@ -35,17 +39,25 @@
           </div>
         </div>
       </div>
-      <div class="box2">
-        <div class="pad-2">
-          <p>Invoice no</p>
-          <p>Date Time</p>
-        </div>
+      <div class="box-22">
+        <table class="pr-s-r-table">
+          <tr>
+            <td><strong>Invoice no:</strong></td>
+            <td>00000111</td>
+          </tr>
+          <tr>
+            <td><strong>Date Time:</strong></td>
+            <td>03-11-2021</td>
+          </tr>
+        </table>
+          <!-- <p><strong>Invoice no:</strong> 00000111</p>
+          <p><strong>Date Time:</strong> 03-11-2021</p> -->
       </div>
     </div>
 
     <div class="table-container" style="margin-top: 0;">
-      <p style="margin-left: 20px"><strong>Product Results</strong></p>
-      <p><strong>Order Items</strong></p>
+      <p><strong>Product Results</strong></p>
+      <p style="margin-left: 15px"><strong>Order Items</strong></p>
     </div>
 
     <!-- Order Items table -->
@@ -124,7 +136,7 @@
           </li>
         </ul>
       </div>
-      <div class="box1-tab">
+      <div class="box1-tab" style="margin-left: 15px">
         <table style="width: 100%">
           <colgroup>
             <col span="1" style="width: 5%;">
@@ -155,7 +167,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>2</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -164,7 +176,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>3</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -173,7 +185,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>4</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -182,7 +194,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>5</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -191,7 +203,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>6</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -200,7 +212,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>7</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -209,7 +221,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>8</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -218,7 +230,7 @@
             <td>$6</td>
           </tr>
           <tr>
-            <td>1</td>
+            <td>9</td>
             <td>3572937</td>
             <td>Germany</td>
             <td>2</td>
@@ -230,11 +242,11 @@
       </div>
     </div>
 
-    <div style="padding: 20px 20px 0px 20px">
-      <div class="flex-box">
+    <div>
+      <div class="flex-box mr-2">
         <p class="labl-txt"><strong>Payment method:</strong></p>
         <label class="custom-radio" style="margin-right: 10px">Cash
-          <input type="radio" name="payment_method" value="cash">
+          <input type="radio" name="payment_method" value="cash" checked>
           <span class="checkmark"></span>
         </label>
         <label class="custom-radio">Card
@@ -245,57 +257,46 @@
     </div>
 
     <!-- Payment Process -->
-    <div class="payment-container" style="padding: 0px 20px 20px 20px">
+    <div class="payment-container">
 
-      <div id="pay-box1" class="payment-container-inner">
+      <div id="pay-box1" class="form-container">
 
-        <div class="float-left flex-box">
-          <label class="pad-label-side" for="total_discount">
-            <strong>Total Discount:</strong>
-          </label>
-          <input type="text"
-          placeholder="Discount on total bill"
-          name="total_discount"/>
-        </div>
+        <label class="pad-label bc" for="total_discount">
+          <strong>Total Discount:</strong>
+        </label>
+        <input type="text" class="bc-i"
+        placeholder="Discount on total bill"
+        name="total_discount"/>
 
-        <div class="float-left flex-box">
-          <label class="pad-label-side" for="barcode">
-            <strong>Total Amount:</strong>
-          </label>
-          <input type="text"
-          value="1000 RS"
-          name="total_amount" readonly/>
-        </div>
+        <label class="pad-label mr-l q" for="barcode">
+          <strong>Total Amount:</strong>
+        </label>
+        <input type="text" class="q-i"
+        value="1000 RS"
+        name="total_amount" readonly/>
 
-        <div class="float-left flex-box">
-          <label class="pad-label-side" for="barcode">
-            <strong>Cash Received:</strong>
-          </label>
-          <input type="text"
-          placeholder="Enter Cash Received"
-          name="cash_received"/>
-        </div>
+        <label class="pad-label pn" for="barcode">
+          <strong>Cash Received:</strong>
+        </label>
+        <input type="text" class="pn-i"
+        placeholder="Enter Cash Received"
+        name="cash_received"/>
 
-        <div class="float-left flex-box">
-          <label class="pad-label-side" for="return">
-            <strong>Cash Returned:</strong>
-          </label>
-          <input type="text"
-          value="0 Rs"
-          name="return" readonly/>
+        <label class="pad-label mr-l d" for="return">
+          <strong>Cash Returned:</strong>
+        </label>
+        <input type="text" class="d-i"
+        value="0 Rs"
+        name="return" readonly/>
+
+        <div class="ap">
         </div>
 
       </div>
       <div id="pay-box2">
-        <div class="float-left submit-btn">
           <button class="btn btn-orange">Submit and Print</button>
-        </div>
-        <div class="float-right submit-btn">
           <button class="btn btn-orange">Submit</button>
-        </div>
-        <div>
           <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
-        </div>
       </div>
     </div>
 
@@ -337,6 +338,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+  #order-page{
+    padding: 0px 20px;
+  }
 
   .product-container {
     margin-top:20px;
@@ -347,11 +351,11 @@ export default defineComponent({
 
   .form-container {
     display: grid;
-    grid-template-columns: 1fr 2fr 0.5fr 2fr 1.5fr;
+    grid-template-columns: 0.7fr 2.3fr 0.7fr 2.3fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 0.1em 0.1em;
     grid-template-areas:
-    "bc bc-i q q-i ap"
+    "bc bc-i q q-i ap-e"
     "pn pn-i d d-i ap"
   }
   .bc { grid-area: bc;}
@@ -362,18 +366,21 @@ export default defineComponent({
   .pn-i {grid-area: pn-i;}
   .d {grid-area: d;}
   .d-i {grid-area: d-i;}
+  .ap-e {
+    grid-area: ap-e;
+    padding: 8px 10px;
+  }
   .ap {
     grid-area: ap;
-    padding: 10px;
+    padding: 8px 10px;
   }
 
   .pad-label {
-    padding: 15px 5px;
-    text-align: right;
+    padding: 15px 5px 15px 0px;
   }
 
   .box2{
-    padding: 0px 20px;
+    padding: 0px 20px 0px 2px;
   }
 
   .table-container {
@@ -386,7 +393,7 @@ export default defineComponent({
   .labl-txt{
     text-align: left;
     margin-top: 0px;
-    padding: 0px 10px;
+    margin-right: 25px;
     font-size: 20px;
   }
 
@@ -394,23 +401,14 @@ export default defineComponent({
     float: right;
     padding: 20px 20px 0px 20px;
   }
+
   .btn-mr{
     margin: 10px;
-    text-align: center;
-  }
-
-  .submit-btn {
-    width: 45%;
-    margin: 6px;
-  }
-
-  .pad-2 {
-    padding: 20px;
   }
 
   .box1-tab {
     overflow-y: auto;
-    height: 350px;
+    height: $order-item-table-height;
   }
 
   .pad-label-side {
@@ -447,8 +445,8 @@ export default defineComponent({
 
   .pr-s-r-ul {
     list-style-type: none;
-    margin-block-start: 0;
-    margin-block-end: 0;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     padding-inline-start: 0px;
@@ -460,5 +458,13 @@ export default defineComponent({
 
   .mr-all {
     margin: 2px 0px 13px 0px;
+  }
+
+  .mr-l {
+    margin-left: 10px;
+  }
+
+  .box-22 {
+    margin-left: $w100;
   }
 </style>

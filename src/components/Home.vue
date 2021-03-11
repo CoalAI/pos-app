@@ -55,7 +55,7 @@ li {
 .coaldev-name {
   font-size: 15px;
   color: $coaldev-name-color;
-  padding: 0px 0px 5px 30px;
+  padding: 0px 0px 5px 20px;
   margin-block-start: 0px;
   margin-block-end: 0px;
   margin-inline-start: 0px;
