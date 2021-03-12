@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <div class="pad-2" style="padding-left: 10px">
-        <router-link to="/batch/create" class="btn btn-orange btn-mr">Add New Batch</router-link>
+  <div class="diff-shadow">
+    <h2>Batches</h2>
+    <div class="search-grid-list-pages">
+        <router-link to="/batch/create" class="btn btn-orange add-btn-width">Add New Batch</router-link>
         <div class="float-right">
           <form class="flex-box">
             <input
@@ -15,7 +16,7 @@
           </form>
         </div>
     </div>
-    <div class="mr-2 pad-2">
+    <div class="mr-2">
       <table>
         <tr>
           <th>Sr No.</th>

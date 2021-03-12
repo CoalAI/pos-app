@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="name user-name">
-      <span>
+      <span class="white-color">
         <strong>Omer Ali</strong>
       </span>
     </div>
@@ -95,6 +95,8 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   .container {
+    background-color: $header-color;
+    padding-bottom: $header-padding-bottom;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 0.4fr;

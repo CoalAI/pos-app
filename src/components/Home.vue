@@ -2,7 +2,7 @@
   <div class="hello">
     <div v-if="getToken">
       <Header />
-      <router-view />
+      <router-view class="page-mr" />
       <p class="coaldev-name">Created by CoalDev</p>
     </div>
     <div v-else>
@@ -60,5 +60,9 @@ li {
   margin-block-end: 0px;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
+}
+
+.page-mr {
+  margin: $page-margin;
 }
 </style>

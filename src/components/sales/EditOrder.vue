@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="diff-shadow">
       <div class="pad-1">
         <p>
           <strong>Order Number: </strong><span>1000283</span>
@@ -121,29 +121,9 @@
           <div class="flex-box">
             <a class="btn btn-orange btn-mr">Edit Order</a>
             <a class="btn btn-orange btn-mr">Cancel</a>
-            <a id="delete-btn" class="btn btn-orange btn-mr" v-on:click="openModal">Delete Order</a>
+            <a id="delete-btn" class="btn btn-orange btn-mr">Delete Order</a>
           </div>
         </div>
-      </div>
-
-      <!-- The Modal -->
-      <div id="myModal" class="modal">
-
-        <!-- Modal content -->
-        <div class="modal-content">
-          <div class="modal-header">
-            <span class="close" v-on:click="closeModal">&times;</span>
-            <h2>Confirm deletion</h2>
-          </div>
-          <div class="modal-body">
-            <p>Are you sure you want to delete this order?</p>
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr" v-on:click="closeModal">Cancel</a>
-              <a class="btn btn-orange btn-mr">Yes</a>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 </template>
@@ -153,23 +133,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'EditOrder',
-  // define methods under the `methods` object
-  methods: {
-    openModal: (event: Event) => {
-      if (event) {
-        // Get the modal
-        const modal = document.getElementById('myModal');
-        modal!.style.display = 'block';
-      }
-    },
-    closeModal: (event: Event) => {
-      if (event) {
-        // Get the modal
-        const modal = document.getElementById('myModal');
-        modal!.style.display = 'none';
-      }
-    },
-  },
 });
 </script>
 

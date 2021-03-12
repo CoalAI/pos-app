@@ -203,4 +203,26 @@ export default defineComponent({
   .pad-2 {
     padding: 20px;
   }
+
+  .diff-shadow {
+    border: 1px solid $white-color;
+    border-radius: 10px;
+    padding: 1em;
+    margin-top: 15px;
+
+    -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    box-shadow: 1px 1px 5px -1px $login-shodow-color;
+  }
+
+  .search-grid-list-pages {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.1em 0.1em;
+  }
+
+  .add-btn-width {
+    width: $w100;
+    padding: 12px;
+  }
 </style>

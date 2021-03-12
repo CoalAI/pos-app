@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <div class="pad-2" style="padding-left: 10px">
-        <router-link to="/product/create" class="btn btn-orange btn-mr">Add New Product</router-link>
+  <div class="diff-shadow pad-2">
+    <h2>Products</h2>
+    <div class="search-grid-list-pages">
+        <router-link to="/product/create" class="btn btn-orange add-btn-width">Add New Product</router-link>
         <div class="float-right">
           <form class="flex-box">
             <input
@@ -15,7 +16,7 @@
           </form>
         </div>
     </div>
-    <div class="mr-2 pad-2">
+    <div class="mr-2">
       <table>
         <tr>
           <th>Sr No.</th>

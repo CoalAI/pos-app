@@ -1,8 +1,9 @@
 <template>
-  <div>
-    <div class="pad-2" style="padding-left: 10px">
-      <router-link to="/user/create" class="btn btn-orange btn-mr">Add New User</router-link>
-      <div class="float-right">
+  <div class="diff-shadow pad-2">
+    <h2>Users</h2>
+    <div class="search-grid-list-pages">
+      <router-link to="/user/create" class="btn btn-orange add-btn-width">Add New User</router-link>
+      <div id="search-bar">
           <form class="flex-box">
             <input
               label="Username"
@@ -13,9 +14,9 @@
             />
             <button class="btn btn-orange search-btn">Search user</button>
           </form>
-        </div>
+      </div>
     </div>
-    <div class="mr-2 pad-2">
+    <div class="mr-2">
       <table>
         <tr>
           <th>Sr No.</th>
@@ -99,7 +100,7 @@ export default defineComponent( {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>  
   .btn-mr{
     margin: 10px;
   }
