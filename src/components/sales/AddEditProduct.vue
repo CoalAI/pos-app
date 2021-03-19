@@ -1,0 +1,110 @@
+<template>
+    <div id="AddEditProduct">
+      <div class="diff-shadow">
+        <h2><span>Add</span> New Product</h2>
+        <div class="flex-box">
+          <label class="pad-label w100" for="name">
+            <strong>Name:</strong>
+          </label>
+          <input
+            name="name"
+            type="text"
+            placeholder="Enter product name"
+          />
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="barcode">
+            <strong>Bar code:</strong>
+          </label>
+          <input
+            name="barcode"
+            type="text"
+            placeholder="Enter product bar-code"
+          />
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="unit">
+            <strong>Unit:</strong>
+          </label>
+
+          <select name="cars" class="custom-select" id="unit">
+            <option value="kg">Kg</option>
+            <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option>
+          </select>
+        </div>
+        <p><span><strong>Product Variants</strong></span></p>
+        <table class="mr-2">
+          <tr>
+            <th>Color Code</th>
+            <th>Size</th>
+            <th>Pirce</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>#dcdcdc</td>
+            <td>Small</td>
+            <td>$20</td>
+            <td>this is the products descriptions.</td>
+          </tr>
+        </table>
+        <p><span><strong>Add New Product Variants</strong></span></p>
+        <form style="margin-bottom: 20px">
+          <div class="flex-box">
+            <input class="pr-var-mr" name="colorcode" type="text" placeholder="Color Code"/>
+            <input class="pr-var-mr" name="size" type="text" placeholder="Size"/>
+            <input class="pr-var-mr" name="price" type="text" placeholder="Price"/>
+          </div>
+          <textarea name="description" rows="3" placeholder="description"></textarea>
+          <div class="mr-2">
+            <a class="btn btn-orange" >Add another varient</a>
+          </div>
+        </form>
+
+        <div style="text-align: right; padding-bottom: 50px">
+          <router-link to="/products" style="margin-right: 20px" class="btn btn-orange btn-mr">Cancel</router-link>
+          <a class="btn btn-orange btn-mr">Add Product</a>
+        </div>
+      </div>
+    </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'AddEditProduct',
+});
+</script>
+
+<style lang="scss" scoped>
+  #AddEditProduct {
+    padding-left: 15%;
+    padding-right: 15%;
+    margin-top: 3%;
+  }
+
+  .pad-label {
+    padding: 20px 20px 20px 0px;
+  }
+
+  .w100 {
+    width: $w80;
+  }
+
+  textarea {
+    width: 100%;
+    padding: $input-pad;
+    margin: 0;
+    display: inline-block;
+    border: none;
+    box-sizing: border-box;
+    outline-color: $primary-color;
+    background-color: $input-background-color;
+  }
+
+  label {
+    text-align: left;
+  }
+</style>

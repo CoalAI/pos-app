@@ -1,300 +1,368 @@
 <template>
-  <div>
-    <Header/>
-    <div class="table-container">
+  <div id="order-page">
+    <div class="product-container diff-shadow">
       <div class="box1">
         <div class="form-container">
           <label class="bc pad-label" for="barcode">
             <strong>Bar Code:</strong>
           </label>
           <input class="bc-i" type="text"
-          placeholder="product name" name="barcode" />
-          <a class="btn btn-orange btn-mr bc-b" v-on:click="openSelectProductModal">search</a>
+          placeholder="Bar code" name="barcode" />
+          <!-- <a class="btn btn-orange btn-mr bc-b" v-on:click="openSelectProductModal">search</a> -->
 
-          <label class="q pad-label" for="quantity">
+          <label class="q pad-label mr-l" for="quantity">
             <strong>Quantity:</strong>
           </label>
           <input  class="q-i" type="text"
           placeholder="quantity" name="quantity"/>
 
+          <div class="ap-e">
+            <button class="btn btn-orange ap">Clear Product</button>
+          </div>
+
           <label class="pn pad-label" for="productname">
             <strong>Product Name:</strong>
           </label>
           <input class="pn-i" type="text"
-          placeholder="Bar code" name="productname"/>
-          <a class="btn btn-orange btn-mr pn-b" v-on:click="openSelectProductModal">search</a>
+          placeholder="Product Name" name="productname"/>
+          <!-- <a class="btn btn-orange btn-mr pn-b" v-on:click="openSelectProductModal">search</a> -->
 
-          <label class="d pad-label" for="discount">
+          <label class="d pad-label mr-l" for="discount">
             <strong>Discount:</strong>
           </label>
+          
           <input class="d-i" type="text"
           placeholder="discount" name="discount"/>
+          
+          <div class="ap">
+            <button class="btn btn-orange ap">Add Product</button>
+          </div>
         </div>
       </div>
-      <div class="box2">
-        <div class="pad-2">
-          <button class="btn btn-orange">Add Product</button>
-        </div>
-      </div>
-    </div>
-    <div class="table-container">
-      <div class="box1-tab">
-        <table>
+      <div class="box-22">
+        <table class="pr-s-r-table">
           <tr>
-            <th>Sr No.</th>
-            <th>Bar Code</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Disc</th>
-            <th>Total Price</th>
+            <td><strong>Date:</strong></td>
+            <td>03-11-2021</td>
           </tr>
           <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>3572937</td>
-            <td>Germany</td>
-            <td>2</td>
-            <td>$3</td>
-            <td>0.0</td>
-            <td>$6</td>
+            <td><strong>Invoice no:</strong></td>
+            <td>00000111</td>
           </tr>
         </table>
-      </div>
-      <div class="box2">
-        <div class="float-left">
-          <p class="labl-txt"><strong>Payment method</strong></p>
-          <input type="radio" id="male" name="payment_method" value="cash">
-          <label for="cash">Cash</label><br>
-          <input type="radio" id="female" name="payment_method" value="card">
-          <label for="card">Card</label><br>
-        </div>
-        <div class="box-inner-right">
-         <p>Invoice no</p>
-         <p>Date Time</p>
-        </div>
-        <div class="float-left">
-          <label class="pad-label" for="barcode">
-            <strong>Discount:</strong>
-          </label>
-          <input type="text"
-          placeholder="Discount on total bill"
-          name="total_discount"/>
-        </div>
-        <div class="float-left">
-          <label class="pad-label" for="barcode">
-            <strong>Total Amount:  <span>Rs. 1000</span></strong>
-          </label>
-        </div>
-        <div class="float-left pad-2">
-          <label class="pad-label" for="barcode">
-            <strong>Cash Received:</strong>
-          </label>
-          <input type="text"
-          placeholder="Enter Cash Received"
-          name="cash_received"/>
-        </div>
-        <div class="float-left submit-btn">
-          <button class="btn btn-orange">Submit and Print</button>
-        </div>
-        <div class="float-right submit-btn">
-          <button class="btn btn-orange">Submit</button>
-        </div>
-        <div>
-          <button class="btn btn-orange" v-on:click="openModal">Cancel Order</button>
-        </div>
+          <!-- <p><strong>Invoice no:</strong> 00000111</p>
+          <p><strong>Date Time:</strong> 03-11-2021</p> -->
       </div>
     </div>
 
-    <!-- The Modal -->
-    <div id="cancelOrderModal" class="modal">
-
-      <!-- Modal content -->
-      <div class="modal-content">
-        <div class="modal-header">
-          <span class="close" v-on:click="closeModal">&times;</span>
-          <h2>Confirm Cancellation</h2>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to cancel this order?</p>
-          <div class="flex-box">
-            <a class="btn btn-orange btn-mr" v-on:click="closeModal">Cancel</a>
-            <a class="btn btn-orange btn-mr">Yes</a>
-          </div>
-        </div>
+    <div class="diff-shadow">
+      <div class="table-container" style="margin-top: 0;">
+        <p><strong>Product Results</strong></p>
+        <p style="margin-left: 15px"><strong>Order Items</strong></p>
       </div>
 
-    </div>
-
-    <!-- The Modal -->
-    <div id="selectProductModal" class="modal">
-
-      <!-- Modal content -->
-      <div class="modal-content">
-        <div class="modal-header">
-          <span class="close" v-on:click="closeModal">&times;</span>
-          <h2>Select Product to add</h2>
+      <!-- Order Items table -->
+      <div class="table-container">
+        <div class="box2 box1-tab">
+          <ul class="pr-s-r-ul">
+            <li>
+              <div class="shadow-box mr-all">
+                <table class="pr-s-r-table">
+                  <tr>
+                    <td>Product Name</td>
+                    <td>#barcode</td>
+                  </tr>
+                  <tr>
+                    <td>100 Rs</td>
+                    <td class="out-of-stock">Out of Stock</td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+            <li>
+              <div class="shadow-box mr-all">
+                <table class="pr-s-r-table">
+                  <tr>
+                    <td>Product Name</td>
+                    <td>#barcode</td>
+                  </tr>
+                  <tr>
+                    <td>100 Rs</td>
+                    <td class="out-of-stock">Out of Stock</td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+            <li>
+              <div class="shadow-box mr-all">
+                <table class="pr-s-r-table">
+                  <tr>
+                    <td>Product Name</td>
+                    <td>#barcode</td>
+                  </tr>
+                  <tr>
+                    <td>100 Rs</td>
+                    <td class="out-of-stock">Out of Stock</td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+            <li>
+              <div class="shadow-box mr-all">
+                <table class="pr-s-r-table">
+                  <tr>
+                    <td>Product Name</td>
+                    <td>#barcode</td>
+                  </tr>
+                  <tr>
+                    <td>100 Rs</td>
+                    <td class="out-of-stock">Out of Stock</td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+            <li>
+              <div class="shadow-box mr-all">
+                <table class="pr-s-r-table">
+                  <tr>
+                    <td>Product Name</td>
+                    <td>#barcode</td>
+                  </tr>
+                  <tr>
+                    <td>100 Rs</td>
+                    <td class="out-of-stock">Out of Stock</td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+          </ul>
         </div>
-        <div class="modal-body pad-2">
+        <div class="box1-tab" style="margin-left: 15px">
+          <table style="width: 100%">
+            <colgroup>
+              <col span="1" style="width: 5%;">
+              <col span="1" style="width: 20%;">
+              <col span="1" style="width: 35%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 7%;">
+              <col span="1" style="width: 13%;">
+            </colgroup>
 
-          <table id="customers">
             <tr>
               <th>Sr No.</th>
-              <th>Bar code</th>
+              <th>Bar Code</th>
               <th>Name</th>
-              <th>Price</th>
-              <th>Select</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Disc</th>
+              <th>Total Price</th>
             </tr>
             <tr>
               <td>1</td>
-              <td>1294u9312</td>
-              <td>Sugar</td>
-              <td>$2</td>
-              <td><input type="radio" id="male" name="payment_method" value="cash"></td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
             </tr>
             <tr>
-              <td>1</td>
-              <td>1294u9312</td>
-              <td>Sugar</td>
-              <td>$2</td>
-              <td><input type="radio" id="male" name="payment_method" value="cash"></td>
+              <td>2</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>3572937</td>
+              <td>Germany</td>
+              <td>2</td>
+              <td>$3</td>
+              <td>0.0</td>
+              <td>$6</td>
             </tr>
           </table>
+        </div>
+      </div>
+    </div>
+    
 
-          <div class="flex-box">
-            <a class="btn btn-orange btn-mr" v-on:click="closeSelectProductModal">Cancel</a>
-            <a class="btn btn-orange btn-mr">Confirm</a>
+    <div class="diff-shadow">
+      <div id="payment-selection">
+        <div class="flex-box mr-2">
+          <p class="labl-txt"><strong>Payment method:</strong></p>
+          <label class="custom-radio" style="margin-right: 10px">Cash
+            <input type="radio" name="payment_method" value="cash" checked>
+            <span class="checkmark"></span>
+          </label>
+          <label class="custom-radio">Card
+            <input type="radio" name="payment_method" value="card">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Payment Process -->
+      <div class="payment-container">
+
+        <div id="pay-box1" class="form-container">
+
+          <label class="pad-label bc" for="total_discount">
+            <strong>Total Discount:</strong>
+          </label>
+          <input type="text" class="bc-i"
+          placeholder="Discount on total bill"
+          name="total_discount"/>
+
+          <label class="pad-label mr-l q" for="barcode">
+            <strong>Total Amount:</strong>
+          </label>
+          <input type="text" class="q-i"
+          value="1000 RS"
+          name="total_amount" readonly/>
+
+          <label class="pad-label pn" for="barcode">
+            <strong>Cash Received:</strong>
+          </label>
+          <input type="text" class="pn-i"
+          placeholder="Enter Cash Received"
+          name="cash_received"/>
+
+          <label class="pad-label mr-l d" for="return">
+            <strong>Cash Returned:</strong>
+          </label>
+          <input type="text" class="d-i"
+          value="0 Rs"
+          name="return" readonly/>
+
+          <div class="ap">
           </div>
+
+        </div>
+        <div id="pay-box2">
+            <button class="btn btn-orange">Submit and Print</button>
+            <button class="btn btn-orange">Submit</button>
+            <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
         </div>
       </div>
 
     </div>
+    
+
+    
+
+    <Modal v-if="cancelModal">
+      <template v-slot:header>
+        <h2>Confirm Cancellation</h2>
+      </template>
+
+      <template v-slot:body>
+        <p>Are you sure you want to cancel this order?</p>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button class="btn btn-orange btn-mr" @click="cancelModal = false">Cancel</button>
+          <button class="btn btn-orange btn-mr">Yes</button>
+        </div>
+      </template>
+    </Modal>
 
   </div>
 </template>
 
-<script>
-import Header from './Header.vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import Modal from '@/components/common-components/Modal.vue';
 
-export default {
+export default defineComponent({
   name: 'Order',
   components: {
-    Header,
+    Modal,
   },
-  // define methods under the `methods` object
-  methods: {
-    openModal: (event) => {
-      if (event) {
-        // Get the modal
-        const modal = document.getElementById('cancelOrderModal');
-        modal.style.display = 'block';
-      }
-    },
-    closeModal: (event) => {
-      if (event) {
-        // Get the modal
-        const modal = document.getElementById('cancelOrderModal');
-        modal.style.display = 'none';
-      }
-    },
-    openSelectProductModal: (event) => {
-      if (event) {
-        // Get the modal
-        const modal = document.getElementById('selectProductModal');
-        modal.style.display = 'block';
-      }
-    },
-    closeSelectProductModal: (event) => {
-      if (event) {
-        // Get the modal
-        const modal = document.getElementById('selectProductModal');
-        modal.style.display = 'none';
-      }
-    },
+  data() {
+    return {
+      cancelModal: false
+    }
   },
-};
+});
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+  .product-container {
+    margin-top:20px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 0.1em 0.1em;
+  }
+
   .form-container {
     display: grid;
-    grid-template-columns: 1fr 2.5fr 0.5fr 1fr 2fr;
+    grid-template-columns: 0.7fr 2.3fr 0.7fr 2.3fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 0.1em 0.1em;
     grid-template-areas:
-    "bc bc-i bc-b q q-i"
-    "pn pn-i pn-b d d-i"
+    "bc bc-i q q-i ap-e"
+    "pn pn-i d d-i ap"
   }
   .bc { grid-area: bc;}
   .bc-i {grid-area: bc-i;}
@@ -304,135 +372,104 @@ export default {
   .pn-i {grid-area: pn-i;}
   .d {grid-area: d;}
   .d-i {grid-area: d-i;}
-  .bc-b {grid-area: bc-b;}
-  .pn-b {grid-area: pn-b;}
+  .ap-e {
+    grid-area: ap-e;
+    padding: 8px 10px;
+  }
+  .ap {
+    grid-area: ap;
+    padding: 8px 10px;
+  }
 
   .pad-label {
-    padding: 15px 5px;
-    text-align: right;
+    padding: 15px 5px 15px 0px;
   }
 
-  table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-  }
-
-  tr:nth-child(even) {
-    background-color: #dddddd;
+  .box2{
+    padding: 0px 12px 0px 2px;
   }
 
   .table-container {
-    margin-top:20px;
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 2fr 4.1fr;
     gap: 0.1em 0.1em;
-    /* grid-template-areas: */
   }
-  .box2{
-    padding: 0px 20px;
-  }
+
   .labl-txt{
     text-align: left;
-    margin-top:0px ;
+    margin-top: 0px;
+    margin-right: 25px;
+    font-size: 20px;
   }
+
   .box-inner-right{
     float: right;
     padding: 20px 20px 0px 20px;
   }
+
   .btn-mr{
     margin: 10px;
-    text-align: center;
-  }
-
-  /* The Modal (background) */
-  .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-
-  /* Modal Content */
-  .modal-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 0;
-    border: 1px solid #888;
-    width: 40%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-  }
-
-  /* Add Animation */
-  @-webkit-keyframes animatetop {
-    from {top:-300px; opacity:0}
-    to {top:0; opacity:1}
-  }
-
-  @keyframes animatetop {
-    from {top:-300px; opacity:0}
-    to {top:0; opacity:1}
-  }
-
-  /* The Close Button */
-  .close {
-    color: white;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .modal-header {
-    padding: 2px 16px;
-    background-color: #e73b2a;
-    color: white;
-  }
-
-  .modal-body {padding: 2px 16px;}
-
-  .modal-footer {
-    padding: 2px 16px;
-    background-color: #e73b2a;
-    color: white;
-  }
-
-  .submit-btn {
-    width: 45%;
-    margin: 6px;
-  }
-
-  .pad-2 {
-    padding: 20px;
   }
 
   .box1-tab {
     overflow-y: auto;
-    height: 350px;
+    height: $order-item-table-height;
   }
 
+  .pad-label-side {
+    padding: 15px 5px;
+    text-align: right;
+    width: 40%;
+  }
+
+  .payment-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 0.1em 0.1em;
+  }
+
+  .payment-container-inner {
+    padding-right: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.1em 0.1em;
+  }
+
+  .pr-s-r-table {
+    border: none;
+  }
+
+  .pr-s-r-table td {
+    border: none;
+  }
+
+  .pr-s-r-table tr:nth-child(even) {
+    background-color: $white-color;
+  }
+
+  .pr-s-r-ul {
+    list-style-type: none;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 0px;
+  }
+
+  .out-of-stock {
+    color: $red-color;
+  }
+
+  .mr-all {
+    margin: 2px 0px 13px 0px;
+  }
+
+  .mr-l {
+    margin-left: 10px;
+  }
+
+  .box-22 {
+    margin-left: $w100;
+  }
 </style>

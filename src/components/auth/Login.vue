@@ -41,37 +41,50 @@
   </div>
 </template>
 
-<script>
-import { mapGetters, mapActions } from 'vuex';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { mapActions } from 'vuex';
+import { ActionTypes } from '@/store/modules/auth/actions';
 
-export default {
+export default defineComponent({
   name: 'Login',
   data() {
     return {
       username: '',
       password: '',
-    };
+    }
   },
-  computed: mapGetters(['getUser', 'getToken']),
   methods: {
-    ...mapActions(['loginUser']),
+    ...mapActions({
+      loginUser: ActionTypes.LOGIN_USER
+    }),
     submitLogin() {
-      this.loginUser({ username: this.username, password: this.password });
-    },
-  },
-};
+      this.loginUser({
+        username: this.username,
+        password: this.password
+      });
+    }
+  }
+});
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+    gap: 1em;
+  }
+
   .col {
     grid-column: 4/10;
-    border: 1px solid #ffffff;
+    border: 1px solid $white-color;
     border-radius: 10px;
     padding: 4em;
 
-    -webkit-box-shadow: 1px 1px 10px -1px rgba(0,0,0,0.75);
-    -moz-box-shadow: 1px 1px 10px -1px rgba(0,0,0,0.75);
-    box-shadow: 1px 1px 10px -1px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 1px 1px 10px -1px $login-shodow-color;
+    -moz-box-shadow: 1px 1px 10px -1px $login-shodow-color;
+    box-shadow: 1px 1px 10px -1px $login-shodow-color;
   }
 
   .pad-label {
