@@ -50,7 +50,7 @@
     </div>
     <div class="name user-name">
       <span class="white-color">
-        <strong>Omer Ali</strong>
+        <strong>{{ userdata.first_name }} {{ userdata.last_name }}</strong>
       </span>
     </div>
     <div class="logout">
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
@@ -72,9 +72,15 @@ export default defineComponent({
       showResult: false
     }
   },
+  computed: {
+    ...mapGetters({
+      userdata: 'getUser'
+    })
+  },
   methods: {
     ...mapActions({
-      logoutUser: ActionTypes.LOGOUT_USER
+      logoutUser: ActionTypes.LOGOUT_USER,
+      getuserdate: ActionTypes.USER_DATA
     }),
     searchTyped(event: Event) {
       if (this.orderSearch == ''){
@@ -88,6 +94,9 @@ export default defineComponent({
     logout() {
       this.logoutUser();
     }
+  },
+  created() {
+    this.getuserdate();
   },
 });
 </script>

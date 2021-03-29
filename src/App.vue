@@ -60,7 +60,7 @@ export default defineComponent({
   }
 
   /* Full-width inputs */
-  input[type=text], input[type=password], input[type=date], select {
+  input[type=text], input[type=password], input[type=date], select, input[type=number] {
     width: 100%;
     padding: $input-pad;
     margin: $margin-btn-input;
@@ -224,5 +224,16 @@ export default defineComponent({
   .add-btn-width {
     width: $w100;
     padding: 12px;
+  }
+
+  .form-error {
+    color: $red-color;
+    font-size: 12px;
+  }
+
+  button:disabled,
+  button[disabled]{
+    opacity: 0.8;
+    cursor: no-drop;
   }
 </style>

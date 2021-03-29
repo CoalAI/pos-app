@@ -6,52 +6,114 @@
           <label class="bc pad-label" for="barcode">
             <strong>Bar Code:</strong>
           </label>
-          <input class="bc-i" type="text"
-          placeholder="Bar code" name="barcode" />
-          <!-- <a class="btn btn-orange btn-mr bc-b" v-on:click="openSelectProductModal">search</a> -->
+          <div class="bc-i">
+            <input
+              type="text"
+              tabindex="1"
+              placeholder="Bar code"
+              name="barcode"
+              :maxlength="BarCodeMaxLength"
+              v-model="product.barCode"
+              @input="searchByBarcode"
+              ref="barcode"
+              v-focus
+            />
+            <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
+          </div>
 
           <label class="q pad-label mr-l" for="quantity">
             <strong>Quantity:</strong>
           </label>
-          <input  class="q-i" type="text"
-          placeholder="quantity" name="quantity"/>
+          <div class="q-i">
+            <input
+              type="number"
+              tabindex="4"
+              placeholder="quantity"
+              name="quantity" 
+              :max="24"
+              :min="0"
+              v-model="product.quantity"
+            />
+            <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
+          </div>
+          
 
           <div class="ap-e">
-            <button class="btn btn-orange ap">Clear Product</button>
+            <button class="btn btn-orange ap" @click="clearProduct">Clear Product</button>
           </div>
 
           <label class="pn pad-label" for="productname">
             <strong>Product Name:</strong>
           </label>
-          <input class="pn-i" type="text"
-          placeholder="Product Name" name="productname"/>
-          <!-- <a class="btn btn-orange btn-mr pn-b" v-on:click="openSelectProductModal">search</a> -->
+          <div class="pn-i">
+            <input
+              type="text"
+              tabindex="2"
+              placeholder="Product Name"
+              name="productname"
+              :maxlength="ProductNameMaxLength"
+              v-model="product.name"
+              @input="searchByName"
+            />
+            <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
+          </div>
+          
 
           <label class="d pad-label mr-l" for="discount">
             <strong>Discount:</strong>
           </label>
+          <div class="d-i">
+            <input
+              type="number"
+              tabindex="5"
+              placeholder="discount percentage"
+              name="discount"
+              v-model="product.discount"
+            />
+            <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
+          </div>
           
-          <input class="d-i" type="text"
-          placeholder="discount" name="discount"/>
           
           <div class="ap">
-            <button class="btn btn-orange ap">Add Product</button>
+            <button class="btn btn-orange ap"
+              tabindex="6"
+              @click="addOrderItem"
+              :disabled="addProductButton"
+            >Add Product</button>
           </div>
+
+          <label class="bt pad-label" for="barcode">
+            <strong>Batches:</strong>
+          </label>
+          <div class="bt-i">
+            <select
+              tabindex="3"
+              name="productBatch"
+              class="custom-select"
+              v-model="product.batch"
+              ref="batches"
+            >
+              <option v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
+                {{ batch.id }} {{ batch.expiry_date }}
+              </option>
+            </select>
+            <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
+          </div>
+
+          <div class="e-i"><span class="form-error">{{ duplicateMessage }}</span></div>
         </div>
       </div>
       <div class="box-22">
         <table class="pr-s-r-table">
           <tr>
             <td><strong>Date:</strong></td>
-            <td>03-11-2021</td>
+            <td>{{ date }}</td>
           </tr>
           <tr>
             <td><strong>Invoice no:</strong></td>
             <td>00000111</td>
           </tr>
         </table>
-          <!-- <p><strong>Invoice no:</strong> 00000111</p>
-          <p><strong>Date Time:</strong> 03-11-2021</p> -->
       </div>
     </div>
 
@@ -64,73 +126,20 @@
       <!-- Order Items table -->
       <div class="table-container">
         <div class="box2 box1-tab">
-          <ul class="pr-s-r-ul">
-            <li>
-              <div class="shadow-box mr-all">
+          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
+            <li class="li-item" v-for="itemVarient in item.product_varient" v-bind:key="itemVarient.id">
+              <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVarient.id)">
                 <table class="pr-s-r-table">
                   <tr>
-                    <td>Product Name</td>
-                    <td>#barcode</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.bar_code }}</td>
+                    <td>{{ itemVarient.color }}</td>
                   </tr>
                   <tr>
-                    <td>100 Rs</td>
-                    <td class="out-of-stock">Out of Stock</td>
-                  </tr>
-                </table>
-              </div>
-            </li>
-            <li>
-              <div class="shadow-box mr-all">
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>Product Name</td>
-                    <td>#barcode</td>
-                  </tr>
-                  <tr>
-                    <td>100 Rs</td>
-                    <td class="out-of-stock">Out of Stock</td>
-                  </tr>
-                </table>
-              </div>
-            </li>
-            <li>
-              <div class="shadow-box mr-all">
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>Product Name</td>
-                    <td>#barcode</td>
-                  </tr>
-                  <tr>
-                    <td>100 Rs</td>
-                    <td class="out-of-stock">Out of Stock</td>
-                  </tr>
-                </table>
-              </div>
-            </li>
-            <li>
-              <div class="shadow-box mr-all">
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>Product Name</td>
-                    <td>#barcode</td>
-                  </tr>
-                  <tr>
-                    <td>100 Rs</td>
-                    <td class="out-of-stock">Out of Stock</td>
-                  </tr>
-                </table>
-              </div>
-            </li>
-            <li>
-              <div class="shadow-box mr-all">
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>Product Name</td>
-                    <td>#barcode</td>
-                  </tr>
-                  <tr>
-                    <td>100 Rs</td>
-                    <td class="out-of-stock">Out of Stock</td>
+                    <td>{{ itemVarient.price }}</td>
+                    <td v-if="sumQuantity(itemVarient) > 0">{{ sumQuantity(itemVarient) }}</td>
+                    <td v-else class="out-of-stock">Out of Stock</td>
+                    <td>{{ itemVarient.size }}</td>
                   </tr>
                 </table>
               </div>
@@ -145,8 +154,9 @@
               <col span="1" style="width: 35%;">
               <col span="1" style="width: 10%;">
               <col span="1" style="width: 10%;">
-              <col span="1" style="width: 7%;">
-              <col span="1" style="width: 13%;">
+              <col span="1" style="width: 6%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 4%;">
             </colgroup>
 
             <tr>
@@ -157,87 +167,35 @@
               <th>Unit Price</th>
               <th>Disc</th>
               <th>Total Price</th>
+              <th></th>
             </tr>
-            <tr>
-              <td>1</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td>3572937</td>
-              <td>Germany</td>
-              <td>2</td>
-              <td>$3</td>
-              <td>0.0</td>
-              <td>$6</td>
+            <tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
+              <td>{{ index+1 }}</td>
+              <td>{{ orderItem.product.bar_code }}</td>
+              <td>{{ orderItem.product.name }}</td>
+              <td>
+                <input
+                  class="order_item_input"
+                  type="number"
+                  placeholder="quantity"
+                  v-model="orderItem.quantity"
+                  @input="changeQuantity(index)"
+                />
+              </td>
+              <td>{{ orderItem.price }}</td>
+              <td>
+                <input
+                  class="order_item_input"
+                  type="number"
+                  placeholder="discount"
+                  v-model="orderItem.discount"
+                  @input="changeDiscount(index)"
+                />
+              </td>
+              <td>{{ orderItem.totalPrice }}</td>
+              <td style="cursor: pointer;" @click="removeItem(index)">
+                <hr style="border: 1px solid red">
+              </td>
             </tr>
           </table>
         </div>
@@ -250,11 +208,11 @@
         <div class="flex-box mr-2">
           <p class="labl-txt"><strong>Payment method:</strong></p>
           <label class="custom-radio" style="margin-right: 10px">Cash
-            <input type="radio" name="payment_method" value="cash" checked>
+            <input type="radio" name="payment_method" value="cash" v-model="paymentMethod">
             <span class="checkmark"></span>
           </label>
           <label class="custom-radio">Card
-            <input type="radio" name="payment_method" value="card">
+            <input type="radio" name="payment_method" value="card" v-model="paymentMethod">
             <span class="checkmark"></span>
           </label>
         </div>
@@ -266,48 +224,74 @@
         <div id="pay-box1" class="form-container">
 
           <label class="pad-label bc" for="total_discount">
-            <strong>Total Discount:</strong>
+            <strong>Total Discount(%):</strong>
           </label>
-          <input type="text" class="bc-i"
-          placeholder="Discount on total bill"
-          name="total_discount"/>
+          <div class="bc-i">
+            <input
+              type="number"
+              placeholder="Discount on total bill"
+              name="total_discount"
+              v-model="totalDiscount"
+            />
+            <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
+          </div>
 
           <label class="pad-label mr-l q" for="barcode">
             <strong>Total Amount:</strong>
           </label>
-          <input type="text" class="q-i"
-          value="1000 RS"
-          name="total_amount" readonly/>
+          <div class="q-i">
+            <input
+              type="text"
+              name="total_amount"
+              v-bind:value="totalAmount"
+              readonly
+            />
+          </div>
+          
 
           <label class="pad-label pn" for="barcode">
             <strong>Cash Received:</strong>
           </label>
-          <input type="text" class="pn-i"
-          placeholder="Enter Cash Received"
-          name="cash_received"/>
+          <div class="pn-i">
+            <input
+              type="number"
+              placeholder="Enter Cash Received"
+              name="cash_received"
+              v-model="cashReceived"
+            />
+            <span v-if="orderCashReceivedValidation" class="form-error">{{ orderCashReceivedValidation }}</span>
+          </div>
+          
 
           <label class="pad-label mr-l d" for="return">
             <strong>Cash Returned:</strong>
           </label>
-          <input type="text" class="d-i"
-          value="0 Rs"
-          name="return" readonly/>
+          <div class="d-i">
+            <input
+              type="text"
+              name="return"
+              v-bind:value="cashReturned"
+              readonly
+            />
+          </div>
+          
 
           <div class="ap">
           </div>
 
         </div>
         <div id="pay-box2">
-            <button class="btn btn-orange">Submit and Print</button>
+            <button
+              class="btn btn-orange"
+              @click="submitOrder"
+              :disabled="submitOrderButton"
+            >Submit and Print</button>
             <button class="btn btn-orange">Submit</button>
             <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
         </div>
       </div>
 
     </div>
-    
-
-    
 
     <Modal v-if="cancelModal">
       <template v-slot:header>
@@ -321,7 +305,23 @@
       <template v-slot:footer>
         <div class="flex-box">
           <button class="btn btn-orange btn-mr" @click="cancelModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr">Yes</button>
+          <button class="btn btn-orange btn-mr" @click="handleOrderStatus">Yes</button>
+        </div>
+      </template>
+    </Modal>
+
+    <Modal v-if="orderStatus">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <p>Order generated successfully.</p>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button @click="handleOrderStatus()" class="btn btn-orange btn-mr" v-focus>New Order</button>
         </div>
       </template>
     </Modal>
@@ -332,16 +332,395 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
+import { mapActions, mapGetters } from 'vuex';
+import { ActionTypes } from '@/store/modules/order/actions';
+import { Order } from '@/store/models/order';
+import { Batch } from '@/store/models/batch';
+import { OrderItem } from '@/store/models/orderItem';
+import { ProductResults, ProductVarient } from '@/store/models/product';
 
 export default defineComponent({
   name: 'Order',
   components: {
     Modal,
   },
+
   data() {
+    const today = new Date().toDateString();
+    const orderItems: OrderItem[] = [];
+
     return {
-      cancelModal: false
+      product: {
+        name: '',
+        barCode: '',
+        quantity: '',
+        quantityUpperLimit: 0,
+        discount: '',
+        batch: ''
+      },
+      date: today,
+      cancelModal: false,
+      orderItems: orderItems,
+      productId: 0,
+      productVarientId: 0,
+      productBatchSelect: '',
+      cashReceived: '',
+      totalDiscount: '',
+      paymentMethod: 'cash',
+      errorIndication: true,
+      buyer: 2,
+      BarCodeMaxLength: 48,
+      ProductNameMaxLength: 60,
+      duplicateMessage: '',
     }
+  },
+  computed: {
+    totalAmount: function (): number {
+      let total = this.orderItems
+        .map((item: any) =>  item.price)
+        .reduce((a: number, b: number) => a + b, 0);
+
+      const totalDiscount = parseFloat(this.totalDiscount);
+      if (!isNaN(totalDiscount) && totalDiscount > 0 && totalDiscount <= 100) {
+        total = total * ((100 - totalDiscount) / 100);
+      }
+      return total;
+    },
+
+    cashReturned: function (): number | null {
+      const value = parseFloat(this.cashReceived);
+      return isNaN(value) ? null : value - this.totalAmount;
+    },
+
+    productNameValidation: function () {
+      let errorMessage = null;
+      if (!this.errorIndication) {
+        // CheckIF product exist on the backend
+        if (this.product.name === undefined || this.product.name === '')
+        {
+          errorMessage = 'Name is required';
+        }
+      }
+      return errorMessage;
+    },
+
+    productBarCodeValidation: function () {
+      let errorMessage = null;
+      if (!this.errorIndication) {
+        // CheckIF product exist on the backend
+        if (this.product.barCode === undefined || this.product.barCode === '')
+        {
+          errorMessage = 'Barcode is required';
+        }
+      }
+      return errorMessage;
+    },
+
+    productBatchValidation: function () {
+      let errorMessage = null;
+      if (!this.errorIndication) {
+        // CheckIF product exist on the backend
+        if (this.product.batch === undefined || this.product.batch === '')
+        {
+          errorMessage = 'Batch is required';
+        }
+      }
+      return errorMessage;
+    },
+
+    productQuantityValidation: function () {
+      let errorMessage = null;
+      if (!this.errorIndication) {
+        // CheckIF product exist on the backend
+        if (this.product.quantity === undefined || this.product.quantity === '')
+        {
+          errorMessage = 'Quantity is required';
+        } else {
+          const value = parseFloat(this.product.quantity);
+          if (isNaN(value)) {
+            errorMessage = 'Only numbers are allowed';
+          } else {
+            if (value <= 0 ) {
+              errorMessage = 'Quantity should be greater than zero';
+            } 
+            if ( value > this.product.quantityUpperLimit) {
+              errorMessage = 'Stock is less than this quantity.';
+            }
+          }
+        }
+      }
+      return errorMessage;
+    },
+
+    addProductButton: function (): boolean {
+      let disable = true;
+      if (this.productNameValidation === null &&
+      this.productBarCodeValidation === null &&
+      this.productBatchValidation === null &&
+      this.productQuantityValidation === null &&
+      this.productDiscountValidation === null) {
+        disable = false
+      }
+      return disable
+    },
+
+    productDiscountValidation: function () {
+      let errorMessage = null;
+      if (!this.errorIndication) {
+        // CheckIF product exist on the backend
+        if (this.product.discount !== undefined && this.product.discount !== '') {
+          const value = parseFloat(this.product.discount);
+          if (isNaN(value)) {
+            errorMessage = 'Only numbers are allowed';
+          } else {
+            if (value < 0 || value > 100) {
+              errorMessage = 'Discount value should be b/w 0 to 100'
+            }
+          }
+        }
+      }
+      return errorMessage;
+    },
+
+    orderTotalDiscountValidation: function () {
+      let errorMessage = null;
+      if (this.totalDiscount !== undefined && this.totalDiscount !== '') {
+        const value = parseFloat(this.totalDiscount);
+        if (isNaN(value)) {
+          errorMessage = 'Only numbers are allowed';
+        } else {
+          if (value < 0 || value > 100) {
+            errorMessage = 'Discount value should be b/w 0 to 100'
+          }
+        }
+      }
+      return errorMessage
+    },
+
+    orderCashReceivedValidation: function () {
+      let errorMessage = null;
+      if (this.cashReceived !== undefined && this.cashReceived !== '') {
+        const value = parseFloat(this.cashReceived);
+        if (isNaN(value)) {
+          errorMessage = 'Only numbers are allowed';
+        } else {
+          if (value < this.totalAmount) {
+            errorMessage = 'Cash is less than total amount';
+          }
+        }
+      }
+      return errorMessage
+    },
+
+    submitOrderButton: function () {
+      let disable = true;
+      if ( this.orderItems.length > 0 &&
+      this.orderTotalDiscountValidation === null &&
+      this.orderCashReceivedValidation === null) {
+        disable = false;
+      }
+      return disable
+    },
+
+    ...mapGetters({
+      productResult: 'getProductResults',
+      userdata: 'getUser',
+      orderStatus: 'getOrderStatus'
+    })
+  },
+  methods: {
+    clearProduct: function () {
+      this.productId = 0;
+      this.productVarientId = 0;
+      this.product.barCode = '';
+      this.product.name = '';
+      this.product.quantity = '';
+      this.product.discount = '';
+      this.product.batch = '';
+      this.product.quantityUpperLimit = 0;
+      this.productBatchSelect = '';
+      this.errorIndication = true;
+      this.duplicateMessage = '';
+    },
+
+    selectProduct: async function (productId: number, varientId: number) {
+      this.duplicateMessage = '';
+      const currentProduct = await this.productResult.find((item: ProductResults) => item.id === productId);
+      const currentVarient = await currentProduct.product_varient.find((item: ProductVarient) => item.id === varientId);
+      if (this.sumQuantity(currentVarient) <= 0) return;
+
+      // Check If the product is already in Order Items
+      const duplicate = await this.orderItems
+        .find((item: OrderItem) => item.product && item.product === currentProduct);
+      
+      if (duplicate) {
+        this.duplicateMessage = 'The product is already added to the order items.';
+        return;
+      }
+
+      this.duplicateMessage = '';
+      this.productId = productId;
+      this.productVarientId = varientId;
+      this.product.barCode = currentProduct.bar_code;
+      this.product.name = currentProduct.name;
+      this.product.quantityUpperLimit = this.sumQuantity(currentVarient);
+      this.productBatchSelect = currentVarient.batch
+        .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
+        .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
+      const batchId = (this.productBatchSelect[0] as Batch).id
+      this.product.batch = batchId !== undefined ? batchId.toString() : '';
+      (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
+    },
+
+    addOrderItem: async function () {
+      this.errorIndication = false;
+      let quantity = parseFloat(this.product.quantity);
+      quantity = isNaN(quantity) ? 0 : quantity;
+
+      if (this.product.name === '') return;
+      if (this.product.barCode === '') return;
+      if (this.product.quantity === '') return;
+      if (this.product.batch === '') return;
+      if (quantity <= 0) return;
+      if (quantity > this.product.quantityUpperLimit) return;
+
+      const discount = isNaN(parseFloat(this.product.discount)) ? 0 : parseFloat(this.product.discount);
+      const batch = parseFloat(this.product.batch);
+
+      const currentProduct = await this.productResult
+        .find((item: ProductResults) => item.id === this.productId);
+      const currentVarient = await currentProduct.product_varient
+        .find((item: ProductVarient) => item.id === this.productVarientId);
+
+      const price = currentVarient.price;
+      let totalPrice = price * quantity;
+      if (this.product.discount
+        && discount > 0
+        && discount < 100
+      ) {
+        totalPrice = totalPrice * ((100 - discount) / 100)
+      }
+
+      const SingleOrderItem: OrderItem = {
+        batch: isNaN(batch) ? 0 : batch,
+        product: currentProduct,
+        productVarient: currentVarient,
+        price,
+        quantity: quantity.toString(),
+        discount: discount.toString(),
+        totalPrice
+      }
+      this.orderItems.push(SingleOrderItem);
+      this.clearProduct();
+      (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
+    },
+
+    submitOrder: async function () {
+      if (this.orderItems.length < 0) return;
+      if (this.cashReceived === '') return;
+
+      const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
+        return {
+          batch: singleOrderItem.batch,
+          price: singleOrderItem.price?.toString(),
+          discount: singleOrderItem.discount?.toString(),
+          quantity: singleOrderItem.quantity?.toString()
+        } as OrderItem
+      });
+
+      const cash = parseFloat(this.cashReceived);
+      const discount = parseFloat(this.totalDiscount);
+
+      const singleOrder: Order = {
+        order_item: unproxiedOrderItem,
+        buyer: this.buyer,
+        seller: this.userdata.id,
+        total_discount: isNaN(discount) ? '0' : discount.toString(),
+        total: this.totalAmount.toString(),
+        payment_method: this.paymentMethod === 'cash' ? true : false,
+        amount_received: isNaN(cash) ? '0' : cash.toString(),
+      }
+
+      this.createOrder(singleOrder);
+    },
+
+    changeQuantity: function (index: number) {
+      const currentVarient = this.orderItems[index].productVarient;
+      if (currentVarient !== undefined) {
+
+        const upperLimit = this.sumQuantity(currentVarient);
+        const currentOrderItemQuantity = this.orderItems[index].quantity;
+        const currentOrderItemPrice = this.orderItems[index].price;
+
+        if (currentOrderItemQuantity !== undefined && currentOrderItemPrice !== undefined) {
+
+          const quantity = parseFloat(currentOrderItemQuantity);
+          const price = parseFloat(currentOrderItemPrice);
+          if (isNaN(price)) return;
+          if (isNaN(quantity) && quantity <= 0 ) return;
+          if (quantity > upperLimit) return;
+          this.orderItems[index].totalPrice = quantity * price;
+        }
+      }
+    },
+
+    changeDiscount: function (index: number) {
+      const currentOrderItemDiscount = this.orderItems[index].discount;
+      const currentOrderItemPrice = this.orderItems[index].price;
+      const currentOrderItemQuantity = this.orderItems[index].quantity;
+      if (currentOrderItemDiscount !== undefined &&
+      currentOrderItemPrice !== undefined &&
+      currentOrderItemQuantity !== undefined) {
+
+        const quantity = parseFloat(currentOrderItemQuantity);
+        const price = parseFloat(currentOrderItemPrice);
+        const discount = parseFloat(currentOrderItemDiscount);
+
+        if (isNaN(discount) && discount <= 0 || discount > 100) return;
+        this.orderItems[index].totalPrice = price * quantity
+          * ((100 - discount) / 100);
+      }
+    },
+
+    removeItem: function (index: number) {
+      this.orderItems.splice(index, 1)
+    },
+
+    searchByName: function () {
+      this.searchProductByName(this.product.name);
+    },
+
+    searchByBarcode: function () {
+      this.searchProductByBarcode(this.product.barCode);
+    },
+
+    sumQuantity: function (item: ProductVarient): number {
+      let sum = 0;
+      if (item.batch !== undefined && typeof item.batch !== 'number') {
+        item.batch.filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0).forEach((batch: Batch) => {
+          if (batch.quantity !== undefined) {
+            sum = sum + +batch.quantity
+          }
+        });
+      }
+      return sum
+    },
+
+    handleOrderStatus: function () {
+      this.changeOrderStatus(false);
+      this.clearProduct();
+      this.orderItems = [];
+      this.cashReceived = '';
+      this.totalDiscount = '';
+      this.paymentMethod = 'cash';
+    },
+
+    ...mapActions({
+      searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
+      searchProductByBarcode: ActionTypes.SEARCH_PRODUCT_BY_BARCODE,
+      createOrder: ActionTypes.CREATE_ORDER,
+      changeOrderStatus: ActionTypes.CHANGE_ORDER_STATUS
+    })
   },
 });
 </script>
@@ -358,11 +737,12 @@ export default defineComponent({
   .form-container {
     display: grid;
     grid-template-columns: 0.7fr 2.3fr 0.7fr 2.3fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     gap: 0.1em 0.1em;
     grid-template-areas:
     "bc bc-i q q-i ap-e"
     "pn pn-i d d-i ap"
+    "bt bt-i e e-i e-ap"
   }
   .bc { grid-area: bc;}
   .bc-i {grid-area: bc-i;}
@@ -380,6 +760,11 @@ export default defineComponent({
     grid-area: ap;
     padding: 8px 10px;
   }
+  .bt { grid-area: bt; }
+  .bt-i { grid-area: bt-i; }
+  .e-ap { grid-area: e-ap; }
+  .e { grid-area: e; }
+  .e-i { grid-area: e-i; }
 
   .pad-label {
     padding: 15px 5px 15px 0px;
@@ -470,6 +855,15 @@ export default defineComponent({
   }
 
   .box-22 {
-    margin-left: $w100;
+    margin-left: 70px;
+  }
+
+  li > div:hover {
+    border: 2px solid $primary-color;
+  }
+
+  .order_item_input {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 </style>

@@ -2,20 +2,13 @@ import { createStore } from 'vuex';
 import { createLogger, ModuleTree } from 'vuex';
 import { IRootState } from './models/root'
 import auth from './modules/auth/index';
+import order from './modules/order/index'
 import { AuthStoreModuleTypes } from './modules/auth/types';
-
-// Load Vuex
-// Vue.use(Vuex);
-
-// Create store
-// export default new Vuex.Store({
-//   modules: {
-//     auth,
-//   },
-// });
+import { OrderStoreModuleTypes } from './modules/order/types';
 
 const modules: ModuleTree<IRootState> = {
-  auth
+  auth,
+  order
 };
 
 export const store = createStore<IRootState>({
@@ -29,6 +22,8 @@ export const store = createStore<IRootState>({
 
 type StoreModules = {
   auth: AuthStoreModuleTypes;
+  order: OrderStoreModuleTypes;
 };
 
-export type Store = AuthStoreModuleTypes<Pick<StoreModules, "auth">>
+export type Store = AuthStoreModuleTypes<Pick<StoreModules, "auth">> &
+OrderStoreModuleTypes<Pick<StoreModules, "order">>;

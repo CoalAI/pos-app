@@ -21,7 +21,7 @@ const serverRequest = async (
     if (localStorage.token) {
       headers = {
         'Content-Type': 'application/json',
-        Authorization: `Token ${localStorage.token}`,
+        Authorization: `token ${localStorage.token}`,
       };
     } else {
       // TODO: check if auth fails
