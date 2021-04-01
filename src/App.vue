@@ -60,7 +60,7 @@ export default defineComponent({
   }
 
   /* Full-width inputs */
-  input[type=text], input[type=password], input[type=date], select {
+  input[type=text], input[type=password], input[type=date], select, input[type=number] {
     width: 100%;
     padding: $input-pad;
     margin: $margin-btn-input;
@@ -114,6 +114,10 @@ export default defineComponent({
 
   tr:nth-child(even) {
     background-color: $table-nth-row-color;
+  }
+
+  tr:nth-child(odd) input {
+    background-color: $white-color !important;
   }
 
   /* Search bar with button */
@@ -224,5 +228,22 @@ export default defineComponent({
   .add-btn-width {
     width: $w100;
     padding: 12px;
+  }
+
+  .form-error {
+    color: $red-color;
+    font-size: 12px;
+  }
+
+  button:disabled,
+  button[disabled]{
+    opacity: 0.8;
+    cursor: no-drop;
+  }
+
+  .tbl_item_input {
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: none !important;
   }
 </style>
