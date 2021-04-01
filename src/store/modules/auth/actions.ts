@@ -11,7 +11,8 @@ export enum ActionTypes {
   LOGIN_USER = "LOGIN_USER",
   REGISTER_USER = "REGISTER_USER",
   UPDATE_USER = "UPDATE_USER",
-  LOGOUT_USER = "LOGOUT_USER"
+  LOGOUT_USER = "LOGOUT_USER",
+  USER_DATA = "USER_DATA"
 }
 
 export type AugmentedActionContext = {
@@ -27,6 +28,7 @@ export interface Actions {
   [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User): void;
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -41,7 +43,7 @@ Actions = {
   async [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials) {
     const response = await serverRequest('post', 'obtain-jwt/', false, credentials);
     if (isAxiosResponse(response)) {
-      localStorage.token = response.data.token;
+      localStorage.token = response.data && response.data.token ? response.data.token : '';
       commit(MutationTypes.SetToken, response.data.token);
     }
   },
@@ -60,5 +62,13 @@ Actions = {
   async [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext) {
     localStorage.clear();
     commit(MutationTypes.SetToken, '');
+  },
+  async [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'user-data/', true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      if (response.data.results.length > 0) {
+        commit(MutationTypes.SetUser, response.data.results[0])
+      }
+    }
   }
 };
