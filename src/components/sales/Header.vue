@@ -1,33 +1,52 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img src="../../assets/logo.png" alt="coaldev">
+      <router-link to="/"><img src="../../assets/logo.png" alt="coaldev"></router-link>
     </div>
     <div class="b">
       <div class="flex-box">
-        <a class="btn btn-orange btn-mr" href="/order"
+        <a class="btn btn-grid btn-orange btn-mr" href="/"
         target="_blank">New Order</a>
         <!-- <a class="btn btn-orange btn-mr">Report</a> -->
-        <router-link to="/report" class="btn btn-orange btn-mr">Report</router-link>
-        <a class="btn btn-orange btn-mr">Seetings</a>
+        <router-link to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
+        <a class="btn btn-orange btn-grid btn-mr">Settings</a>
       </div>
       <div class="flex-box">
-        <a class="btn btn-orange btn-mr" >extra</a>
-        <a class="btn btn-orange btn-mr">extra1</a>
-        <a class="btn btn-orange btn-mr">extra2</a>
+        <router-link to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
+        <router-link to="/batchs" class="btn btn-grid btn-orange btn-mr">Batches</router-link>
+        <router-link to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
       </div>
     </div>
     <div class="s">
-      <form class="flex-box">
+      <div class="flex-box">
         <input
           label="Username"
           name="username"
           type="text"
           placeholder="Enter Order Number to search"
-          class="order-search"
+          class="search-input"
+          v-model="orderSearch"
+          @input="searchTyped"
+          autocomplete="off"
         />
-        <button class="btn btn-orange order-search-btn">Search Order</button>
-      </form>
+        <button class="btn btn-orange search-btn">Search Order</button>
+      </div>
+      <div v-show="showResult" class="search-result-upper">
+        <ul class="search-result">
+          <li class="single-search-item">
+            <span><strong>#33423</strong></span>
+            <span>12/03/2021</span>
+          </li>
+          <li class="single-search-item">
+            <span><strong>#33423</strong></span>
+            <span>12/03/2021</span>
+          </li>
+          <li class="single-search-item">
+            <span><strong>#33423</strong></span>
+            <span>12/03/2021</span>
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="name user-name">
       <span class="white-color">
@@ -35,37 +54,58 @@
       </span>
     </div>
     <div class="logout">
-        <a class="btn btn-orange btn-lg">Logout</a>
+        <button class="btn btn-orange" @click="logout">Logout</button>
     </div>
   </div>
 </template>
 
-<script>
-// import { mapGetters, mapActions } from 'vuex';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { mapActions } from 'vuex';
+import { ActionTypes } from '@/store/modules/auth/actions';
 
-export default {
+export default defineComponent({
   name: 'Header',
-  props: {
-    msg: String,
+  data () {
+    return{
+      orderSearch: '',
+      showResult: false
+    }
   },
-};
+  methods: {
+    ...mapActions({
+      logoutUser: ActionTypes.LOGOUT_USER
+    }),
+    searchTyped(event: Event) {
+      if (this.orderSearch == ''){
+        this.showResult = false;
+        return
+      }
+      // Call action from Store
+      // Change results
+      this.showResult = true;
+    },
+    logout() {
+      this.logoutUser();
+    }
+  },
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
   .container {
-    background-color: #423144;
-    padding: 1em;
+    background-color: $header-color;
+    padding-bottom: $header-padding-bottom;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 0.4fr;
     gap: 1em 1em;
     grid-template-areas:
-    "logo b b b b s s s s name name logout"
+    "logo b b b b s s s s s name logout"
   }
   .logo {
     grid-area: logo;
-    margin-top:10px;
   }
   .b {grid-area: b;}
   .s {
@@ -77,21 +117,11 @@ export default {
 
   .logout {
     grid-area: logout;
-    margin-top: 13px;
   }
 
-  td {
-    padding: 8px;
-    text-align: left;
-  }
-
-  .btn {
-    width: 100px;
-    padding: 8px 20px;
-  }
-  .btn-mr{
-    margin: 10px;
-    text-align: center;
+  .btn-grid {
+    width: $w100;
+    margin: 2px;
   }
 
   .user-name {
@@ -99,12 +129,38 @@ export default {
     text-align: right;
   }
 
-  .order-search {
-    width: 80%;
+  .search-result-upper {
+    position: absolute;
+    width: 24%;
+    text-align: left;
+    margin-top: -1px;
+    z-index: 3;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
-  .order-search-btn {
-    width: 20%
+  .search-result {
+    background-color: $input-background-color;
+    box-shadow: 0 4px 6px rgb(32 33 36 / 28%);
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    padding-bottom: 4px;
+    overflow: hidden;
+  }
+
+  .single-search-item {
+    display: flex;
+    padding: 15px;
+    justify-content: space-between;
+  }
+
+  .single-search-item:hover {
+    background-color: $search-hover-color;
   }
 
 </style>

@@ -1,57 +1,48 @@
 <template>
-    <div>
-      <Header/>
+    <div class="diff-shadow">
+      <h2>Reports</h2>
       <form>
         <div class="flex-box mr-2">
-          <label class="pad-label" for="username">
+          <label class="pad-label" for="start_date">
             <strong>Start:</strong>
           </label>
           <input
-            v-model="username"
-            label="Username"
-            name="username"
-            type="text"
-            placeholder="Enter Username"
+            name="start_date"
+            type="date"
           />
-          <label class="pad-label" for="username">
+          <label class="pad-label" for="end_date">
             <strong>End:</strong>
           </label>
           <input
-            v-model="username"
-            label="Username"
-            name="username"
-            type="text"
-            placeholder="Enter Username"
+            name="end_date"
+            type="date"
           />
           <button class="btn btn-orange"
           style="margin: 10px 60px 10px 60px">Search Report</button>
         </div>
       </form>
-      <div class="report-main" style="padding: 10px;">
-        <div style="border: 1px solid #e73b2a; height: 350px">
+      <div class="report-main">
+        <div style="border: 1px solid #000; height: 350px">
           <h1>Report Details Shown Here</h1>
         </div>
       </div>
-      <div class="float-right">
+      <div style="overflow:hidden">
         <button class="btn btn-orange"
-          style="width: 250px; margin-right: 10px;">Print Report</button>
+          style="
+          width: 250px;
+          float: right;
+          ">Print Report</button>
       </div>
     </div>
 </template>
 
-<script>
-import Header from './Header.vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   name: 'Report',
-  components: {
-    Header,
-  },
-};
+});
 </script>
 
-<style scoped>
-.pad-label{
-    padding:20px;
-  }
+<style lang="scss" scoped>
 </style>
