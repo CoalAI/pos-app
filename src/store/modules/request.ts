@@ -33,7 +33,7 @@ const serverRequest = async (
     data,
     params,
     headers,
-    baseURL: 'https://www.vooeats.com/api/',
+    baseURL: 'http://127.0.0.1:8000/api/',
   }
   try {
     const response = await axios(config);

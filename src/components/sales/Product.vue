@@ -9,8 +9,10 @@
               label="Username"
               name="username"
               type="text"
-              placeholder="Enter product name to search"
+              placeholder="Enter product name or barcode to search"
               class="search-input"
+              v-model="search"
+              @input="searchProducts"
             />
             <button class="btn btn-orange search-btn">Search product</button>
           </form>
@@ -18,34 +20,39 @@
     </div>
     <div class="mr-2">
       <table>
+        <colgroup>
+          <col span="1" style="width: 5%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 20%;">
+        </colgroup>
+
         <tr>
           <th>Sr No.</th>
+          <th>Product Name</th>
           <th>Bar code</th>
-          <th>Name</th>
+          <th>Price</th>
           <th></th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>1294u9312</td>
-          <td>Sugar</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="deleteProductModal = true">delete</a>
-              <a class="btn btn-orange btn-mr-inner">edit</a>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>1294u9312</td>
-          <td>Sugar</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="deleteProductModal = true">delete</a>
-              <a class="btn btn-orange btn-mr-inner">edit</a>
-            </div>
-          </td>
-        </tr>
+        <template v-for="product in products" v-bind:key="product.id">
+          <tr v-for="productvarient in product.product_varient" v-bind:key="productvarient.id">
+            <td>1</td>
+            <td>
+              <p>{{ product.name }}</p>
+              <p v-if="productvarient.color" class="mr-1"><strong>Color: </strong>{{productvarient.color}}</p>
+              <p v-if="productvarient.size"><strong>Size: </strong>{{productvarient.size}}</p>
+            </td>
+            <td>{{ product.bar_code }}</td>
+            <td>{{ productvarient.price }}</td>
+            <td style="width: 150px">
+              <div class="flex-box">
+                <a class="btn btn-orange btn-mr-inner" @click="OpenDeleteProductModal(product)">delete</a>
+                <router-link :to="{name: 'EditProduct', params: {productId: product.id}}" class="btn btn-orange btn-mr-inner">edit</router-link>
+              </div>
+            </td>
+          </tr>
+        </template>
       </table>
     </div>
 
@@ -56,12 +63,24 @@
       </template>
 
       <template v-slot:body>
-        <p>Are you sure you want to delete this product?</p>
+        <p style="padding: 8px"><strong>Are you sure you want to delete this product?</strong></p>
+        <template v-if="deleteProduct">
+          <table id="delete-table" class="mr-2">
+            <tr>
+              <td><strong>Name:</strong></td>
+              <td>{{deleteProduct.name}}</td>
+            </tr>
+            <tr>
+              <td><strong>BarCode:</strong></td>
+              <td>{{deleteProduct.bar_code}}</td>
+            </tr>
+          </table>
+        </template>
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="deleteProductModal = false">Cancel</button>
+          <button class="btn btn-orange btn-mr" @click="deleteProductModal = false; deleteProduct = {};">Cancel</button>
           <button class="btn btn-orange btn-mr">Yes</button>
         </div>
       </template>
@@ -73,6 +92,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
+import { mapActions, mapGetters } from 'vuex';
+import { ActionTypes } from '@/store/modules/order/actions';
+import { Product } from '@/store/models/product';
 
 export default defineComponent({
   name: 'Product',
@@ -80,17 +102,42 @@ export default defineComponent({
     Modal,
   },
   data() {
+    const product: Product = {};
     return {
-      deleteProductModal: false
+      search: '',
+      deleteProductModal: false,
+      deleteProduct : product
     }
+  },
+  computed: {
+    ...mapGetters({
+      products: 'getListOfProducts'
+    })
   },
   // define methods under the `methods` object
   methods: {
-    closeDeleteProductModal: function(id: string) {
+    closeDeleteProductModal: function (id: string) {
       this.deleteProductModal = false;
+      this.deleteProduct = {};
       // perform delete logic
     },
+
+    OpenDeleteProductModal: function (product: Product) {
+      this.deleteProductModal = true;
+      this.deleteProduct = product;
+    },
+
+    searchProducts: function () {
+      this.getProducts(this.search)
+    },
+
+    ...mapActions({
+      getProducts: ActionTypes.GET_PRODUCTS
+    })
   },
+  created () {
+    this.getProducts('');
+  }
 });
 </script>
 
@@ -105,5 +152,12 @@ export default defineComponent({
 
   .pr-var-mr {
     margin: 10px;
+  }
+
+  #delete-table td {
+    border: none;
+  }
+  #delete-table tr:nth-child(even) {
+    background-color: $white-color;
   }
 </style>

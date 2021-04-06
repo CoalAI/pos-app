@@ -1,12 +1,16 @@
 <template>
     <div id="AddEditProduct">
       <div class="diff-shadow">
-        <h2><span>Add</span> New Product</h2>
+        <h2>
+          <span v-if="productId">Edit</span>
+          <span v-else>Add New</span>
+          <span>Product</span>
+        </h2>
         <div class="flex-box">
           <label class="pad-label w100" for="name">
             <strong>Name:</strong>
           </label>
-          <div>
+          <div style="width: 100%">
             <input
               name="name"
               type="text"
@@ -21,13 +25,16 @@
           <label class="pad-label w100" for="barcode">
             <strong>Bar code:</strong>
           </label>
-          <input
-            name="barcode"
-            type="text"
-            placeholder="Enter product bar-code"
-            :maxlength="maxlength.barcode"
-            v-model="product.barcode"
-          />
+          <div style="width: 100%">
+            <input
+              name="barcode"
+              type="text"
+              placeholder="Enter product bar-code"
+              :maxlength="maxlength.barcode"
+              v-model="product.barcode"
+            />
+            <span v-if="productBarCodeValidation" class="form-error">{{productBarCodeValidation}}</span>
+          </div>
         </div>
         <div class="flex-box">
           <label class="pad-label w100" for="unit">
@@ -40,10 +47,10 @@
             id="unit"
             v-model="product.unit"
           >
-            <option v-for="unit in unitSelectOptions" v-bind:key="unit.id" v-bind:value="unit">
+            <option value="">No Unit</option>
+            <option v-for="unit in units" v-bind:key="unit.id" v-bind:value="unit.id">
               {{ unit.name }}
             </option>
-            <option value="kg">Kg</option>
           </select>
         </div>
         <div class="flex-box">
@@ -124,15 +131,6 @@
                 <hr style="border: 1px solid red">
               </td>
             </tr>
-            <tr>
-              <td>#dcdcdc</td>
-              <td>Small</td>
-              <td>$20</td>
-              <td>this is the products descriptions.</td>
-              <td style="cursor: pointer;">
-                <hr style="border: 1px solid red">
-              </td>
-            </tr>
           </table>
           <span v-if="tablePriceValidation" class="form-error">{{ tablePriceValidation }}</span>
         </div>
@@ -175,9 +173,18 @@
             <button style="width: 150px" class="btn btn-orange" @click="addProductVarient" >Add another varient</button>
           </div>
         </div>
+        <p v-if="productVarientValidation" class="form-error">{{productVarientValidation}}</p>
         <div style="text-align: right; padding-bottom: 50px">
-          <router-link to="/products" style="margin-right: 20px" class="btn btn-orange btn-mr">Cancel</router-link>
-          <a class="btn btn-orange btn-mr">Add Product</a>
+          <router-link
+            to="/products"
+            style="margin-right: 20px"
+            class="btn btn-orange btn-mr btn-link"
+          >Cancel</router-link>
+          <button style="width: 150px" :disabled="addEditBtn" class="btn btn-orange btn-mr">
+            <span v-if="productId">Update</span>
+            <span v-else>Add</span>
+            <span> Product</span>
+          </button>
         </div>
       </div>
     </div>
@@ -185,10 +192,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapActions, mapGetters } from 'vuex';
 import { Product, ProductVarient } from '@/store/models/product';
+import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'AddEditProduct',
+  props: ['productId'],
   data() {
     const productVarients: ProductVarient[] = [];
     return {
@@ -207,7 +217,6 @@ export default defineComponent({
         token: false,
         productVarients: productVarients
       },
-      unitSelectOptions: '',
       addUnitsection: false,
       arrow: '▼',
       unitName: '',
@@ -220,6 +229,47 @@ export default defineComponent({
       varientPriceValidation: '',
       tablePriceValidation: ''
     }
+  },
+  computed: {
+
+    productNameValidation: function () {
+      let errorMessage = null;
+      if (this.product.name.length <= 0) {
+        errorMessage = "Name is required"
+      }
+      return errorMessage;
+    },
+
+    productBarCodeValidation: function () {
+      let errorMessage = null;
+      if (this.product.barcode.length <= 0) {
+        errorMessage = "Barcode is required"
+      }
+      return errorMessage;
+    },
+
+    productVarientValidation: function () {
+      let errorMessage = null;
+      if (this.product.productVarients.length <= 0) {
+        errorMessage = "At least one product variant is required"
+      }
+      return errorMessage;
+    },
+
+    addEditBtn: function () {
+      let disable = true;
+      if ( this.product.productVarients.length > 0 &&
+      this.productNameValidation === null &&
+      this.productBarCodeValidation === null) {
+        disable = false;
+      }
+      return disable
+    },
+
+    ...mapGetters({
+      units: 'getUnits',
+      getSignleProduct: 'getSignleProduct'
+    })
   },
   methods: {
     clearProductVarient: function () {
@@ -285,7 +335,7 @@ export default defineComponent({
         name: this.product.name,
         bar_code: this.product.barcode,
         unit: parseFloat(this.product.unit),
-        product_varients: unproxiedProductVarients
+        product_varient: unproxiedProductVarients
       };
 
       // submit to API call action from store
@@ -294,6 +344,34 @@ export default defineComponent({
 
     addUnit: function () {
       // call api and update unit list
+    },
+
+    loadData: function (product: Product) {
+      this.product.name = product.name ? product.name : '';
+      this.product.barcode = product.bar_code ? product.bar_code : '';
+      this.product.unit = product.unit && typeof product.unit !== 'number' && product.unit.id ? product.unit.id.toString() : '';
+      this.product.token = product.token ? product.token : false;
+      this.product.productVarients = product.product_varient ? product.product_varient : [];
+    },
+
+    ...mapActions({
+      getUnits: ActionTypes.GET_UNITS,
+      getProducts: ActionTypes.GET_PRODUCTS
+    })
+  },
+  async created() {
+    await this.getUnits();
+    await this.getProducts();
+    if (this.productId) {
+      const product_id = parseInt(this.productId);
+      const product = isNaN(product_id) ? undefined : this.$store.getters.getSignleProduct(product_id);
+      if (product) {
+        this.loadData(product);
+      }
+      else {
+        // Show error on screen
+        console.log(typeof this.productId)
+      }
     }
   }
 });

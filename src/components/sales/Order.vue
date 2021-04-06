@@ -337,7 +337,7 @@ import { ActionTypes } from '@/store/modules/order/actions';
 import { Order } from '@/store/models/order';
 import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
-import { ProductResults, ProductVarient } from '@/store/models/product';
+import { Product, ProductVarient } from '@/store/models/product';
 
 export default defineComponent({
   name: 'Order',
@@ -377,7 +377,7 @@ export default defineComponent({
   computed: {
     totalAmount: function (): number {
       let total = this.orderItems
-        .map((item: any) =>  item.price)
+        .map((item: any) =>  item.totalPrice)
         .reduce((a: number, b: number) => a + b, 0);
 
       const totalDiscount = parseFloat(this.totalDiscount);
@@ -545,7 +545,7 @@ export default defineComponent({
 
     selectProduct: async function (productId: number, varientId: number) {
       this.duplicateMessage = '';
-      const currentProduct = await this.productResult.find((item: ProductResults) => item.id === productId);
+      const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
       const currentVarient = await currentProduct.product_varient.find((item: ProductVarient) => item.id === varientId);
       if (this.sumQuantity(currentVarient) <= 0) return;
 
@@ -588,7 +588,7 @@ export default defineComponent({
       const batch = parseFloat(this.product.batch);
 
       const currentProduct = await this.productResult
-        .find((item: ProductResults) => item.id === this.productId);
+        .find((item: Product) => item.id === this.productId);
       const currentVarient = await currentProduct.product_varient
         .find((item: ProductVarient) => item.id === this.productVarientId);
 
@@ -651,15 +651,22 @@ export default defineComponent({
         const upperLimit = this.sumQuantity(currentVarient);
         const currentOrderItemQuantity = this.orderItems[index].quantity;
         const currentOrderItemPrice = this.orderItems[index].price;
+        const currentDiscount = this.orderItems[index].discount;
 
         if (currentOrderItemQuantity !== undefined && currentOrderItemPrice !== undefined) {
 
           const quantity = parseFloat(currentOrderItemQuantity);
           const price = parseFloat(currentOrderItemPrice);
+          const discount = currentDiscount ? parseFloat(currentDiscount) : 0;
+
           if (isNaN(price)) return;
           if (isNaN(quantity) && quantity <= 0 ) return;
           if (quantity > upperLimit) return;
-          this.orderItems[index].totalPrice = quantity * price;
+          let total = quantity * price;
+          if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
+            total = total * ((100 - discount) / 100);
+          }
+          this.orderItems[index].totalPrice = total;
         }
       }
     },

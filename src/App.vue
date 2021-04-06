@@ -26,6 +26,11 @@ export default defineComponent({
     margin: 0;
   }
 
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
   a {
     text-decoration: none;
   }
@@ -73,6 +78,10 @@ export default defineComponent({
 
   .flex-box {
     display: flex;
+  }
+
+  .mr-1 {
+    margin-top: 10px;
   }
 
   .mr-2 {
@@ -245,5 +254,10 @@ export default defineComponent({
     margin: 0 !important;
     padding: 0 !important;
     outline: none !important;
+  }
+
+  .btn-link {
+    display: inline-block;
+    width: 150px;
   }
 </style>

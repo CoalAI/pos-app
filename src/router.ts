@@ -33,6 +33,12 @@ const routes: Array<RouteRecordRaw> = [
     component: Product
   },
   {
+    path: "/product/edit/:productId",
+    name: "EditProduct",
+    component: AddEditProduct,
+    props: true
+  },
+  {
     path: "/batchs",
     name: "Batch",
     component: Batch
@@ -44,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/product/create",
-    name: "",
+    name: "CreateProduct",
     component: AddEditProduct
   },
   {

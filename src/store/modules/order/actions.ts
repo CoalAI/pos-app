@@ -9,7 +9,9 @@ export enum ActionTypes {
   SEARCH_PRODUCT_BY_NAME = "SEARCH_PRODUCT_BY_NAME",
   SEARCH_PRODUCT_BY_BARCODE = "SEARCH_PRODUCT_BY_BARCODE",
   CREATE_ORDER = "CREATE_ORDER",
-  CHANGE_ORDER_STATUS = "CHANGE_ORDER_STATUS"
+  CHANGE_ORDER_STATUS = "CHANGE_ORDER_STATUS",
+  GET_PRODUCTS = "GET_PRODUCTS",
+  GET_UNITS = "GET_UNITS"
 }
 
 export type AugmentedActionContext = {
@@ -24,6 +26,8 @@ export interface Actions {
   [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, name: string): void;
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
+  [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -63,5 +67,28 @@ Actions = {
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {
     commit(MutationTypes.SetOrderStatus, value);
+  },
+  async [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string) {
+    let response;
+    if (search) {
+      response = await serverRequest('get', 'product/', true, undefined, {search: search});
+    } else {
+      response = await serverRequest('get', 'product/', true, undefined, undefined);
+    }
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfProducts, response.data.results);
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetError, response)
+    }
+  },
+  async [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'unit/', true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetUnit, response.data.results);
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetError, response)
+    }
   }
 };

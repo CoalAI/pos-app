@@ -22,9 +22,6 @@ export interface Product extends DatesInterface {
   name?: string;
   bar_code?: string;
   total_quantity?: string;
-  product_varients: ProductVarient[];
-}
-
-export interface ProductResults extends Product {
+  token?: boolean;
   product_varient?: ProductVarient[];
 }

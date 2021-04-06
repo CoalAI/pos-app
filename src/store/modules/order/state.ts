@@ -1,11 +1,14 @@
-import { ProductResults } from '@/store/models/product';
 import { Order } from '@/store/models/order';
+import { Product } from '@/store/models/product';
+import { Unit } from '@/store/models/product';
 
 export type State = {
     currentOrderStatus: string;
     order: Order;
-    productResults: ProductResults[];
+    productResults: Product[];
     recentProducts: any;
+    listOfProducts: Product[];
+    units: Unit[];
     error: any;
 };
 
@@ -14,5 +17,7 @@ export const state: State = {
   order: {},
   productResults: [],
   recentProducts: {},
+  listOfProducts: [],
+  units: [],
   error: null
 };
