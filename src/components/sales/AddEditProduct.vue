@@ -87,7 +87,7 @@
               <col span="1" style="width: 4%;">
             </colgroup>
             <tr>
-              <th>Color Code</th>
+              <th>Color</th>
               <th>Size</th>
               <th>Pirce</th>
               <th>Description</th>
@@ -180,7 +180,12 @@
             style="margin-right: 20px"
             class="btn btn-orange btn-mr btn-link"
           >Cancel</router-link>
-          <button style="width: 150px" :disabled="addEditBtn" class="btn btn-orange btn-mr">
+          <button
+            class="btn btn-orange btn-mr"
+            style="width: 150px"
+            :disabled="addEditBtn"
+            @click="addUpdateProduct"
+          >
             <span v-if="productId">Update</span>
             <span v-else>Add</span>
             <span> Product</span>
@@ -193,7 +198,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import { Product, ProductVarient } from '@/store/models/product';
+import { Product, ProductVarient, Unit } from '@/store/models/product';
 import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
@@ -312,7 +317,11 @@ export default defineComponent({
     },
 
     removeProductVarient: function(index: number) {
-      this.product.productVarients.splice(index, 1)
+      if (this.productId) {
+        const deleteProductVarientID = this.product.productVarients[index].id;
+        // Delete varient
+      }
+      this.product.productVarients.splice(index, 1);
     },
 
     checkTablePrice: function (index: number) {
@@ -326,20 +335,55 @@ export default defineComponent({
       }
     },
 
-    addProduct: function() {
-      // validate data
+    addUpdateProduct: function() {
+      let productIdNumber = 0;
+      if (this.productId) {
+        productIdNumber = parseFloat(this.productId);
+        if (isNaN(productIdNumber)) return;
+      }
 
-      const unproxiedProductVarients = this.product.productVarients.map((item: ProductVarient) => item as ProductVarient);
+      const unproxiedProductVarients = this.product.productVarients.map((item: ProductVarient) => {
+        const varient = {
+          price: item.price,
+          color: item.color,
+          description: item.description,
+          size: item.size
+        } as ProductVarient;
+        // To Update
+        if (item.id) varient.id = item.id;
+        if (this.productId) varient.product = productIdNumber;
+        return varient;
+      });
 
       const currentProduct: Product = {
         name: this.product.name,
         bar_code: this.product.barcode,
-        unit: parseFloat(this.product.unit),
+        token: this.product.token,
         product_varient: unproxiedProductVarients
       };
 
-      // submit to API call action from store
+      const unitID = parseFloat(this.product.unit);
+      if (!isNaN(unitID)) {
+        const currentUnit = this.units.find((unitItem: Unit) => unitItem.id === unitID);
+        if (currentUnit) {
+          currentProduct.unit = {
+            id: currentUnit.id,
+            name: currentUnit.name
+          } as Unit;
+        }
+      }
 
+      // submit to API call action from store
+      if (this.productId) {
+        currentProduct.id = productIdNumber;
+        this.updateProduct({
+          productID: this.productId,
+          product: currentProduct
+        });
+      } else {
+        this.createProduct(currentProduct);
+      }
+      this.$router.push({name: 'Product'});
     },
 
     addUnit: function () {
@@ -356,10 +400,12 @@ export default defineComponent({
 
     ...mapActions({
       getUnits: ActionTypes.GET_UNITS,
-      getProducts: ActionTypes.GET_PRODUCTS
+      getProducts: ActionTypes.GET_PRODUCTS,
+      createProduct: ActionTypes.CREATE_PRODUCT,
+      updateProduct: ActionTypes.UPDATE_PRODUCT
     })
   },
-  async created() {
+  async created () {
     await this.getUnits();
     await this.getProducts();
     if (this.productId) {

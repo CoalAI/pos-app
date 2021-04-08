@@ -4,6 +4,7 @@ import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/re
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Order } from '@/store/models/order';
+import { Product } from '@/store/models/product';
 
 export enum ActionTypes {
   SEARCH_PRODUCT_BY_NAME = "SEARCH_PRODUCT_BY_NAME",
@@ -11,7 +12,9 @@ export enum ActionTypes {
   CREATE_ORDER = "CREATE_ORDER",
   CHANGE_ORDER_STATUS = "CHANGE_ORDER_STATUS",
   GET_PRODUCTS = "GET_PRODUCTS",
-  GET_UNITS = "GET_UNITS"
+  GET_UNITS = "GET_UNITS",
+  CREATE_PRODUCT = "CREATE_PRODUCT",
+  UPDATE_PRODUCT = "UPDATE_PRODUCT"
 }
 
 export type AugmentedActionContext = {
@@ -28,6 +31,8 @@ export interface Actions {
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
   [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product): void;
+  [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -89,6 +94,24 @@ Actions = {
     }
     if(isAxiosError(response)) {
       commit(MutationTypes.SetError, response)
+    }
+  },
+  async [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product) {
+    const response = await serverRequest('post', 'product/', true, product);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetOrder, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetError, response);
+    }
+  },
+  async [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}) {
+    const response = await serverRequest('put', `product/${data.productID}/`, true, data.product, undefined);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetOrder, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetError, response);
     }
   }
 };

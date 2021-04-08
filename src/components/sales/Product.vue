@@ -21,10 +21,11 @@
     <div class="mr-2">
       <table>
         <colgroup>
-          <col span="1" style="width: 5%;">
-          <col span="1" style="width: 25%;">
-          <col span="1" style="width: 25%;">
-          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 2%;">
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 14%;">
+          <col span="1" style="width: 24%;">
           <col span="1" style="width: 20%;">
         </colgroup>
 
@@ -32,19 +33,37 @@
           <th>Sr No.</th>
           <th>Product Name</th>
           <th>Bar code</th>
-          <th>Price</th>
+          <th>Token</th>
+          <th>Product Variants</th>
           <th></th>
         </tr>
-        <template v-for="product in products" v-bind:key="product.id">
-          <tr v-for="productvarient in product.product_varient" v-bind:key="productvarient.id">
-            <td>1</td>
-            <td>
-              <p>{{ product.name }}</p>
-              <p v-if="productvarient.color" class="mr-1"><strong>Color: </strong>{{productvarient.color}}</p>
-              <p v-if="productvarient.size"><strong>Size: </strong>{{productvarient.size}}</p>
-            </td>
+        <template v-for="(product, index) in products" v-bind:key="product.id">
+          <tr >
+            <td>{{ index + 1 }}</td>
+            <td>{{ product.name }}</td>
             <td>{{ product.bar_code }}</td>
-            <td>{{ productvarient.price }}</td>
+            <td v-if="product.token">Yes</td><td v-else>No</td>
+            <td>
+              <table class="nested-table">
+                <colgroup>
+                  <col span="1" style="width: 40%;">
+                  <col span="1" style="width: 30%;">
+                  <col span="1" style="width: 30%;">
+                </colgroup>
+
+                <tr>
+                  <th>Price</th>
+                  <th>Size</th>
+                  <th>Color</th>
+                </tr>
+
+                <tr v-for="productvarient in product.product_varient" v-bind:key="productvarient.id">
+                  <td>{{ productvarient.price }}</td>
+                  <td v-if="productvarient.size">{{productvarient.size}}</td><td v-else class="text-center">-</td>
+                  <td v-if="productvarient.color">{{productvarient.color}}</td><td v-else class="text-center">-</td>
+                </tr>
+              </table>
+            </td>
             <td style="width: 150px">
               <div class="flex-box">
                 <a class="btn btn-orange btn-mr-inner" @click="OpenDeleteProductModal(product)">delete</a>
@@ -135,7 +154,7 @@ export default defineComponent({
       getProducts: ActionTypes.GET_PRODUCTS
     })
   },
-  created () {
+  beforeMount () {
     this.getProducts('');
   }
 });
@@ -159,5 +178,14 @@ export default defineComponent({
   }
   #delete-table tr:nth-child(even) {
     background-color: $white-color;
+  }
+
+  .nested-table td {
+    background-color: $white-color !important;
+    padding: 3px;
+  }
+
+  .nested-table th {
+    padding: 3px;
   }
 </style>
