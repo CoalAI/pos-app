@@ -37,7 +37,7 @@
           <th>Product Variants</th>
           <th></th>
         </tr>
-        <template v-for="(product, index) in products" v-bind:key="product.id">
+        <template v-for="(product, index) in productsList" v-bind:key="product.id">
           <tr >
             <td>{{ index + 1 }}</td>
             <td>{{ product.name }}</td>
@@ -91,7 +91,7 @@
             </tr>
             <tr>
               <td><strong>BarCode:</strong></td>
-              <td>{{deleteProduct.bar_code}}</td>
+              <td>{{deleteProduct.barcode}}</td>
             </tr>
           </table>
         </template>
@@ -99,8 +99,8 @@
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="deleteProductModal = false; deleteProduct = {};">Cancel</button>
-          <button class="btn btn-orange btn-mr">Yes</button>
+          <button class="btn btn-orange btn-mr" @click="closeDeleteProductModal">Cancel</button>
+          <button class="btn btn-orange btn-mr" @click="deleteProductYes">Yes</button>
         </div>
       </template>
     </Modal>
@@ -121,37 +121,57 @@ export default defineComponent({
     Modal,
   },
   data() {
-    const product: Product = {};
     return {
       search: '',
       deleteProductModal: false,
-      deleteProduct : product
+      deleteProduct: {
+        id: '',
+        name: '',
+        barcode: ''
+      }
     }
   },
   computed: {
     ...mapGetters({
-      products: 'getListOfProducts'
+      productsList: 'getListOfProducts'
     })
   },
   // define methods under the `methods` object
   methods: {
-    closeDeleteProductModal: function (id: string) {
+    clearDeleteProduct: function () {
+      this.deleteProduct.id = '';
+      this.deleteProduct.name = '';
+      this.deleteProduct.barcode = '';
+    },
+
+    closeDeleteProductModal: function () {
       this.deleteProductModal = false;
-      this.deleteProduct = {};
-      // perform delete logic
+      this.clearDeleteProduct();
     },
 
     OpenDeleteProductModal: function (product: Product) {
       this.deleteProductModal = true;
-      this.deleteProduct = product;
+      this.deleteProduct.id = product && product.id ? product.id.toString() : '';
+      this.deleteProduct.name = product && product.name ? product.name.toString() : '';
+      this.deleteProduct.barcode = product && product.bar_code ? product.bar_code.toString() : '';
     },
 
     searchProducts: function () {
       this.getProducts(this.search)
     },
 
+    deleteProductYes: async function () {
+      if (this.deleteProduct && this.deleteProduct.id) {
+        await this.deleteProductAction(this.deleteProduct.id?.toString());
+        await this.getProducts();
+        this.deleteProductModal = false;
+        this.clearDeleteProduct();
+      }
+    },
+
     ...mapActions({
-      getProducts: ActionTypes.GET_PRODUCTS
+      getProducts: ActionTypes.GET_PRODUCTS,
+      deleteProductAction: ActionTypes.DELETE_PRODUCT
     })
   },
   beforeMount () {

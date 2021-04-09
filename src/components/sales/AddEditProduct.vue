@@ -54,23 +54,6 @@
           </select>
         </div>
         <div class="flex-box">
-          <button style="width: 150px" class="btn btn-orange" @click="addUnitsection = !addUnitsection; arrow = addUnitsection ? '▲': '▼'" >Add New Unit {{arrow}}</button>
-        </div>
-        <div v-if="addUnitsection" class="flex-box">
-          <label class="pad-label w100" for="unit">
-            <strong>Unit:</strong>
-          </label>
-
-          <input
-            name="unitname"
-            type="text"
-            placeholder="Enter New Unit Name"
-            :maxlength="maxlength.unitName"
-            v-model="unitName"
-          />
-          <button style="width: 150px" class="btn btn-orange" @click="addUnit">Add</button> 
-        </div>
-        <div class="flex-box">
           <label class="pad-label w100" for="token">
             <strong>Token Printing:</strong>
           </label>
@@ -134,7 +117,7 @@
           </table>
           <span v-if="tablePriceValidation" class="form-error">{{ tablePriceValidation }}</span>
         </div>
-        <p><span><strong>Add New Product Variants</strong></span></p>
+        <p class="mr-2"><span><strong>Add New Product Variants</strong></span></p>
         <div style="margin-bottom: 20px">
           <div class="flex-box">
             <input
@@ -222,9 +205,6 @@ export default defineComponent({
         token: false,
         productVarients: productVarients
       },
-      addUnitsection: false,
-      arrow: '▼',
-      unitName: '',
       currentProductVarient: {
         color: '',
         size: '',
@@ -384,10 +364,6 @@ export default defineComponent({
         this.createProduct(currentProduct);
       }
       this.$router.push({name: 'Product'});
-    },
-
-    addUnit: function () {
-      // call api and update unit list
     },
 
     loadData: function (product: Product) {

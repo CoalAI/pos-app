@@ -14,7 +14,8 @@ export enum ActionTypes {
   GET_PRODUCTS = "GET_PRODUCTS",
   GET_UNITS = "GET_UNITS",
   CREATE_PRODUCT = "CREATE_PRODUCT",
-  UPDATE_PRODUCT = "UPDATE_PRODUCT"
+  UPDATE_PRODUCT = "UPDATE_PRODUCT",
+  DELETE_PRODUCT = "DELETE_PRODUCT"
 }
 
 export type AugmentedActionContext = {
@@ -33,6 +34,7 @@ export interface Actions {
   [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product): void;
   [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}): void;
+  [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -107,6 +109,15 @@ Actions = {
   },
   async [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}) {
     const response = await serverRequest('put', `product/${data.productID}/`, true, data.product, undefined);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetOrder, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetError, response);
+    }
+  },
+  async [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string) {
+    const response = await serverRequest('delete', `product/${productID}/`, true);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
     }
