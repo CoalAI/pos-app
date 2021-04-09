@@ -60,7 +60,7 @@
           <input style="margin-top: 21px" type="checkbox" id="token" name="token" v-model="product.token">
         </div>
         <p><span><strong>Product Variants</strong></span></p>
-        <div class="product_varient_box">
+        <div class="product_Variant_box">
           <table class="mr-2">
             <colgroup>
               <col span="1" style="width: 12%;">
@@ -76,13 +76,13 @@
               <th>Description</th>
               <th></th>
             </tr>
-            <tr v-for="(productVarient, index) in product.productVarients" v-bind:key="productVarient.id">
+            <tr v-for="(productVariant, index) in product.productVariants" v-bind:key="productVariant.id">
               <td>
                 <input
                   class="tbl_item_input"
                   type="text"
                   placeholder="Color"
-                  v-model="productVarient.color"
+                  v-model="productVariant.color"
                 />
               </td>
               <td>
@@ -90,7 +90,7 @@
                   class="tbl_item_input"
                   type="text"
                   placeholder="Size"
-                  v-model="productVarient.size"
+                  v-model="productVariant.size"
                 />
               </td>
               <td>
@@ -98,7 +98,7 @@
                   class="tbl_item_input"
                   type="text"
                   placeholder="Price"
-                  v-model="productVarient.price"
+                  v-model="productVariant.price"
                   @input="checkTablePrice(index)"
                 />
               </td>
@@ -107,15 +107,16 @@
                   class="tbl_item_input"
                   type="text"
                   placeholder="Description"
-                  v-model="productVarient.description"
+                  v-model="productVariant.description"
                 />
               </td>
-              <td style="cursor: pointer;" @click="removeProductVarient(index)">
+              <td style="cursor: pointer;" @click="removeProductVariant(index)">
                 <hr style="border: 1px solid red">
               </td>
             </tr>
           </table>
-          <span v-if="tablePriceValidation" class="form-error">{{ tablePriceValidation }}</span>
+          <span v-if="tablePriceValidation" class="form-error">{{ tablePriceValidation }}.</span>
+          <span v-if="updateDeleteLastVarient" class="form-error"> {{ updateDeleteLastVarient }}</span>
         </div>
         <p class="mr-2"><span><strong>Add New Product Variants</strong></span></p>
         <div style="margin-bottom: 20px">
@@ -126,7 +127,7 @@
               type="text"
               placeholder="Color"
               :maxlength="maxlength.color"
-              v-model="currentProductVarient.color"
+              v-model="currentProductVariant.color"
             />
             <input
               class="pr-var-mr"
@@ -134,14 +135,14 @@
               type="text"
               placeholder="Size"
               :maxlength="maxlength.size"
-              v-model="currentProductVarient.size"
+              v-model="currentProductVariant.size"
             />
             <input
               class="pr-var-mr"
               name="price"
               type="number"
               placeholder="Price"
-              v-model="currentProductVarient.price"
+              v-model="currentProductVariant.price"
             />
           </div>
           <textarea 
@@ -149,14 +150,14 @@
             rows="3"
             placeholder="description"
             :maxlength="maxlength.description"
-            v-model="currentProductVarient.description"
+            v-model="currentProductVariant.description"
           ></textarea>
-          <span v-if="varientPriceValidation" class="form-error">{{ varientPriceValidation }}</span>
+          <span v-if="VariantPriceValidation" class="form-error">{{ VariantPriceValidation }}</span>
           <div class="mr-2">
-            <button style="width: 150px" class="btn btn-orange" @click="addProductVarient" >Add another varient</button>
+            <button style="width: 150px" class="btn btn-orange" @click="addProductVariant" >Add another Variant</button>
           </div>
         </div>
-        <p v-if="productVarientValidation" class="form-error">{{productVarientValidation}}</p>
+        <p v-if="productVariantValidation" class="form-error">{{productVariantValidation}}</p>
         <div style="text-align: right; padding-bottom: 50px">
           <router-link
             to="/products"
@@ -181,14 +182,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import { Product, ProductVarient, Unit } from '@/store/models/product';
+import { Product, ProductVariant, Unit } from '@/store/models/product';
 import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'AddEditProduct',
   props: ['productId'],
   data() {
-    const productVarients: ProductVarient[] = [];
+    const productVariants: ProductVariant[] = [];
     return {
       maxlength: {
         name: 50,
@@ -203,16 +204,17 @@ export default defineComponent({
         barcode: '',
         unit: '',
         token: false,
-        productVarients: productVarients
+        productVariants: productVariants
       },
-      currentProductVarient: {
+      currentProductVariant: {
         color: '',
         size: '',
         price: '',
         description: ''
       },
-      varientPriceValidation: '',
-      tablePriceValidation: ''
+      VariantPriceValidation: '',
+      tablePriceValidation: '',
+      updateDeleteLastVarient: ''
     }
   },
   computed: {
@@ -233,9 +235,9 @@ export default defineComponent({
       return errorMessage;
     },
 
-    productVarientValidation: function () {
+    productVariantValidation: function () {
       let errorMessage = null;
-      if (this.product.productVarients.length <= 0) {
+      if (this.product.productVariants.length <= 0) {
         errorMessage = "At least one product variant is required"
       }
       return errorMessage;
@@ -243,7 +245,7 @@ export default defineComponent({
 
     addEditBtn: function () {
       let disable = true;
-      if ( this.product.productVarients.length > 0 &&
+      if ( this.product.productVariants.length > 0 &&
       this.productNameValidation === null &&
       this.productBarCodeValidation === null) {
         disable = false;
@@ -257,11 +259,11 @@ export default defineComponent({
     })
   },
   methods: {
-    clearProductVarient: function () {
-      this.currentProductVarient.color = '';
-      this.currentProductVarient.size = '';
-      this.currentProductVarient.price = '';
-      this.currentProductVarient.description = '';
+    clearProductVariant: function () {
+      this.currentProductVariant.color = '';
+      this.currentProductVariant.size = '';
+      this.currentProductVariant.price = '';
+      this.currentProductVariant.description = '';
     },
 
     priceValidation: function (price: string) {
@@ -276,36 +278,45 @@ export default defineComponent({
       return errorMessage;
     },
 
-    addProductVarient: function() {
+    addProductVariant: function() {
       // validate data
-      const validation: any = this.priceValidation(this.currentProductVarient.price);
+      const validation: any = this.priceValidation(this.currentProductVariant.price);
       if (validation) {
-        this.varientPriceValidation = validation;
+        this.VariantPriceValidation = validation;
         return;
       }
-      this.varientPriceValidation = '';
+      this.VariantPriceValidation = '';
 
-      const singleProductVarient: ProductVarient = {
-        color: this.currentProductVarient.color,
-        size: this.currentProductVarient.size,
-        price: this.currentProductVarient.price,
-        description: this.currentProductVarient.description
+      const singleProductVariant: ProductVariant = {
+        color: this.currentProductVariant.color,
+        size: this.currentProductVariant.size,
+        price: this.currentProductVariant.price,
+        description: this.currentProductVariant.description
       }
 
-      this.product.productVarients.push(singleProductVarient);
-      this.clearProductVarient();
+      this.product.productVariants.push(singleProductVariant);
+      this.clearProductVariant();
     },
 
-    removeProductVarient: function(index: number) {
+    removeProductVariant: function(index: number) {
       if (this.productId) {
-        const deleteProductVarientID = this.product.productVarients[index].id;
-        // Delete varient
+        if (this.product.productVariants.length > 1) {
+          const deleteProductVariantID = this.product.productVariants[index].id;
+          // Delete Variant
+          this.deleteProductVariant(deleteProductVariantID);
+          this.updateDeleteLastVarient = '';
+          this.product.productVariants.splice(index, 1);
+        }
+        else if (this.product.productVariants.length == 1) {
+          this.updateDeleteLastVarient = 'You cannot delete last product variant.';
+        }
+      } else {
+        this.product.productVariants.splice(index, 1);
       }
-      this.product.productVarients.splice(index, 1);
     },
 
     checkTablePrice: function (index: number) {
-      const price = this.product.productVarients[index].price;
+      const price = this.product.productVariants[index].price;
       this.tablePriceValidation = '';
       if (price) {
         const validation = this.priceValidation(price);
@@ -315,33 +326,34 @@ export default defineComponent({
       }
     },
 
-    addUpdateProduct: function() {
+    addUpdateProduct: async function() {
       let productIdNumber = 0;
       if (this.productId) {
         productIdNumber = parseFloat(this.productId);
         if (isNaN(productIdNumber)) return;
       }
 
-      const unproxiedProductVarients = this.product.productVarients.map((item: ProductVarient) => {
-        const varient = {
+      const unproxiedProductVariants = this.product.productVariants.map((item: ProductVariant) => {
+        const Variant = {
           price: item.price,
           color: item.color,
           description: item.description,
           size: item.size
-        } as ProductVarient;
+        } as ProductVariant;
         // To Update
-        if (item.id) varient.id = item.id;
-        if (this.productId) varient.product = productIdNumber;
-        return varient;
+        if (item.id) Variant.id = item.id;
+        if (this.productId) Variant.product = productIdNumber;
+        return Variant;
       });
 
       const currentProduct: Product = {
         name: this.product.name,
         bar_code: this.product.barcode,
         token: this.product.token,
-        product_varient: unproxiedProductVarients
+        product_variant: unproxiedProductVariants
       };
 
+      currentProduct.unit = null;
       const unitID = parseFloat(this.product.unit);
       if (!isNaN(unitID)) {
         const currentUnit = this.units.find((unitItem: Unit) => unitItem.id === unitID);
@@ -356,12 +368,12 @@ export default defineComponent({
       // submit to API call action from store
       if (this.productId) {
         currentProduct.id = productIdNumber;
-        this.updateProduct({
+        await this.updateProduct({
           productID: this.productId,
           product: currentProduct
         });
       } else {
-        this.createProduct(currentProduct);
+        await this.createProduct(currentProduct);
       }
       this.$router.push({name: 'Product'});
     },
@@ -371,14 +383,15 @@ export default defineComponent({
       this.product.barcode = product.bar_code ? product.bar_code : '';
       this.product.unit = product.unit && typeof product.unit !== 'number' && product.unit.id ? product.unit.id.toString() : '';
       this.product.token = product.token ? product.token : false;
-      this.product.productVarients = product.product_varient ? product.product_varient : [];
+      this.product.productVariants = product.product_variant ? product.product_variant : [];
     },
 
     ...mapActions({
       getUnits: ActionTypes.GET_UNITS,
       getProducts: ActionTypes.GET_PRODUCTS,
       createProduct: ActionTypes.CREATE_PRODUCT,
-      updateProduct: ActionTypes.UPDATE_PRODUCT
+      updateProduct: ActionTypes.UPDATE_PRODUCT,
+      deleteProductVariant: ActionTypes.DELETE_PRODUCT_Variant
     })
   },
   async created () {
@@ -391,7 +404,7 @@ export default defineComponent({
         this.loadData(product);
       }
       else {
-        // Show error on screen
+        // Show 404 page on screen
         console.log(typeof this.productId)
       }
     }
@@ -429,7 +442,7 @@ export default defineComponent({
     text-align: left;
   }
 
-  .product_varient_box {
+  .product_Variant_box {
     overflow-y: auto;
     height: 180px;
   }

@@ -1,11 +1,11 @@
 import { DatesInterface } from './root';
-import { ProductVarient } from './product';
+import { ProductVariant } from './product';
 
 export interface Batch extends DatesInterface {
   id?: number;
   manufacturing_date?: Date;
   expiry_date?: Date;
-  product_varient?: number | ProductVarient;
+  product_variant?: number | ProductVariant;
   quantity?: string;
   in_stock?: boolean;
 }

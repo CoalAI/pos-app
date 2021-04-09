@@ -57,10 +57,10 @@
                   <th>Color</th>
                 </tr>
 
-                <tr v-for="productvarient in product.product_varient" v-bind:key="productvarient.id">
-                  <td>{{ productvarient.price }}</td>
-                  <td v-if="productvarient.size">{{productvarient.size}}</td><td v-else class="text-center">-</td>
-                  <td v-if="productvarient.color">{{productvarient.color}}</td><td v-else class="text-center">-</td>
+                <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
+                  <td>{{ productVariant.price }}</td>
+                  <td v-if="productVariant.size">{{productVariant.size}}</td><td v-else class="text-center">-</td>
+                  <td v-if="productVariant.color">{{productVariant.color}}</td><td v-else class="text-center">-</td>
                 </tr>
               </table>
             </td>
@@ -174,8 +174,8 @@ export default defineComponent({
       deleteProductAction: ActionTypes.DELETE_PRODUCT
     })
   },
-  beforeMount () {
-    this.getProducts('');
+  async beforeMount () {
+    await this.getProducts('');
   }
 });
 </script>

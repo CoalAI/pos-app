@@ -1,6 +1,6 @@
 import { DatesInterface } from './root';
 import { Batch } from './batch';
-export interface ProductVarient extends DatesInterface {
+export interface ProductVariant extends DatesInterface {
   id?: number;
   product?: number | Product;
   color?: string;
@@ -18,10 +18,10 @@ export interface Unit extends DatesInterface {
 
 export interface Product extends DatesInterface {
   id?: number;
-  unit?: number | Unit;
+  unit?: null | Unit;
   name?: string;
   bar_code?: string;
   total_quantity?: string;
   token?: boolean;
-  product_varient?: ProductVarient[];
+  product_variant?: ProductVariant[];
 }

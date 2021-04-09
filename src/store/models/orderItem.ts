@@ -1,5 +1,5 @@
 import { DatesInterface } from './root';
-import { Product, ProductVarient } from './product';
+import { Product, ProductVariant } from './product';
 import { Batch } from './batch';
 
 export interface OrderItem extends DatesInterface {
@@ -11,5 +11,5 @@ export interface OrderItem extends DatesInterface {
   quantity?: string;
   totalPrice?: number;
   product?: Product;
-  productVarient?: ProductVarient;
+  productVariant?: ProductVariant;
 }

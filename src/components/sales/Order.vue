@@ -127,19 +127,19 @@
       <div class="table-container">
         <div class="box2 box1-tab">
           <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
-            <li class="li-item" v-for="itemVarient in item.product_varient" v-bind:key="itemVarient.id">
-              <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVarient.id)">
+            <li class="li-item" v-for="itemVariant in item.product_Variant" v-bind:key="itemVariant.id">
+              <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
                 <table class="pr-s-r-table">
                   <tr>
                     <td>{{ item.name }}</td>
                     <td>{{ item.bar_code }}</td>
-                    <td>{{ itemVarient.color }}</td>
+                    <td>{{ itemVariant.color }}</td>
                   </tr>
                   <tr>
-                    <td>{{ itemVarient.price }}</td>
-                    <td v-if="sumQuantity(itemVarient) > 0">{{ sumQuantity(itemVarient) }}</td>
+                    <td>{{ itemVariant.price }}</td>
+                    <td v-if="sumQuantity(itemVariant) > 0">{{ sumQuantity(itemVariant) }}</td>
                     <td v-else class="out-of-stock">Out of Stock</td>
-                    <td>{{ itemVarient.size }}</td>
+                    <td>{{ itemVariant.size }}</td>
                   </tr>
                 </table>
               </div>
@@ -337,7 +337,7 @@ import { ActionTypes } from '@/store/modules/order/actions';
 import { Order } from '@/store/models/order';
 import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
-import { Product, ProductVarient } from '@/store/models/product';
+import { Product, ProductVariant } from '@/store/models/product';
 
 export default defineComponent({
   name: 'Order',
@@ -362,7 +362,7 @@ export default defineComponent({
       cancelModal: false,
       orderItems: orderItems,
       productId: 0,
-      productVarientId: 0,
+      productVariantId: 0,
       productBatchSelect: '',
       cashReceived: '',
       totalDiscount: '',
@@ -531,7 +531,7 @@ export default defineComponent({
   methods: {
     clearProduct: function () {
       this.productId = 0;
-      this.productVarientId = 0;
+      this.productVariantId = 0;
       this.product.barCode = '';
       this.product.name = '';
       this.product.quantity = '';
@@ -543,11 +543,11 @@ export default defineComponent({
       this.duplicateMessage = '';
     },
 
-    selectProduct: async function (productId: number, varientId: number) {
+    selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = '';
       const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
-      const currentVarient = await currentProduct.product_varient.find((item: ProductVarient) => item.id === varientId);
-      if (this.sumQuantity(currentVarient) <= 0) return;
+      const currentVariant = await currentProduct.product_Variant.find((item: ProductVariant) => item.id === VariantId);
+      if (this.sumQuantity(currentVariant) <= 0) return;
 
       // Check If the product is already in Order Items
       const duplicate = await this.orderItems
@@ -560,11 +560,11 @@ export default defineComponent({
 
       this.duplicateMessage = '';
       this.productId = productId;
-      this.productVarientId = varientId;
+      this.productVariantId = VariantId;
       this.product.barCode = currentProduct.bar_code;
       this.product.name = currentProduct.name;
-      this.product.quantityUpperLimit = this.sumQuantity(currentVarient);
-      this.productBatchSelect = currentVarient.batch
+      this.product.quantityUpperLimit = this.sumQuantity(currentVariant);
+      this.productBatchSelect = currentVariant.batch
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
       const batchId = (this.productBatchSelect[0] as Batch).id
@@ -589,10 +589,10 @@ export default defineComponent({
 
       const currentProduct = await this.productResult
         .find((item: Product) => item.id === this.productId);
-      const currentVarient = await currentProduct.product_varient
-        .find((item: ProductVarient) => item.id === this.productVarientId);
+      const currentVariant = await currentProduct.product_Variant
+        .find((item: ProductVariant) => item.id === this.productVariantId);
 
-      const price = currentVarient.price;
+      const price = currentVariant.price;
       let totalPrice = price * quantity;
       if (this.product.discount
         && discount > 0
@@ -604,7 +604,7 @@ export default defineComponent({
       const SingleOrderItem: OrderItem = {
         batch: isNaN(batch) ? 0 : batch,
         product: currentProduct,
-        productVarient: currentVarient,
+        productVariant: currentVariant,
         price,
         quantity: quantity.toString(),
         discount: discount.toString(),
@@ -645,10 +645,10 @@ export default defineComponent({
     },
 
     changeQuantity: function (index: number) {
-      const currentVarient = this.orderItems[index].productVarient;
-      if (currentVarient !== undefined) {
+      const currentVariant = this.orderItems[index].productVariant;
+      if (currentVariant !== undefined) {
 
-        const upperLimit = this.sumQuantity(currentVarient);
+        const upperLimit = this.sumQuantity(currentVariant);
         const currentOrderItemQuantity = this.orderItems[index].quantity;
         const currentOrderItemPrice = this.orderItems[index].price;
         const currentDiscount = this.orderItems[index].discount;
@@ -701,7 +701,7 @@ export default defineComponent({
       this.searchProductByBarcode(this.product.barCode);
     },
 
-    sumQuantity: function (item: ProductVarient): number {
+    sumQuantity: function (item: ProductVariant): number {
       let sum = 0;
       if (item.batch !== undefined && typeof item.batch !== 'number') {
         item.batch.filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0).forEach((batch: Batch) => {
