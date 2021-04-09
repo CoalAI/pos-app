@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="logo">
-      <router-link to="/"><img src="../../assets/logo.png" alt="coaldev"></router-link>
+        <router-link to="/"><img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev"></router-link>
     </div>
     <div class="b">
       <div class="flex-box">
@@ -163,4 +163,9 @@ export default defineComponent({
     background-color: $search-hover-color;
   }
 
+  .logo_img {
+    height: $logo_img_height;
+    width: $logo_img_width;
+    object-fit: contain;
+  }
 </style>
