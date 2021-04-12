@@ -143,7 +143,7 @@
       <div class="table-container">
         <div class="box2 box1-tab">
           <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
-            <li class="li-item" v-for="itemVariant in item.product_Variant" v-bind:key="itemVariant.id">
+            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
               <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
                 <table class="pr-s-r-table">
                   <tr>
@@ -254,10 +254,23 @@
 
         <div id="pay-box1">
           <div class="form-container">
-            <label class="pad-label bc" for="total_discount">
-              <strong>Total Discount:</strong>
+            
+            <label class="pad-label bc" for="barcode">
+              <strong>Total Amount:</strong>
             </label>
             <div class="bc-i">
+              <input
+                type="text"
+                name="total_amount"
+                v-bind:value="totalAmount"
+                readonly
+              />
+            </div>
+
+            <label class="pad-label q mr-l" for="total_discount">
+              <strong>Total Discount:</strong>
+            </label>
+            <div class="q-i">
               <div class="flex-box">
                 <input
                   style="width: 60%"
@@ -277,19 +290,6 @@
               </div>
               <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
             </div>
-
-            <label class="pad-label mr-l q" for="barcode">
-              <strong>Total Amount:</strong>
-            </label>
-            <div class="q-i">
-              <input
-                type="text"
-                name="total_amount"
-                v-bind:value="totalAmount"
-                readonly
-              />
-            </div>
-            
 
             <label class="pad-label pn" for="barcode">
               <strong>Cash Received:</strong>
