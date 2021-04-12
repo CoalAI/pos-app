@@ -13,6 +13,7 @@ export interface Getters {
   getListOfProducts(state: State): Product[];
   getSignleProduct(state: State, id: number): any;
   getUnits(state: State): Unit[];
+  // eslint-disable-next-line
   getError(state: State): any;
 }
 

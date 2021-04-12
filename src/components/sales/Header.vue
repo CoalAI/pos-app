@@ -82,7 +82,8 @@ export default defineComponent({
       logoutUser: ActionTypes.LOGOUT_USER,
       getuserdate: ActionTypes.USER_DATA
     }),
-    searchTyped(event: Event) {
+
+    searchTyped() {
       if (this.orderSearch == ''){
         this.showResult = false;
         return
@@ -91,6 +92,7 @@ export default defineComponent({
       // Change results
       this.showResult = true;
     },
+
     logout() {
       this.logoutUser();
     }

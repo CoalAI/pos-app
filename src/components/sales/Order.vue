@@ -33,6 +33,7 @@
               :max="24"
               :min="0"
               v-model="product.quantity"
+              @input="changeProductQuantity"
             />
             <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
           </div>
@@ -60,7 +61,7 @@
           
 
           <label class="d pad-label mr-l" for="discount">
-            <strong>Discount:</strong>
+            <strong>Price:</strong>
           </label>
           <div class="d-i">
             <input
@@ -68,15 +69,16 @@
               tabindex="5"
               placeholder="discount percentage"
               name="discount"
-              v-model="product.discount"
+              v-model="product.buyPrice"
+              @input="changeProductPrice"
             />
-            <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
+            <!-- <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span> -->
           </div>
           
           
           <div class="ap">
             <button class="btn btn-orange ap"
-              tabindex="6"
+              tabindex="7"
               @click="addOrderItem"
               :disabled="addProductButton"
             >Add Product</button>
@@ -100,7 +102,21 @@
             <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
           </div>
 
-          <div class="e-i"><span class="form-error">{{ duplicateMessage }}</span></div>
+          <label class="e pad-label mr-l" for="discount">
+            <strong>Discount (%):</strong>
+          </label>
+          <div class="e-i">
+            <input
+              type="number"
+              tabindex="6"
+              placeholder="discount percentage"
+              name="discount"
+              v-model="product.discount"
+            />
+            <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
+          </div>
+
+          <div class="e-ap"><span class="form-error">{{ duplicateMessage }}</span></div>
         </div>
       </div>
       <div class="box-22">
@@ -192,7 +208,7 @@
                   @input="changeDiscount(index)"
                 />
               </td>
-              <td>{{ orderItem.totalPrice }}</td>
+              <td>{{orderItem.totalPrice}}</td>
               <td style="cursor: pointer;" @click="removeItem(index)">
                 <hr style="border: 1px solid red">
               </td>
@@ -204,83 +220,200 @@
     
 
     <div class="diff-shadow">
-      <div id="payment-selection">
+
+      <div id="payment-selection" class="payment-method-container">
         <div class="flex-box mr-2">
           <p class="labl-txt"><strong>Payment method:</strong></p>
           <label class="custom-radio" style="margin-right: 10px">Cash
             <input type="radio" name="payment_method" value="cash" v-model="paymentMethod">
             <span class="checkmark"></span>
           </label>
-          <label class="custom-radio">Card
+          <label class="custom-radio" style="margin-right: 10px">Card
             <input type="radio" name="payment_method" value="card" v-model="paymentMethod">
             <span class="checkmark"></span>
           </label>
+          <label class="custom-radio">Credit
+            <input type="radio" name="payment_method" value="credit" v-model="paymentMethod">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div>
+          <input
+              v-if="paymentMethod === 'credit'"
+              type="text"
+              tabindex="1"
+              placeholder="Search Walk-In Customer"
+              name="barcode"
+              v-focus
+            />
         </div>
       </div>
 
       <!-- Payment Process -->
       <div class="payment-container">
 
-        <div id="pay-box1" class="form-container">
+        <div id="pay-box1">
+          <div class="form-container">
+            <label class="pad-label bc" for="total_discount">
+              <strong>Total Discount:</strong>
+            </label>
+            <div class="bc-i">
+              <div class="flex-box">
+                <input
+                  style="width: 60%"
+                  type="number"
+                  placeholder="Discount"
+                  name="total_discount"
+                  v-model="totalDiscount"
+                />
+                <select
+                  style="width: 40%; margin-left: 5px;"
+                  name="discountMethod"
+                  v-model="discountMethod"
+                >
+                  <option value="amount">Amount</option>
+                  <option value="percentage">Perc (%)</option>
+                </select>
+              </div>
+              <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
+            </div>
 
-          <label class="pad-label bc" for="total_discount">
-            <strong>Total Discount(%):</strong>
-          </label>
-          <div class="bc-i">
-            <input
-              type="number"
-              placeholder="Discount on total bill"
-              name="total_discount"
-              v-model="totalDiscount"
-            />
-            <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
+            <label class="pad-label mr-l q" for="barcode">
+              <strong>Total Amount:</strong>
+            </label>
+            <div class="q-i">
+              <input
+                type="text"
+                name="total_amount"
+                v-bind:value="totalAmount"
+                readonly
+              />
+            </div>
+            
+
+            <label class="pad-label pn" for="barcode">
+              <strong>Cash Received:</strong>
+            </label>
+            <div class="pn-i">
+              <input
+                type="number"
+                placeholder="Enter Cash Received"
+                name="cash_received"
+                v-model="cashReceived"
+              />
+              <span v-if="orderCashReceivedValidation" class="form-error">{{ orderCashReceivedValidation }}</span>
+            </div>
+            
+
+            <label class="pad-label mr-l d" for="return">
+              <strong>Cash Returned:</strong>
+            </label>
+            <div class="d-i">
+              <input
+                type="text"
+                name="return"
+                v-bind:value="cashReturned"
+                readonly
+              />
+            </div>
+
+            <template v-if="paymentMethod === 'card'">
+              <label class="pad-label bt" for="return">
+                <strong>Payment Service:</strong>
+              </label>
+              <div class="bt-i">
+                <select
+                  name="return"
+                >
+                  <option>Bank</option>
+                </select>
+              </div>
+
+              <label class="pad-label mr-l e" for="return">
+                <strong>Reference Number:</strong>
+              </label>
+              <div class="e-i">
+                <input
+                  type="text"
+                  name="reference"
+                  placeholder="Transaction ID"
+                />
+              </div>
+            </template>
+
+            <template v-if="paymentMethod === 'credit'">
+              <label class="pad-label bt" for="return">
+                <strong>Customer Name:</strong>
+              </label>
+              <div class="bt-i">
+                <input
+                  type="text"
+                  name="customername"
+                  placeholder="Customer Name"
+                  readonly
+                />
+              </div>
+
+              <label class="pad-label mr-l e" for="return">
+                <strong>Balance:</strong>
+              </label>
+              <div class="e-i">
+                <input
+                  type="text"
+                  name="balance"
+                  placeholder="Balance"
+                  readonly
+                />
+              </div>
+            </template>
           </div>
+          <div v-if="paymentMethod === 'credit'" class="form-container">
+            <label class="pad-label bc" for="total_discount">
+              <strong>Payment Type:</strong>
+            </label>
+            <div class="bc-i">
+              <select
+                name="creditPaymentMethod"
+                v-model="creditPaymentMethod"
+              >
+                <option value="cash">Cash</option>
+                <option value="card">Card</option>
+              </select>
+            </div>
 
-          <label class="pad-label mr-l q" for="barcode">
-            <strong>Total Amount:</strong>
-          </label>
-          <div class="q-i">
-            <input
-              type="text"
-              name="total_amount"
-              v-bind:value="totalAmount"
-              readonly
-            />
+            <label class="pad-label w100 mr-l q" for="deduct">
+              <strong>Deduct Balance:</strong>
+            </label>
+            <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct">
+
+            <template v-if="creditPaymentMethod === 'card'">
+              <label class="pad-label pn" for="return">
+                <strong>Payment Service:</strong>
+              </label>
+              <div class="pn-i">
+                <select
+                  type="text"
+                  name="return"
+                >
+                  <option>Bank</option>
+                </select>
+              </div>
+
+              <label class="pad-label mr-l d" for="return">
+                <strong>Reference Number:</strong>
+              </label>
+              <div class="d-i">
+                <input
+                  type="text"
+                  name="reference"
+                  placeholder="Transaction ID"
+                />
+              </div>
+            </template>
           </div>
-          
-
-          <label class="pad-label pn" for="barcode">
-            <strong>Cash Received:</strong>
-          </label>
-          <div class="pn-i">
-            <input
-              type="number"
-              placeholder="Enter Cash Received"
-              name="cash_received"
-              v-model="cashReceived"
-            />
-            <span v-if="orderCashReceivedValidation" class="form-error">{{ orderCashReceivedValidation }}</span>
-          </div>
-          
-
-          <label class="pad-label mr-l d" for="return">
-            <strong>Cash Returned:</strong>
-          </label>
-          <div class="d-i">
-            <input
-              type="text"
-              name="return"
-              v-bind:value="cashReturned"
-              readonly
-            />
-          </div>
-          
-
-          <div class="ap">
-          </div>
-
         </div>
         <div id="pay-box2">
+            <button v-if="paymentMethod === 'credit'" class="btn btn-orange">Add New Customer</button>
             <button
               class="btn btn-orange"
               @click="submitOrder"
@@ -316,7 +449,7 @@
       </template>
 
       <template v-slot:body>
-        <p>Order generated successfully.</p>
+        <p>{{ orderStatus }}</p>
       </template>
 
       <template v-slot:footer>
@@ -356,7 +489,9 @@ export default defineComponent({
         quantity: '',
         quantityUpperLimit: 0,
         discount: '',
-        batch: ''
+        batch: '',
+        buyPrice: '',
+        actualPrice: 0
       },
       date: today,
       cancelModal: false,
@@ -372,17 +507,26 @@ export default defineComponent({
       BarCodeMaxLength: 48,
       ProductNameMaxLength: 60,
       duplicateMessage: '',
+      creditPaymentMethod: 'cash',
+      discountMethod: 'amount'
     }
   },
   computed: {
     totalAmount: function (): number {
       let total = this.orderItems
+        // eslint-disable-next-line
         .map((item: any) =>  item.totalPrice)
         .reduce((a: number, b: number) => a + b, 0);
-
+      
       const totalDiscount = parseFloat(this.totalDiscount);
-      if (!isNaN(totalDiscount) && totalDiscount > 0 && totalDiscount <= 100) {
-        total = total * ((100 - totalDiscount) / 100);
+      if (this.discountMethod === 'amount') {
+        if (!isNaN(totalDiscount) && totalDiscount > 0) {
+          total = total - totalDiscount;
+        }
+      } else if (this.discountMethod === 'percentage') {
+        if (!isNaN(totalDiscount) && totalDiscount > 0 && totalDiscount <= 100) {
+          total = total * ((100 - totalDiscount) / 100);
+        }
       }
       return total;
     },
@@ -440,9 +584,6 @@ export default defineComponent({
           if (isNaN(value)) {
             errorMessage = 'Only numbers are allowed';
           } else {
-            if (value <= 0 ) {
-              errorMessage = 'Quantity should be greater than zero';
-            } 
             if ( value > this.product.quantityUpperLimit) {
               errorMessage = 'Stock is less than this quantity.';
             }
@@ -486,11 +627,16 @@ export default defineComponent({
       let errorMessage = null;
       if (this.totalDiscount !== undefined && this.totalDiscount !== '') {
         const value = parseFloat(this.totalDiscount);
-        if (isNaN(value)) {
+        if (isNaN(value)) 
+        {
           errorMessage = 'Only numbers are allowed';
-        } else {
-          if (value < 0 || value > 100) {
-            errorMessage = 'Discount value should be b/w 0 to 100'
+        }
+        else 
+        {
+          if (this.discountMethod === 'amount' && value < 0) {
+            errorMessage = "Discount should be greater than zero";
+          } else if (this.discountMethod === 'percentage' && (value < 0 || value > 100)) {
+            errorMessage = 'Discount value should be b/w 0 to 100';
           }
         }
       }
@@ -541,6 +687,8 @@ export default defineComponent({
       this.productBatchSelect = '';
       this.errorIndication = true;
       this.duplicateMessage = '';
+      this.product.buyPrice = '';
+      this.product.actualPrice = 0;
     },
 
     selectProduct: async function (productId: number, VariantId: number) {
@@ -563,9 +711,11 @@ export default defineComponent({
       this.productVariantId = VariantId;
       this.product.barCode = currentProduct.bar_code;
       this.product.name = currentProduct.name;
+      this.product.actualPrice = parseFloat(currentVariant.price);
       this.product.quantityUpperLimit = this.sumQuantity(currentVariant);
       this.productBatchSelect = currentVariant.batch
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
+        // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
       const batchId = (this.productBatchSelect[0] as Batch).id
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
@@ -576,12 +726,14 @@ export default defineComponent({
       this.errorIndication = false;
       let quantity = parseFloat(this.product.quantity);
       quantity = isNaN(quantity) ? 0 : quantity;
+      let price = parseFloat(this.product.buyPrice);
+      price = isNaN(price) ? 0 : price;
 
       if (this.product.name === '') return;
       if (this.product.barCode === '') return;
       if (this.product.quantity === '') return;
       if (this.product.batch === '') return;
-      if (quantity <= 0) return;
+      if (this.product.buyPrice === '') return;
       if (quantity > this.product.quantityUpperLimit) return;
 
       const discount = isNaN(parseFloat(this.product.discount)) ? 0 : parseFloat(this.product.discount);
@@ -592,7 +744,7 @@ export default defineComponent({
       const currentVariant = await currentProduct.product_Variant
         .find((item: ProductVariant) => item.id === this.productVariantId);
 
-      const price = currentVariant.price;
+      price = currentVariant.price;
       let totalPrice = price * quantity;
       if (this.product.discount
         && discount > 0
@@ -605,7 +757,7 @@ export default defineComponent({
         batch: isNaN(batch) ? 0 : batch,
         product: currentProduct,
         productVariant: currentVariant,
-        price,
+        price: price.toString(),
         quantity: quantity.toString(),
         discount: discount.toString(),
         totalPrice
@@ -639,6 +791,7 @@ export default defineComponent({
         total: this.totalAmount.toString(),
         payment_method: this.paymentMethod === 'cash' ? true : false,
         amount_received: isNaN(cash) ? '0' : cash.toString(),
+        amount_discount: this.discountMethod === 'amount' ? true : false,
       }
 
       this.createOrder(singleOrder);
@@ -660,7 +813,7 @@ export default defineComponent({
           const discount = currentDiscount ? parseFloat(currentDiscount) : 0;
 
           if (isNaN(price)) return;
-          if (isNaN(quantity) && quantity <= 0 ) return;
+          if (isNaN(quantity)) return;
           if (quantity > upperLimit) return;
           let total = quantity * price;
           if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
@@ -714,12 +867,36 @@ export default defineComponent({
     },
 
     handleOrderStatus: function () {
-      this.changeOrderStatus(false);
+      this.changeOrderStatus('');
       this.clearProduct();
       this.orderItems = [];
       this.cashReceived = '';
       this.totalDiscount = '';
       this.paymentMethod = 'cash';
+    },
+
+    changeProductPrice: function () {
+      let quantity = 0;
+      if (this.product.actualPrice > 0 && this.product.buyPrice) {
+        const price = parseFloat(this.product.buyPrice);
+
+        if (!isNaN(price)) {
+          quantity = price / this.product.actualPrice;
+        }
+      }
+      this.product.quantity = quantity.toString();
+    },
+
+    changeProductQuantity: function () {
+      let buyPrice = 0;
+      if (this.product.actualPrice > 0 && this.product.quantity) {
+        const quantity = parseFloat(this.product.quantity);
+
+        if (!isNaN(quantity)) {
+          buyPrice = quantity * this.product.actualPrice;
+        }
+      }
+      this.product.buyPrice = buyPrice.toString();
     },
 
     ...mapActions({
@@ -773,6 +950,11 @@ export default defineComponent({
   .e { grid-area: e; }
   .e-i { grid-area: e-i; }
 
+  .payment-method-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+  }
+
   .pad-label {
     padding: 15px 5px 15px 0px;
   }
@@ -820,13 +1002,12 @@ export default defineComponent({
     gap: 0.1em 0.1em;
   }
 
-  .payment-container-inner {
-    padding-right: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 0.1em 0.1em;
-  }
+  // .payment-container-inner {
+  //   display: grid;
+  //   grid-template-columns: 0.7fr 2.3fr 0.7fr 2.3fr 1fr;
+  //   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  //   gap: 0.1em 0.1em;
+  // }
 
   .pr-s-r-table {
     border: none;

@@ -9,6 +9,7 @@ export type State = {
     recentProducts: any;
     listOfProducts: Product[];
     units: Unit[];
+    // eslint-disable-next-line
     error: any;
 };
 

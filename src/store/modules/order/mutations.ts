@@ -22,6 +22,7 @@ export type Mutations = {
   [MutationTypes.SetRecentProducts](state: State, recentProducts: any): void;
   [MutationTypes.SetListOfProducts](state: State, products: Product[]): void;
   [MutationTypes.SetUnit](state: State, units: Unit[]): void;
+  // eslint-disable-next-line
   [MutationTypes.SetError](state: State, error: any): void;
 }
 
