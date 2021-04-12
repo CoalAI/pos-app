@@ -180,4 +180,9 @@ export default defineComponent({
     background-color: $search-hover-color;
   }
 
+  .logo_img {
+    height: $logo_img_height;
+    width: $logo_img_width;
+    object-fit: contain;
+  }
 </style>
