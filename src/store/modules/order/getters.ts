@@ -8,7 +8,8 @@ export interface Getters {
   getOrderStatus(state: State): string;
   getOrder(state: State): Order;
   getProductResults(state: State): ProductResults[];
-  getRecentProducts(state: State): any;
+  getRecentProducts(state: State): ProductResults[];
+  // eslint-disable-next-line
   getError(state: State): any;
 }
 

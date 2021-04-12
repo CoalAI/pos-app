@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { AxiosRequestConfig, AxiosResponse, AxiosError, Method } from 'axios';
 
+/* eslint-disable */
 export const isAxiosResponse = (response: AxiosResponse<any> | AxiosError<any>): response is AxiosResponse => {
   return (response as AxiosResponse).status !== undefined;
 }

@@ -10,4 +10,5 @@ export interface Order extends DatesInterface {
   amount_received?: string;
   total_discount?: string;
   order_item?: OrderItem[];
+  amount_discount?: boolean;
 }

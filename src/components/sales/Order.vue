@@ -449,7 +449,7 @@
       </template>
 
       <template v-slot:body>
-        <p>Order generated successfully.</p>
+        <p>{{ orderStatus }}</p>
       </template>
 
       <template v-slot:footer>
@@ -514,6 +514,7 @@ export default defineComponent({
   computed: {
     totalAmount: function (): number {
       let total = this.orderItems
+        // eslint-disable-next-line
         .map((item: any) =>  item.totalPrice)
         .reduce((a: number, b: number) => a + b, 0);
       
@@ -714,6 +715,7 @@ export default defineComponent({
       this.product.quantityUpperLimit = this.sumQuantity(currentVarient);
       this.productBatchSelect = currentVarient.batch
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
+        // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
       const batchId = (this.productBatchSelect[0] as Batch).id
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
@@ -789,6 +791,7 @@ export default defineComponent({
         total: this.totalAmount.toString(),
         payment_method: this.paymentMethod === 'cash' ? true : false,
         amount_received: isNaN(cash) ? '0' : cash.toString(),
+        amount_discount: this.discountMethod === 'amount' ? true : false,
       }
 
       this.createOrder(singleOrder);
@@ -864,7 +867,7 @@ export default defineComponent({
     },
 
     handleOrderStatus: function () {
-      this.changeOrderStatus(false);
+      this.changeOrderStatus('');
       this.clearProduct();
       this.orderItems = [];
       this.cashReceived = '';

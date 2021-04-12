@@ -86,7 +86,7 @@ export default defineComponent({
   },
   // define methods under the `methods` object
   methods: {
-    closeDeleteProductModal: function(id: string) {
+    closeDeleteProductModal: function() {
       this.deleteProductModal = false;
       // perform delete logic
     },

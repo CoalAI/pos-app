@@ -1,5 +1,4 @@
 import { ActionContext, ActionTree } from "vuex";
-import { AxiosResponse, AxiosError } from 'axios';
 import { IRootState } from '@/store/models/root';
 import { User, Credentials } from '@/store/models/user';
 import serverRequest, { isAxiosResponse } from '@/store/modules/request'
