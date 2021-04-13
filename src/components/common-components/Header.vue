@@ -9,12 +9,14 @@
         target="_blank">New Order</a>
         <!-- <a class="btn btn-orange btn-mr">Report</a> -->
         <router-link to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
-        <a class="btn btn-orange btn-grid btn-mr">Settings</a>
+        <router-link to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
+        <router-link to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
       </div>
       <div class="flex-box">
         <router-link to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
         <router-link to="/batchs" class="btn btn-grid btn-orange btn-mr">Batches</router-link>
-        <router-link to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
+        <router-link to="/vendors" class="btn btn-grid btn-orange btn-mr">Vendors</router-link>
+        <router-link to="/departments" class="btn btn-grid btn-orange btn-mr">Deparments</router-link>
       </div>
     </div>
     <div class="s">
@@ -102,7 +104,7 @@ export default defineComponent({
     grid-template-rows: 0.4fr;
     gap: 1em 1em;
     grid-template-areas:
-    "logo b b b b s s s s s name logout"
+    "logo b b b b b s s s s name logout"
   }
   .logo {
     grid-area: logo;

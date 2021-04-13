@@ -298,17 +298,16 @@
 
         </div>
         <div id="pay-box2">
-            <button class="btn btn-orange">Submit and Print</button>
-            <button class="btn btn-orange">Submit</button>
-            <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
+          <button class="btn btn-orange">Submit and Print</button>
+          <button class="btn btn-orange">Submit</button>
+          <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
         </div>
       </div>
 
     </div>
-    
 
+    <ZeroOrder v-if="adminUser === true" @cancel-modal="cancelModal = true"></ZeroOrder>
     
-
     <Modal v-if="cancelModal">
       <template v-slot:header>
         <h2>Confirm Cancellation</h2>
@@ -332,15 +331,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
+import ZeroOrder from '@/components/admin/ZeroOrder.vue';
 
 export default defineComponent({
   name: 'Order',
   components: {
     Modal,
+    ZeroOrder
   },
   data() {
     return {
-      cancelModal: false
+      cancelModal: false,
+      adminUser: true
     }
   },
 });

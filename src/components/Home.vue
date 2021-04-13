@@ -16,7 +16,7 @@ import { defineComponent, computed } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 
-import Header from './sales/Header.vue';
+import Header from './common-components/Header.vue';
 import Login from './auth/Login.vue';
 
 export default defineComponent({
