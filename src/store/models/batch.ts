@@ -1,8 +1,15 @@
-export interface Batch {
+import { DatesInterface } from './root';
+import { ProductVariant } from './product';
+
+export interface Batch extends DatesInterface {
   id?: number;
-  manufacturedDate?: Date;
-  expiryDate?: Date;
-  productID?: number;
-  totalQuantity?: number;
-  inStock?: boolean;
+  manufacturing_date?: Date;
+  expiry_date?: Date;
+  product_variant?: number | ProductVariant;
+  quantity?: string;
+  in_stock?: boolean;
+}
+
+export const isBatch = (batch: Batch | number): batch is Batch => {
+  return (batch as Batch).id !== undefined;
 }

@@ -1,4 +1,5 @@
-export interface User {
+import { DatesInterface } from './root';
+export interface User extends DatesInterface {
   id?: number;
   firstname?: string;
   lastname?: string;
