@@ -14,6 +14,8 @@ import Vendor from "./components/admin/Vendor.vue";
 import VendorAddEdit from "./components/admin/VendorAddEdit.vue";
 import NotFound from "./components/common-components/NotFound.vue";
 import Settings from "./components/common-components/Settings.vue";
+import Request from "./components/sales/Request.vue";
+import RequestDetail from "./components/sales/RequestDetail.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -99,6 +101,16 @@ const routes: Array<RouteRecordRaw> = [
   },
   { path: '/404', component: NotFound },  
   { path: '/:catchAll(.*)', redirect: '/404' },
+  {
+    path: '/requests',
+    name: "Request",
+    component: Request
+  },
+  {
+    path: '/requests/:id',
+    name: "RequestDetail",
+    component: RequestDetail
+  }
 ];
 
 const router = createRouter({

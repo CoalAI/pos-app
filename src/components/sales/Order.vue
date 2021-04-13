@@ -488,7 +488,7 @@ export default defineComponent({
 
     return {
       cancelModal: false,
-      adminUser: true,
+      adminUser: false,
       product: {
         name: '',
         barCode: '',

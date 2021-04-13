@@ -8,6 +8,7 @@
     <div v-else>
       <Login/>
     </div>
+    <ErrorHandler v-if="getError"></ErrorHandler>
   </div>
 </template>
 
@@ -18,15 +19,17 @@ import { ActionTypes } from '@/store/modules/auth/actions';
 
 import Header from './common-components/Header.vue';
 import Login from './auth/Login.vue';
+import ErrorHandler from './common-components/ErrorHandler.vue'
 
 export default defineComponent({
   name: 'App',
   components: { 
     Header,
     Login,
+    ErrorHandler,
   },
   computed: {
-    ...mapGetters(['getToken'])
+    ...mapGetters(['getToken', 'getError'])
   },
   methods: {
     ...mapActions({
