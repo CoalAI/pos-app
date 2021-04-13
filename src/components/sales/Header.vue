@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="logo">
-        <router-link to="/"><img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev"></router-link>
+      <router-link to="/"><img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev"></router-link>
     </div>
     <div class="b">
       <div class="flex-box">
@@ -50,7 +50,7 @@
     </div>
     <div class="name user-name">
       <span class="white-color">
-        <strong>Omer Ali</strong>
+        <strong>{{ userdata.first_name }} {{ userdata.last_name }}</strong>
       </span>
     </div>
     <div class="logout">
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
@@ -72,11 +72,18 @@ export default defineComponent({
       showResult: false
     }
   },
+  computed: {
+    ...mapGetters({
+      userdata: 'getUser'
+    })
+  },
   methods: {
     ...mapActions({
-      logoutUser: ActionTypes.LOGOUT_USER
+      logoutUser: ActionTypes.LOGOUT_USER,
+      getuserdate: ActionTypes.USER_DATA
     }),
-    searchTyped(event: Event) {
+
+    searchTyped() {
       if (this.orderSearch == ''){
         this.showResult = false;
         return
@@ -85,9 +92,13 @@ export default defineComponent({
       // Change results
       this.showResult = true;
     },
+
     logout() {
       this.logoutUser();
     }
+  },
+  created() {
+    this.getuserdate();
   },
 });
 </script>
@@ -122,6 +133,12 @@ export default defineComponent({
   .btn-grid {
     width: $w100;
     margin: 2px;
+  }
+
+  .logo_img {
+    height: $logo_img_height;
+    width: $logo_img_width;
+    object-fit: contain;
   }
 
   .user-name {
