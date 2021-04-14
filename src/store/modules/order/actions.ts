@@ -1,4 +1,4 @@
-import { ActionContext, ActionTree } from "vuex";
+import { ActionContext, ActionTree, CommitOptions } from "vuex";
 import { IRootState } from '@/store/models/root';
 import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
 import { Mutations, MutationTypes } from "./mutations";
@@ -21,8 +21,10 @@ export enum ActionTypes {
 
 export type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
-    key: K,
-    payload: Parameters<Mutations[K]>[1]
+    key: K | string,
+    // eslint-disable-next-line
+    payload: Parameters<Mutations[K]>[1] | any,
+    options?: CommitOptions
   ): ReturnType<Mutations[K]>;
 } & Omit<ActionContext<State, IRootState>, "commit">;
 
@@ -47,7 +49,7 @@ Actions = {
       commit(MutationTypes.SetProductResults, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response)
+      commit('SetError', response, {root: true});
     }
   },
   async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, barcode: string) {
@@ -56,7 +58,7 @@ Actions = {
       commit(MutationTypes.SetProductResults, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response)
+      commit('SetError', response, {root: true});
     }
   },
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
@@ -66,7 +68,7 @@ Actions = {
       commit(MutationTypes.SetOrderStatus, 'Order is completed successfully.');
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response)
+      commit('SetError', response, {root: true});
       if (response.response && response.response.data &&  response.response.data.non_field_errors) {
         commit(MutationTypes.SetOrderStatus, response.response.data.non_field_errors);
       } else {
@@ -88,7 +90,7 @@ Actions = {
       commit(MutationTypes.SetListOfProducts, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response)
+      commit('SetError', response, {root: true});
     }
   },
   async [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext) {
@@ -97,7 +99,7 @@ Actions = {
       commit(MutationTypes.SetUnit, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response)
+      commit('SetError', response, {root: true});
     }
   },
   async [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product) {
@@ -106,7 +108,7 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response);
+      commit('SetError', response, {root: true});
     }
   },
   async [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}) {
@@ -115,7 +117,7 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response);
+      commit('SetError', response, {root: true});
     }
   },
   async [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string) {
@@ -124,7 +126,7 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response);
+      commit('SetError', response, {root: true});
     }
   },
   async [ActionTypes.DELETE_PRODUCT_Variant]({ commit }: AugmentedActionContext, productVariantID: string) {
@@ -133,7 +135,7 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit(MutationTypes.SetError, response);
+      commit('SetError', response, {root: true});
     }
   }
 };

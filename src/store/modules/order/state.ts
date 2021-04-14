@@ -6,19 +6,16 @@ export type State = {
     currentOrderStatus: string;
     order: Order;
     productResults: Product[];
-    recentProducts: any;
+    recentProducts: Product[];
     listOfProducts: Product[];
     units: Unit[];
-    // eslint-disable-next-line
-    error: any;
 };
 
 export const state: State = {
   currentOrderStatus: '',
   order: {},
   productResults: [],
-  recentProducts: {},
+  recentProducts: [],
   listOfProducts: [],
   units: [],
-  error: null
 };
