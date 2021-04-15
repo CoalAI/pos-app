@@ -15,7 +15,23 @@ export const store = createStore<IRootState>({
   plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : [],
   state: {
     root: true,
-    version: '1.0.0'
+    version: '1.0.0',
+    error: null
+  },
+  getters: {
+    getError (state) {
+      return state.error;
+    }
+  },
+  mutations: {
+    setError (state, error) {
+      state.error = error;
+    }
+  },
+  actions: {
+    setError (context, error) {
+      context.commit('setError', error);
+    }
   },
   modules
 });

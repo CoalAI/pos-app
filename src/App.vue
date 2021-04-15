@@ -24,6 +24,7 @@ export default defineComponent({
 
   body {
     margin: 0;
+    font-size: $body-font-size;
   }
 
   p {
@@ -74,6 +75,10 @@ export default defineComponent({
     box-sizing: border-box;
     outline-color: $primary-color;
     background-color: $input-background-color;
+  }
+
+  input[type=color] {
+    margin: $label-pad;
   }
 
   .flex-box {
