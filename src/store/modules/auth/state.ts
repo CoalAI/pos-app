@@ -7,7 +7,6 @@ export type State = {
     listOfUsers: User[];
     roles: any[];
     companies: Company[];
-    errors: any;
 };
 
 export const state: State = {
@@ -16,5 +15,4 @@ export const state: State = {
   listOfUsers: [],
   roles: [],
   companies: [],
-  errors: null,
 };

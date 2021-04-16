@@ -426,6 +426,8 @@
 
     </div>
 
+    <ZeroOrder v-if="adminUser === true" @cancel-modal="cancelModal = true"></ZeroOrder>
+    
     <Modal v-if="cancelModal">
       <template v-slot:header>
         <h2>Confirm Cancellation</h2>
@@ -465,6 +467,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
+import ZeroOrder from '@/components/admin/ZeroOrder.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { Order } from '@/store/models/order';
@@ -476,6 +479,7 @@ export default defineComponent({
   name: 'Order',
   components: {
     Modal,
+    ZeroOrder
   },
 
   data() {
@@ -483,6 +487,8 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
 
     return {
+      cancelModal: false,
+      adminUser: false,
       product: {
         name: '',
         barCode: '',
@@ -494,7 +500,6 @@ export default defineComponent({
         actualPrice: 0
       },
       date: today,
-      cancelModal: false,
       orderItems: orderItems,
       productId: 0,
       productVariantId: 0,

@@ -6,7 +6,6 @@ import { Company } from "@/store/models/company";
 
 export interface Getters {
   getUser(state: State): User;
-  getErrors(state: State): any;
   getToken(state: State): string;
   getListOfUsers(state: State): User[];
   getRoles(state: State): any[];
@@ -16,9 +15,6 @@ export interface Getters {
 export const getters: GetterTree<State, IRootState> & Getters = {
   getUser: (state: State) => {
     return state.user;
-  },
-  getErrors: (state: State) => {
-    return state.errors;
   },
   getToken: (state: State) => {
     return state.token;

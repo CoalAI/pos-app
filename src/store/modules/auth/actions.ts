@@ -1,4 +1,4 @@
-import { ActionContext, ActionTree } from "vuex";
+import { ActionContext, ActionTree, CommitOptions} from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User, Credentials } from '@/store/models/user';
 import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
@@ -19,8 +19,10 @@ export enum ActionTypes {
 
 export type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
-    key: K,
-    payload: Parameters<Mutations[K]>[1]
+    key: K | string,
+    // eslint-disable-next-line
+    payload: Parameters<Mutations[K]>[1] | any,
+    options?: CommitOptions
   ): ReturnType<Mutations[K]>;
 } & Omit<ActionContext<State, IRootState>, "commit">;
 

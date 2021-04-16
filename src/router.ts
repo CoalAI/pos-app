@@ -8,8 +8,14 @@ import User from "./components/sales/User.vue";
 import AddEditProduct from "./components/sales/AddEditProduct.vue";
 import AddEditBatch from "./components/sales/AddEditBatch.vue";
 import AddEditUser from "./components/sales/AddEditUser.vue";
-
-
+import Department from "./components/admin/Department.vue";
+import DepartmentAddEdit from "./components/admin/DepartmentAddEdit.vue";
+import Vendor from "./components/admin/Vendor.vue";
+import VendorAddEdit from "./components/admin/VendorAddEdit.vue";
+import NotFound from "./components/common-components/NotFound.vue";
+import Settings from "./components/common-components/Settings.vue";
+import Request from "./components/sales/Request.vue";
+import RequestDetail from "./components/sales/RequestDetail.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -62,6 +68,48 @@ const routes: Array<RouteRecordRaw> = [
     path: "/user/create",
     name: "",
     component: AddEditUser
+  },
+  {
+    path: "/admin/order",
+    name: "adminOrder",
+    component: Order
+  },
+  {
+    path: "/departments",
+    name: "department",
+    component: Department
+  },
+  {
+    path: "/department/create",
+    name: "CreateDepartment",
+    component: DepartmentAddEdit
+  },
+  {
+    path: "/vendors",
+    name: "Vendor",
+    component: Vendor
+  },
+  {
+    path: "/vendor/create",
+    name: "CreateVendor",
+    component: VendorAddEdit
+  },
+  {
+    path: '/settings',
+    name: "Settings",
+    component: Settings
+  },
+  { path: '/404', component: NotFound },  
+  { path: '/:catchAll(.*)', redirect: '/404' },
+  {
+    path: '/requests',
+    name: "Request",
+    component: Request
+  },
+  {
+    path: '/requests/:id',
+    name: "RequestDetail",
+    component: RequestDetail
   }
 ];
 
