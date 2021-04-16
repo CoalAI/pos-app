@@ -18,40 +18,41 @@
     </div>
     <div class="mr-2">
       <table>
+        <colgroup>
+          <col span="1" style="width: 2%;">
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 22%;">
+        </colgroup>
+
         <tr>
           <th>Sr No.</th>
+          <th>Username</th>
           <th>Name</th>
           <th>Role</th>
           <th>Company</th>
           <th>Contact</th>
           <th></th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>Usama</td>
-          <td>Manager</td>
-          <td>Rohi</td>
-          <td>0324-9640277</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner"  @click="deleteUserModal = true">delete</a>
-              <a class="btn btn-orange btn-mr-inner">edit</a>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Usama</td>
-          <td>Manager</td>
-          <td>Rohi</td>
-          <td>0324-9640277</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="deleteUserModal = true">delete</a>
-              <a class="btn btn-orange btn-mr-inner">edit</a>
-            </div>
-          </td>
-        </tr>
+        <template v-for="(user, index) in users" v-bind:key="user.id">
+          <tr>
+            <td>{{index + 1}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.first_name}} {{user.last_name}}</td>
+            <td>Manager</td>
+            <td><span v-if="user.company" >{{user.company.name}}</span></td>
+            <td>{{user.contact_number}}</td>
+            <td style="width: 150px">
+              <div class="flex-box">
+                <a class="btn btn-orange btn-mr-inner"  @click="deleteUserModal = true">delete</a>
+                <a class="btn btn-orange btn-mr-inner">edit</a>
+              </div>
+            </td>
+          </tr>
+        </template>
       </table>
     </div>
 
@@ -78,6 +79,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapActions, mapGetters } from 'vuex';
+
+import { ActionTypes } from '@/store/modules/auth/actions';
 import Modal from '@/components/common-components/Modal.vue';
 
 export default defineComponent( {
@@ -90,13 +94,25 @@ export default defineComponent( {
       deleteUserModal: false
     }
   },
+  computed: {
+    ...mapGetters({
+      users: 'getListOfUsers'
+    })
+  },
   // define methods under the `methods` object
   methods: {
     closedeleteUserModal: function(id: string) {
       this.deleteUserModal = false;
       // perform delete logic
     },
+
+    ...mapActions({
+      getUsers: ActionTypes.GET_USERS
+    })
   },
+  async beforeMount () {
+    await this.getUsers();
+  }
 });
 </script>
 

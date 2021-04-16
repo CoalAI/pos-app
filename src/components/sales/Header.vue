@@ -20,8 +20,8 @@
     <div class="s">
       <div class="flex-box">
         <input
-          label="Username"
-          name="username"
+          label="ordersearch"
+          name="ordersearch"
           type="text"
           placeholder="Enter Order Number to search"
           class="search-input"

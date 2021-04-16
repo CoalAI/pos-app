@@ -1,7 +1,7 @@
 import { ActionContext, ActionTree } from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User, Credentials } from '@/store/models/user';
-import serverRequest, { isAxiosResponse } from '@/store/modules/request'
+import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 
@@ -11,7 +11,10 @@ export enum ActionTypes {
   REGISTER_USER = "REGISTER_USER",
   UPDATE_USER = "UPDATE_USER",
   LOGOUT_USER = "LOGOUT_USER",
-  USER_DATA = "USER_DATA"
+  USER_DATA = "USER_DATA",
+  GET_USERS = "GET_USERS",
+  FETCH_ROLES = "FETCH_ROLES",
+  FETCH_COMPANIES = "FETCH_COMPANIES"
 }
 
 export type AugmentedActionContext = {
@@ -28,6 +31,9 @@ export interface Actions {
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -69,5 +75,66 @@ Actions = {
         commit(MutationTypes.SetUser, response.data.results[0])
       }
     }
-  }
+  },
+  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'user/', true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      if (response.data.results.length > 0) {
+        commit(MutationTypes.SetListOfUsers, response.data.results)
+      }
+    }
+  },
+  async [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext) {
+    // const response = await serverRequest('get', 'roles/', true, undefined, undefined);
+    // if (isAxiosResponse(response)) {
+    //   if (response.data.results.length > 0) {
+    //     commit(MutationTypes.SetRoles, response.data.results)
+    //   }
+    // }
+    commit(MutationTypes.SetRoles, [
+      {
+        name: 'Manager'
+      },
+      {
+        name: 'Admin'
+      },
+      {
+        name: 'Super Admin'
+      },
+      {
+        name: 'Sales Staff'
+      },
+      {
+        name: 'Vendor'
+      }
+    ]);
+  },
+  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext) {
+    // const response = await serverRequest('get', 'companies/', true, undefined, undefined);
+    // if (isAxiosResponse(response)) {
+    //   if (response.data.results.length > 0) {
+    //     commit(MutationTypes.SetCompanies, response.data.results)
+    //   }
+    // }
+    commit(MutationTypes.SetCompanies, [
+      {
+        id: 1,
+        company_name: 'Rohi Bakers',
+        company_type: 'PARENT',
+        parent: null
+      },
+      {
+        id: 2,
+        company_name: 'Bakery 1',
+        company_type: 'RETIAL',
+        parent: 1
+      },
+      {
+        id: 3,
+        company_name: 'Bakery 2',
+        company_type: 'RETIAL',
+        parent: 1
+      },
+    ]);
+  },
 };
