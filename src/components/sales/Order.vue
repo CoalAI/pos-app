@@ -699,7 +699,7 @@ export default defineComponent({
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = '';
       const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
-      const currentVariant = await currentProduct.product_Variant.find((item: ProductVariant) => item.id === VariantId);
+      const currentVariant = await currentProduct.product_variant.find((item: ProductVariant) => item.id === VariantId);
       if (this.sumQuantity(currentVariant) <= 0) return;
 
       // Check If the product is already in Order Items
@@ -746,7 +746,7 @@ export default defineComponent({
 
       const currentProduct = await this.productResult
         .find((item: Product) => item.id === this.productId);
-      const currentVariant = await currentProduct.product_Variant
+      const currentVariant = await currentProduct.product_variant
         .find((item: ProductVariant) => item.id === this.productVariantId);
 
       price = currentVariant.price;
