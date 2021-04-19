@@ -10,6 +10,8 @@ export interface Getters {
   getListOfUsers(state: State): User[];
   getRoles(state: State): any[];
   getCompanies(state: State): Company[];
+  // eslint-disable-next-line
+  getSignleUser(state: State, id: number): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -27,5 +29,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getCompanies: (state: State) => {
     return state.companies;
-  }
+  },
+  getSignleUser: (state: State) => (id: number) => {
+    const user = state.listOfUsers.find((item: User) => item.id && item.id === id);
+    return user;
+  },
 };

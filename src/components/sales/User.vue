@@ -49,11 +49,11 @@
             <td>{{user.contact_number}}</td>
             <td style="width: 150px">
               <div class="flex-box">
-                <button class="btn btn-orange btn-mr-inner"  @click="deleteUserModal = true">
+                <button class="btn btn-orange btn-mr-inner"  @click="setUserActivation(user.id, user.is_active)">
                   <span v-if="user.is_active">Deactivate</span>
                   <span v-else>Activate</span>
                 </button>
-                <a class="btn btn-orange btn-mr-inner">edit</a>
+                <router-link :to="{name: 'EditUser', params: {userId: user.id}}" class="btn btn-orange btn-mr-inner">edit</router-link>
               </div>
             </td>
           </tr>
@@ -64,17 +64,17 @@
     <!-- The deletion Modal -->
     <Modal v-if="deleteUserModal">
       <template v-slot:header>
-        <h2>Confirm Deletion</h2>
+        <h2>Confirm <span v-if="userActivation.activate">deactivation</span><span v-else>Activation</span></h2>
       </template>
 
       <template v-slot:body>
-        <p>Are you sure you want to delete this user?</p>
+        <p>Are you sure you want to <span v-if="userActivation.activate">deactivate</span><span v-else>activate</span> this user?</p>
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="deleteUserModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr">Yes</button>
+          <button class="btn btn-orange btn-mr" @click="closedeleteUserModal">Cancel</button>
+          <button class="btn btn-orange btn-mr" @click="toggleActivation">Yes</button>
         </div>
       </template>
     </Modal>
@@ -88,6 +88,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/auth/actions';
 import Modal from '@/components/common-components/Modal.vue';
+import { User } from '@/store/models/user';
 
 export default defineComponent( {
   name: 'User',
@@ -97,7 +98,11 @@ export default defineComponent( {
   data() {
     return {
       deleteUserModal: false,
-      search: ''
+      search: '',
+      userActivation: {
+        id: 0,
+        activate: true
+      }
     }
   },
   computed: {
@@ -107,17 +112,40 @@ export default defineComponent( {
   },
   // define methods under the `methods` object
   methods: {
+    clearUserActivation: function () {
+      this.userActivation.id = 0;
+      this.userActivation.activate = true;
+    },
+
+    setUserActivation: function (id: number, activation: boolean) {
+      this.userActivation.id = id;
+      this.userActivation.activate = activation;
+      this.deleteUserModal = true;
+    },
+
     closedeleteUserModal: function(id: string) {
       this.deleteUserModal = false;
-      // perform delete logic
+      this.clearUserActivation();
     },
 
     searchUsers: function () {
       this.getUsers(this.search)
     },
 
+    toggleActivation: async function () {
+      const user: User = {
+        id: this.userActivation.id,
+        is_active: !this.userActivation.activate
+      };
+      await this.updateUser(user);
+      await this.getUsers('');
+      this.clearUserActivation();
+      this.deleteUserModal = false;
+    },
+
     ...mapActions({
-      getUsers: ActionTypes.GET_USERS
+      getUsers: ActionTypes.GET_USERS,
+      updateUser: ActionTypes.UPDATE_USER
     })
   },
   async beforeMount () {

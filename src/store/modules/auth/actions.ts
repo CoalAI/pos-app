@@ -56,17 +56,14 @@ Actions = {
   },
   async [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User) {
     const response = await serverRequest('post', 'user/', true, user);
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetUser, response.data);
-    }
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
-    const response = await serverRequest('put', `user/${updUser.id}/`, true, updUser);
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetUser, response.data);
+    const response = await serverRequest('patch', `user/${updUser.id}/`, true, updUser);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext) {

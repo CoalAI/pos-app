@@ -1,7 +1,11 @@
 <template>
   <div id="AddEditUser">
     <div class="diff-shadow">
-      <h2><span>Add</span> New User</h2>
+      <h2>
+        <span v-if="userId">Update</span>
+        <span v-else>Add New</span>
+        <span>User</span>
+      </h2>
       <div class="flex-box">
         <label class="pad-label w100" for="first_name">
           <strong>First Name:</strong>
@@ -52,7 +56,7 @@
           <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span>
         </div>
       </div>
-      <div class="flex-box">
+      <div v-if="!userId" class="flex-box">
         <label class="pad-label w100" for="thisuserpassword">
           <strong>Password:</strong>
         </label>
@@ -66,7 +70,7 @@
           <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
         </div>
       </div>
-      <div class="flex-box">
+      <div v-if="!userId" class="flex-box">
         <label class="pad-label w100" for="confirmpassword">
           <strong>Confirm Pwd:</strong>
         </label>
@@ -103,7 +107,7 @@
           </option>
         </select>
       </div>
-      <div class="flex-box">
+      <div v-if="!userId" class="flex-box">
         <label class="pad-label w100" for="companies">
           <strong>Company:</strong>
         </label>
@@ -155,7 +159,7 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
-import { ActionTypes } from '@/store/modules/auth/actions';
+import { actions, ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
 
 export default defineComponent({
@@ -174,7 +178,8 @@ export default defineComponent({
         contactNumber: '',
         user_type: 'SALES_STAFF',
         company: {}
-      }
+      },
+      loadedCompany: 0
     }
   },
   computed: {
@@ -193,21 +198,25 @@ export default defineComponent({
 
     passwordValidation: function () {
       let errorMessage = null;
-      const re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-      if (this.user.password.length <= 0) {
-        errorMessage = "Password is required"
-      }  else if (!re.test(this.user.password)) {
-        errorMessage = "Minimum eight characters, at least one letter, one number and one special character (@$!%*#?&)"
+      if (!this.userId) {
+        const re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        if (this.user.password.length <= 0) {
+          errorMessage = "Password is required"
+        }  else if (!re.test(this.user.password)) {
+          errorMessage = "Minimum eight characters, at least one letter, one number and one special character (@$!%*#?&)"
+        }
       }
       return errorMessage;
     },
 
     ConfirmPasswordValidation: function () {
       let errorMessage = null;
-      if (this.user.confirmPassword.length <= 0) {
-        errorMessage = "Confirm Password is required"
-      } else if (this.user.password && this.user.password !== this.user.confirmPassword) {
-        errorMessage = "Confirm Password does not matches with password"
+      if (!this.userId) {
+        if (this.user.confirmPassword.length <= 0) {
+          errorMessage = "Confirm Password is required"
+        } else if (this.user.password && this.user.password !== this.user.confirmPassword) {
+          errorMessage = "Confirm Password does not matches with password"
+        }
       }
       return errorMessage;
     },
@@ -255,22 +264,44 @@ export default defineComponent({
     })
   },
   methods: {
-    addUpdateUser: function () {
+    addUpdateUser: async function () {
+      let userIdNumber = 0;
+      if (this.userId) {
+        userIdNumber = parseFloat(this.userId);
+        if (isNaN(userIdNumber)) return;
+      }
+
       const user: User = {
         username: this.user.userName,
         first_name: this.user.firstName,
         last_name: this.user.lastName,
         email: this.user.email,
-        password: this.user.password,
         is_active: this.user.active,
         is_staff: true,
-        company: this.user.company,
         user_type: this.user.user_type,
         contact_number: this.user.contactNumber
       }
 
-      this.registerUser(user);
+      if (this.userId) {
+        user.id = userIdNumber;
+        await this.updateUser(user);
+      } else {
+        user.company = this.user.company,
+        user.password = this.user.password;
+        await this.registerUser(user);
+      }
       this.$router.push({name: 'User'});
+    },
+
+    loadData: function (user: User) {
+      this.user.firstName = user.first_name ? user.first_name : '';
+      this.user.lastName = user.last_name ? user.last_name : '';
+      this.user.email = user.email ? user.email : '';
+      this.user.userName = user.username ? user.username : '';
+      this.user.active = user.is_active ? user.is_active : true;
+      this.user.user_type = user.user_type ? user.user_type : '';
+      this.user.company = user.company ? user.company : '';
+      this.user.contactNumber = user.contact_number ? user.contact_number : '';
     },
 
     validEmail: function (email: string): boolean {
@@ -281,7 +312,9 @@ export default defineComponent({
     ...mapActions({
       registerUser: ActionTypes.REGISTER_USER,
       fetchRoles: ActionTypes.FETCH_ROLES,
-      fetchCompanies: ActionTypes.FETCH_COMPANIES
+      fetchCompanies: ActionTypes.FETCH_COMPANIES,
+      updateUser: ActionTypes.UPDATE_USER,
+      getUsersList: ActionTypes.GET_USERS
     })
   },
   async beforeMount () {
@@ -290,6 +323,20 @@ export default defineComponent({
 
     if (this.companies && this.companies.length > 0) {
       this.user.company = this.companies[0];
+    }
+
+    if (this.userId) {
+      await this.getUsersList();
+      const user_id = parseInt(this.userId);
+      const user = isNaN(user_id) ? undefined : this.$store.getters.getSignleUser(user_id);
+      if (user) {
+        this.loadData(user);
+      }
+      else {
+        // Show 404 page on screen
+        console.log(typeof user);
+        this.$router.push({name: 'notFound'});
+      }
     }
   }
 });
