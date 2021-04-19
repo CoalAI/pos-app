@@ -70,6 +70,12 @@ const routes: Array<RouteRecordRaw> = [
     component: AddEditUser
   },
   {
+    path: "/user/edit/:userId",
+    name: "EditUser",
+    component: AddEditUser,
+    props: true
+  },
+  {
     path: "/admin/order",
     name: "adminOrder",
     component: Order
@@ -99,7 +105,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Settings",
     component: Settings
   },
-  { path: '/404', component: NotFound },  
+  { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:catchAll(.*)', redirect: '/404' },
   {
     path: '/requests',

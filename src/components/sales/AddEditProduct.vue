@@ -391,13 +391,14 @@ export default defineComponent({
       getProducts: ActionTypes.GET_PRODUCTS,
       createProduct: ActionTypes.CREATE_PRODUCT,
       updateProduct: ActionTypes.UPDATE_PRODUCT,
-      deleteProductVariant: ActionTypes.DELETE_PRODUCT_Variant
+      deleteProductVariant: ActionTypes.DELETE_PRODUCT_Variant,
     })
   },
   async created () {
     await this.getUnits();
     await this.getProducts();
     if (this.productId) {
+      await this.getProducts();
       const product_id = parseInt(this.productId);
       const product = isNaN(product_id) ? undefined : this.$store.getters.getSignleProduct(product_id);
       if (product) {
@@ -405,7 +406,7 @@ export default defineComponent({
       }
       else {
         // Show 404 page on screen
-        console.log(typeof this.productId)
+        this.$router.push({name: 'notFound'});
       }
     }
   }
