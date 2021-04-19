@@ -9,10 +9,12 @@
               label="Username"
               name="username"
               type="text"
-              placeholder="Enter user name to search"
+              placeholder="Enter Username, Contact or Company name to search"
               class="search-input"
+              v-model="search"
+              @input="searchUsers"
             />
-            <button class="btn btn-orange search-btn">Search user</button>
+            <button class="btn btn-orange search-btn" @click="searchUsers">Search user</button>
           </form>
       </div>
     </div>
@@ -42,12 +44,15 @@
             <td>{{index + 1}}</td>
             <td>{{user.username}}</td>
             <td>{{user.first_name}} {{user.last_name}}</td>
-            <td>Manager</td>
-            <td><span v-if="user.company" >{{user.company.name}}</span></td>
+            <td>{{user.user_type}}</td>
+            <td><span v-if="user.company" >{{user.company.company_name}}</span></td>
             <td>{{user.contact_number}}</td>
             <td style="width: 150px">
               <div class="flex-box">
-                <a class="btn btn-orange btn-mr-inner"  @click="deleteUserModal = true">delete</a>
+                <button class="btn btn-orange btn-mr-inner"  @click="deleteUserModal = true">
+                  <span v-if="user.is_active">Deactivate</span>
+                  <span v-else>Activate</span>
+                </button>
                 <a class="btn btn-orange btn-mr-inner">edit</a>
               </div>
             </td>
@@ -91,7 +96,8 @@ export default defineComponent( {
   },
   data() {
     return {
-      deleteUserModal: false
+      deleteUserModal: false,
+      search: ''
     }
   },
   computed: {
@@ -106,12 +112,16 @@ export default defineComponent( {
       // perform delete logic
     },
 
+    searchUsers: function () {
+      this.getUsers(this.search)
+    },
+
     ...mapActions({
       getUsers: ActionTypes.GET_USERS
     })
   },
   async beforeMount () {
-    await this.getUsers();
+    await this.getUsers('');
   }
 });
 </script>

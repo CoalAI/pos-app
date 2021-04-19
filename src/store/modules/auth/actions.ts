@@ -33,7 +33,7 @@ export interface Actions {
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext): void;
 }
@@ -55,9 +55,12 @@ Actions = {
     }
   },
   async [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User) {
-    const response = await serverRequest('post', 'user/', false, user);
+    const response = await serverRequest('post', 'user/', true, user);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetUser, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
@@ -78,8 +81,13 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext) {
-    const response = await serverRequest('get', 'user/', true, undefined, undefined);
+  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string) {
+    let response;
+    if (search) {
+      response = await serverRequest('get', 'user/', true, undefined, {search: search});
+    } else {
+      response = await serverRequest('get', 'user/', true, undefined, undefined);
+    }
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
         commit(MutationTypes.SetListOfUsers, response.data.results)
@@ -87,7 +95,7 @@ Actions = {
     }
   },
   async [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext) {
-    // const response = await serverRequest('get', 'roles/', true, undefined, undefined);
+    // const response = await serverRequest('get', 'user-type/', true, undefined, undefined);
     // if (isAxiosResponse(response)) {
     //   if (response.data.results.length > 0) {
     //     commit(MutationTypes.SetRoles, response.data.results)
@@ -95,48 +103,28 @@ Actions = {
     // }
     commit(MutationTypes.SetRoles, [
       {
-        name: 'Manager'
+        user_type: 'SALES_STAFF'
       },
       {
-        name: 'Admin'
+        user_type: 'ADMIN'
       },
       {
-        name: 'Super Admin'
+        user_type: 'SUPER_ADMIN'
       },
       {
-        name: 'Sales Staff'
+        user_type: 'VENDOR'
       },
       {
-        name: 'Vendor'
+        user_type: 'WALK_IN_CUSTOMER'
       }
     ]);
   },
   async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext) {
-    // const response = await serverRequest('get', 'companies/', true, undefined, undefined);
-    // if (isAxiosResponse(response)) {
-    //   if (response.data.results.length > 0) {
-    //     commit(MutationTypes.SetCompanies, response.data.results)
-    //   }
-    // }
-    commit(MutationTypes.SetCompanies, [
-      {
-        id: 1,
-        company_name: 'Rohi Bakers',
-        company_type: 'PARENT',
-        parent: null
-      },
-      {
-        id: 2,
-        company_name: 'Bakery 1',
-        company_type: 'RETIAL',
-        parent: 1
-      },
-      {
-        id: 3,
-        company_name: 'Bakery 2',
-        company_type: 'RETIAL',
-        parent: 1
-      },
-    ]);
+    const response = await serverRequest('get', 'company/', true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      if (response.data.results.length > 0) {
+        commit(MutationTypes.SetCompanies, response.data.results)
+      }
+    }
   },
 };

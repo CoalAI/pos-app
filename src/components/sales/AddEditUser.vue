@@ -3,34 +3,34 @@
     <div class="diff-shadow">
       <h2><span>Add</span> New User</h2>
       <div class="flex-box">
-        <label class="pad-label w100" for="name">
+        <label class="pad-label w100" for="first_name">
           <strong>First Name:</strong>
         </label>
         <input
-          name="name"
+          name="first_name"
           type="text"
           placeholder="Enter First Name"
           v-model="user.firstName"
         />
       </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="name">
+        <label class="pad-label w100" for="last_name">
           <strong>Last Name:</strong>
         </label>
         <input
-          name="name"
+          name="last_name"
           type="text"
           placeholder="Enter Last Name"
           v-model="user.lastName"
         />
       </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="name">
+        <label class="pad-label w100" for="email">
           <strong>Email:</strong>
         </label>
         <div class="full-width">
           <input
-            name="name"
+            name="email"
             type="text"
             placeholder="Enter Email"
             v-model="user.email"
@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="name">
+        <label class="pad-label w100" for="thisuserpassword">
           <strong>Password:</strong>
         </label>
         <div class="full-width">
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="name">
+        <label class="pad-label w100" for="confirmpassword">
           <strong>Confirm Pwd:</strong>
         </label>
         <div class="full-width">
@@ -97,9 +97,9 @@
           <strong>Role:</strong>
         </label>
 
-        <select name="cars" class="custom-select" id="unit">
-          <option v-for="role in roles" v-bind:key="role.name" v-bind:value="role.name">
-            {{ role.name }}
+        <select name="cars" class="custom-select" id="unit" v-model="user.user_type">
+          <option v-for="role in roles" v-bind:key="role.user_type" v-bind:value="role.user_type">
+            {{ role.user_type }}
           </option>
         </select>
       </div>
@@ -108,11 +108,12 @@
           <strong>Company:</strong>
         </label>
 
-        <select name="companies" class="custom-select" id="companies">
-          <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+        <select name="companies" class="custom-select" id="companies" v-model="user.company">
+          <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company">
             {{ company.company_name }}
           </option>
         </select>
+        <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
       </div>
       <div class="flex-box">
         <label class="pad-label w100" for="barcode">
@@ -139,6 +140,7 @@
           class="btn btn-orange btn-mr"
           style="width: 150px"
           :disabled="addEditBtn"
+          @click="addUpdateUser"
         >
           <span v-if="userId">Update</span>
           <span v-else>Add</span>
@@ -170,15 +172,14 @@ export default defineComponent({
         email: '',
         active: true,
         contactNumber: '',
-        userRole: '',
-        company: 0
+        user_type: 'SALES_STAFF',
+        company: {}
       }
     }
   },
   computed: {
     userNameValidation: function () {
       let errorMessage = null;
-      console.log(this.user.userName)
       const re = /^[a-zA-Z0-9@.+\-_]{3,150}$/;
       if (this.user.userName.length <= 0) {
         errorMessage = "User Name is required";
@@ -227,13 +228,22 @@ export default defineComponent({
       return errorMessage;
     },
 
+    companyValidation: function () {
+      let errorMessage = null;
+      if (this.companies.length <= 0) {
+        errorMessage = "Comapny is required. Add Comapany to system"
+      }
+      return errorMessage;
+    },
+
     addEditBtn: function () {
       let disable = true;
       if ( this.userNameValidation === null &&
       this.passwordValidation === null &&
       this.ConfirmPasswordValidation === null &&
       this.emailValidation === null &&
-      this.contactNumberValidation === null) {
+      this.contactNumberValidation === null &&
+      this.companyValidation === null) {
         disable = false;
       }
       return disable
@@ -253,12 +263,14 @@ export default defineComponent({
         email: this.user.email,
         password: this.user.password,
         is_active: this.user.active,
+        is_staff: true,
         company: this.user.company,
-        user_type: this.user.userRole,
+        user_type: this.user.user_type,
         contact_number: this.user.contactNumber
       }
 
       this.registerUser(user);
+      this.$router.push({name: 'User'});
     },
 
     validEmail: function (email: string): boolean {
@@ -275,6 +287,10 @@ export default defineComponent({
   async beforeMount () {
     await this.fetchRoles();
     await this.fetchCompanies();
+
+    if (this.companies && this.companies.length > 0) {
+      this.user.company = this.companies[0];
+    }
   }
 });
 </script>
