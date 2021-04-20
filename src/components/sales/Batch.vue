@@ -18,6 +18,16 @@
     </div>
     <div class="mr-2">
       <table>
+        <colgroup>
+          <col span="1" style="width: 5%;">
+          <col span="1" style="width: 35%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 20%;">
+        </colgroup>
+
         <tr>
           <th>Sr No.</th>
           <th>Product Name</th>
@@ -27,34 +37,25 @@
           <th>In stock</th>
           <th></th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>Sugar</td>
-          <td>25</td>
-          <td>12-02-2021</td>
-          <td>12-02-2021</td>
-          <td>Yes</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="deleteBatchModal = true">delete</a>
-              <a class="btn btn-orange btn-mr-inner">edit</a>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Sugar</td>
-          <td>25</td>
-          <td>12-02-2021</td>
-          <td>12-02-2021</td>
-          <td>Yes</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="deleteBatchModal = true">delete</a>
-              <a class="btn btn-orange btn-mr-inner">edit</a>
-            </div>
-          </td>
-        </tr>
+
+        <template v-for="(product, index) in products" v-bind:key="product.id">
+          <template v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
+            <tr v-for="productVariantBatch in productVariant.batch" v-bind:key="productVariantBatch.id">
+              <td>{{index}}</td>
+              <td>{{product.name}}: {{productVariant.price}}</td>
+              <td>{{productVariantBatch.quantity}}</td>
+              <td>{{productVariantBatch.manufacturing_date}}</td>
+              <td>{{productVariantBatch.expiry_date}}</td>
+              <td>{{productVariantBatch.in_stock}}</td>
+              <td style="width: 150px">
+                <div class="flex-box">
+                  <a class="btn btn-orange btn-mr-inner" @click="deleteBatchModal = true">delete</a>
+                  <a class="btn btn-orange btn-mr-inner">edit</a>
+                </div>
+              </td>
+            </tr>
+          </template>
+        </template>
       </table>
     </div>
 
@@ -81,6 +82,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapActions, mapGetters } from 'vuex';
+
+import { ActionTypes } from '@/store/modules/order/actions';
 import Modal from '@/components/common-components/Modal.vue';
 
 export default defineComponent({
@@ -93,13 +97,25 @@ export default defineComponent({
       deleteBatchModal: false
     }
   },
+  computed: {
+    ...mapGetters({
+      products: 'getListOfProducts'
+    })
+  },
   // define methods under the `methods` object
   methods: {
     closeDeleteBatchModal: function(id: string) {
       this.deleteBatchModal = false;
       // perform delete logic
     },
+
+    ...mapActions({
+      getProducts: ActionTypes.GET_PRODUCTS,
+    })
   },
+  async beforeMount () {
+    await this.getProducts('');
+  }
 });
 </script>
 
