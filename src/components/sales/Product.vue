@@ -14,7 +14,7 @@
               v-model="search"
               @input="searchProducts"
             />
-            <button class="btn btn-orange search-btn">Search product</button>
+            <button class="btn btn-orange search-btn" @click="searchProducts">Search product</button>
           </form>
         </div>
     </div>
@@ -156,7 +156,10 @@ export default defineComponent({
       this.deleteProduct.barcode = product && product.bar_code ? product.bar_code.toString() : '';
     },
 
-    searchProducts: function () {
+    searchProducts: function (event: Event) {
+      if (event) {
+        event.preventDefault()
+      }
       this.getProducts(this.search)
     },
 
