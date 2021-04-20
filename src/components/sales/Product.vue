@@ -14,7 +14,7 @@
               v-model="search"
               @input="searchProducts"
             />
-            <button class="btn btn-orange search-btn">Search product</button>
+            <button class="btn btn-orange search-btn" @click="searchProducts">Search product</button>
           </form>
         </div>
     </div>
