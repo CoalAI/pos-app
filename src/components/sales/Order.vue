@@ -851,11 +851,17 @@ export default defineComponent({
       this.orderItems.splice(index, 1)
     },
 
-    searchByName: function () {
+    searchByName: function (event: Event) {
+      if (event) {
+        event.preventDefault()
+      }
       this.searchProductByName(this.product.name);
     },
 
-    searchByBarcode: function () {
+    searchByBarcode: function (event: Event) {
+      if (event) {
+        event.preventDefault()
+      }
       this.searchProductByBarcode(this.product.barCode);
     },
 

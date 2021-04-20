@@ -128,7 +128,10 @@ export default defineComponent( {
       this.clearUserActivation();
     },
 
-    searchUsers: function () {
+    searchUsers: function (event: Event) {
+      if (event) {
+        event.preventDefault()
+      }
       this.getUsers(this.search)
     },
 

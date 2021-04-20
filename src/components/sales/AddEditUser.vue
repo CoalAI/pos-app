@@ -4,7 +4,7 @@
       <h2>
         <span v-if="userId">Update</span>
         <span v-else>Add New</span>
-        <span>User</span>
+        <span> User</span>
       </h2>
       <div class="flex-box">
         <label class="pad-label w100" for="first_name">
@@ -113,7 +113,7 @@
         </label>
 
         <select name="companies" class="custom-select" id="companies" v-model="user.company">
-          <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company">
+          <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
             {{ company.company_name }}
           </option>
         </select>
@@ -177,9 +177,8 @@ export default defineComponent({
         active: true,
         contactNumber: '',
         user_type: 'SALES_STAFF',
-        company: {}
-      },
-      loadedCompany: 0
+        company: 0
+      }
     }
   },
   computed: {
@@ -300,7 +299,7 @@ export default defineComponent({
       this.user.userName = user.username ? user.username : '';
       this.user.active = user.is_active ? user.is_active : true;
       this.user.user_type = user.user_type ? user.user_type : '';
-      this.user.company = user.company ? user.company : '';
+      this.user.company = user.company && typeof user.company !== 'number' && user.company.id ? user.company.id : 0;
       this.user.contactNumber = user.contact_number ? user.contact_number : '';
     },
 
@@ -322,7 +321,7 @@ export default defineComponent({
     await this.fetchCompanies();
 
     if (this.companies && this.companies.length > 0) {
-      this.user.company = this.companies[0];
+      this.user.company = this.companies[0].id;
     }
 
     if (this.userId) {
