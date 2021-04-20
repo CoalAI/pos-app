@@ -55,7 +55,7 @@ Actions = {
     }
   },
   async [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User) {
-    const response = await serverRequest('post', 'user/', true, user);
+    const response = await serverRequest('post', 'create/user/', true, user);
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }

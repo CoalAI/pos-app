@@ -156,7 +156,10 @@ export default defineComponent({
       this.deleteProduct.barcode = product && product.bar_code ? product.bar_code.toString() : '';
     },
 
-    searchProducts: function () {
+    searchProducts: function (event: Event) {
+      if (event) {
+        event.preventDefault()
+      }
       this.getProducts(this.search)
     },
 
