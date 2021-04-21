@@ -5,6 +5,8 @@ import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
+import { Batch } from '@/store/models/batch';
+
 
 export enum ActionTypes {
   SEARCH_PRODUCT_BY_NAME = "SEARCH_PRODUCT_BY_NAME",
@@ -16,7 +18,8 @@ export enum ActionTypes {
   CREATE_PRODUCT = "CREATE_PRODUCT",
   UPDATE_PRODUCT = "UPDATE_PRODUCT",
   DELETE_PRODUCT = "DELETE_PRODUCT",
-  DELETE_PRODUCT_Variant = "DELETE_PRODUCT_Variant"
+  DELETE_PRODUCT_Variant = "DELETE_PRODUCT_Variant",
+  CREATE_BATCH = "CREATE_BATCH"
 }
 
 export type AugmentedActionContext = {
@@ -39,6 +42,7 @@ export interface Actions {
   [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}): void;
   [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string): void;
   [ActionTypes.DELETE_PRODUCT_Variant]({ commit }: AugmentedActionContext, productVariantID: string): void;
+  [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -134,6 +138,12 @@ Actions = {
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
     }
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
+    const response = await serverRequest('post', `batch/`, true, batch);
     if(isAxiosError(response)) {
       commit('setError', response, {root: true});
     }
