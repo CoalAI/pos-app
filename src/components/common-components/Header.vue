@@ -52,7 +52,8 @@
     </div>
     <div class="name user-name">
       <span class="white-color">
-        <strong>{{ userdata.first_name }} {{ userdata.last_name }}</strong>
+        <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
+        <strong v-else >{{ userdata.username }}</strong>
       </span>
     </div>
     <div class="logout">

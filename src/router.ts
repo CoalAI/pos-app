@@ -101,6 +101,12 @@ const routes: Array<RouteRecordRaw> = [
     component: VendorAddEdit
   },
   {
+    path: "/vendor/edit/:vendorId",
+    name: "EditVendor",
+    component: VendorAddEdit,
+    props: true
+  },
+  {
     path: '/settings',
     name: "Settings",
     component: Settings

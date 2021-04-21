@@ -8,10 +8,13 @@ export interface Getters {
   getUser(state: State): User;
   getToken(state: State): string;
   getListOfUsers(state: State): User[];
+  getListOfVendors(state: State): User[];
   getRoles(state: State): any[];
   getCompanies(state: State): Company[];
   // eslint-disable-next-line
   getSignleUser(state: State, id: number): any;
+  // eslint-disable-next-line
+  getSignleVendor(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -24,6 +27,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getListOfUsers: (state: State) => {
     return state.listOfUsers;
   },
+  getListOfVendors: (state: State) => {
+    return state.ListOfVendors;
+  },
   getRoles: (state: State) => {
     return state.roles;
   },
@@ -33,5 +39,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getSignleUser: (state: State) => (id: number) => {
     const user = state.listOfUsers.find((item: User) => item.id && item.id === id);
     return user;
+  },
+  getSignleVendor: (state: State) => (id: number) => {
+    const vendor = state.ListOfVendors.find((item: User) => item.id && item.id === id);
+    return vendor;
   },
 };
