@@ -1,7 +1,7 @@
 <template>
   <div id="Settings">
     <div class="diff-shadow">
-      <h2>Settings</h2>
+      <h2>Settings (To Be Implemented)</h2>
       <div class="flex-box">
         <label class="pad-label w100" for="font-size">
             <strong>Font Size:</strong>

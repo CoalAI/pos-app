@@ -19,7 +19,9 @@ export enum ActionTypes {
   UPDATE_PRODUCT = "UPDATE_PRODUCT",
   DELETE_PRODUCT = "DELETE_PRODUCT",
   DELETE_PRODUCT_Variant = "DELETE_PRODUCT_Variant",
-  CREATE_BATCH = "CREATE_BATCH"
+  CREATE_BATCH = "CREATE_BATCH",
+  UPDATE_BATCH = "UPDATE_BATCH",
+  DELETE_BATCH = "DELETE_BATCH"
 }
 
 export type AugmentedActionContext = {
@@ -43,6 +45,8 @@ export interface Actions {
   [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string): void;
   [ActionTypes.DELETE_PRODUCT_Variant]({ commit }: AugmentedActionContext, productVariantID: string): void;
   [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
+  [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
+  [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -126,9 +130,6 @@ Actions = {
   },
   async [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string) {
     const response = await serverRequest('delete', `product/${productID}/`, true);
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetOrder, response.data);
-    }
     if(isAxiosError(response)) {
       commit('setError', response, {root: true});
     }
@@ -144,6 +145,18 @@ Actions = {
   },
   async [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
     const response = await serverRequest('post', `batch/`, true, batch);
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
+    const response = await serverRequest('patch', `batch/${batch.id}/`, true, batch);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string) {
+    const response = await serverRequest('delete', `batch/${batchID}/`, true);
     if(isAxiosError(response)) {
       commit('setError', response, {root: true});
     }

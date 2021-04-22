@@ -1,7 +1,7 @@
 <template>
     <div id="AddEditdepartment">
       <div class="diff-shadow">
-        <h2><span>Add</span> New Department</h2>
+        <h2><span>Add</span> New Department (To Be Implemented)</h2>
         <div class="flex-box">
           <label class="pad-label w100" for="quantity">
             <strong>Name:</strong>

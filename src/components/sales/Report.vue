@@ -1,6 +1,6 @@
 <template>
     <div class="diff-shadow">
-      <h2>Reports</h2>
+      <h2>Reports (To Be Implemented)</h2>
       <form>
         <div class="flex-box mr-2">
           <label class="pad-label" for="start_date">

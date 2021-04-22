@@ -9,10 +9,12 @@
               label="Username"
               name="username"
               type="text"
-              placeholder="Enter batch number to search"
+              placeholder="Enter product name to search"
               class="search-input"
+              v-model="search"
+              @input="searchProducts"
             />
-            <button class="btn btn-orange search-btn">Search batch</button>
+            <button class="btn btn-orange search-btn" @click="searchProducts">Search batch</button>
           </form>
         </div>
     </div>
@@ -49,8 +51,20 @@
               <td>{{productVariantBatch.in_stock}}</td>
               <td style="width: 150px">
                 <div class="flex-box">
-                  <a class="btn btn-orange btn-mr-inner" @click="deleteBatchModal = true">delete</a>
-                  <a class="btn btn-orange btn-mr-inner">edit</a>
+                  <button
+                    class="btn btn-orange btn-mr-inner"
+                    @click="openDeleteBatchModal(product.name + ': ' + productVariant.price, productVariantBatch)"
+                  >delete</button>
+                  <router-link
+                    :to="{
+                      name: 'EditBatch',
+                      params: {
+                        productId: product.id,
+                        productVariantId: productVariant.id,
+                        batchId: productVariantBatch.id
+                      }
+                    }"
+                    class="btn btn-orange btn-mr-inner">edit</router-link>
                 </div>
               </td>
             </tr>
@@ -67,12 +81,32 @@
 
       <template v-slot:body>
         <p>Are you sure you want to delete this batch?</p>
+        <template v-if="batch">
+          <table id="delete-table" class="mr-2">
+            <tr>
+              <td><strong>Product Name:</strong></td>
+              <td>{{batch.productName}}</td>
+            </tr>
+            <tr>
+              <td><strong>Quantity:</strong></td>
+              <td>{{batch.quantity}}</td>
+            </tr>
+            <tr>
+              <td><strong>Manufactured Date:</strong></td>
+              <td>{{batch.manufacturedDate}}</td>
+            </tr>
+            <tr>
+              <td><strong>Expiry Date:</strong></td>
+              <td>{{batch.expiryDate}}</td>
+            </tr>
+          </table>
+        </template>
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="deleteBatchModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr">Yes</button>
+          <button class="btn btn-orange btn-mr" @click="closeDeleteBatchModal">Cancel</button>
+          <button class="btn btn-orange btn-mr" @click="deleteBatchYes">Yes</button>
         </div>
       </template>
     </Modal>
@@ -86,6 +120,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/order/actions';
 import Modal from '@/components/common-components/Modal.vue';
+import { Batch } from '@/store/models/batch';
 
 export default defineComponent({
   name: 'Batch',
@@ -94,7 +129,15 @@ export default defineComponent({
   },
   data() {
     return {
-      deleteBatchModal: false
+      deleteBatchModal: false,
+      search: '',
+      batch: {
+        id: 0,
+        productName: '',
+        quantity: '',
+        manufacturedDate: '',
+        expiryDate: ''
+      }
     }
   },
   computed: {
@@ -104,13 +147,47 @@ export default defineComponent({
   },
   // define methods under the `methods` object
   methods: {
-    closeDeleteBatchModal: function(id: string) {
+    clearDeleteBatch: function () {
+      this.batch.id = 0;
+      this.batch.productName = '';
+      this.batch.quantity = '';
+      this.batch.manufacturedDate = '';
+      this.batch.expiryDate = '';
+    },
+
+    closeDeleteBatchModal: function () {
       this.deleteBatchModal = false;
-      // perform delete logic
+      this.clearDeleteBatch();
+    },
+
+    openDeleteBatchModal: function (productName: string, batch: Batch) {
+      this.deleteBatchModal = true;
+      this.batch.id = batch && batch.id ? batch.id : 0;
+      this.batch.productName = productName ? productName : '';
+      this.batch.quantity = batch && batch.quantity ? batch.quantity : '';
+      this.batch.manufacturedDate = batch && batch.manufacturing_date ? batch.manufacturing_date : '';
+      this.batch.expiryDate = batch && batch.expiry_date ? batch.expiry_date : '';
+    },
+
+    deleteBatchYes: async function () {
+      if (this.batch && this.batch.id) {
+        await this.deleteBatch(this.batch.id.toString());
+        await this.getProducts();
+        this.deleteBatchModal = false;
+        this.clearDeleteBatch();
+      }
+    },
+
+    searchProducts: function (event: Event) {
+      if (event) {
+        event.preventDefault()
+      }
+      this.getProducts(this.search)
     },
 
     ...mapActions({
       getProducts: ActionTypes.GET_PRODUCTS,
+      deleteBatch: ActionTypes.DELETE_BATCH
     })
   },
   async beforeMount () {
@@ -130,5 +207,13 @@ export default defineComponent({
 
   .pr-var-mr {
     margin: 10px;
+  }
+
+  #delete-table td {
+    border: none;
+  }
+
+  #delete-table tr:nth-child(even) {
+    background-color: $white-color;
   }
 </style>

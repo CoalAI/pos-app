@@ -1,8 +1,22 @@
 <template>
     <div id="AddEditBatch">
       <div class="diff-shadow">
-        <h2><span>Add</span> New Batch</h2>
-        <div class="flex-box">
+        <h2>
+          <span v-if="batchId">Update</span>
+          <span v-else>Add New</span>
+          <span> Batch</span>
+        </h2>
+        <div v-if="batchId" class="flex-box">
+          <label class="pad-label w100" for="products">
+            <strong>Products:</strong>
+          </label>
+          <input
+            type="text"
+            v-model="productVariantName"
+            readonly
+          >
+        </div>
+        <div v-else class="flex-box">
           <label class="pad-label w100" for="products">
             <strong>Products:</strong>
           </label>
@@ -82,10 +96,11 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/order/actions';
 import { Batch } from '@/store/models/batch';
+import { ProductVariant } from '@/store/models/product';
 
 export default defineComponent({
   name: 'AddEditBatch',
-  props: ['batchId'],
+  props: ['productId', 'productVariantId', 'batchId'],
   data () {
     return {
       batch: {
@@ -94,7 +109,8 @@ export default defineComponent({
         manufacturedDate: '',
         expiryDate: '',
         in_stock: true
-      }
+      },
+      productVariantName: ''
     }
   },
   computed: {
@@ -140,6 +156,11 @@ export default defineComponent({
   },
   methods: {
     addUpdateBatch: async function () {
+      let batchIdNumber = 0;
+      if (this.batchId) {
+        batchIdNumber = parseFloat(this.batchId);
+        if (isNaN(batchIdNumber)) return;
+      }
 
       const batch: Batch = {
         product_variant: this.batch.productVariant,
@@ -148,26 +169,55 @@ export default defineComponent({
         expiry_date: this.batch.expiryDate,
         in_stock: this.batch.in_stock
       };
-      
-      await this.createBatch(batch);
+
+      if (this.productId && this.productVariantId && this.batchId) {
+        batch.id = batchIdNumber;
+        await this.updateBatch(batch);
+      } else {
+        await this.createBatch(batch);
+      }
       this.$router.push({name: 'Batch'});
+    },
+
+    loadData: function (batch: Batch) {
+      this.batch.quantity = batch.quantity ? batch.quantity : '';
+      this.batch.manufacturedDate = batch.manufacturing_date ? batch.manufacturing_date : '';
+      this.batch.expiryDate = batch.expiry_date ? batch.expiry_date : '';
+      this.batch.in_stock = batch.in_stock ? batch.in_stock : true;
     },
 
     ...mapActions({
       getProducts: ActionTypes.GET_PRODUCTS,
-      createBatch: ActionTypes.CREATE_BATCH
+      createBatch: ActionTypes.CREATE_BATCH,
+      updateBatch: ActionTypes.UPDATE_BATCH
     })
   },
   async beforeMount () {
     await this.getProducts('');
 
     if (this.products &&
-      this.products.length > 0 &&
-      this.products[0].product_variant &&
-      this.products[0].product_variant.length > 0 &&
-      this.products[0].product_variant[0].id) {
-        this.batch.productVariant = this.products[0].product_variant[0].id;
+    this.products.length > 0 &&
+    this.products[0].product_variant &&
+    this.products[0].product_variant.length > 0 &&
+    this.products[0].product_variant[0].id) {
+      this.batch.productVariant = this.products[0].product_variant[0].id;
+    }
+
+    if (this.productId && this.productVariantId && this.batchId) {
+      const product_id = parseInt(this.productId);
+      const product = isNaN(product_id) ? undefined : this.$store.getters.getSignleProduct(product_id);
+      if (product) {
+        const variant = product.product_variant.find((item: ProductVariant) => item.id == this.productVariantId);
+        const batch = variant.batch.find((item: Batch) => item.id == this.batchId);
+        this.productVariantName = product.name + ': ' + variant.price;
+        this.batch.productVariant = variant.id;
+        this.loadData(batch);
       }
+      else {
+        // Show 404 page on screen
+        this.$router.push({name: 'notFound'});
+      }
+    }
   }
 });
 </script>
