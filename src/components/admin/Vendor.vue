@@ -7,7 +7,7 @@
           <form class="flex-box">
             <input
               type="text"
-              placeholder="Enter Vendor name or contact to search"
+              placeholder="Enter vendor contact to search"
               class="search-input"
               v-model="search"
               @input="searchVendors"

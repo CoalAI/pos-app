@@ -36,7 +36,7 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, company_type?: string): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
 }
 
@@ -124,12 +124,15 @@ Actions = {
       }
     ]);
   },
-  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext) {
-    const response = await serverRequest('get', 'company/', true, undefined, undefined);
+  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, company_type?: string) {
+    const response = await serverRequest('get', 'company/', true, undefined, {company_type: company_type});
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
         commit(MutationTypes.SetCompanies, response.data.results)
       }
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.response?.data, {root: true});
     }
   },
   async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string) {
