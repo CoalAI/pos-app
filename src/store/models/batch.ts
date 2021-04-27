@@ -3,8 +3,8 @@ import { ProductVariant } from './product';
 
 export interface Batch extends DatesInterface {
   id?: number;
-  manufacturing_date?: Date;
-  expiry_date?: Date;
+  manufacturing_date?: string;
+  expiry_date?: string;
   product_variant?: number | ProductVariant;
   quantity?: string;
   in_stock?: boolean;

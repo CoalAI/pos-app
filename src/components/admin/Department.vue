@@ -1,6 +1,6 @@
 <template>
   <div class="diff-shadow">
-    <h2>Departments</h2>
+    <h2>Departments (To Be Implemented)</h2>
     <div class="search-grid-list-pages">
         <div id="filter-box">
           <router-link to="/department/create" class="btn btn-orange add-btn-width">Add New Department</router-link>

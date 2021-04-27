@@ -65,6 +65,12 @@ const routes: Array<RouteRecordRaw> = [
     component: AddEditBatch
   },
   {
+    path: "/batch/edit/:productId/:productVariantId/:batchId",
+    name: "EditBatch",
+    component: AddEditBatch,
+    props: true
+  },
+  {
     path: "/user/create",
     name: "",
     component: AddEditUser

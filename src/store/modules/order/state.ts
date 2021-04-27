@@ -1,6 +1,7 @@
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
 import { Unit } from '@/store/models/product';
+import { Batch } from'@/store/models/batch';
 
 export type State = {
     currentOrderStatus: string;
@@ -8,6 +9,7 @@ export type State = {
     productResults: Product[];
     recentProducts: Product[];
     listOfProducts: Product[];
+    listOfBatches: Batch[];
     units: Unit[];
 };
 
@@ -17,5 +19,6 @@ export const state: State = {
   productResults: [],
   recentProducts: [],
   listOfProducts: [],
+  listOfBatches: [],
   units: [],
 };

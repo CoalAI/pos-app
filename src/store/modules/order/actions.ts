@@ -5,6 +5,8 @@ import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
+import { Batch } from '@/store/models/batch';
+
 
 export enum ActionTypes {
   SEARCH_PRODUCT_BY_NAME = "SEARCH_PRODUCT_BY_NAME",
@@ -16,7 +18,10 @@ export enum ActionTypes {
   CREATE_PRODUCT = "CREATE_PRODUCT",
   UPDATE_PRODUCT = "UPDATE_PRODUCT",
   DELETE_PRODUCT = "DELETE_PRODUCT",
-  DELETE_PRODUCT_Variant = "DELETE_PRODUCT_Variant"
+  DELETE_PRODUCT_Variant = "DELETE_PRODUCT_Variant",
+  CREATE_BATCH = "CREATE_BATCH",
+  UPDATE_BATCH = "UPDATE_BATCH",
+  DELETE_BATCH = "DELETE_BATCH"
 }
 
 export type AugmentedActionContext = {
@@ -39,6 +44,9 @@ export interface Actions {
   [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}): void;
   [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string): void;
   [ActionTypes.DELETE_PRODUCT_Variant]({ commit }: AugmentedActionContext, productVariantID: string): void;
+  [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
+  [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
+  [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -49,7 +57,7 @@ Actions = {
       commit(MutationTypes.SetProductResults, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, barcode: string) {
@@ -58,7 +66,7 @@ Actions = {
       commit(MutationTypes.SetProductResults, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
@@ -68,7 +76,7 @@ Actions = {
       commit(MutationTypes.SetOrderStatus, 'Order is completed successfully.');
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
       if (response.response && response.response.data &&  response.response.data.non_field_errors) {
         commit(MutationTypes.SetOrderStatus, response.response.data.non_field_errors);
       } else {
@@ -90,7 +98,7 @@ Actions = {
       commit(MutationTypes.SetListOfProducts, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext) {
@@ -99,7 +107,7 @@ Actions = {
       commit(MutationTypes.SetUnit, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product) {
@@ -108,7 +116,7 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}) {
@@ -117,16 +125,13 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string) {
     const response = await serverRequest('delete', `product/${productID}/`, true);
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetOrder, response.data);
-    }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.DELETE_PRODUCT_Variant]({ commit }: AugmentedActionContext, productVariantID: string) {
@@ -135,7 +140,25 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit('SetError', response, {root: true});
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
+    const response = await serverRequest('post', `batch/`, true, batch);
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
+    const response = await serverRequest('patch', `batch/${batch.id}/`, true, batch);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string) {
+    const response = await serverRequest('delete', `batch/${batchID}/`, true);
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
     }
   }
 };

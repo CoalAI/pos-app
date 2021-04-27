@@ -38,7 +38,7 @@
           <th></th>
         </tr>
         <template v-for="(product, index) in productsList" v-bind:key="product.id">
-          <tr >
+          <tr>
             <td>{{ index + 1 }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.bar_code }}</td>
