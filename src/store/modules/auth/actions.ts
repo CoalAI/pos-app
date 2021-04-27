@@ -14,7 +14,8 @@ export enum ActionTypes {
   USER_DATA = "USER_DATA",
   GET_USERS = "GET_USERS",
   FETCH_ROLES = "FETCH_ROLES",
-  FETCH_COMPANIES = "FETCH_COMPANIES"
+  FETCH_COMPANIES = "FETCH_COMPANIES",
+  FETCH_VENDORS = "FETCH_VENDORS"
 }
 
 export type AugmentedActionContext = {
@@ -35,7 +36,8 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, company_type?: string): void;
+  [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -52,6 +54,12 @@ Actions = {
     if (isAxiosResponse(response)) {
       localStorage.token = response.data && response.data.token ? response.data.token : '';
       commit(MutationTypes.SetToken, response.data.token);
+    }
+    if(isAxiosError(response)) {
+      if (response.response && response.response.data)
+      {
+        commit('setError', response.response.data, {root: true});
+      }
     }
   },
   async [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User) {
@@ -116,12 +124,31 @@ Actions = {
       }
     ]);
   },
-  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext) {
-    const response = await serverRequest('get', 'company/', true, undefined, undefined);
+  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, company_type?: string) {
+    const response = await serverRequest('get', 'company/', true, undefined, {company_type: company_type});
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
         commit(MutationTypes.SetCompanies, response.data.results)
       }
     }
+    if(isAxiosError(response)) {
+      commit('setError', response.response?.data, {root: true});
+    }
   },
+  async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string) {
+    let response;
+    if (search) {
+      response = await serverRequest('get', 'vendor/', true, undefined, {search: search});
+    } else {
+      response = await serverRequest('get', 'vendor/', true, undefined, undefined);
+    }
+    if (isAxiosResponse(response)) {
+      if (response.data.results.length > 0) {
+        commit(MutationTypes.SetListOfVendors, response.data.results)
+      }
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.response?.data, {root: true});
+    }
+  }
 };

@@ -120,12 +120,12 @@
         <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
       </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="barcode">
+        <label class="pad-label w100" for="contact_number">
           <strong>Contact Number:</strong>
         </label>
         <div class="full-width">
           <input
-            name="barcode"
+            name="contact_number"
             type="text"
             placeholder="Enter contact number"
             v-model="user.contactNumber"
@@ -159,7 +159,7 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
-import { actions, ActionTypes } from '@/store/modules/auth/actions';
+import { ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
 
 export default defineComponent({
@@ -325,7 +325,7 @@ export default defineComponent({
     }
 
     if (this.userId) {
-      await this.getUsersList();
+      await this.getUsersList('');
       const user_id = parseInt(this.userId);
       const user = isNaN(user_id) ? undefined : this.$store.getters.getSignleUser(user_id);
       if (user) {
@@ -333,7 +333,6 @@ export default defineComponent({
       }
       else {
         // Show 404 page on screen
-        console.log(typeof user);
         this.$router.push({name: 'notFound'});
       }
     }
