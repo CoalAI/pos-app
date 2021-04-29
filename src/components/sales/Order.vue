@@ -650,6 +650,9 @@ export default defineComponent({
 
     orderCashReceivedValidation: function () {
       let errorMessage = null;
+      if (this.cashReceived !== undefined && this.cashReceived === '') {
+        errorMessage = "Cash is required"
+      }
       if (this.cashReceived !== undefined && this.cashReceived !== '') {
         const value = parseFloat(this.cashReceived);
         if (isNaN(value)) {
