@@ -52,7 +52,7 @@ export interface Actions {
 export const actions: ActionTree<State, IRootState> &
 Actions = {
   async [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string) {
-    const response = await serverRequest('get', 'product/', true, undefined, {name__startswith: name});
+    const response = await serverRequest('get', 'product/', true, undefined, {name__istartswith: name});
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetProductResults, response.data.results);
     }
@@ -61,7 +61,7 @@ Actions = {
     }
   },
   async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, barcode: string) {
-    const response = await serverRequest('get', 'product/', true, undefined, {bar_code__startswith: barcode});
+    const response = await serverRequest('get', 'product/', true, undefined, {bar_code__iendswith: barcode});
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetProductResults, response.data.results);
     }
