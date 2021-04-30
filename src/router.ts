@@ -97,6 +97,12 @@ const routes: Array<RouteRecordRaw> = [
     component: DepartmentAddEdit
   },
   {
+    path: "/department/edit/:companyId",
+    name: "EditDepartment",
+    component: DepartmentAddEdit,
+    props: true
+  },
+  {
     path: "/vendors",
     name: "Vendor",
     component: Vendor

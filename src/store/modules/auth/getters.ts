@@ -14,6 +14,8 @@ export interface Getters {
   // eslint-disable-next-line
   getSignleUser(state: State, id: number): any;
   // eslint-disable-next-line
+  getSignleCompany(state: State, id: number): any;
+  // eslint-disable-next-line
   getSignleVendor(state: State): any;
 }
 
@@ -39,6 +41,10 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getSignleUser: (state: State) => (id: number) => {
     const user = state.listOfUsers.find((item: User) => item.id && item.id === id);
     return user;
+  },
+  getSignleCompany: (state: State) => (id: number) => {
+    const company = state.companies.find((item: Company) => item.id && item.id === id);
+    return company;
   },
   getSignleVendor: (state: State) => (id: number) => {
     const vendor = state.ListOfVendors.find((item: User) => item.id && item.id === id);

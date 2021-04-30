@@ -4,6 +4,7 @@ import { User, Credentials } from '@/store/models/user';
 import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
+import { Company } from '@/store/models/company';
 
 export enum ActionTypes {
   FETCH_TOEKN = "FETCH_TOEKN",
@@ -15,6 +16,9 @@ export enum ActionTypes {
   GET_USERS = "GET_USERS",
   FETCH_ROLES = "FETCH_ROLES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
+  CREATE_COMPANY = "CREATE_COMPANY",
+  UPDATE_COMPANY = "UPDATE_COMPANY",
+  DELETE_COMPANY = "DELETE_COMPANY",
   FETCH_VENDORS = "FETCH_VENDORS"
 }
 
@@ -36,7 +40,10 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, company_type?: string): void;
+  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
+  [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
+  [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
+  [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
 }
 
@@ -124,8 +131,8 @@ Actions = {
       }
     ]);
   },
-  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, company_type?: string) {
-    const response = await serverRequest('get', 'company/', true, undefined, {company_type: company_type});
+  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}) {
+    const response = await serverRequest('get', 'company/', true, undefined, options);
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
         commit(MutationTypes.SetCompanies, response.data.results)
@@ -133,6 +140,24 @@ Actions = {
     }
     if(isAxiosError(response)) {
       commit('setError', response.response?.data, {root: true});
+    }
+  },
+  async [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company) {
+    const response = await serverRequest('post', `company/`, true, company);
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company) {
+    const response = await serverRequest('patch', `company/${company.id}/`, true, company);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number) {
+    const response = await serverRequest('delete', `company/${companyID}/`, true);
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string) {
