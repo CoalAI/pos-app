@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Report from "./components/sales/Report.vue";
 import Order from "./components/sales/Order.vue";
+import OrdersList from "./components/sales/OrdersList.vue";
 import EditOrder from "./components/sales/EditOrder.vue";
 import Product from "./components/sales/Product.vue";
 import Batch from "./components/sales/Batch.vue";
@@ -22,6 +23,17 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Order",
     component: Order
+  },
+  {
+    path: "/orders",
+    name: "OrdersList",
+    component: OrdersList
+  },
+  {
+    path: "/orders/:orderId",
+    name: "OrderDetails",
+    component: EditOrder,
+    props: true
   },
   {
     path: "/report",

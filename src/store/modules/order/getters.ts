@@ -9,6 +9,10 @@ export interface Getters {
   getOrder(state: State): Order;
   getProductResults(state: State): Product[];
   getRecentProducts(state: State): Product[];
+  getListOfOrders(state: State): Order[];
+  getOrderStatuses(state: State): {status: string}[];
+  // eslint-disable-next-line
+  getSignleOrder(state: State, id: number): any;
   getListOfProducts(state: State): Product[];
   // eslint-disable-next-line
   getSignleProduct(state: State, id: number): any;
@@ -27,6 +31,16 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getRecentProducts: (state: State) => {
     return state.recentProducts;
+  },
+  getListOfOrders: (state: State) => {
+    return state.listOfOrders
+  },
+  getOrderStatuses: (state: State) => {
+    return state.OrderStatuses
+  },
+  getSignleOrder: (state: State) => (id: number) => {
+    const order = state.listOfOrders.find((item: Order) => item.id && item.id === id);
+    return order;
   },
   getListOfProducts: (state: State) => {
     return state.listOfProducts;
