@@ -25,27 +25,32 @@
           label="ordersearch"
           name="ordersearch"
           type="text"
-          placeholder="Enter Order Number to search"
-          class="search-input"
+          placeholder="Invoice ID"
+          class="order-search-in"
           v-model="orderSearch"
           @input="searchTyped"
           autocomplete="off"
         />
-        <button class="btn btn-orange search-btn">Search Order</button>
+        <input
+          type="date" 
+          id="manufactured" 
+          name="manufactured" 
+          class="order-search-date"
+          v-model="orderDate"
+        >
+        <button
+          @click="searchOrder"
+          class="btn btn-orange order-search-btn">Search Order</button>
       </div>
       <div v-show="showResult" class="search-result-upper">
         <ul class="search-result">
-          <li class="single-search-item">
-            <span><strong>#33423</strong></span>
-            <span>12/03/2021</span>
-          </li>
-          <li class="single-search-item">
-            <span><strong>#33423</strong></span>
-            <span>12/03/2021</span>
-          </li>
-          <li class="single-search-item">
-            <span><strong>#33423</strong></span>
-            <span>12/03/2021</span>
+          <li
+            class="single-search-item"
+            v-for="order in orders" v-bind:key="order.id"
+            @click="orderDetails(order.id)"
+          >
+            <span><strong>#{{order.id}}</strong></span>
+            <span>{{onlyDate(order.created)}}</span>
           </li>
         </ul>
       </div>
@@ -66,24 +71,60 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
+import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions'
 
 export default defineComponent({
   name: 'Header',
   data () {
     return{
       orderSearch: '',
-      showResult: false
+      showResult: false,
+      orderDate: ''
     }
   },
   computed: {
     ...mapGetters({
-      userdata: 'getUser'
+      userdata: 'getUser',
+      orders: 'getListOfOrders'
     })
   },
   methods: {
+    clear: function () {
+      this.orderSearch = '';
+      this.showResult = false;
+      this.orderDate = '';
+    },
+
+    searchOrder: function () {
+      this.$router.push({
+        name: 'OrdersList',
+        query: {
+          invoiceId: this.orderSearch,
+          date: this.orderDate
+        }
+      });
+      this.clear();
+    },
+
+    orderDetails: function (id: number) {
+      this.$router.push({
+        name: 'OrderDetails',
+        params: {
+          orderId: id
+        }
+      });
+      this.clear();
+    },
+
+    onlyDate: function (value: string) {
+      const givenDate = new Date(value)
+      return givenDate.toDateString()
+    },
+
     ...mapActions({
       logoutUser: ActionTypes.LOGOUT_USER,
-      getuserdate: ActionTypes.USER_DATA
+      getuserdate: ActionTypes.USER_DATA,
+      fetchOrders: OrderActionTypes.FETCH_ORDERS,
     }),
 
     searchTyped() {
@@ -91,8 +132,9 @@ export default defineComponent({
         this.showResult = false;
         return
       }
-      // Call action from Store
-      // Change results
+      this.fetchOrders({
+        search: this.orderSearch
+      });
       this.showResult = true;
     },
 
@@ -187,5 +229,17 @@ export default defineComponent({
     height: $logo_img_height;
     width: $logo_img_width;
     object-fit: contain;
+  }
+
+  .order-search-in {
+    width: 43%;
+  }
+
+  .order-search-date {
+    width: 37%;
+  }
+
+  .order-search-btn {
+    width: 20%;
   }
 </style>

@@ -11,6 +11,8 @@ import { Batch } from '@/store/models/batch';
 export enum ActionTypes {
   SEARCH_PRODUCT_BY_NAME = "SEARCH_PRODUCT_BY_NAME",
   SEARCH_PRODUCT_BY_BARCODE = "SEARCH_PRODUCT_BY_BARCODE",
+  FETCH_ORDERS = "FETCH_ORDERS",
+  FETCH_ORDER_STATUSES = "FETCH_ORDER_STATUSES",
   CREATE_ORDER = "CREATE_ORDER",
   CHANGE_ORDER_STATUS = "CHANGE_ORDER_STATUS",
   GET_PRODUCTS = "GET_PRODUCTS",
@@ -36,6 +38,8 @@ export type AugmentedActionContext = {
 export interface Actions {
   [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string): void;
   [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, name: string): void;
+  [ActionTypes.FETCH_ORDERS]({ commit }: AugmentedActionContext, options: {search?: string; cash?: boolean; status?: string; created?: Date}): void;
+  [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
   [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string): void;
@@ -64,6 +68,32 @@ Actions = {
     const response = await serverRequest('get', 'product/', true, undefined, {bar_code__iendswith: barcode});
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetProductResults, response.data.results);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.FETCH_ORDERS](
+    { commit }: AugmentedActionContext,
+    options: {
+      search?: string;
+      cash?: boolean;
+      status?: string;
+      created__date?: Date;
+    }
+  ) {
+    const response = await serverRequest('get', 'order/', true, undefined, options);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfOrders, response.data.results);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'order-type/', true);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetOrderStatuses, response.data.results);
     }
     if(isAxiosError(response)) {
       commit('setError', response, {root: true});

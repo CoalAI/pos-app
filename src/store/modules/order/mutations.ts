@@ -10,6 +10,8 @@ export enum MutationTypes {
   SetOrder = 'SET_ORDER',
   SetProductResults = 'SET_PRODUCT_RESULTS',
   SetRecentProducts = 'SET_RECENT_PRODUCTS',
+  SetListOfOrders = 'SET_LIST_OF_ORDERS',
+  SetOrderStatuses = 'SET_ORDER_STATUSES',
   SetListOfProducts = 'SET_LIST_OF_PRODUCTS',
   SetUnit = 'SET_UNIT',
 }
@@ -19,6 +21,8 @@ export type Mutations = {
   [MutationTypes.SetOrder](state: State, order: Order): void;
   [MutationTypes.SetProductResults](state: State, productResults: Product[]): void;
   [MutationTypes.SetRecentProducts](state: State, recentProducts: Product[]): void;
+  [MutationTypes.SetListOfOrders](state: State, orders: Order[]): void;
+  [MutationTypes.SetOrderStatuses](state: State, statuses: {status: string}[]): void;
   [MutationTypes.SetListOfProducts](state: State, products: Product[]): void;
   [MutationTypes.SetUnit](state: State, units: Unit[]): void;
 }
@@ -35,6 +39,12 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetRecentProducts](state, recentProducts) {
     state.recentProducts = recentProducts
+  },
+  [MutationTypes.SetListOfOrders](state: State, orders: Order[]) {
+    state.listOfOrders = orders;
+  },
+  [MutationTypes.SetOrderStatuses](state: State, statuses: {status: string}[]) {
+    state.OrderStatuses = statuses;
   },
   [MutationTypes.SetListOfProducts](state, products) {
     state.listOfProducts = products;

@@ -8,6 +8,8 @@ export type State = {
     order: Order;
     productResults: Product[];
     recentProducts: Product[];
+    listOfOrders: Order[];
+    OrderStatuses: {status: string}[];
     listOfProducts: Product[];
     listOfBatches: Batch[];
     units: Unit[];
@@ -18,6 +20,8 @@ export const state: State = {
   order: {},
   productResults: [],
   recentProducts: [],
+  listOfOrders: [],
+  OrderStatuses: [],
   listOfProducts: [],
   listOfBatches: [],
   units: [],
