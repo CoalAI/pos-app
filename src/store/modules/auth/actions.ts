@@ -14,6 +14,7 @@ export enum ActionTypes {
   LOGOUT_USER = "LOGOUT_USER",
   USER_DATA = "USER_DATA",
   GET_USERS = "GET_USERS",
+  GET_USERS_BY_TYPES = "GET_USERS_BY_TYPES",
   FETCH_ROLES = "FETCH_ROLES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
   CREATE_COMPANY = "CREATE_COMPANY",
@@ -39,6 +40,7 @@ export interface Actions {
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
   [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
   [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
@@ -100,6 +102,18 @@ Actions = {
     } else {
       response = await serverRequest('get', 'user/', true, undefined, undefined);
     }
+    if (isAxiosResponse(response)) {
+      if (response.data.results.length > 0) {
+        commit(MutationTypes.SetListOfUsers, response.data.results)
+      }
+    }
+  },
+  async [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]) {
+    const params = new URLSearchParams();
+    for(const user_type of user_types) {
+      params.append('user_type', user_type);
+    }
+    const response = await serverRequest('get', 'user/', true, undefined, params);
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
         commit(MutationTypes.SetListOfUsers, response.data.results)

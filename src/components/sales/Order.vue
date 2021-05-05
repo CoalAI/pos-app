@@ -426,7 +426,10 @@
 
     </div>
 
-    <ZeroOrder v-if="adminUser === true" @cancel-modal="cancelModal = true"></ZeroOrder>
+    <ZeroOrder
+    v-if="adminUser === true"
+    :total-amount="totalAmount"
+    @cancel-modal="cancelModal = true"></ZeroOrder>
     
     <Modal v-if="cancelModal">
       <template v-slot:header>
@@ -488,7 +491,7 @@ export default defineComponent({
 
     return {
       cancelModal: false,
-      adminUser: false,
+      adminUser: true,
       product: {
         name: '',
         barCode: '',
