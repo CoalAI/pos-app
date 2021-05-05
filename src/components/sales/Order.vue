@@ -579,8 +579,6 @@ export default defineComponent({
     },
 
     productQuantityValidation: function () {
-
-      console.log('inside quantity validation function');
       let errorMessage = null;
       if (!this.errorIndication) {
         // CheckIF product exist on the backend
@@ -592,10 +590,7 @@ export default defineComponent({
           if (isNaN(value)) {
             errorMessage = 'Only numbers are allowed';
           } else {            
-            
             if ( value > this.selectedBatchQuantity) {
-              //console.log(`comparing ${value} > ${this.selectedBatchQuantity}`);
-              //console.log(this.productBatchSelect[parseInt(this.product.batch)-1]);
               errorMessage = 'Stock is less than this quantity.';
             }
           }
@@ -626,8 +621,6 @@ export default defineComponent({
       this.productDiscountValidation === null) {
         disable = false
       }
-
-      console.log('disable: '+disable);
       return disable
 
     },
@@ -753,10 +746,6 @@ export default defineComponent({
     },
 
     addOrderItem: async function () {
-
-      // if(!this.addProductButton){
-      //   return;
-      // }
       
       this.errorIndication = false;
       let quantity = parseFloat(this.product.quantity);
@@ -1044,13 +1033,6 @@ export default defineComponent({
     grid-template-columns: 3fr 1fr;
     gap: 0.1em 0.1em;
   }
-
-  // .payment-container-inner {
-  //   display: grid;
-  //   grid-template-columns: 0.7fr 2.3fr 0.7fr 2.3fr 1fr;
-  //   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-  //   gap: 0.1em 0.1em;
-  // }
 
   .pr-s-r-table {
     border: none;
