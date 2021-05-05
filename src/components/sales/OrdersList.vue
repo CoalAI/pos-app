@@ -146,13 +146,13 @@ export default defineComponent({
       this.orderStatus = '';
       this.orderDate = '';
       await this.fetchOrders({
-        search: this.search
+        id__contains: this.search
       })
     },
 
     onChangeFilters: async function () {
       await this.fetchOrders({
-        search: this.search,
+        id__contains: this.search,
         status: this.orderStatus,
         cash: this.paymentMethod,
         created__date: this.orderDate
@@ -164,7 +164,7 @@ export default defineComponent({
         event.preventDefault()
       }
       this.fetchOrders({
-        search: this.search,
+        id__contains: this.search,
         status: this.orderStatus,
         cash: this.paymentMethod,
         created__date: this.orderDate

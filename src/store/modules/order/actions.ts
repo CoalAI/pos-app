@@ -38,7 +38,7 @@ export type AugmentedActionContext = {
 export interface Actions {
   [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string): void;
   [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, name: string): void;
-  [ActionTypes.FETCH_ORDERS]({ commit }: AugmentedActionContext, options: {search?: string; cash?: boolean; status?: string; created?: Date}): void;
+  [ActionTypes.FETCH_ORDERS]({ commit }: AugmentedActionContext, options: {id__contains?: string; cash?: boolean; status?: string; created?: Date}): void;
   [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
@@ -76,7 +76,7 @@ Actions = {
   async [ActionTypes.FETCH_ORDERS](
     { commit }: AugmentedActionContext,
     options: {
-      search?: string;
+      id__contains?: string;
       cash?: boolean;
       status?: string;
       created__date?: Date;
