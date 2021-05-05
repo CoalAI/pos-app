@@ -133,7 +133,7 @@ export default defineComponent({
         return
       }
       this.fetchOrders({
-        search: this.orderSearch
+        id__contains: this.orderSearch
       });
       this.showResult = true;
     },
