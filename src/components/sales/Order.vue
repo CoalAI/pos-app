@@ -426,11 +426,6 @@
 
     </div>
 
-    <ZeroOrder
-    v-if="adminUser === true"
-    :total-amount="totalAmount"
-    @cancel-modal="cancelModal = true"></ZeroOrder>
-    
     <Modal v-if="cancelModal">
       <template v-slot:header>
         <h2>Confirm Cancellation</h2>
@@ -470,7 +465,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
-import ZeroOrder from '@/components/admin/ZeroOrder.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { Order } from '@/store/models/order';
@@ -482,7 +476,6 @@ export default defineComponent({
   name: 'Order',
   components: {
     Modal,
-    ZeroOrder
   },
 
   data() {
@@ -491,7 +484,6 @@ export default defineComponent({
 
     return {
       cancelModal: false,
-      adminUser: true,
       product: {
         name: '',
         barCode: '',
@@ -750,6 +742,12 @@ export default defineComponent({
       const discount = isNaN(parseFloat(this.product.discount)) ? 0 : parseFloat(this.product.discount);
       const batch = parseFloat(this.product.batch);
 
+      if ( (!this.productId || this.productId === 0) && (!this.productVariantId || this.productVariantId === 0) ) {
+        this.duplicateMessage = 'Please select product from product results or add desired product to system';
+        return;
+      }
+
+      this.duplicateMessage = '';
       const currentProduct = await this.productResult
         .find((item: Product) => item.id === this.productId);
       const currentVariant = await currentProduct.product_variant

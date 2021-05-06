@@ -17,12 +17,18 @@ import NotFound from "./components/common-components/NotFound.vue";
 import Settings from "./components/common-components/Settings.vue";
 import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
+import ZeroOrder from "./components/admin/ZeroOrder.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Order",
     component: Order
+  },
+  {
+    path: "/admin/order",
+    name: "AdminOrder",
+    component: ZeroOrder
   },
   {
     path: "/orders",
