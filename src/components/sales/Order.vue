@@ -95,8 +95,8 @@
               v-model="product.batch"
               ref="batches"
             >
-              <option v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
-                {{ batch.id }} {{ batch.expiry_date }}
+              <option class="batches-op" v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
+                #{{ batch.id }}   Exp : {{ batch.expiry_date }} Quan: {{trimQuantity(batch.quantity)}}
               </option>
             </select>
             <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
@@ -520,6 +520,7 @@ export default defineComponent({
     }
   },
   computed: {
+
     totalAmount: function (): number {
       let total = this.orderItems
         // eslint-disable-next-line
@@ -591,8 +592,8 @@ export default defineComponent({
           const value = parseFloat(this.product.quantity);
           if (isNaN(value)) {
             errorMessage = 'Only numbers are allowed';
-          } else {
-            if ( value > this.product.quantityUpperLimit) {
+          } else {            
+            if ( value > this.selectedBatchQuantity) {
               errorMessage = 'Stock is less than this quantity.';
             }
           }
@@ -600,6 +601,19 @@ export default defineComponent({
       }
       return errorMessage;
     },
+
+
+    selectedBatchQuantity: function(): number { 
+        const index = parseInt(this.product.batch)-1;
+        let selectedBatchQuantity = 0.0;
+        if(index>=0 && this.productBatchSelect.length>index){
+          const selectedBatch = (this.productBatchSelect[index] as Batch);
+          const selectedBatchQuantityStr = selectedBatch.quantity!==undefined?selectedBatch.quantity:'0';
+          selectedBatchQuantity = parseFloat(selectedBatchQuantityStr);
+        }
+        return selectedBatchQuantity;
+    },
+
 
     addProductButton: function (): boolean {
       let disable = true;
@@ -611,6 +625,7 @@ export default defineComponent({
         disable = false
       }
       return disable
+
     },
 
     productDiscountValidation: function () {
@@ -734,6 +749,7 @@ export default defineComponent({
     },
 
     addOrderItem: async function () {
+      
       this.errorIndication = false;
       let quantity = parseFloat(this.product.quantity);
       quantity = isNaN(quantity) ? 0 : quantity;
@@ -745,7 +761,7 @@ export default defineComponent({
       if (this.product.quantity === '') return;
       if (this.product.batch === '') return;
       if (this.product.buyPrice === '') return;
-      if (quantity > this.product.quantityUpperLimit) return;
+      if (quantity > this.selectedBatchQuantity) return;
 
       const discount = isNaN(parseFloat(this.product.discount)) ? 0 : parseFloat(this.product.discount);
       const batch = parseFloat(this.product.batch);
@@ -915,7 +931,9 @@ export default defineComponent({
       }
       this.product.buyPrice = buyPrice.toString();
     },
-
+    trimQuantity: function(quan: string): string{
+        return parseFloat(quan!==undefined?quan:'0.0').toFixed(2);
+    },
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: ActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1019,13 +1037,6 @@ export default defineComponent({
     gap: 0.1em 0.1em;
   }
 
-  // .payment-container-inner {
-  //   display: grid;
-  //   grid-template-columns: 0.7fr 2.3fr 0.7fr 2.3fr 1fr;
-  //   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-  //   gap: 0.1em 0.1em;
-  // }
-
   .pr-s-r-table {
     border: none;
   }
@@ -1070,5 +1081,9 @@ export default defineComponent({
   .order_item_input {
     margin: 0 !important;
     padding: 0 !important;
+  }
+
+  option.batches-op{
+    font-weight: 600;
   }
 </style>
