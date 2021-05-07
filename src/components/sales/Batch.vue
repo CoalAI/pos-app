@@ -21,8 +21,7 @@
     <div class="mr-2">
       <table>
         <colgroup>
-          <col span="1" style="width: 5%;">
-          <col span="1" style="width: 35%;">
+          <col span="1" style="width: 40%;">
           <col span="1" style="width: 10%;">
           <col span="1" style="width: 10%;">
           <col span="1" style="width: 10%;">
@@ -31,7 +30,6 @@
         </colgroup>
 
         <tr>
-          <th>Sr No.</th>
           <th>Product Name</th>
           <th>Quantity</th>
           <th>Manufactured Date</th>
@@ -40,10 +38,9 @@
           <th></th>
         </tr>
 
-        <template v-for="(product, index) in products" v-bind:key="product.id">
+        <template v-for="product in products" v-bind:key="product.id">
           <template v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
             <tr v-for="productVariantBatch in productVariant.batch" v-bind:key="productVariantBatch.id">
-              <td>{{index}}</td>
               <td>{{product.name}}: {{productVariant.price}}</td>
               <td>{{productVariantBatch.quantity}}</td>
               <td>{{productVariantBatch.manufacturing_date}}</td>
@@ -182,7 +179,7 @@ export default defineComponent({
       if (event) {
         event.preventDefault()
       }
-      this.getProducts(this.search)
+      this.getProducts(this.search);
     },
 
     ...mapActions({
