@@ -77,17 +77,19 @@
       <table>
         <colgroup>
           <col span="1" style="width: 2%;">
-          <col span="1" style="width: 14%;">
-          <col span="1" style="width: 14%;">
-          <col span="1" style="width: 14%;">
-          <col span="1" style="width: 14%;">
-          <col span="1" style="width: 14%;">
-          <col span="1" style="width: 14%;">
-          <col span="1" style="width: 14%;">
+          <col span="1" style="width: 6%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 20%;">
         </colgroup>
 
         <tr>
           <th>Sr No.</th>
+          <th>Order ID</th>
           <th>Total</th>
           <th>Amount Received</th>
           <th>Status</th>
@@ -98,12 +100,13 @@
         </tr>
         <tr v-for="(order, index) in orders" v-bind:key="order.id">
           <td>{{ index + 1 }}</td>
-          <td>{{order.total}}</td>
-          <td>{{order.amount_received}}</td>
+          <td>{{order.id}}</td>
+          <td>{{trimDecimalPlaces(order.total)}}</td>
+          <td>{{trimDecimalPlaces(order.amount_received)}}</td>
           <td>{{order.status}}</td>
           <td v-if="order.cash">Cash</td><td v-else>Card</td>
           <td v-if="order.amount_discount">Amount</td><td v-else>Percentage</td>
-          <td>{{order.total_discount}}</td>
+          <td>{{trimDecimalPlaces(order.total_discount)}}</td>
           <td style="width: 150px">
             <div class="flex-box">
               <router-link 
@@ -169,6 +172,10 @@ export default defineComponent({
         cash: this.paymentMethod,
         created__date: this.orderDate
       })
+    },
+
+    trimDecimalPlaces: function (value: string) {
+      return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
     },
 
     ...mapActions({
