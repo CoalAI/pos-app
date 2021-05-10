@@ -15,6 +15,7 @@
               name="username"
               type="text"
               placeholder="Enter Username"
+              required="True"
             />
           </div>
           <div class="flex-box">
@@ -28,23 +29,29 @@
               name="password"
               type="password"
               placeholder="Enter Password"
+              required="True"
             />
           </div>
+          <span v-if="loginValidation" class="form-error">{{ loginValidation }}</span>
         </form>
+
         <button class="btn btn-orange btn-lg"
         @click="submitLogin">Login</button>
         <a href="forgetpassword">
           <span>Forget Password?</span>
         </a>
+         <Loader v-show="showLoader"/>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { mapActions } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
+import Loader from '../common-components/Loader.vue';
+
 
 export default defineComponent({
   name: 'Login',
@@ -52,6 +59,16 @@ export default defineComponent({
     return {
       username: '',
       password: '',
+      showLoader:false
+    }
+  },
+  computed:{
+    loginValidation(){
+      if (this.username=='' || this.password==''){
+        return 'Both fields are required!';
+      }
+      return false;
+      
     }
   },
   methods: {
@@ -59,11 +76,18 @@ export default defineComponent({
       loginUser: ActionTypes.LOGIN_USER
     }),
     submitLogin() {
-      this.loginUser({
-        username: this.username,
-        password: this.password
-      });
-    }
+      if(!this.loginValidation){
+        this.showLoader=true;
+        this.loginUser({
+          username: this.username,
+          password: this.password
+        }).finally(()=>this.showLoader=false)
+        
+      }
+    },
+  },
+  components:{
+    Loader 
   }
 });
 </script>

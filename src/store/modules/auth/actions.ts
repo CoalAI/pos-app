@@ -67,7 +67,10 @@ Actions = {
     if(isAxiosError(response)) {
       if (response.response && response.response.data)
       {
-        commit('setError', response.response.data, {root: true});
+        if(response.response.data.non_field_errors && response.response.data.non_field_errors.length>=1)
+          commit('setError', response.response.data.non_field_errors[0], {root: true});
+        else
+          commit('setError', response.response.data, {root: true});
       }
     }
   },
@@ -121,12 +124,7 @@ Actions = {
     }
   },
   async [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext) {
-    // const response = await serverRequest('get', 'user-type/', true, undefined, undefined);
-    // if (isAxiosResponse(response)) {
-    //   if (response.data.results.length > 0) {
-    //     commit(MutationTypes.SetRoles, response.data.results)
-    //   }
-    // }
+    
     commit(MutationTypes.SetRoles, [
       {
         user_type: 'SALES_STAFF'
@@ -153,7 +151,9 @@ Actions = {
       }
     }
     if(isAxiosError(response)) {
-      commit('setError', response.response?.data, {root: true});
+      if (response.response && response.response.data){
+        commit('setError', response.response.data, {root: true});
+      }
     }
   },
   async [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company) {
@@ -187,7 +187,9 @@ Actions = {
       }
     }
     if(isAxiosError(response)) {
-      commit('setError', response.response?.data, {root: true});
+      if (response.response && response.response.data){
+        commit('setError', response.response.data, {root: true});
+      }
     }
   }
 };
