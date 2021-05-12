@@ -67,7 +67,10 @@ Actions = {
     if(isAxiosError(response)) {
       if (response.response && response.response.data)
       {
-        commit('setError', response.response.data, {root: true});
+        if(response.response.data.non_field_errors && response.response.data.non_field_errors.length>=1)
+          commit('setError', response.response.data.non_field_errors[0], {root: true});
+        else
+          commit('setError', response.response.data, {root: true});
       }
     }
   },
@@ -121,7 +124,6 @@ Actions = {
     }
   },
   async [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext) {
-
     commit(MutationTypes.SetRoles, [
       {
         user_type: 'SALES_STAFF'

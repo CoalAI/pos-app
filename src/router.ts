@@ -22,7 +22,7 @@ import { store } from "./store";
 
 function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN','VENDOR'];
-  const role = store.getters.getUser? store.getters.user_type:'';
+  const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
   }else{
@@ -33,7 +33,7 @@ function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,ne
 
 function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['ADMIN','SUPER_ADMIN','VENDOR'];
-  const role = store.getters.getUser? store.getters.user_type:'';
+  const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
   }else{
@@ -43,7 +43,7 @@ function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: N
 
 function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SUPER_ADMIN'];
-  const role = store.getters.getUser? store.getters.user_type:'';
+  const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
   }else{
