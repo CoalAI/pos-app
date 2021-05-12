@@ -33,13 +33,13 @@ export default defineComponent({
 </script>
 
 
-<style scoped>
+<style lang="scss" scoped>
 .loader {
-  border: 16px solid #f3f3f3;
+  border: $loader-border solid #f3f3f3;
   border-radius: 50%;
-  border-top: 16px solid #db3434;
-  width: 60px;
-  height: 60px;
+  border-top: $loader-border solid $primary-color;
+  width: $loader-width;
+  height: $loader-width;
   -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 2s linear infinite;
   align-self: flex-end;
