@@ -133,13 +133,12 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      productsList: 'getListOfProducts'
+      productsList: 'getListOfProducts',
+      userdata: 'getUser'
     }),
     allowedAddProduct(){
       const allowedRoles = ['ADMIN','SUPER_ADMIN'];
-      
-      const rol = localStorage.getItem('role')!=null? localStorage.getItem('role'):'SALES_STAFF';
-      
+      const rol: string = this.userdata!=null ? this.userdata.user_type : '';
       return (rol!==null && allowedRoles.includes(rol));
     }
   },
@@ -180,8 +179,8 @@ export default defineComponent({
     },
 
     ...mapActions({
-      getProducts: ActionTypes.GET_PRODUCTS,
-      deleteProductAction: ActionTypes.DELETE_PRODUCT
+        getProducts: ActionTypes.GET_PRODUCTS,
+        deleteProductAction: ActionTypes.DELETE_PRODUCT,
     })
   },
   async beforeMount () {

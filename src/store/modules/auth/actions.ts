@@ -91,7 +91,6 @@ Actions = {
     const response = await serverRequest('get', 'user-data/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
-        localStorage.setItem('role',response.data.results[0].user_type);
         commit(MutationTypes.SetUser, response.data.results[0]);
       }
     }

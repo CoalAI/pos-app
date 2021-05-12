@@ -18,33 +18,37 @@ import Settings from "./components/common-components/Settings.vue";
 import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
+import { store } from "./store";
 
 function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN','VENDOR'];
-  const role = localStorage.getItem('role')
+  const role = store.getters.getUser? store.getters.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
+  }else{
+    next('/404');
   }
-  next('/404');
 }
 
 
 function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['ADMIN','SUPER_ADMIN','VENDOR'];
-  const role = localStorage.getItem('role')
+  const role = store.getters.getUser? store.getters.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
+  }else{
+    next('/404');
   }
-  next('/404');
 }
 
 function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SUPER_ADMIN'];
-  const role = localStorage.getItem('role')
+  const role = store.getters.getUser? store.getters.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
+  }else{
+    next('/404');
   }
-  next('/404');
 }
 
 
