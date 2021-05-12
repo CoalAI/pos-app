@@ -2,7 +2,7 @@
   <div class="diff-shadow pad-2">
     <h2>Products</h2>
     <div class="search-grid-list-pages">
-        <router-link to="/product/create" class="btn btn-orange add-btn-width">Add New Product</router-link>
+        <router-link v-show="allowedAddProduct" to="/product/create" class="btn btn-orange add-btn-width">Add New Product</router-link>
         <div class="float-right">
           <form class="flex-box">
             <input
@@ -134,7 +134,14 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       productsList: 'getListOfProducts'
-    })
+    }),
+    allowedAddProduct(){
+      const allowedRoles = ['ADMIN','SUPER_ADMIN'];
+      
+      const rol = localStorage.getItem('role')!=null? localStorage.getItem('role'):'SALES_STAFF';
+      
+      return (rol!==null && allowedRoles.includes(rol));
+    }
   },
   // define methods under the `methods` object
   methods: {
