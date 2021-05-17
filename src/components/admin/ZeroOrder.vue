@@ -124,7 +124,7 @@
                 ref="batches"
               >
                 <option v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
-                  {{ batch.id }} {{ batch.expiry_date }}
+                  #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimNumber(batch.quantity)}}
                 </option>
               </select>
               <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
@@ -161,11 +161,13 @@
         </table>
         <div id="orderTypes" class="mr-2">
           <label class="custom-radio" style="margin-right: 10px">From Vendor or Department
-            <input type="radio" name="order_type" value="from" v-model="orderType" @change="orderTypeChange">
+            <input type="radio" name="order_type" value="from"
+            :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
             <span class="checkmark"></span>
           </label>
           <label class="custom-radio" style="margin-right: 10px">To Department
-            <input type="radio" name="order_type" value="to" v-model="orderType" @change="orderTypeChange">
+            <input type="radio" name="order_type" value="to"
+            :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
             <span class="checkmark"></span>
           </label>
         </div>
@@ -201,15 +203,16 @@
         <div class="box1-tab" style="margin-left: 15px">
           <table style="width: 100%">
             <colgroup>
-              <col span="1" style="width: 5%;">
+              <col span="1" style="width: 3%;">
               <col span="1" style="width: 10%;">
               <col span="1" style="width: 25%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 8%;">
+              <col span="1" style="width: 8%;">
               <col span="1" style="width: 6%;">
               <col span="1" style="width: 10%;">
               <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 8%;">
+              <col span="1" style="width: 8%;">
               <col span="1" style="width: 4%;">
             </colgroup>
 
@@ -222,6 +225,7 @@
               <th>Disc</th>
               <th>Manu Date</th>
               <th>Expiry Date</th>
+              <th>Batch Qty</th>
               <th>Total Price</th>
               <th></th>
             </tr>
@@ -238,7 +242,7 @@
                   @input="changeQuantity(index)"
                 />
               </td>
-              <td>{{ orderItem.price }}</td>
+              <td>{{ trimNumber(orderItem.price) }}</td>
               <td>
                 <input
                   class="order_item_input"
@@ -248,9 +252,10 @@
                   @input="changeDiscount(index)"
                 />
               </td>
-              <td>{{orderItem.batch.manufacturing_date}}</td>
-              <td>{{orderItem.batch.expiry_date}}</td>
-              <td>{{orderItem.totalPrice}}</td>
+              <td>{{ orderItem.batch.manufacturing_date }}</td>
+              <td>{{ orderItem.batch.expiry_date }}</td>
+              <td>{{ trimNumber(orderItem.batch.quantity) }}</td>
+              <td>{{ orderItem.totalPrice }}</td>
               <td style="cursor: pointer;" @click="removeItem(index)">
                 <hr style="border: 1px solid red">
               </td>
@@ -272,7 +277,7 @@
               v-if="orderType === 'to'"
               type="text"
               name="sellerID"
-              :value="seller.username"
+              :value="userdata.username"
               readonly
             >
             <select
@@ -281,15 +286,16 @@
               class="custom-select"
               id="sellerID"
               v-model="seller"
+              @change="sellerVendorCheck"
             >
-              <option disabled :value="{}">select a seller</option>
-              <option v-for="user in users" v-bind:key="user.id" v-bind:value="user">
+              <option disabled value="0">select a seller</option>
+              <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">
                 <span v-if="user.first_name && user.last_name">{{user.first_name}} {{user.last_name}}</span>
                 <span v-else>{{user.username}}</span>
                 <span v-if="user.company && user.company.company_name">- {{user.company.company_name}}</span>
               </option>
               <option disabled>----VENDORS----</option>
-              <option v-for="vendor in vendors" v-bind:key="vendor.id" v-bind:value="vendor">
+              <option v-for="vendor in vendors" v-bind:key="vendor.id" v-bind:value="vendor.id">
                 <span v-if="vendor.first_name && vendor.last_name">{{vendor.first_name}} {{vendor.last_name}}</span>
                 <span v-else>{{vendor.username}}</span>
                 <span v-if="vendor.company && vendor.company.company_name">- {{vendor.company.company_name}}</span>
@@ -306,7 +312,7 @@
               v-if="orderType === 'from'"
               type="text"
               name="BuyerID"
-              :value="buyer.username"
+              :value="userdata.username"
               readonly
             >
             <select
@@ -316,44 +322,54 @@
               id="BuyerID"
               v-model="buyer"
             >
-              <option disabled :value="{}">select a buyer</option>
-              <option v-for="user in users" v-bind:key="user.id" v-bind:value="user">
+              <option disabled value="0">select a buyer</option>
+              <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">
                 <span v-if="user.first_name && user.last_name">{{user.first_name}} {{user.last_name}}</span>
                 <span v-else>{{user.username}}</span>
                 <span v-if="user.company && user.company.company_name">- {{user.company.company_name}}</span>
               </option>
-              <option>
-
-              </option>
             </select>
           </div>
+
+          <label class="pad-label w100 pn" for="totalAmount">
+            <strong>Total Amount:</strong>
+          </label>
+
+          <div class="pn-i">
+            <input
+              name="totalAmount"
+              type="text"
+              placeholder="Companies balance"
+              v-bind:value="totalAmount"
+              readonly
+            >
+          </div>
+
+          <label class="pad-label d mr-l" for="total_discount">
+            <strong>Total Discount:</strong>
+          </label>
+          <div class="d-i">
+            <div class="flex-box">
+              <input
+                style="width: 60%"
+                type="number"
+                placeholder="Discount"
+                name="total_discount"
+                v-model="totalDiscount"
+              />
+              <select
+                style="width: 40%; margin-left: 5px;"
+                name="discountMethod"
+                v-model="discountMethod"
+              >
+                <option value="amount">Amount</option>
+                <option value="percentage">Perc (%)</option>
+              </select>
+            </div>
+            <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
+          </div>
           
-          <template v-if="seller.user_type === 'VENDOR'">
-            <label class="pad-label w100 pn" for="totalAmount">
-              <strong>Total Amount:</strong>
-            </label>
-
-            <div class="pn-i">
-              <input
-                name="totalAmount"
-                type="text"
-                placeholder="Companies balance"
-                v-bind:value="totalAmount"
-                readonly
-              >
-            </div>
-
-            <label class="pad-label w100 mr-l d" for="products">
-              <strong>Cash given:</strong>
-            </label>
-
-            <div class="d-i">
-              <input
-                type="text"
-                placeholder="Cash given to vendor"
-              >
-            </div>
-
+          <template v-if="vendorUser && vendorUser.user_type === 'VENDOR'">
             <label class="pad-label w100 bt" for="balance">
               <strong>Company Balance:</strong>
             </label>
@@ -363,16 +379,30 @@
                 name="balance"
                 type="text"
                 placeholder="Companies balance"
-                v-bind:value="seller.company.credit"
+                v-bind:value="vendorUser.company.credit * -1"
+                :style="[vendorUser.company.credit > 0 ? {'color': 'red'} : {'color': 'green'}, {}]"
                 readonly
               >
+            </div>
+
+            <label class="pad-label w100 mr-l e" for="products">
+              <strong>Cash Given:</strong>
+            </label>
+
+            <div class="e-i">
+              <input
+                type="number"
+                placeholder="Cash given to vendor"
+                v-model="cashReceived"
+              >
+              <span v-if="orderCashReceivedValidation" class="form-error">{{ orderCashReceivedValidation }}</span>
             </div>
           </template>
         </div>
         <div id="box2">
-          <button class="btn btn-orange">Submit and Print</button>
+          <button class="btn btn-orange" @click="submitOrder" :disabled="submitOrderButton">Submit and Print</button>
           <button class="btn btn-orange" @click="addVendorModal = true">Add New Vendor</button>
-          <button class="btn btn-orange" @click="cancelOrderModal">Cancel Order</button>
+          <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
         </div>
       </div>
     </div>
@@ -413,6 +443,39 @@
       </template>
     </Modal>
 
+    <Modal v-if="cancelModal">
+      <template v-slot:header>
+        <h2>Confirm Cancellation</h2>
+      </template>
+
+      <template v-slot:body>
+        <p>Are you sure you want to cancel this order?</p>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button class="btn btn-orange btn-mr" @click="cancelModal = false">Cancel</button>
+          <button class="btn btn-orange btn-mr" @click="handleOrderStatus">Yes</button>
+        </div>
+      </template>
+    </Modal>
+
+    <Modal v-if="orderStatus">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <p>{{ orderStatus }}</p>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button @click="handleOrderStatus()" class="btn btn-orange btn-mr" v-focus>New Order</button>
+        </div>
+      </template>
+    </Modal>
+
   </div>
 </template>
 
@@ -425,6 +488,7 @@ import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 import { Order } from '@/store/models/order';
 import { Batch } from '@/store/models/batch';
+import { User } from '@/store/models/user';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
 
@@ -436,6 +500,8 @@ export default defineComponent({
   data() {
     const today = new Date().toDateString();
     const orderItems: OrderItem[] = [];
+    const batches: Batch[] = [];
+    const vendor: User = {};
 
     return {
       cancelModal: false,
@@ -455,7 +521,7 @@ export default defineComponent({
       orderItems: orderItems,
       productId: 0,
       productVariantId: 0,
-      productBatchSelect: '',
+      productBatchSelect: batches,
       cashReceived: '',
       totalDiscount: '',
       orderType: 'from',
@@ -467,8 +533,9 @@ export default defineComponent({
       discountMethod: 'amount',
 
       addVendorModal: false,
-      seller: {},
-      buyer: {}
+      seller: 0,
+      buyer: 0,
+      vendorUser: vendor
     }
   },
   computed: {
@@ -531,6 +598,8 @@ export default defineComponent({
           const value = parseFloat(this.product.quantity);
           if (isNaN(value)) {
             errorMessage = 'Only numbers are allowed';
+          } else if (this.orderType === 'to' && value > this.selectedBatchQuantity) {
+            errorMessage = 'Stock in this batch is less than quantity.';
           }
         }
       }
@@ -623,17 +692,10 @@ export default defineComponent({
 
     orderCashReceivedValidation: function () {
       let errorMessage = null;
-      if (this.cashReceived !== undefined && this.cashReceived === '') {
-        errorMessage = "Cash is required"
-      }
       if (this.cashReceived !== undefined && this.cashReceived !== '') {
         const value = parseFloat(this.cashReceived);
         if (isNaN(value)) {
           errorMessage = 'Only numbers are allowed';
-        } else {
-          if (value < this.totalAmount) {
-            errorMessage = 'Cash is less than total amount';
-          }
         }
       }
       return errorMessage
@@ -647,6 +709,27 @@ export default defineComponent({
         disable = false;
       }
       return disable
+    },
+
+    selectedBatchQuantity: function(): number {
+      let selectedBatchQuantity = 0.0;
+      if (this.orderType === 'to') {
+        const batchID = parseInt(this.product.batch);
+        if(!isNaN(batchID) && batchID > 0 && this.productBatchSelect.length > 0){
+          const selectedBatch = this.productBatchSelect.find((item: Batch) => item.id === batchID);
+          const selectedBatchQuantityStr = selectedBatch && selectedBatch.quantity ? selectedBatch.quantity : '0';
+          selectedBatchQuantity = parseFloat(selectedBatchQuantityStr);
+        }
+      }
+      return selectedBatchQuantity;
+    },
+
+    orderTypeValidation: function() {
+      let disable = false;
+      if (this.orderItems.length > 0) {
+        disable = true;
+      }
+      return disable;
     },
 
     ...mapGetters({
@@ -667,7 +750,8 @@ export default defineComponent({
       this.product.discount = '';
       this.product.batch = '';
       this.product.quantityUpperLimit = 0;
-      this.productBatchSelect = '';
+      const batches: Batch[] = [];
+      this.productBatchSelect = batches;
       this.errorIndication = true;
       this.duplicateMessage = '';
       this.product.buyPrice = '';
@@ -676,13 +760,17 @@ export default defineComponent({
       this.product.expiryDate = '';
     },
 
+    trimNumber: function(value: string): string{
+        return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
+    },
+
     orderTypeChange: function () {
       if (this.orderType === 'to') {
-        this.buyer = {};
-        this.seller = this.userdata;
+        this.buyer = 0;
+        this.seller = this.userdata.id;
       } else if (this.orderType === 'from') {
-        this.seller = {};
-        this.buyer = this.userdata;
+        this.seller = 0;
+        this.buyer = this.userdata.id;
       }
     },
 
@@ -710,7 +798,7 @@ export default defineComponent({
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
-      const batchId = (this.productBatchSelect[0] as Batch).id
+      const batchId = this.productBatchSelect.length > 0 ? (this.productBatchSelect[0] as Batch).id : undefined;
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
       if (this.orderType == 'to') {
         (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
@@ -729,6 +817,7 @@ export default defineComponent({
       if (this.product.quantity === '') return;
       if (this.product.buyPrice === '') return;
       if (this.orderType === 'to' && this.product.batch === '') return;
+      if (this.orderType === 'to' && quantity > this.selectedBatchQuantity) return;
       if (this.orderType === 'from' && this.product.manufacturedDate === '') return;
       if (this.orderType === 'from' && this.product.expiryDate === '') return;
 
@@ -747,15 +836,29 @@ export default defineComponent({
 
       price = currentVariant.price;
       let totalPrice = price * quantity;
+      if (this.product.discount
+        && discount > 0
+        && discount < 100
+      ) {
+        totalPrice = totalPrice * ((100 - discount) / 100)
+      }
+      
       let batch;
       if (this.orderType === 'to') {
-        if (this.product.discount
-          && discount > 0
-          && discount < 100
-        ) {
-          totalPrice = totalPrice * ((100 - discount) / 100)
-        }
-        batch = currentVariant.batch.find((item: Batch) => item && item.id && item.id.toString() === this.product.batch)
+        batch = currentVariant.batch
+        .map((item: Batch) => {
+          return {
+            id: item.id,
+            manufacturing_date: item.manufacturing_date,
+            expiry_date: item.expiry_date,
+            quantity: item.quantity,
+            in_stock: item.in_stock,
+            product_variant: item.product_variant,
+            created: item.created,
+            last_modified: item.last_modified,
+          } as Batch;
+        })
+        .find((item: Batch) => item && item.id && item.id.toString() == this.product.batch);
       } else {
         batch = {
           manufacturing_date: this.product.manufacturedDate,
@@ -781,24 +884,30 @@ export default defineComponent({
 
     submitOrder: async function () {
       if (this.orderItems.length < 0) return;
-      if (this.cashReceived === '') return;
+      if (this.buyer === 0 || this.seller === 0) return;
 
-      const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
-        return {
+      const unproxiedOrderItems = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
+        const unproxiedOrderItem = {
           batch: singleOrderItem.batch,
           price: singleOrderItem.price?.toString(),
           discount: singleOrderItem.discount?.toString(),
           quantity: singleOrderItem.quantity?.toString()
-        } as OrderItem
+        } as OrderItem;
+        if (this.orderType == 'to') {
+          unproxiedOrderItem.batch_id = singleOrderItem.batch &&
+          typeof singleOrderItem.batch !== 'number' ? singleOrderItem.batch.id : singleOrderItem.batch;
+          delete unproxiedOrderItem.batch;
+        }
+        return unproxiedOrderItem;
       });
 
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
 
       const singleOrder: Order = {
-        order_item: unproxiedOrderItem,
-        buyer: 2,
-        seller: this.userdata.id,
+        order_item: unproxiedOrderItems,
+        buyer: this.buyer,
+        seller: this.seller,
         total_discount: isNaN(discount) ? '0' : discount.toString(),
         total: this.totalAmount.toString(),
         amount_received: isNaN(cash) ? '0' : cash.toString(),
@@ -812,16 +921,18 @@ export default defineComponent({
       const currentVariant = this.orderItems[index].productVariant;
       if (currentVariant !== undefined) {
 
-        const upperLimit = this.sumQuantity(currentVariant);
         const currentOrderItemQuantity = this.orderItems[index].quantity;
         const currentOrderItemPrice = this.orderItems[index].price;
         const currentDiscount = this.orderItems[index].discount;
+        const currentBatch = this.orderItems[index].batch;
 
-        if (currentOrderItemQuantity !== undefined && currentOrderItemPrice !== undefined) {
+        if (currentOrderItemQuantity !== undefined && currentOrderItemPrice !== undefined
+        && currentBatch !== undefined && typeof currentBatch !== 'number') {
 
           const quantity = parseFloat(currentOrderItemQuantity);
           const price = parseFloat(currentOrderItemPrice);
           const discount = currentDiscount ? parseFloat(currentDiscount) : 0;
+          const upperLimit = currentBatch.quantity ? parseFloat(currentBatch.quantity) : 0;
 
           if (isNaN(price)) return;
           if (isNaN(quantity)) return;
@@ -890,6 +1001,7 @@ export default defineComponent({
       this.cashReceived = '';
       this.totalDiscount = '';
       this.orderType = 'from';
+      this.cancelModal = false;
     },
 
     changeProductPrice: function () {
@@ -916,19 +1028,25 @@ export default defineComponent({
       this.product.buyPrice = buyPrice.toString();
     },
 
+    sellerVendorCheck: function () {
+      if (this.seller) {
+        this.vendorUser = this.vendors.find((item: User) => item.id === this.seller);
+      }
+    },
+
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: OrderActionTypes.SEARCH_PRODUCT_BY_BARCODE,
-      createOrder: OrderActionTypes.CREATE_ORDER,
+      createOrder: OrderActionTypes.INTERNAL_ORDER,
       changeOrderStatus: OrderActionTypes.CHANGE_ORDER_STATUS,
       getUsers: AuthActionTypes.GET_USERS_BY_TYPES,
       getVendors: AuthActionTypes.FETCH_VENDORS,
     })
   },
   async beforeMount () {
-    await this.getUsers(['SUPER_ADMIN', 'ADMIN', 'SALES_STAFF']);
+    await this.getUsers(['ADMIN']);
     await this.getVendors('');
-    this.buyer = this.userdata;
+    this.buyer = this.userdata.id;
   }
 })
 </script>
