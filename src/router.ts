@@ -51,25 +51,6 @@ function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,ne
   }
 }
 
-
-
-export enum MutationTypes {
-  ORDER = 'Order',
-  ADMIN_ORDER = 'AdminOrder',
-  OrdersList = "OrdersList",
-  OrderDetails = "OrderDetails",
-  Report = "Report",
-  EditOrder = "EditOrder",
-  Product= 'Product',
-  EditProduct='EditProduct',
-  Batch='Batch',
-  User='User',
-  CreateProduct='CreateProduct',
-  EditUser='EditUser',
-
-
-}
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
