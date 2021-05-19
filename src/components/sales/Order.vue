@@ -684,7 +684,6 @@ export default defineComponent({
       }
       return disable
     },
-
     ...mapGetters({
       productResult: 'getProductResults',
       userdata: 'getUser',
