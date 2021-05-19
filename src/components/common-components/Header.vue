@@ -7,16 +7,16 @@
       <div class="flex-box">
         <a class="btn btn-grid btn-orange btn-mr" href="/"
         target="_blank">New Order</a>
-        <!-- <a class="btn btn-orange btn-mr">Report</a> -->
-        <router-link to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
-        <router-link to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
-        <router-link to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
+        <router-link v-show="superadmin" to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
+        <router-link v-show="admin" to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
+        <router-link v-show="admin" to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
+      
       </div>
       <div class="flex-box">
         <router-link to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
-        <router-link to="/batchs" class="btn btn-grid btn-orange btn-mr">Batches</router-link>
-        <router-link to="/vendors" class="btn btn-grid btn-orange btn-mr">Vendors</router-link>
-        <router-link to="/departments" class="btn btn-grid btn-orange btn-mr">Deparments</router-link>
+        <router-link v-show="admin" to="/batchs" class="btn btn-grid btn-orange btn-mr">Batches</router-link>
+        <router-link v-show='admin' to="/vendors" class="btn btn-grid btn-orange btn-mr">Vendors</router-link>
+        <router-link v-show='admin' to="/departments" class="btn btn-grid btn-orange btn-mr">Deparments</router-link>
       </div>
     </div>
     <div class="s">
@@ -86,7 +86,21 @@ export default defineComponent({
     ...mapGetters({
       userdata: 'getUser',
       orders: 'getListOfOrders'
-    })
+    }),
+    admin(){
+      const allowedRoles = ['ADMIN','SUPER_ADMIN'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)){
+        return true;
+      }
+      return false;
+    },
+    superadmin(){
+      const allowedRoles = ['SUPER_ADMIN'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)){
+        return true;
+      }
+      return false;
+    }
   },
   methods: {
     clear: function () {
