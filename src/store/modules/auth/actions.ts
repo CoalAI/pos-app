@@ -94,7 +94,7 @@ Actions = {
     const response = await serverRequest('get', 'user-data/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
-        commit(MutationTypes.SetUser, response.data.results[0])
+        commit(MutationTypes.SetUser, response.data.results[0]);
       }
     }
   },
@@ -111,20 +111,22 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]) {
+  async [ActionTypes.GET_USERS_BY_TYPES]({ commit}: AugmentedActionContext, user_types: string[]) {
     const params = new URLSearchParams();
     for(const user_type of user_types) {
       params.append('user_type', user_type);
     }
     const response = await serverRequest('get', 'user/', true, undefined, params);
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
-        commit(MutationTypes.SetListOfUsers, response.data.results)
+    const loggedInUser = await serverRequest('get', 'user-data/', true, undefined, undefined);
+    if (isAxiosResponse(response) && isAxiosResponse(loggedInUser)) {
+      if (response.data.results.length > 0 && loggedInUser.data.results.length > 0) {
+        const usersData = response.data.results;
+        usersData.filter((user: User) => user.id !== loggedInUser.data.results[0].id);
+        commit(MutationTypes.SetListOfUsers, usersData)
       }
     }
   },
   async [ActionTypes.FETCH_ROLES]({ commit }: AugmentedActionContext) {
-    
     commit(MutationTypes.SetRoles, [
       {
         user_type: 'SALES_STAFF'
@@ -151,7 +153,7 @@ Actions = {
       }
     }
     if(isAxiosError(response)) {
-      if (response.response && response.response.data){
+      if(response.response && response.response.data){
         commit('setError', response.response.data, {root: true});
       }
     }
@@ -187,7 +189,7 @@ Actions = {
       }
     }
     if(isAxiosError(response)) {
-      if (response.response && response.response.data){
+      if(response.response && response.response.data){
         commit('setError', response.response.data, {root: true});
       }
     }
