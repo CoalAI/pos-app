@@ -96,7 +96,7 @@
               ref="batches"
             >
               <option class="batches-op" v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
-                #{{ batch.id }}   Exp : {{ batch.expiry_date }} Quan: {{trimQuantity(batch.quantity)}}
+                #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimQuantity(batch.quantity)}}
               </option>
             </select>
             <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
@@ -481,6 +481,7 @@ export default defineComponent({
   data() {
     const today = new Date().toDateString();
     const orderItems: OrderItem[] = [];
+    const batches: Batch[] = [];
 
     return {
       cancelModal: false,
@@ -498,7 +499,7 @@ export default defineComponent({
       orderItems: orderItems,
       productId: 0,
       productVariantId: 0,
-      productBatchSelect: '',
+      productBatchSelect: batches,
       cashReceived: '',
       totalDiscount: '',
       paymentMethod: 'cash',
@@ -594,18 +595,16 @@ export default defineComponent({
       return errorMessage;
     },
 
-
-    selectedBatchQuantity: function(): number { 
-        const index = parseInt(this.product.batch)-1;
-        let selectedBatchQuantity = 0.0;
-        if(index>=0 && this.productBatchSelect.length>index){
-          const selectedBatch = (this.productBatchSelect[index] as Batch);
-          const selectedBatchQuantityStr = selectedBatch.quantity!==undefined?selectedBatch.quantity:'0';
-          selectedBatchQuantity = parseFloat(selectedBatchQuantityStr);
-        }
-        return selectedBatchQuantity;
+    selectedBatchQuantity: function(): number {
+      let selectedBatchQuantity = 0.0;
+      const batchID = parseInt(this.product.batch);
+      if(!isNaN(batchID) && batchID > 0 && this.productBatchSelect.length > 0){
+        const selectedBatch = this.productBatchSelect.find((item: Batch) => item.id === batchID);
+        const selectedBatchQuantityStr = selectedBatch && selectedBatch.quantity ? selectedBatch.quantity : '0';
+        selectedBatchQuantity = parseFloat(selectedBatchQuantityStr);
+      }
+      return selectedBatchQuantity;
     },
-
 
     addProductButton: function (): boolean {
       let disable = true;
@@ -702,7 +701,8 @@ export default defineComponent({
       this.product.discount = '';
       this.product.batch = '';
       this.product.quantityUpperLimit = 0;
-      this.productBatchSelect = '';
+      const batches: Batch[] = [];
+      this.productBatchSelect = batches;
       this.errorIndication = true;
       this.duplicateMessage = '';
       this.product.buyPrice = '';
@@ -735,7 +735,7 @@ export default defineComponent({
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
-      const batchId = (this.productBatchSelect[0] as Batch).id
+      const batchId = this.productBatchSelect.length > 0 ? (this.productBatchSelect[0] as Batch).id : undefined;
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
       (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
     },
@@ -779,7 +779,14 @@ export default defineComponent({
       }
 
       const SingleOrderItem: OrderItem = {
-        batch: isNaN(batch) ? 0 : batch,
+        batch: isNaN(batch) ? 0 : currentVariant.batch
+        .map((item: Batch) => {
+          return {
+            id: item.id,
+            quantity: item.quantity,
+          } as Batch;
+        })
+        .find((item: Batch) => item && item.id && item.id.toString() == this.product.batch),
         product: currentProduct,
         productVariant: currentVariant,
         price: price.toString(),
@@ -798,7 +805,7 @@ export default defineComponent({
 
       const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
         return {
-          batch: singleOrderItem.batch,
+          batch: singleOrderItem.batch && typeof singleOrderItem.batch !== 'number' && singleOrderItem.batch.id? singleOrderItem.batch.id : 0,
           price: singleOrderItem.price?.toString(),
           discount: singleOrderItem.discount?.toString(),
           quantity: singleOrderItem.quantity?.toString()
@@ -826,16 +833,18 @@ export default defineComponent({
       const currentVariant = this.orderItems[index].productVariant;
       if (currentVariant !== undefined) {
 
-        const upperLimit = this.sumQuantity(currentVariant);
         const currentOrderItemQuantity = this.orderItems[index].quantity;
         const currentOrderItemPrice = this.orderItems[index].price;
         const currentDiscount = this.orderItems[index].discount;
+        const currentBatch = this.orderItems[index].batch;
 
-        if (currentOrderItemQuantity !== undefined && currentOrderItemPrice !== undefined) {
+        if (currentOrderItemQuantity !== undefined && currentOrderItemPrice !== undefined
+        && currentBatch !== undefined && typeof currentBatch !== 'number') {
 
           const quantity = parseFloat(currentOrderItemQuantity);
           const price = parseFloat(currentOrderItemPrice);
           const discount = currentDiscount ? parseFloat(currentDiscount) : 0;
+          const upperLimit = currentBatch.quantity ? parseFloat(currentBatch.quantity) : 0;
 
           if (isNaN(price)) return;
           if (isNaN(quantity)) return;
@@ -904,6 +913,7 @@ export default defineComponent({
       this.cashReceived = '';
       this.totalDiscount = '';
       this.paymentMethod = 'cash';
+      this.cancelModal = false;
     },
 
     changeProductPrice: function () {
