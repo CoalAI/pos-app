@@ -225,33 +225,43 @@
         <div class="flex-box mr-2">
           <p class="labl-txt"><strong>Payment method:</strong></p>
           <label class="custom-radio" style="margin-right: 10px">Cash
-            <input type="radio" name="payment_method" value="cash" v-model="paymentMethod">
+            <input type="radio" name="payment_method" value="cash" v-model="paymentMethod" @change="clearTransaction">
             <span class="checkmark"></span>
           </label>
           <label class="custom-radio" style="margin-right: 10px">Card
-            <input type="radio" name="payment_method" value="card" v-model="paymentMethod">
+            <input type="radio" name="payment_method" value="card" v-model="paymentMethod" @change="clearTransaction">
             <span class="checkmark"></span>
           </label>
           <label class="custom-radio">Credit
-            <input type="radio" name="payment_method" value="credit" v-model="paymentMethod">
+            <input type="radio" name="payment_method" value="credit" v-model="paymentMethod" @change="clearTransaction">
             <span class="checkmark"></span>
           </label>
         </div>
-        <div>
+        <div v-if="paymentMethod === 'credit'">
           <input
-              v-if="paymentMethod === 'credit'"
               type="text"
               tabindex="1"
               placeholder="Search Walk-In Customer"
               name="barcode"
-              v-focus
+              v-model="customersearch"
+              @focus="showCustDropdown=!showCustDropdown"
+              @input="searchCustomer"
             />
+          <div v-show="showCustDropdown" class="search-result-upper">
+            <ul class="search-result">
+              <li
+                class="single-search-item"
+                v-for="customer in customers" v-bind:key="customer.id" @click="selectCustomer(customer)">
+                <span><strong>{{customer.contact_number?customer.contact_number:customer.username}}</strong></span>
+                <span>{{customer.first_name}}</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
       <!-- Payment Process -->
       <div class="payment-container">
-
         <div id="pay-box1">
           <div class="form-container">
             
@@ -322,13 +332,12 @@
                 <strong>Payment Service:</strong>
               </label>
               <div class="bt-i">
-                <select
-                  name="return"
-                >
-                  <option>Bank</option>
+                <select name="return" v-model="paymentService">
+                  <option value="BANK">Bank</option>
+                  <option value="JAZZ_CASH">Jazzcash</option>
+                  <option value="EASY_PAISA">Easypaisa</option>
                 </select>
               </div>
-
               <label class="pad-label mr-l e" for="return">
                 <strong>Reference Number:</strong>
               </label>
@@ -337,6 +346,7 @@
                   type="text"
                   name="reference"
                   placeholder="Transaction ID"
+                  v-model="transactionId"
                 />
               </div>
             </template>
@@ -351,6 +361,7 @@
                   name="customername"
                   placeholder="Customer Name"
                   readonly
+                  v-bind:value="getFullName"
                 />
               </div>
 
@@ -363,6 +374,7 @@
                   name="balance"
                   placeholder="Balance"
                   readonly
+                  v-bind:value="regularCustomer.credit"
                 />
               </div>
             </template>
@@ -374,8 +386,7 @@
             <div class="bc-i">
               <select
                 name="creditPaymentMethod"
-                v-model="creditPaymentMethod"
-              >
+                v-model="creditPaymentMethod">
                 <option value="cash">Cash</option>
                 <option value="card">Card</option>
               </select>
@@ -391,11 +402,10 @@
                 <strong>Payment Service:</strong>
               </label>
               <div class="pn-i">
-                <select
-                  type="text"
-                  name="return"
-                >
-                  <option>Bank</option>
+                <select type="text" name="return" v-model="paymentService">
+                  <option value="BANK">Bank</option>
+                  <option value="JAZZ_CASH">Jazzcash</option>
+                  <option value="EASY_PAISA">Easypaisa</option>
                 </select>
               </div>
 
@@ -407,13 +417,14 @@
                   type="text"
                   name="reference"
                   placeholder="Transaction ID"
+                  v-model="transactionId"
                 />
               </div>
             </template>
           </div>
         </div>
         <div id="pay-box2">
-            <button v-if="paymentMethod === 'credit'" class="btn btn-orange">Add New Customer</button>
+            <button v-if="paymentMethod === 'credit'" class="btn btn-orange" @click="addCustModal=true">Add New Customer</button>
             <button
               class="btn btn-orange"
               @click="submitOrder"
@@ -443,6 +454,29 @@
       </template>
     </Modal>
 
+    <Modal v-if="addCustModal">
+      <template v-slot:header>
+        <h2>Add Customer</h2>
+      </template>
+
+      <template v-slot:body>
+        <input type="text" placeholder="First Name" required v-model="user.firstName"/>
+        <input type="text" placeholder="Last Name" v-model="user.lastName"/>
+        <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
+        <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
+        <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button class="btn btn-orange btn-mr" @click="addCustModal = false">Cancel</button>
+          <button class="btn btn-orange btn-mr" :disabled="addCustButton" @click="addNewCustomer">Submit</button>
+        </div>
+      </template>
+    </Modal>
+
+
+
     <Modal v-if="orderStatus">
       <template v-slot:header>
         <h2>Order Status</h2>
@@ -467,10 +501,12 @@ import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
+import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Order } from '@/store/models/order';
 import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
+import { User } from '@/store/models/user';
 
 export default defineComponent({
   name: 'Order',
@@ -482,9 +518,9 @@ export default defineComponent({
     const today = new Date().toDateString();
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
-
     return {
       cancelModal: false,
+      addCustModal: false,
       product: {
         name: '',
         barCode: '',
@@ -494,6 +530,12 @@ export default defineComponent({
         batch: '',
         buyPrice: '',
         actualPrice: 0
+      },
+      user: {
+        userName: '',
+        firstName: '',
+        lastName: '',
+        company:''
       },
       date: today,
       orderItems: orderItems,
@@ -505,15 +547,29 @@ export default defineComponent({
       paymentMethod: 'cash',
       errorIndication: true,
       buyer: 2,
+      balance:0,
+      customerName:'',
       BarCodeMaxLength: 48,
       ProductNameMaxLength: 60,
       duplicateMessage: '',
       creditPaymentMethod: 'cash',
-      discountMethod: 'amount'
+      discountMethod: 'amount',
+      customersearch:'',
+      paymentService:'',
+      transactionId:'',
+      selectedCutomer:'',
+      showCustDropdown:false,
+      walkinCustomer:{},
+      regularCustomer:{}
     }
   },
+  created: async function(){
+    debugger
+    await this.getUsers('');
+    this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === 'WALK_IN_CUSTOMER');
+    
+  },
   computed: {
-
     totalAmount: function (): number {
       let total = this.orderItems
         // eslint-disable-next-line
@@ -618,6 +674,14 @@ export default defineComponent({
       return disable
 
     },
+    addCustButton: function(){
+      if(this.nameValidation===null &&
+      this.contactnoValidation===null)
+      {
+        return false;
+      }
+      return true;
+    },
 
     productDiscountValidation: function () {
       let errorMessage = null;
@@ -675,6 +739,19 @@ export default defineComponent({
       return errorMessage
     },
 
+    contactnoValidation: function(){
+      if(this.user.userName===''){
+        return 'contact number is required!';
+      }
+      return null;
+    },
+    nameValidation: function(){
+        if(this.user.firstName==='' && this.user.lastName===''){
+          return 'name can not be empty!'
+        }
+        return null;
+    },
+
     submitOrderButton: function () {
       let disable = true;
       if ( this.orderItems.length > 0 &&
@@ -684,10 +761,24 @@ export default defineComponent({
       }
       return disable
     },
+    getFullName: function(): string{
+      const cust: User = this.regularCustomer as User;
+      const firstname: string =  cust.first_name!==undefined?cust.first_name:''
+      const lastname: string = cust.last_name!==undefined?cust.last_name:''
+      const fullname: string = firstname+' '+lastname
+      
+      return fullname
+    },
+
+    // showCustDropdown: function(): boolean{
+    //     return this.customersearch.length>0 && this.customers.length > 0
+    // },
+
     ...mapGetters({
       productResult: 'getProductResults',
       userdata: 'getUser',
-      orderStatus: 'getOrderStatus'
+      orderStatus: 'getOrderStatus',
+      customers: 'getListOfUsers'
     })
   },
   methods: {
@@ -707,7 +798,14 @@ export default defineComponent({
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
     },
-
+    clearTransaction: function(){
+      this.transactionId=''
+      this.paymentService=this.paymentMethod==='cash'?'':'BANK'
+      this.user.userName=''
+      this.user.firstName=''
+      this.user.lastName=''
+      this.user.company=''
+    },
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = '';
       const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
@@ -739,6 +837,34 @@ export default defineComponent({
       (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
     },
 
+    selectCustomer: function(customer: User){
+      if(customer.credit===undefined){
+        customer.credit=0;
+      }
+      
+      this.regularCustomer=customer;
+      this.showCustDropdown=false;
+      this.customersearch=customer.contact_number===undefined?'':customer.contact_number;
+    },
+
+    addNewCustomer:async function(){
+      debugger
+      const companyId = this.userdata.company.id;  
+
+      const user: User = {
+        username: this.user.userName,
+        first_name: this.user.firstName,
+        last_name: this.user.lastName,
+        company:companyId
+      }
+
+      await this.registerUser(user);
+
+      // this.$router.push({name: 'User'});
+
+
+      this.addCustModal=false
+    },
     addOrderItem: async function () {
       
       this.errorIndication = false;
@@ -802,6 +928,7 @@ export default defineComponent({
       if (this.orderItems.length < 0) return;
       if (this.cashReceived === '') return;
 
+      debugger
       const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
         return {
           batch: singleOrderItem.batch && typeof singleOrderItem.batch !== 'number' && singleOrderItem.batch.id? singleOrderItem.batch.id : 0,
@@ -813,18 +940,21 @@ export default defineComponent({
 
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
+      const buyer: User = this.paymentMethod==='credit'?this.regularCustomer:this.walkinCustomer;
 
       const singleOrder: Order = {
         order_item: unproxiedOrderItem,
-        buyer: this.buyer,
+        buyer: buyer.id,
         seller: this.userdata.id,
         total_discount: isNaN(discount) ? '0' : discount.toString(),
         total: this.totalAmount.toString(),
-        payment_method: this.paymentMethod === 'cash' ? true : false,
+        cash_payment: this.paymentMethod === 'cash' ? true : false,
         amount_received: isNaN(cash) ? '0' : cash.toString(),
         amount_discount: this.discountMethod === 'amount' ? true : false,
+        payment_service: this.paymentMethod === 'cash'? 'BANK' : this.paymentService,
+        transaction_id: this.transactionId,
+        invoice_id: 'tempincv'
       }
-
       this.createOrder(singleOrder);
     },
 
@@ -877,6 +1007,13 @@ export default defineComponent({
 
     removeItem: function (index: number) {
       this.orderItems.splice(index, 1)
+    },
+
+    searchCustomer: function (event: Event){
+      if(event)
+        event.preventDefault()
+
+      this.getUsers(this.customersearch)
     },
 
     searchByName: function (event: Event) {
@@ -945,7 +1082,9 @@ export default defineComponent({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: ActionTypes.SEARCH_PRODUCT_BY_BARCODE,
       createOrder: ActionTypes.CREATE_ORDER,
-      changeOrderStatus: ActionTypes.CHANGE_ORDER_STATUS
+      changeOrderStatus: ActionTypes.CHANGE_ORDER_STATUS,
+      getUsers: AuthActionTypes.GET_USERS,
+      registerUser: AuthActionTypes.REGISTER_USER
     })
   },
 });
@@ -1093,4 +1232,39 @@ export default defineComponent({
   option.batches-op{
     font-weight: 600;
   }
+
+  .search-result-upper {
+    position: absolute;
+    width: 24%;
+    text-align: left;
+    margin-top: -1px;
+    z-index: 3;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .search-result {
+    background-color: $input-background-color;
+    box-shadow: 0 4px 6px rgb(32 33 36 / 28%);
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    padding-bottom: 4px;
+    overflow: hidden;
+  }
+
+  .single-search-item {
+    display: flex;
+    padding: 15px;
+    justify-content: space-between;
+  }
+
+  .single-search-item:hover {
+    background-color: $search-hover-color;
+  }
+
 </style>

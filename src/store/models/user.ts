@@ -15,6 +15,7 @@ export interface User extends DatesInterface {
   company?: number | Company;
   user_type?: string;
   contact_number?: string;
+  credit?: number;
 }
 
 export interface Credentials {

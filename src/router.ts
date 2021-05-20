@@ -147,12 +147,6 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter:admin,
   },
   {
-    path: "/admin/order",
-    name: "adminOrder",
-    component: Order,
-    beforeEnter:admin,
-  },
-  {
     path: "/departments",
     name: "department",
     component: Department,
