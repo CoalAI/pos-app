@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
 import Report from "./components/sales/Report.vue";
 import Order from "./components/sales/Order.vue";
 import OrdersList from "./components/sales/OrdersList.vue";
@@ -19,140 +19,198 @@ import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
+import { store } from "./store";
+
+function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+  const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN','VENDOR'];
+  const role = store.getters.getUser? store.getters.getUser.user_type:'';
+  if(role!=null && role!='' && allowedRoles.includes(role)){
+    next();
+  }else{
+    next('/404');
+  }
+}
+
+
+function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+  const allowedRoles = ['ADMIN','SUPER_ADMIN','VENDOR'];
+  const role = store.getters.getUser? store.getters.getUser.user_type:'';
+  if(role!=null && role!='' && allowedRoles.includes(role)){
+    next();
+  }else{
+    next('/404');
+  }
+}
+
+function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+  const allowedRoles = ['SUPER_ADMIN'];
+  const role = store.getters.getUser? store.getters.getUser.user_type:'';
+  if(role!=null && role!='' && allowedRoles.includes(role)){
+    next();
+  }else{
+    next('/404');
+  }
+}
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Order",
-    component: Order
+    component: Order,
   },
   {
     path: "/admin/order",
     name: "AdminOrder",
-    component: ZeroOrder
+    component: ZeroOrder,
+    beforeEnter: admin,
   },
   {
     path: "/orders",
     name: "OrdersList",
-    component: OrdersList
+    component: OrdersList,
+    beforeEnter: salesStaff
   },
   {
     path: "/orders/:orderId",
     name: "OrderDetails",
     component: EditOrder,
-    props: true
+    props: true,
+    beforeEnter: salesStaff
   },
   {
     path: "/report",
     name: "Report",
-    component: Report
+    component: Report,
+    beforeEnter: superAdmin,
   },
   {
     path: "/editorder",
     name: "EditOrder",
-    component: EditOrder
+    component: EditOrder,
+    beforeEnter: salesStaff,
   },
   {
     path: "/products",
     name: "Product",
-    component: Product
+    component: Product,
+    beforeEnter: salesStaff,
+
   },
   {
     path: "/product/edit/:productId",
     name: "EditProduct",
     component: AddEditProduct,
-    props: true
+    props: true,
+    beforeEnter: admin,
   },
   {
     path: "/batchs",
     name: "Batch",
-    component: Batch
+    component: Batch,
+    beforeEnter: admin,
   },
   {
     path: "/users",
     name: "User",
-    component: User
+    component: User,
+    beforeEnter: admin,
   },
   {
     path: "/product/create",
     name: "CreateProduct",
-    component: AddEditProduct
+    component: AddEditProduct,
+    beforeEnter: admin,
   },
   {
     path: "/batch/create",
     name: "",
-    component: AddEditBatch
+    component: AddEditBatch,
+    beforeEnter: admin,
   },
   {
     path: "/batch/edit/:productId/:productVariantId/:batchId",
     name: "EditBatch",
     component: AddEditBatch,
-    props: true
+    props: true,
+    beforeEnter: admin,
   },
   {
     path: "/user/create",
     name: "",
-    component: AddEditUser
+    component: AddEditUser,
+    beforeEnter: admin,
   },
   {
     path: "/user/edit/:userId",
     name: "EditUser",
     component: AddEditUser,
-    props: true
+    props: true,
+    beforeEnter: admin,
   },
   {
     path: "/admin/order",
     name: "adminOrder",
-    component: Order
+    component: Order,
+    beforeEnter: admin,
   },
   {
     path: "/departments",
     name: "department",
-    component: Department
+    component: Department,
+    beforeEnter: admin,
   },
   {
     path: "/department/create",
     name: "CreateDepartment",
-    component: DepartmentAddEdit
+    component: DepartmentAddEdit,
+    beforeEnter: admin,
   },
   {
     path: "/department/edit/:companyId",
     name: "EditDepartment",
     component: DepartmentAddEdit,
-    props: true
+    props: true,
+    beforeEnter: admin,
   },
   {
     path: "/vendors",
     name: "Vendor",
-    component: Vendor
+    component: Vendor,
+    beforeEnter: admin,
   },
   {
     path: "/vendor/create",
     name: "CreateVendor",
-    component: VendorAddEdit
+    component: VendorAddEdit,
+    beforeEnter: admin,
   },
   {
     path: "/vendor/edit/:vendorId",
     name: "EditVendor",
     component: VendorAddEdit,
-    props: true
+    props: true,
+    beforeEnter: admin,
   },
   {
     path: '/settings',
     name: "Settings",
-    component: Settings
+    component: Settings,
+    beforeEnter: admin,
   },
   { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:catchAll(.*)', redirect: '/404' },
   {
     path: '/requests',
     name: "Request",
-    component: Request
+    component: Request,
+    beforeEnter: admin,
   },
   {
     path: '/requests/:id',
     name: "RequestDetail",
-    component: RequestDetail
+    component: RequestDetail,
+    beforeEnter: admin,
+
   },
   {
     path: '/inventory',

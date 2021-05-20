@@ -24,7 +24,8 @@ export enum ActionTypes {
   CREATE_BATCH = "CREATE_BATCH",
   UPDATE_BATCH = "UPDATE_BATCH",
   DELETE_BATCH = "DELETE_BATCH",
-  FETCH_INVENTORY = "FETCH_INVENTORY"
+  FETCH_INVENTORY = "FETCH_INVENTORY",
+  INTERNAL_ORDER = "INTERNAL_ORDER"
 }
 
 export type AugmentedActionContext = {
@@ -53,26 +54,35 @@ export interface Actions {
   [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
   [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string): void;
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
+  [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
 Actions = {
   async [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string) {
-    const response = await serverRequest('get', 'product/', true, undefined, {name__istartswith: name});
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetProductResults, response.data.results);
-    }
-    if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+    if (name === '') {
+      commit(MutationTypes.SetProductResults, []);
+    } else {
+      const response = await serverRequest('get', 'product/', true, undefined, {name__istartswith: name});
+      if (isAxiosResponse(response)) {
+        commit(MutationTypes.SetProductResults, response.data.results);
+      }
+      if(isAxiosError(response)) {
+        commit('setError', response, {root: true});
+      }
     }
   },
   async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, barcode: string) {
-    const response = await serverRequest('get', 'product/', true, undefined, {bar_code__iendswith: barcode});
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetProductResults, response.data.results);
-    }
-    if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+    if (barcode === '') {
+      commit(MutationTypes.SetProductResults, []);
+    } else {
+      const response = await serverRequest('get', 'product/', true, undefined, {bar_code__iendswith: barcode});
+      if (isAxiosResponse(response)) {
+        commit(MutationTypes.SetProductResults, response.data.results);
+      }
+      if(isAxiosError(response)) {
+        commit('setError', response, {root: true});
+      }
     }
   },
   async [ActionTypes.FETCH_ORDERS](
@@ -205,6 +215,21 @@ Actions = {
     }
     if(isAxiosError(response)) {
       commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order) {
+    const response = await serverRequest('post', 'internal-order/', true, order);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetOrder, response.data);
+      commit(MutationTypes.SetOrderStatus, 'Order is completed successfully.');
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+      if (response.response && response.response.data &&  response.response.data.non_field_errors) {
+        commit(MutationTypes.SetOrderStatus, response.response.data.non_field_errors);
+      } else {
+        commit(MutationTypes.SetOrderStatus, "Server side error. Kindly try again.");
+      }
     }
   }
 };
