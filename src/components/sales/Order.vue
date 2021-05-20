@@ -395,7 +395,7 @@
             <label class="pad-label w100 mr-l q" for="deduct">
               <strong>Deduct Balance:</strong>
             </label>
-            <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct">
+            <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct" v-bind:checked="deduct_balance">
 
             <template v-if="creditPaymentMethod === 'card'">
               <label class="pad-label pn" for="return">
@@ -560,14 +560,13 @@ export default defineComponent({
       selectedCutomer:'',
       showCustDropdown:false,
       walkinCustomer:{},
-      regularCustomer:{}
+      regularCustomer:{},
+      deduct_balance:false
     }
   },
   created: async function(){
-    debugger
     await this.getUsers('');
     this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === 'WALK_IN_CUSTOMER');
-    
   },
   computed: {
     totalAmount: function (): number {
@@ -769,10 +768,9 @@ export default defineComponent({
       
       return fullname
     },
-
-    // showCustDropdown: function(): boolean{
-    //     return this.customersearch.length>0 && this.customers.length > 0
-    // },
+    showDeductBalance: function(): boolean{
+      return false;
+    },
 
     ...mapGetters({
       productResult: 'getProductResults',
@@ -848,7 +846,6 @@ export default defineComponent({
     },
 
     addNewCustomer:async function(){
-      debugger
       const companyId = this.userdata.company.id;  
 
       const user: User = {
@@ -928,7 +925,6 @@ export default defineComponent({
       if (this.orderItems.length < 0) return;
       if (this.cashReceived === '') return;
 
-      debugger
       const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
         return {
           batch: singleOrderItem.batch && typeof singleOrderItem.batch !== 'number' && singleOrderItem.batch.id? singleOrderItem.batch.id : 0,
@@ -953,7 +949,8 @@ export default defineComponent({
         amount_discount: this.discountMethod === 'amount' ? true : false,
         payment_service: this.paymentMethod === 'cash'? 'BANK' : this.paymentService,
         transaction_id: this.transactionId,
-        invoice_id: 'tempincv'
+        invoice_id: 'tempincv',
+        deduct_balance: this.deduct_balance
       }
       this.createOrder(singleOrder);
     },

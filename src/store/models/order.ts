@@ -14,4 +14,5 @@ export interface Order extends DatesInterface {
   transaction_id?:string;
   payment_service?:string;
   invoice_id?:string;
+  deduct_balance?:boolean;
 }
