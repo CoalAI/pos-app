@@ -8,7 +8,7 @@
         <a class="btn btn-grid btn-orange btn-mr" href="/"
         target="_blank">New Order</a>
         <!-- <a class="btn btn-orange btn-mr">Report</a> -->
-        <router-link to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
+        <router-link to="/inventory" class="btn btn-grid btn-orange btn-mr">Inventory</router-link>
         <router-link to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
         <router-link to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
       </div>

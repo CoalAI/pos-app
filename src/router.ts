@@ -18,6 +18,7 @@ import Settings from "./components/common-components/Settings.vue";
 import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
+import Inventory from "./components/admin/Inventory.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -152,6 +153,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/requests/:id',
     name: "RequestDetail",
     component: RequestDetail
+  },
+  {
+    path: '/inventory',
+    name: "Inventory",
+    component: Inventory
   }
 ];
 
