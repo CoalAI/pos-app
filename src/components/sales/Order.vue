@@ -395,7 +395,7 @@
             <label class="pad-label w100 mr-l q" for="deduct">
               <strong>Deduct Balance:</strong>
             </label>
-            <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct" v-bind:checked="deduct_balance">
+            <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct" v-bind:checked="deduct_balance" @change="deduct_balance=!deduct_balance">
 
             <template v-if="creditPaymentMethod === 'card'">
               <label class="pad-label pn" for="return">
