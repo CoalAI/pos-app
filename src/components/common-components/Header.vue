@@ -1,11 +1,18 @@
 <template>
   <div class="container">
     <div class="logo">
-      <router-link to="/"><img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev"></router-link>
+      <router-link v-if="salesStaff" to="/">
+        <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
+      </router-link>
+      <router-link v-else-if="admin" to="/admin/order">
+        <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
+      </router-link>
     </div>
     <div class="b">
       <div class="flex-box">
-        <a class="btn btn-grid btn-orange btn-mr" href="/"
+        <a class="btn btn-grid btn-orange btn-mr" href="/" v-if="salesStaff"
+        target="_blank">New Order</a>
+        <a class="btn btn-grid btn-orange btn-mr" href="/admin/order" v-else-if="admin"
         target="_blank">New Order</a>
         <router-link v-show="superadmin" to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
         <router-link v-show="admin" to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
@@ -96,6 +103,13 @@ export default defineComponent({
     },
     superadmin(){
       const allowedRoles = ['SUPER_ADMIN'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)){
+        return true;
+      }
+      return false;
+    },
+    salesStaff(){
+      const allowedRoles = ['SALES_STAFF'];
       if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)){
         return true;
       }

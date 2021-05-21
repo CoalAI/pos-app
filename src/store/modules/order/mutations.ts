@@ -3,6 +3,7 @@ import { Product } from '@/store/models/product';
 import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Unit } from '@/store/models/product';
+import { Batch } from '@/store/models/batch';
 
 
 export enum MutationTypes {
@@ -14,6 +15,7 @@ export enum MutationTypes {
   SetOrderStatuses = 'SET_ORDER_STATUSES',
   SetListOfProducts = 'SET_LIST_OF_PRODUCTS',
   SetUnit = 'SET_UNIT',
+  SetBatch = 'SET_BATCH',
 }
 
 export type Mutations = {
@@ -25,6 +27,7 @@ export type Mutations = {
   [MutationTypes.SetOrderStatuses](state: State, statuses: {status: string}[]): void;
   [MutationTypes.SetListOfProducts](state: State, products: Product[]): void;
   [MutationTypes.SetUnit](state: State, units: Unit[]): void;
+  [MutationTypes.SetBatch](state: State, batch: Batch): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -51,5 +54,8 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetUnit](state, units) {
     state.units = units;
-  }
+  },
+  [MutationTypes.SetBatch](state: State, batch: Batch) {
+    state.batch = batch;
+  },
 }

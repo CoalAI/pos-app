@@ -3,6 +3,7 @@ import { IRootState } from '@/store/models/root';
 import { Unit, Product } from '@/store/models/product';
 import { Order } from '@/store/models/order';
 import { State } from './state';
+import { Batch } from "@/store/models/batch";
 
 export interface Getters {
   getOrderStatus(state: State): string;
@@ -17,6 +18,7 @@ export interface Getters {
   // eslint-disable-next-line
   getSignleProduct(state: State, id: number): any;
   getUnits(state: State): Unit[];
+  getBatch(state: State): Batch;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -51,5 +53,8 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getUnits: (state: State) => {
     return state.units;
+  },
+  getBatch: (state: State) => {
+    return state.batch;
   }
 };

@@ -13,6 +13,7 @@ export type State = {
     listOfProducts: Product[];
     listOfBatches: Batch[];
     units: Unit[];
+    batch: Batch;
 };
 
 export const state: State = {
@@ -25,4 +26,5 @@ export const state: State = {
   listOfProducts: [],
   listOfBatches: [],
   units: [],
+  batch: {},
 };
