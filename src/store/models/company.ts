@@ -1,3 +1,4 @@
+import { Batch } from './batch';
 import { DatesInterface } from './root';
 
 export interface Company extends DatesInterface {
@@ -5,4 +6,12 @@ export interface Company extends DatesInterface {
   parent?: number | null;
   company_type?: string;
   company_name?: string;
+}
+
+export interface Inventory extends DatesInterface {
+  id?: number;
+  company?: Company;
+  batch?: Batch;
+  quantity?: string;
+  is_active?: boolean;
 }
