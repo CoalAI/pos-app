@@ -24,6 +24,7 @@ export enum ActionTypes {
   CREATE_BATCH = "CREATE_BATCH",
   UPDATE_BATCH = "UPDATE_BATCH",
   DELETE_BATCH = "DELETE_BATCH",
+  FETCH_INVENTORY = "FETCH_INVENTORY",
   INTERNAL_ORDER = "INTERNAL_ORDER"
 }
 
@@ -52,6 +53,7 @@ export interface Actions {
   [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
   [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
   [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string): void;
+  [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
 }
 
@@ -197,6 +199,20 @@ Actions = {
   },
   async [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string) {
     const response = await serverRequest('delete', `batch/${batchID}/`, true);
+    if(isAxiosError(response)) {
+      commit('setError', response, {root: true});
+    }
+  },
+  async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data?: {company?: number; search?: string}) {
+    let response;
+    if (data) {
+      response = await serverRequest('get', 'inventory/', true, undefined, data);
+    } else {
+      response = await serverRequest('get', `inventory/`, true);
+    }
+    if(isAxiosResponse(response)) {
+      commit(MutationTypes.SetInventory, response.data.results)
+    }
     if(isAxiosError(response)) {
       commit('setError', response, {root: true});
     }

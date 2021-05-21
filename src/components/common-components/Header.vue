@@ -7,7 +7,7 @@
       <div class="flex-box">
         <a class="btn btn-grid btn-orange btn-mr" href="/"
         target="_blank">New Order</a>
-        <router-link v-show="superadmin" to="/report" class="btn btn-grid btn-orange btn-mr">Report</router-link>
+        <router-link v-show="admin" to="/inventory" class="btn btn-grid btn-orange btn-mr">Inventory</router-link>
         <router-link v-show="admin" to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
         <router-link v-show="admin" to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
       
