@@ -11,4 +11,6 @@ export interface Order extends DatesInterface {
   total_discount?: string;
   order_item?: OrderItem[];
   amount_discount?: boolean;
+  invoice_id?: string;
+  internal_order?: boolean;
 }

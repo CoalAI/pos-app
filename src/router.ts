@@ -20,9 +20,11 @@ import RequestDetail from "./components/sales/RequestDetail.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
 import { store } from "./store";
+import { ActionTypes } from '@/store/modules/auth/actions';
 
-function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+async function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN','VENDOR'];
+  await store.dispatch(ActionTypes.USER_DATA);
   const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
@@ -32,8 +34,9 @@ function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,ne
 }
 
 
-function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+async function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['ADMIN','SUPER_ADMIN','VENDOR'];
+  await store.dispatch(ActionTypes.USER_DATA);
   const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
@@ -42,13 +45,25 @@ function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: N
   }
 }
 
-function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+async function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SUPER_ADMIN'];
+  await store.dispatch(ActionTypes.USER_DATA);
   const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
     next();
   }else{
     next('/404');
+  }
+}
+
+async function redirectToAdmin(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext){
+  const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+  await store.dispatch(ActionTypes.USER_DATA);
+  const role = store.getters.getUser? store.getters.getUser.user_type:'';
+  if (role!=null && role!='' && allowedRoles.includes(role)){
+    next('/admin/order');
+  } else {
+    next()
   }
 }
 
@@ -57,6 +72,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Order",
     component: Order,
+    beforeEnter: redirectToAdmin,
   },
   {
     path: "/admin/order",
@@ -145,12 +161,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "EditUser",
     component: AddEditUser,
     props: true,
-    beforeEnter: admin,
-  },
-  {
-    path: "/admin/order",
-    name: "adminOrder",
-    component: Order,
     beforeEnter: admin,
   },
   {

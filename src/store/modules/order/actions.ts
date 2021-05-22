@@ -187,6 +187,9 @@ Actions = {
   },
   async [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
     const response = await serverRequest('post', `batch/`, true, batch);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetBatch, response.data);
+    }
     if(isAxiosError(response)) {
       commit('setError', response, {root: true});
     }

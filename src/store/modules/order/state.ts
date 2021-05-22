@@ -15,6 +15,7 @@ export type State = {
     listOfBatches: Batch[];
     inventory: Inventory[];
     units: Unit[];
+    batch: Batch;
 };
 
 export const state: State = {
@@ -28,4 +29,5 @@ export const state: State = {
   listOfBatches: [],
   inventory: [],
   units: [],
+  batch: {},
 };
