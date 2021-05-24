@@ -6,11 +6,14 @@ export interface Order extends DatesInterface {
   seller?: number;
   buyer?: number;
   total?: string;
-  payment_method?: boolean;
+  cash_payment?: boolean;
   amount_received?: string;
   total_discount?: string;
   order_item?: OrderItem[];
   amount_discount?: boolean;
+  transaction_id?:string;
+  payment_service?:string;
+  deduct_balance?:boolean;
   invoice_id?: string;
   internal_order?: boolean;
 }
