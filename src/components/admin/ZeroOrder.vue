@@ -401,7 +401,7 @@
         </div>
         <div id="box2">
           <button class="btn btn-orange" @click="submitOrder" :disabled="submitOrderButton">Submit and Print</button>
-          <button class="btn btn-orange" @click="addVendorModal = true">Add New Vendor</button>
+          <button class="btn btn-orange" @click="openAddVendorModal">Add New Vendor</button>
           <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
         </div>
       </div>
@@ -414,31 +414,61 @@
 
       <template v-slot:body>
         <div class="flex-box">
-          <label class="pad-label w100" for="quantity">
-            <strong>Name:</strong>
+          <label class="pad-label w100" for="firstname">
+            <strong>First Name:</strong>
           </label>
           <input
-            name="quantity"
+            name="firstname"
             type="text"
-            placeholder="Enter Name"
+            placeholder="Enter first name"
+            v-model="vendor.firstName"
           />
         </div>
         <div class="flex-box">
-          <label class="pad-label w100" for="quantity">
-            <strong>Contact Number:</strong>
+          <label class="pad-label w100" for="lastname">
+            <strong>Last Name:</strong>
           </label>
           <input
-            name="quantity"
+            name="lastname"
             type="text"
-            placeholder="Enter contact"
+            placeholder="Enter last name"
+            v-model="vendor.lastName"
           />
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="contact_number">
+            <strong>Contact Number:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="contact_number"
+              type="text"
+              placeholder="Enter contact"
+              v-model="vendor.contact"
+            />
+            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+          </div>
+        </div>
+
+        <div class="flex-box">
+          <label class="pad-label w100" for="companies">
+            <strong>Company:</strong>
+          </label>
+          <div class="full-width">
+            <select name="companies" class="custom-select" id="companies" v-model="vendor.company">
+              <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                {{ company.company_name }}
+              </option>
+            </select>
+            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+          </div>
         </div>
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
           <button class="btn btn-orange btn-mr" @click="addVendorModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr">Yes</button>
+          <button class="btn btn-orange btn-mr" @click="addVendor" >Add</button>
         </div>
       </template>
     </Modal>
@@ -535,7 +565,14 @@ export default defineComponent({
       addVendorModal: false,
       seller: 0,
       buyer: 0,
-      vendorUser: vendor
+      vendorUser: vendor,
+
+      vendor: {
+        firstName: '',
+        lastName: '',
+        contact: '',
+        company: 0
+      }
     }
   },
   computed: {
@@ -732,13 +769,30 @@ export default defineComponent({
       return disable;
     },
 
+    contactNumberValidation: function () {
+      let errorMessage = null;
+      if (this.vendor.contact.length <= 0) {
+        errorMessage = "Number is required"
+      }
+      return errorMessage;
+    },
+
+    companyValidation: function () {
+      let errorMessage = null;
+      if (this.companies.length <= 0) {
+        errorMessage = "Comapny is required. Add vendor comapany to system"
+      }
+      return errorMessage;
+    },
+
     ...mapGetters({
       productResult: 'getProductResults',
       userdata: 'getUser',
       orderStatus: 'getOrderStatus',
       users: 'getListOfUsers',
       vendors: 'getListOfVendors',
-      newBatch: 'getBatch'
+      newBatch: 'getBatch',
+      companies: 'getCompanies'
     })
   },
   methods: {
@@ -1047,6 +1101,28 @@ export default defineComponent({
       }
     },
 
+    addVendor: async function () {
+      const user: User = {
+        first_name: this.vendor.firstName,
+        last_name: this.vendor.lastName,
+        username: this.vendor.contact,
+        contact_number: this.vendor.contact,
+        company: this.vendor.company,
+        is_active: true,
+        user_type: 'VENDOR'
+      };
+
+      await this.registerUser(user);
+      await this.getVendors('');
+    },
+
+    openAddVendorModal: async function () {
+      this.addVendorModal = true;
+      if (this.companies && this.companies.length > 0) {
+        this.vendor.company = this.companies[0].id;
+      }
+    },
+
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: OrderActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1055,11 +1131,17 @@ export default defineComponent({
       getUsers: AuthActionTypes.GET_USERS_BY_TYPES,
       getVendors: AuthActionTypes.FETCH_VENDORS,
       createBatch: OrderActionTypes.CREATE_BATCH,
+      registerUser: AuthActionTypes.REGISTER_USER,
+      fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
     })
   },
   async beforeMount () {
     await this.getUsers(['ADMIN']);
     await this.getVendors('');
+    await this.fetchCompanies({
+      company_type: 'VENDOR',
+      search: ''
+    });
     this.buyer = this.userdata.id;
   }
 })

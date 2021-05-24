@@ -169,7 +169,10 @@ export default defineComponent({
     })
   },
   async beforeMount () {
-    await this.fetchCompanies('VENDOR');
+    await this.fetchCompanies({
+      company_type: 'VENDOR',
+      search: ''
+    });
 
     if (this.companies && this.companies.length > 0) {
       this.vendor.company = this.companies[0].id;
