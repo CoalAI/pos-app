@@ -379,8 +379,8 @@
                 name="balance"
                 type="text"
                 placeholder="Companies balance"
-                v-bind:value="vendorUser.company.credit * -1"
-                :style="[vendorUser.company.credit > 0 ? {'color': 'red'} : {'color': 'green'}, {}]"
+                v-bind:value="vendorUser.company.credit"
+                :style="[vendorUser.company.credit > 0 ? {'color': 'green'} : {'color': 'red'}]"
                 readonly
               >
             </div>
@@ -737,7 +737,8 @@ export default defineComponent({
       userdata: 'getUser',
       orderStatus: 'getOrderStatus',
       users: 'getListOfUsers',
-      vendors: 'getListOfVendors'
+      vendors: 'getListOfVendors',
+      newBatch: 'getBatch'
     })
   },
   methods: {
@@ -893,13 +894,17 @@ export default defineComponent({
           discount: singleOrderItem.discount?.toString(),
           quantity: singleOrderItem.quantity?.toString()
         } as OrderItem;
-        if (this.orderType == 'to') {
-          unproxiedOrderItem.batch_id = singleOrderItem.batch &&
-          typeof singleOrderItem.batch !== 'number' ? singleOrderItem.batch.id : singleOrderItem.batch;
-          delete unproxiedOrderItem.batch;
-        }
         return unproxiedOrderItem;
       });
+
+      if (this.orderType == 'from') {
+        for (const singleOrderItem of unproxiedOrderItems) {
+          if (singleOrderItem.batch) {
+            await this.createBatch(singleOrderItem.batch);
+            singleOrderItem.batch = this.newBatch.id;
+          }
+        }
+      }
 
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
@@ -912,6 +917,8 @@ export default defineComponent({
         total: this.totalAmount.toString(),
         amount_received: isNaN(cash) ? '0' : cash.toString(),
         amount_discount: this.discountMethod === 'amount' ? true : false,
+        invoice_id: "00001",
+        internal_order: true,
       }
 
       this.createOrder(singleOrder);
@@ -994,14 +1001,20 @@ export default defineComponent({
       return sum
     },
 
-    handleOrderStatus: function () {
+    handleOrderStatus: async function () {
       this.changeOrderStatus('');
       this.clearProduct();
       this.orderItems = [];
       this.cashReceived = '';
       this.totalDiscount = '';
       this.orderType = 'from';
+      this.seller = 0;
+      this.buyer = this.userdata.id;
+      const vendor: User = {};
+      this.vendorUser = vendor;
       this.cancelModal = false;
+      await this.getUsers(['ADMIN']);
+      await this.getVendors('');
     },
 
     changeProductPrice: function () {
@@ -1037,10 +1050,11 @@ export default defineComponent({
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: OrderActionTypes.SEARCH_PRODUCT_BY_BARCODE,
-      createOrder: OrderActionTypes.INTERNAL_ORDER,
+      createOrder: OrderActionTypes.CREATE_ORDER,
       changeOrderStatus: OrderActionTypes.CHANGE_ORDER_STATUS,
       getUsers: AuthActionTypes.GET_USERS_BY_TYPES,
       getVendors: AuthActionTypes.FETCH_VENDORS,
+      createBatch: OrderActionTypes.CREATE_BATCH,
     })
   },
   async beforeMount () {

@@ -13,6 +13,7 @@ export interface Order extends DatesInterface {
   amount_discount?: boolean;
   transaction_id?:string;
   payment_service?:string;
-  invoice_id?:string;
   deduct_balance?:boolean;
+  invoice_id?: string;
+  internal_order?: boolean;
 }

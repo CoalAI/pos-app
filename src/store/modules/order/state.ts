@@ -2,6 +2,7 @@ import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
 import { Unit } from '@/store/models/product';
 import { Batch } from'@/store/models/batch';
+import { Inventory } from '@/store/models/company';
 
 export type State = {
     currentOrderStatus: string;
@@ -12,7 +13,9 @@ export type State = {
     OrderStatuses: {status: string}[];
     listOfProducts: Product[];
     listOfBatches: Batch[];
+    inventory: Inventory[];
     units: Unit[];
+    batch: Batch;
 };
 
 export const state: State = {
@@ -24,5 +27,7 @@ export const state: State = {
   OrderStatuses: [],
   listOfProducts: [],
   listOfBatches: [],
+  inventory: [],
   units: [],
+  batch: {},
 };
