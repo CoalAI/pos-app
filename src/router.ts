@@ -210,10 +210,9 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:catchAll(.*)', redirect: '/404' },
   {
-    path: '/requests',
+    path: '/request',
     name: "Request",
-    component: Request,
-    beforeEnter: admin,
+    component: Request
   },
   {
     path: '/requests/:id',
