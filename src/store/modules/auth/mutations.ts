@@ -9,7 +9,7 @@ export enum MutationTypes {
   SetToken = 'SET_TOKEN',
   SetListOfUsers = "SET_LIST_OF_USERS",
   SetListOfVendors = "SET_LIST_OF_VENDORS",
-  SetRoles = "SET_ROLES",
+  SetTypes = "SET_TYPES",
   SetCompanies = "SET_COMPANIES",
 
 }
@@ -19,7 +19,7 @@ export type Mutations = {
   [MutationTypes.SetToken](state: State, token: string): void;
   [MutationTypes.SetListOfUsers](state: State, users: User[]): void;
   [MutationTypes.SetListOfVendors](state: State, vendors: User[]): void;
-  [MutationTypes.SetRoles](state: State, roles: any[]): void;
+  [MutationTypes.SetTypes](state: State, types: any[]): void;
   [MutationTypes.SetCompanies](state: State, companies: Company[]): void;
 }
 
@@ -39,8 +39,8 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetListOfVendors](state: State, vendors: User[]) {
     state.ListOfVendors = vendors;
   },
-  [MutationTypes.SetRoles](state: State, roles: any[]) {
-    state.roles = roles;
+  [MutationTypes.SetTypes](state: State, types: any[]) {
+    state.types = types;
   },
   [MutationTypes.SetCompanies](state: State, companies: Company[]) {
     state.companies = companies;
