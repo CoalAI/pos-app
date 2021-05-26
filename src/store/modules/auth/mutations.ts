@@ -44,5 +44,5 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetCompanies](state: State, companies: Company[]) {
     state.companies = companies;
-  }
+  },
 }

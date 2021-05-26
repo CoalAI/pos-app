@@ -20,7 +20,7 @@ export enum ActionTypes {
   CREATE_COMPANY = "CREATE_COMPANY",
   UPDATE_COMPANY = "UPDATE_COMPANY",
   DELETE_COMPANY = "DELETE_COMPANY",
-  FETCH_VENDORS = "FETCH_VENDORS"
+  FETCH_VENDORS = "FETCH_VENDORS",
 }
 
 export type AugmentedActionContext = {
@@ -182,5 +182,5 @@ Actions = {
         commit('setError', response.response.data, {root: true});
       }
     }
-  }
+  },
 };

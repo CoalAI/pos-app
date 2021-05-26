@@ -127,7 +127,7 @@
           </tr>
           <tr>
             <td><strong>Invoice no:</strong></td>
-            <td>00000111</td>
+            <td>{{ invoiceID }}</td>
           </tr>
         </table>
       </div>
@@ -776,7 +776,8 @@ export default defineComponent({
       productResult: 'getProductResults',
       userdata: 'getUser',
       orderStatus: 'getOrderStatus',
-      customers: 'getListOfUsers'
+      customers: 'getListOfUsers',
+      invoiceID: 'getInvoiceID',
     })
   },
   methods: {
@@ -949,7 +950,7 @@ export default defineComponent({
         amount_discount: this.discountMethod === 'amount' ? true : false,
         payment_service: this.paymentMethod === 'cash'? 'BANK' : this.paymentService,
         transaction_id: this.transactionId,
-        invoice_id: 'tempincv',
+        invoice_id: this.invoiceID,
         deduct_balance: this.deduct_balance
       }
       this.createOrder(singleOrder);
@@ -1081,9 +1082,13 @@ export default defineComponent({
       createOrder: ActionTypes.CREATE_ORDER,
       changeOrderStatus: ActionTypes.CHANGE_ORDER_STATUS,
       getUsers: AuthActionTypes.GET_USERS,
-      registerUser: AuthActionTypes.REGISTER_USER
+      registerUser: AuthActionTypes.REGISTER_USER,
+      fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
     })
   },
+  async beforeMount () {
+    await this.fetchInvoiceID();
+  }
 });
 </script>
 
