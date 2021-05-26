@@ -66,7 +66,7 @@ export default defineComponent({
   }
 
   /* Full-width inputs */
-  input[type=text], input[type=password], input[type=date], select, input[type=number] {
+  input[type=text], input[type=password], input[type=date], select, input[type=number], textarea {
     width: 100%;
     padding: $input-pad;
     margin: $margin-btn-input;

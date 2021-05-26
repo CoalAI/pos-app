@@ -17,6 +17,7 @@ import NotFound from "./components/common-components/NotFound.vue";
 import Settings from "./components/common-components/Settings.vue";
 import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
+import Response from "./components/sales/Response.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
 import { store } from "./store";
@@ -226,6 +227,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/inventory',
     name: "Inventory",
     component: Inventory
+  },
+  {
+    path: '/response',
+    name: "Response",
+    component: Response
   }
 ];
 
