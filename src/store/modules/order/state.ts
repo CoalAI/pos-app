@@ -16,6 +16,7 @@ export type State = {
     inventory: Inventory[];
     units: Unit[];
     batch: Batch;
+    invoice_id: string;
 };
 
 export const state: State = {
@@ -30,4 +31,5 @@ export const state: State = {
   inventory: [],
   units: [],
   batch: {},
+  invoice_id: '',
 };

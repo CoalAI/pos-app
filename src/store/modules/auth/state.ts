@@ -6,7 +6,7 @@ export type State = {
     token: string;
     listOfUsers: User[];
     ListOfVendors: User[];
-    roles: any[];
+    types: any[];
     companies: Company[];
 };
 
@@ -15,6 +15,6 @@ export const state: State = {
   token: '',
   listOfUsers: [],
   ListOfVendors: [],
-  roles: [],
+  types: [],
   companies: [],
 };

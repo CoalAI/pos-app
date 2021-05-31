@@ -18,8 +18,8 @@
             </tr>
             <tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
               <td>{{ index + 1 }}</td>
-              <td>3572937</td>
-              <td>Germany</td>
+              <td>{{orderItem.batch.product_variant.product.bar_code}}</td>
+              <td>{{orderItem.batch.product_variant.product.name}}</td>
               <td>{{orderItem.quantity}}</td>
               <td>{{orderItem.price}}</td>
               <td>{{orderItem.discount}}</td>
