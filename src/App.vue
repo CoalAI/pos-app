@@ -265,4 +265,15 @@ export default defineComponent({
     display: inline-block;
     width: 150px;
   }
+
+  textarea {
+    width: 100%;
+    padding: $input-pad;
+    margin: 0;
+    display: inline-block;
+    border: none;
+    box-sizing: border-box;
+    outline-color: $primary-color;
+    background-color: $input-background-color;
+  }
 </style>

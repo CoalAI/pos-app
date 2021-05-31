@@ -428,17 +428,6 @@ export default defineComponent({
     width: $w80;
   }
 
-  textarea {
-    width: 100%;
-    padding: $input-pad;
-    margin: 0;
-    display: inline-block;
-    border: none;
-    box-sizing: border-box;
-    outline-color: $primary-color;
-    background-color: $input-background-color;
-  }
-
   label {
     text-align: left;
   }
