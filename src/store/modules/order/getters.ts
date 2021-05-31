@@ -21,6 +21,7 @@ export interface Getters {
   getInventory(state: State): Inventory[];
   getUnits(state: State): Unit[];
   getBatch(state: State): Batch;
+  getInvoiceID(state: State): string;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -61,5 +62,8 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getBatch: (state: State) => {
     return state.batch;
-  }
+  },
+  getInvoiceID: (state: State) => {
+    return state.invoice_id;
+  },
 };

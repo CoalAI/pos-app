@@ -25,7 +25,8 @@ export enum ActionTypes {
   UPDATE_BATCH = "UPDATE_BATCH",
   DELETE_BATCH = "DELETE_BATCH",
   FETCH_INVENTORY = "FETCH_INVENTORY",
-  INTERNAL_ORDER = "INTERNAL_ORDER"
+  INTERNAL_ORDER = "INTERNAL_ORDER",
+  FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
 }
 
 export type AugmentedActionContext = {
@@ -55,6 +56,7 @@ export interface Actions {
   [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string): void;
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
+  [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -234,5 +236,13 @@ Actions = {
         commit(MutationTypes.SetOrderStatus, "Server side error. Kindly try again.");
       }
     }
-  }
+  },
+  async [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'invoice-id/', true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
+        commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
+      }
+    }
+  },
 };

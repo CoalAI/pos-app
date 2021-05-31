@@ -19,6 +19,7 @@ import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
+import Expense from "./components/admin/Expense.vue";
 import { store } from "./store";
 import { ActionTypes } from '@/store/modules/auth/actions';
 
@@ -210,10 +211,9 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:catchAll(.*)', redirect: '/404' },
   {
-    path: '/requests',
+    path: '/request',
     name: "Request",
-    component: Request,
-    beforeEnter: admin,
+    component: Request
   },
   {
     path: '/requests/:id',
@@ -226,6 +226,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/inventory',
     name: "Inventory",
     component: Inventory
+  },
+  {
+    path: '/expense',
+    name: 'expense',
+    component: Expense
   }
 ];
 
