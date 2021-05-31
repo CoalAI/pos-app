@@ -12,11 +12,9 @@
             @change="onChangeCompanyType"
           >
             <option value="">All</option>
-            <option value="FACTORY">Factory</option>
-            <option value="STORE">Store</option>
-            <option value="RETIAL">Retail</option>
-            <option value="VENDOR">Vendor</option>
-            <option value="PARENT">Parent Company</option>
+            <option v-for="role in companyTypes" v-bind:key="role" v-bind:value="role">
+              {{ role }}
+            </option>
           </select>
         </div>
         <div class="float-right">
@@ -123,7 +121,8 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      companies: 'getCompanies'
+      companies: 'getCompanies',
+      companyTypes: 'getCompanyTypes'
     })
   },
   // define methods under the `methods` object
@@ -173,10 +172,12 @@ export default defineComponent({
 
     ...mapActions({
       fetchCompanies: ActionTypes.FETCH_COMPANIES,
-      deleteCompany: ActionTypes.DELETE_COMPANY
+      deleteCompany: ActionTypes.DELETE_COMPANY,
+      fetchTypes: ActionTypes.FETCH_TYPES,
     })
   },
   async beforeMount () {
+    await this.fetchTypes();
     await this.fetchCompanies({
       company_type: '',
       search: ''

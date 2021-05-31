@@ -31,28 +31,8 @@
             class="custom-select"
             v-model="company.type"
           >
-            <option value="FACTORY">Factory</option>
-            <option value="STORE">Store</option>
-            <option value="RETIAL">Retail</option>
-            <option value="VENDOR">Vendor</option>
-            <option value="PARENT">Parent Company</option>
-          </select>
-        </div>
-
-        <div class="flex-box">
-          <label class="pad-label w100" for="parent-company">
-            <strong>Head Dept:</strong>
-          </label>
-
-          <select
-            id="parent-company"
-            name="parent-company"
-            class="custom-select"
-            v-model="company.parent"
-          >
-            <option value="0">No Department</option>
-            <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-              {{ company.company_name }}
+            <option v-for="role in companyTypes" v-bind:key="role" v-bind:value="role">
+              {{ role }}
             </option>
           </select>
         </div>
@@ -93,7 +73,6 @@ export default defineComponent({
       company: {
         name: '',
         type: 'FACTORY',
-        parent: 0
       }
     }
   },
@@ -115,7 +94,7 @@ export default defineComponent({
     },
 
     ...mapGetters({
-      companies: 'getCompanies'
+      companyTypes: 'getCompanyTypes',
     })
   },
   methods: {
@@ -129,7 +108,6 @@ export default defineComponent({
       const company: Company = {
         company_name: this.company.name,
         company_type: this.company.type,
-        parent: this.company.parent !== 0 ? this.company.parent : null
       };
 
       if (this.companyId) {
@@ -144,16 +122,17 @@ export default defineComponent({
     loadData: function (company: Company) {
       this.company.name = company.company_name ? company.company_name : '';
       this.company.type = company.company_type ? company.company_type : '';
-      this.company.parent =company.parent ? company.parent : 0;
     },
 
     ...mapActions({
       createCompany: ActionTypes.CREATE_COMPANY,
       updateCompany: ActionTypes.UPDATE_COMPANY,
-      getCompaniesList: ActionTypes.FETCH_COMPANIES
+      getCompaniesList: ActionTypes.FETCH_COMPANIES,
+      fetchTypes: ActionTypes.FETCH_TYPES,
     })
   },
   async beforeMount () {
+    await this.fetchTypes();
 
     if (this.companyId) {
       await this.getCompaniesList({
@@ -170,7 +149,6 @@ export default defineComponent({
         this.$router.push({name: 'notFound'});
       }
     }
-    await this.getCompaniesList({company_type: 'PARENT', search: ''});
   }
 });
 </script>
