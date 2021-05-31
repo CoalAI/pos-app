@@ -236,7 +236,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/response',
     name: "Response",
-    component: Response}
+    component: Response
+  }
 ];
 
 const router = createRouter({
