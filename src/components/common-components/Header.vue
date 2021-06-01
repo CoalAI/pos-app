@@ -25,6 +25,9 @@
         <router-link v-show='admin' to="/vendors" class="btn btn-grid btn-orange btn-mr">Vendors</router-link>
         <router-link v-show='admin' to="/departments" class="btn btn-grid btn-orange btn-mr">Deparments</router-link>
       </div>
+      <div class="flex-box">
+        <router-link to="/response" class="btn btn-grid btn-orange btn-mr">Responses</router-link>
+      </div>
     </div>
     <div class="s">
       <div class="flex-box">
