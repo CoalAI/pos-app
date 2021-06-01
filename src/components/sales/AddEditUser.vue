@@ -62,6 +62,7 @@
         </label>
         <div class="full-width">
           <input
+            autocomplete="new-password"
             name="thisuserpassword"
             type="password"
             placeholder="Enter Password"
@@ -97,13 +98,13 @@
         >
       </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="unit">
+        <label class="pad-label w100" for="role">
           <strong>Role:</strong>
         </label>
 
-        <select name="cars" class="custom-select" id="unit" v-model="user.user_type">
-          <option v-for="role in roles" v-bind:key="role.user_type" v-bind:value="role.user_type">
-            {{ role.user_type }}
+        <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+          <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+            {{ role }}
           </option>
         </select>
       </div>
@@ -310,14 +311,14 @@ export default defineComponent({
 
     ...mapActions({
       registerUser: ActionTypes.REGISTER_USER,
-      fetchRoles: ActionTypes.FETCH_ROLES,
+      fetchTypes: ActionTypes.FETCH_TYPES,
       fetchCompanies: ActionTypes.FETCH_COMPANIES,
       updateUser: ActionTypes.UPDATE_USER,
       getUsersList: ActionTypes.GET_USERS
     })
   },
   async beforeMount () {
-    await this.fetchRoles();
+    await this.fetchTypes();
     await this.fetchCompanies();
 
     if (this.companies && this.companies.length > 0) {

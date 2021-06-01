@@ -66,7 +66,7 @@ export default defineComponent({
   }
 
   /* Full-width inputs */
-  input[type=text], input[type=password], input[type=date], select, input[type=number] {
+  input[type=text], input[type=password], input[type=date], select, input[type=number], textarea {
     width: 100%;
     padding: $input-pad;
     margin: $margin-btn-input;
@@ -264,5 +264,16 @@ export default defineComponent({
   .btn-link {
     display: inline-block;
     width: 150px;
+  }
+
+  textarea {
+    width: 100%;
+    padding: $input-pad;
+    margin: 0;
+    display: inline-block;
+    border: none;
+    box-sizing: border-box;
+    outline-color: $primary-color;
+    background-color: $input-background-color;
   }
 </style>
