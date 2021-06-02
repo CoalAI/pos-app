@@ -200,7 +200,7 @@ export default defineComponent({
         requestee: this.requestee,
         expected_delivery_date: this.delivery,
         description: this.description,
-        status: this.requestType,
+        request_type: this.requestType,
       };
 
       await this.createRequest(request);
