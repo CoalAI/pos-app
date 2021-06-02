@@ -17,8 +17,10 @@ import NotFound from "./components/common-components/NotFound.vue";
 import Settings from "./components/common-components/Settings.vue";
 import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
+import Response from "./components/sales/Response.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
+import ExpenseSummary from "./components/admin/ExpenseSummary.vue";
 import Expense from "./components/admin/Expense.vue";
 import { store } from "./store";
 import { ActionTypes } from '@/store/modules/auth/actions';
@@ -236,9 +238,19 @@ const routes: Array<RouteRecordRaw> = [
     component: Inventory
   },
   {
+    path: '/expense-summary',
+    name: 'ExpenseSummary',
+    component: ExpenseSummary,
+  },
+  {
     path: '/expense',
     name: 'expense',
     component: Expense
+  },
+  {
+    path: '/response',
+    name: "Response",
+    component: Response
   }
 ];
 
