@@ -199,7 +199,8 @@ export default defineComponent({
         requester: this.userData.id,
         requestee: this.requestee,
         expected_delivery_date: this.delivery,
-        description: this.description
+        description: this.description,
+        status: this.requestType,
       };
 
       await this.createRequest(request);
