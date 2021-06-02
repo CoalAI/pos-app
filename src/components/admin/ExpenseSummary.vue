@@ -137,10 +137,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions, mapGetters } from 'vuex';
-
-import { ActionTypes } from '@/store/modules/auth/actions';
-import { Company } from '@/store/models/company';
 
 export default defineComponent({
   name: 'ExpenseSummary',

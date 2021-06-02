@@ -27,6 +27,7 @@ export enum ActionTypes {
   FETCH_INVENTORY = "FETCH_INVENTORY",
   INTERNAL_ORDER = "INTERNAL_ORDER",
   FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
+  FETCH_REQUESTS = "FETCH_REQUESTS",
 }
 
 export type AugmentedActionContext = {
@@ -57,6 +58,7 @@ export interface Actions {
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {requester__company?: number; requestee__company?: number}): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -243,6 +245,17 @@ Actions = {
       if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
         commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
       }
+    }
+  },
+  async [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {requester__company?: number; requestee__company?: number}) {
+    let response;
+    if (options) {
+      response = await serverRequest('get', 'request/', true, undefined, options);
+    } else {
+      response = await serverRequest('get', 'request/', true, undefined, undefined);
+    } 
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfRequests, response.data.results);
     }
   },
 };

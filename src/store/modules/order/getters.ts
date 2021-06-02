@@ -5,6 +5,8 @@ import { Order } from '@/store/models/order';
 import { State } from './state';
 import { Batch } from "@/store/models/batch";
 import { Inventory } from "@/store/models/company";
+import { Request } from "@/store/models/request";
+import { state } from "../auth/state";
 
 export interface Getters {
   getOrderStatus(state: State): string;
@@ -19,6 +21,7 @@ export interface Getters {
   // eslint-disable-next-line
   getSignleProduct(state: State, id: number): any;
   getInventory(state: State): Inventory[];
+  getListOfRequests(state: State): Request[];
   getUnits(state: State): Unit[];
   getBatch(state: State): Batch;
   getInvoiceID(state: State): string;
@@ -56,6 +59,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getInventory: (state: State) => {
     return state.inventory;
+  },
+  getListOfRequests: (state: State) => {
+    return state.listofRequests
   },
   getUnits: (state: State) => {
     return state.units;
