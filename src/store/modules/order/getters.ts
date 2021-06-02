@@ -5,6 +5,7 @@ import { Order } from '@/store/models/order';
 import { State } from './state';
 import { Batch } from "@/store/models/batch";
 import { Inventory } from "@/store/models/company";
+import { Request } from "@/store/models/request";
 
 export interface Getters {
   getOrderStatus(state: State): string;
@@ -22,6 +23,7 @@ export interface Getters {
   getUnits(state: State): Unit[];
   getBatch(state: State): Batch;
   getInvoiceID(state: State): string;
+  getRequest(state: State): Request;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -65,5 +67,8 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getInvoiceID: (state: State) => {
     return state.invoice_id;
+  },
+  getRequest: (state: State) => {
+    return state.request;
   },
 };

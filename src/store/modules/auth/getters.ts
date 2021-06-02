@@ -11,6 +11,7 @@ export interface Getters {
   getListOfVendors(state: State): User[];
   getRoles(state: State): string[];
   getCompanyTypes(state: State): string[];
+  getRequestTypes(state: State): string[];
   getCompanies(state: State): Company[];
   // eslint-disable-next-line
   getSignleUser(state: State, id: number): any;
@@ -44,6 +45,13 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     for (const object of state.types) {
       if (object.company_type) {
         return object.company_type;
+      }
+    }
+  },
+  getRequestTypes: (state: State) => {
+    for (const object of state.types) {
+      if (object.request_type) {
+        return object.request_type;
       }
     }
   },

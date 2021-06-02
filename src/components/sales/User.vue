@@ -132,7 +132,9 @@ export default defineComponent( {
       if (event) {
         event.preventDefault()
       }
-      this.getUsers(this.search)
+      this.getUsers({
+        search: this.search
+      });
     },
 
     toggleActivation: async function () {
@@ -141,7 +143,7 @@ export default defineComponent( {
         is_active: !this.userActivation.activate
       };
       await this.updateUser(user);
-      await this.getUsers('');
+      await this.getUsers();
       this.clearUserActivation();
       this.deleteUserModal = false;
     },
@@ -152,7 +154,7 @@ export default defineComponent( {
     })
   },
   async beforeMount () {
-    await this.getUsers('');
+    await this.getUsers();
   }
 });
 </script>

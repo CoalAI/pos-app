@@ -5,6 +5,7 @@ import { Order } from '@/store/models/order';
 import { Unit } from '@/store/models/product';
 import { Batch } from '@/store/models/batch';
 import { Inventory } from '@/store/models/company';
+import { Request } from '@/store/models/request';
 
 
 export enum MutationTypes {
@@ -18,7 +19,8 @@ export enum MutationTypes {
   SetInventory = 'SET_INVENTORY',
   SetUnit = 'SET_UNIT',
   SetBatch = 'SET_BATCH',
-  SetInvoiceID = "SetInvoiceID"
+  SetInvoiceID = "SET_INVOICEID",
+  SetRequest = "SET_REQUEST",
 }
 
 export type Mutations = {
@@ -33,6 +35,7 @@ export type Mutations = {
   [MutationTypes.SetUnit](state: State, units: Unit[]): void;
   [MutationTypes.SetBatch](state: State, batch: Batch): void;
   [MutationTypes.SetInvoiceID](state: State, id: string): void;
+  [MutationTypes.SetRequest](state: State, request: Request): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -68,5 +71,8 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetInvoiceID](state: State, id: string) {
     state.invoice_id = id;
+  },
+  [MutationTypes.SetRequest](state: State, request: Request) {
+    state.request = request;
   },
 }

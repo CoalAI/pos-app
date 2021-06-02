@@ -6,6 +6,7 @@ import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
 import { Batch } from '@/store/models/batch';
+import { Request } from '@/store/models/request';
 
 
 export enum ActionTypes {
@@ -27,6 +28,7 @@ export enum ActionTypes {
   FETCH_INVENTORY = "FETCH_INVENTORY",
   INTERNAL_ORDER = "INTERNAL_ORDER",
   FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
+  CREATE_REQUEST = "CREATE_REQUEST"
 }
 
 export type AugmentedActionContext = {
@@ -57,6 +59,7 @@ export interface Actions {
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -243,6 +246,16 @@ Actions = {
       if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
         commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
       }
+    }
+  },
+  async [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request) {
+    const response = await serverRequest('post', `request/`, true, request);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetRequest, response.data);
+    }
+    if(isAxiosError(response) && response.response && response.response.data) {
+      commit(MutationTypes.SetRequest, {});
+      commit('setError', response.response.data, {root: true});
     }
   },
 };
