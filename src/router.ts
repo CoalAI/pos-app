@@ -233,6 +233,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/expense-summary',
     name: 'ExpenseSummary',
     component: ExpenseSummary,
+    beforeEnter: admin
   },
   {
     path: '/expense',

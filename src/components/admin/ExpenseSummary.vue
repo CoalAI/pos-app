@@ -4,11 +4,11 @@
     <div class="filter-grid mr-2">
       <div class="sw">
         <label class="custom-radio" style="margin-right: 10px">Daily
-          <input type="radio" name="order_type" value="from">
+          <input type="radio" name="order_type" value="from" :checked="!custom_range"  @change="custom_range=false">
           <span class="checkmark"></span>
         </label>
         <label class="custom-radio" style="margin-right: 10px">Custom
-          <input type="radio" name="order_type" value="to">
+          <input type="radio" name="order_type" value="to" :checked="custom_range" @change="custom_range=true">
           <span class="checkmark"></span>
         </label>
       </div>
@@ -19,6 +19,7 @@
         <input
           name="start_date"
           type="date"
+          v-model="from"
         />
       </div>
       <label class="pad-label mr-l le" for="end_date">
@@ -28,73 +29,43 @@
         <input
           name="end_date"
           type="date"
+          v-model="to"
         />
+        <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
       </div>
       <div class="b">
-        <button class="btn btn-orange">Search Summary</button>
+        <button class="btn btn-orange" @click="fetchTrans">Search Summary</button>
       </div>
     </div>
     <div class="mr-2 box1-tab">
       <table>
         <colgroup>
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 40%;">
-          <col span="1" style="width: 15%;">
-          <col span="1" style="width: 15%;">
-          <col span="1" style="width: 30%;">
+          <col span="1" style="width: auto;">
+          <col span="1" style="width: auto;">
+          <col span="1" style="width: auto;">
+          <col span="1" style="width: auto;">
+          <col span="1" style="width: auto;">
         </colgroup>
-
         <tr>
           <th>Sr No.</th>
           <th>Transaction ID</th>
-          <th>Received From</th>
+           <th>Order ID</th>
+          <th>Received From</th>          
+          <th>Payment Service</th>
+          <th>Description</th>
           <th>Amount</th>
-          <th>More Columns</th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>0011</td>
-          <td>Hammid - Store</td>
-          <td>100,000 </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>0011</td>
-          <td>Hammid - Store</td>
-          <td>100,000 </td>
-          <td></td>
-        </tr><tr>
-          <td>1</td>
-          <td>0011</td>
-          <td>Hammid - Store</td>
-          <td>100,000 </td>
-          <td></td>
-        </tr><tr>
-          <td>1</td>
-          <td>0011</td>
-          <td>Hammid - Store</td>
-          <td>100,000 </td>
-          <td></td>
-        </tr><tr>
-          <td>1</td>
-          <td>0011</td>
-          <td>Hammid - Store</td>
-          <td>100,000 </td>
-          <td></td>
-        </tr><tr>
-          <td>1</td>
-          <td>0011</td>
-          <td>Hammid - Store</td>
-          <td>100,000 </td>
-          <td></td>
-        </tr><tr>
-          <td>1</td>
-          <td>0011</td>
-          <td>Hammid - Store</td>
-          <td>100,000 </td>
-          <td></td>
-        </tr>
+        <template v-for="(transaction,index) in transactions" :key="transaction.id">
+          <tr>
+            <td>{{index+1}}</td>
+            <td>{{transaction.transaction_id}}</td>
+            <td>{{transaction.order}}</td>
+            <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
+            <td>{{transaction.payment_service}}</td>
+            <td>{{transaction.description}}</td>
+            <td>{{transaction.amount}}</td>
+          </tr>
+        </template>
       </table>
     </div>
     <div id="Balance-information" class="mr-2">
@@ -105,7 +76,7 @@
         <input
           name="balance"
           type="text"
-          value="30,000"
+          :value="getBalance"
           readonly
         />
       </div>
@@ -116,7 +87,7 @@
         <input
           name="Starting-Balance"
           type="text"
-          value="30,000"
+          value="0.00"
           readonly
         />
       </div>
@@ -127,7 +98,7 @@
         <input
           name="expense"
           type="text"
-          value="30,000"
+          :value="totalExpense"
           readonly
         />
       </div>
@@ -138,12 +109,90 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-
 import { ActionTypes } from '@/store/modules/auth/actions';
+import { Transaction } from '@/store/models/transaction';
+import { User } from '@/store/models/user';
 import { Company } from '@/store/models/company';
+
 
 export default defineComponent({
   name: 'ExpenseSummary',
+  data(){
+    return {
+      custom_range : false,
+      from : '',
+      to : ''
+    }
+  },
+  created: async function(){
+    await this.getTransactions()
+    await this.getUserData()
+  },
+  computed:{
+    ...mapGetters({
+        transactions : 'getTransactions',
+        user: 'getUser'
+    }),
+    dateValidation: function(): string | null {
+      if(this.from !== undefined && this.to !== undefined && 
+        this.from !=='' && this.to !== '' &&
+        Date.parse(this.from) <= Date.parse(this.to)
+      ){
+        return null;
+      }
+
+      return 'invalid date range';
+    },
+    totalExpense: function(): string {
+      const trans: Transaction[] = this.transactions;
+      const requester_company = this.user.company.id;
+      let sum = 0.00;
+      if(trans !==undefined && requester_company !==undefined ){
+        trans.map( function(element: Transaction) {
+            if(element){
+              if(element.payor){
+                  const payor = element.payor as User;
+                  const company = payor.company as Company;
+                  const company_id = company.id;
+
+                   if(element.amount && company_id === requester_company){
+                    sum = sum+ +element.amount;
+                    
+                  }
+              }
+            }
+        });
+      }
+      return sum.toFixed(4);
+    },
+    getBalance: function(): number {
+
+      if(this.user.company && this.user.company.credit)
+        return this.user.company.credit;        
+
+      return 0;
+    },
+    startingBalance: function(): number {
+      
+      //first transaction where
+
+      return 0;
+    }
+  },
+  methods:{
+    ...mapActions({
+       getTransactions : ActionTypes.FETCH_TRANSACTIONS,
+       getUserData: ActionTypes.USER_DATA
+    }),
+    fetchTrans: async function(){
+      if(this.custom_range){
+         if (this.dateValidation === null)
+           await this.getTransactions({start_date:this.from, end_date:this.to})
+      }
+      else
+        await this.getTransactions()
+    },
+  }
 });
 </script>
 
