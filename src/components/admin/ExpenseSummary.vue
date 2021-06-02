@@ -87,7 +87,7 @@
         <input
           name="Starting-Balance"
           type="text"
-          value="0.00"
+          value="0.0000"
           readonly
         />
       </div>
@@ -156,7 +156,7 @@ export default defineComponent({
                   const company_id = company.id;
 
                    if(element.amount && company_id === requester_company){
-                    sum = sum+ +element.amount;
+                    sum = sum + parseFloat(element.amount);
                     
                   }
               }
@@ -169,12 +169,6 @@ export default defineComponent({
 
       if(this.user.company && this.user.company.credit)
         return this.user.company.credit;        
-
-      return 0;
-    },
-    startingBalance: function(): number {
-      
-      //first transaction where
 
       return 0;
     }

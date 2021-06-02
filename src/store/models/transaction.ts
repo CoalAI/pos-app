@@ -8,7 +8,7 @@ export interface Transaction extends DatesInterface{
     order?: null | number | Order;
     payor?: number | User; 
     payee?: number;
-    amount?: number | null;
+    amount?: string | null;
     payment_service?: string | null;
     transaction_id?: string | null;
     description?: string | null;
