@@ -6,7 +6,6 @@ import { State } from './state';
 import { Batch } from "@/store/models/batch";
 import { Inventory } from "@/store/models/company";
 import { Request } from "@/store/models/request";
-import { state } from "../auth/state";
 
 export interface Getters {
   getOrderStatus(state: State): string;

@@ -6,6 +6,7 @@ import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
 import { Batch } from '@/store/models/batch';
+import { Request } from "@/store/models/request";
 
 
 export enum ActionTypes {
@@ -28,6 +29,7 @@ export enum ActionTypes {
   INTERNAL_ORDER = "INTERNAL_ORDER",
   FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
   FETCH_REQUESTS = "FETCH_REQUESTS",
+  UPDATE_REQUEST = "UPDATE_REQUEST",
 }
 
 export type AugmentedActionContext = {
@@ -58,7 +60,8 @@ export interface Actions {
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {requester__company?: number; requestee__company?: number}): void;
+  [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}): void;
+  [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -247,7 +250,7 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {requester__company?: number; requestee__company?: number}) {
+  async [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}) {
     let response;
     if (options) {
       response = await serverRequest('get', 'request/', true, undefined, options);
@@ -256,6 +259,12 @@ Actions = {
     } 
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetListOfRequests, response.data.results);
+    }
+  },
+  async [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request) {
+    const response = await serverRequest('patch', `response/${request.id}/`, true, request);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
     }
   },
 };
