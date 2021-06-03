@@ -1,0 +1,16 @@
+name: Test on pull request
+
+on:
+  pull_request:
+    branches: [development, stanging, production]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Build Docker image 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: docker build -t "posapp:1" .
+
