@@ -3,6 +3,7 @@ import { Product } from '@/store/models/product';
 import { Unit } from '@/store/models/product';
 import { Batch } from'@/store/models/batch';
 import { Inventory } from '@/store/models/company';
+import { Request } from '@/store/models/request';
 
 export type State = {
     currentOrderStatus: string;
@@ -14,6 +15,7 @@ export type State = {
     listOfProducts: Product[];
     listOfBatches: Batch[];
     inventory: Inventory[];
+    listofRequests: Request[];
     units: Unit[];
     batch: Batch;
     invoice_id: string;
@@ -29,6 +31,7 @@ export const state: State = {
   listOfProducts: [],
   listOfBatches: [],
   inventory: [],
+  listofRequests: [],
   units: [],
   batch: {},
   invoice_id: '',
