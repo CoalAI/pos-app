@@ -1,7 +1,7 @@
 import { GetterTree } from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User } from '@/store/models/user';
-import { state, State } from './state';
+import { State } from './state';
 import { Company } from "@/store/models/company";
 import { Transaction } from "@/store/models/transaction";
 
