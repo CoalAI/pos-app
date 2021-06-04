@@ -326,7 +326,7 @@ export default defineComponent({
     }
 
     if (this.userId) {
-      await this.getUsersList('');
+      await this.getUsersList();
       const user_id = parseInt(this.userId);
       const user = isNaN(user_id) ? undefined : this.$store.getters.getSignleUser(user_id);
       if (user) {

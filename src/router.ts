@@ -26,7 +26,7 @@ import { store } from "./store";
 import { ActionTypes } from '@/store/modules/auth/actions';
 
 async function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN','VENDOR'];
+  const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN'];
   await store.dispatch(ActionTypes.USER_DATA);
   const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
@@ -38,7 +38,7 @@ async function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormali
 
 
 async function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['ADMIN','SUPER_ADMIN','VENDOR'];
+  const allowedRoles = ['ADMIN','SUPER_ADMIN'];
   await store.dispatch(ActionTypes.USER_DATA);
   const role = store.getters.getUser? store.getters.getUser.user_type:'';
   if(role!=null && role!='' && allowedRoles.includes(role)){
@@ -61,9 +61,16 @@ async function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormali
 
 async function redirectToAdmin(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext){
   const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+  const allowedCompanies = ['PARENT', 'STORE']
   await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if (role!=null && role!='' && allowedRoles.includes(role)){
+  const role = store.getters.getUser ? store.getters.getUser.user_type : '';
+  const company_type = store.getters.getUser ? store.getters.getUser.user_type : '';
+  if (role != null &&
+    company_type != null &&
+    company_type != '' &&
+    role != '' &&
+    allowedCompanies.includes(company_type) &&
+    allowedRoles.includes(role)){
     next('/admin/order');
   } else {
     next()
@@ -215,7 +222,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/request',
     name: "Request",
-    component: Request
+    component: Request,
+    beforeEnter: admin,
   },
   {
     path: '/requests/:id',
