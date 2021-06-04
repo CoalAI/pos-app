@@ -28,6 +28,7 @@
       <div class="flex-box">
         <router-link to="/response" class="btn btn-grid btn-orange btn-mr">Responses</router-link>
         <router-link v-show='admin' to="/expense-summary" class="btn btn-grid btn-orange btn-mr">Summary</router-link>
+        <router-link v-show='admin' to="/expense" class="btn btn-grid btn-orange btn-mr">Expense</router-link>
       </div>
     </div>
     <div class="s">

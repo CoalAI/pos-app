@@ -1,6 +1,6 @@
 <template>
   <div class="diff-shadow">
-    <h2>Expense Summary (To be implemented)</h2>
+    <h2>Expense Summary</h2>
     <div class="filter-grid mr-2">
       <div class="sw">
         <label class="custom-radio" style="margin-right: 10px">Daily
@@ -50,7 +50,8 @@
           <th>Sr No.</th>
           <th>Transaction ID</th>
            <th>Order ID</th>
-          <th>Received From</th>          
+          <th>Received From</th>
+          <th>To</th>           
           <th>Payment Service</th>
           <th>Description</th>
           <th>Amount</th>
@@ -61,6 +62,7 @@
             <td>{{transaction.transaction_id}}</td>
             <td>{{transaction.order}}</td>
             <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
+            <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
             <td>{{transaction.payment_service}}</td>
             <td>{{transaction.description}}</td>
             <td>{{transaction.amount}}</td>
