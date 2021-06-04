@@ -167,8 +167,8 @@ export default defineComponent({
     },
     getBalance: function(): number {
 
-      if(this.user.company && this.user.company.credit)
-        return this.user.company.credit;        
+      if(this.user.company && this.user.company.balance)
+        return this.user.company.balance;        
 
       return 0;
     }
