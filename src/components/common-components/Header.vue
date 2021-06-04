@@ -26,6 +26,7 @@
         <router-link v-show='admin' to="/departments" class="btn btn-grid btn-orange btn-mr">Deparments</router-link>
       </div>
       <div class="flex-box">
+        <router-link v-show="manager" to="/request" class="btn btn-grid btn-orange btn-mr">Request</router-link>
         <router-link to="/response" class="btn btn-grid btn-orange btn-mr">Responses</router-link>
         <router-link v-show='admin' to="/expense-summary" class="btn btn-grid btn-orange btn-mr">Summary</router-link>
         <router-link v-show='admin' to="/expense" class="btn btn-grid btn-orange btn-mr">Expense</router-link>
@@ -116,6 +117,14 @@ export default defineComponent({
     salesStaff(){
       const allowedRoles = ['SALES_STAFF'];
       if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)){
+        return true;
+      }
+      return false;
+    },
+    manager(){
+      const allowedRoles = ['ADMIN'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type) && 
+      this.userdata.company.company_type == 'RETIAL'){
         return true;
       }
       return false;

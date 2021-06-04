@@ -565,7 +565,7 @@ export default defineComponent({
     }
   },
   created: async function(){
-    await this.getUsers('');
+    await this.getUsers();
     this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === 'WALK_IN_CUSTOMER');
   },
   computed: {
@@ -1011,7 +1011,9 @@ export default defineComponent({
       if(event)
         event.preventDefault()
 
-      this.getUsers(this.customersearch)
+      this.getUsers({
+        search: this.customersearch
+      });
     },
 
     searchByName: function (event: Event) {

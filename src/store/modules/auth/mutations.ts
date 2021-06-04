@@ -21,6 +21,7 @@ export type Mutations = {
   [MutationTypes.SetToken](state: State, token: string): void;
   [MutationTypes.SetListOfUsers](state: State, users: User[]): void;
   [MutationTypes.SetListOfVendors](state: State, vendors: User[]): void;
+  // eslint-disable-next-line
   [MutationTypes.SetTypes](state: State, types: any[]): void;
   [MutationTypes.SetCompanies](state: State, companies: Company[]): void;
   [MutationTypes.SetTransactions](state: State, transactions: Transaction[]): void;
@@ -42,6 +43,7 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetListOfVendors](state: State, vendors: User[]) {
     state.ListOfVendors = vendors;
   },
+  // eslint-disable-next-line
   [MutationTypes.SetTypes](state: State, types: any[]) {
     state.types = types;
   },
