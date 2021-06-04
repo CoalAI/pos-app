@@ -21,6 +21,7 @@ export enum ActionTypes {
   UPDATE_COMPANY = "UPDATE_COMPANY",
   DELETE_COMPANY = "DELETE_COMPANY",
   FETCH_VENDORS = "FETCH_VENDORS",
+  FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
 }
 
 export type AugmentedActionContext = {
@@ -47,6 +48,7 @@ export interface Actions {
   [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -181,4 +183,21 @@ Actions = {
       }
     }
   },
+  async [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}) {
+    let response;
+    if (search_criteria) {
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: search_criteria.start_date, end_date:search_criteria.end_date});
+    } else {
+      const now = new Date().toLocaleDateString()
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now});
+    }
+    if (isAxiosResponse(response)) {
+        commit(MutationTypes.SetTransactions, response.data.results)
+    }
+    if(isAxiosError(response)) {
+      if(response.response && response.response.data){
+        commit('setError', response.response.data, {root: true});
+      }
+    }
+  }
 };

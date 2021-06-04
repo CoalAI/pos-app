@@ -196,8 +196,8 @@ export default defineComponent({
     addRequestbtn: async function () {
       this.loader = true;
       const request: Request = {
-        requester: this.userData.id,
-        requestee: this.requestee,
+        sender: this.userData.id,
+        receiver: this.requestee,
         expected_delivery_date: this.delivery,
         description: this.description,
         request_type: this.requestType,

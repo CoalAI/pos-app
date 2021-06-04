@@ -1,8 +1,9 @@
 import { GetterTree } from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User } from '@/store/models/user';
-import { state, State } from './state';
+import { State } from './state';
 import { Company } from "@/store/models/company";
+import { Transaction } from "@/store/models/transaction";
 
 export interface Getters {
   getUser(state: State): User;
@@ -19,6 +20,9 @@ export interface Getters {
   getSignleCompany(state: State, id: number): any;
   // eslint-disable-next-line
   getSignleVendor(state: State): any;
+  // eslint-disable-next-line
+  getTransactions(state: State): Transaction[];
+  // eslint-disable-next-line
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -70,4 +74,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     const vendor = state.ListOfVendors.find((item: User) => item.id && item.id === id);
     return vendor;
   },
+  getTransactions: (state: State) => state.transactions,
 };

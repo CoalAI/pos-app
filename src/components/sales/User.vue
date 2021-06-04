@@ -123,7 +123,7 @@ export default defineComponent( {
       this.deleteUserModal = true;
     },
 
-    closedeleteUserModal: function(id: string) {
+    closedeleteUserModal: function() {
       this.deleteUserModal = false;
       this.clearUserActivation();
     },

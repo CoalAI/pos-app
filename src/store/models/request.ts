@@ -3,8 +3,8 @@ import { User } from './user';
 
 export interface Request extends DatesInterface {
     id?: number;
-    requester?: number | User;
-    requestee?: number | User;
+    sender?: number | User;
+    receiver?: number | User;
     request_type?: string;
     status?: string;
     expected_delivery_date?: string;

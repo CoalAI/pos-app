@@ -15,6 +15,7 @@ export type State = {
     listOfProducts: Product[];
     listOfBatches: Batch[];
     inventory: Inventory[];
+    listofRequests: Request[];
     units: Unit[];
     batch: Batch;
     invoice_id: string;
@@ -31,6 +32,7 @@ export const state: State = {
   listOfProducts: [],
   listOfBatches: [],
   inventory: [],
+  listofRequests: [],
   units: [],
   batch: {},
   invoice_id: '',
