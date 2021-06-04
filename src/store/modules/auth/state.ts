@@ -1,5 +1,6 @@
 import { User } from '@/store/models/user';
 import { Company } from '@/store/models/company';
+import { Transaction } from '@/store/models/transaction';
 
 export type State = {
     user: User;
@@ -8,6 +9,7 @@ export type State = {
     ListOfVendors: User[];
     types: any[];
     companies: Company[];
+    transactions: Transaction[];
 };
 
 export const state: State = {
@@ -17,4 +19,5 @@ export const state: State = {
   ListOfVendors: [],
   types: [],
   companies: [],
+  transactions: [],
 };
