@@ -30,6 +30,7 @@ export enum ActionTypes {
   FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
   FETCH_REQUESTS = "FETCH_REQUESTS",
   UPDATE_REQUEST = "UPDATE_REQUEST",
+  UPDATE_ORDER = "UPDATE_ORDER",
 }
 
 export type AugmentedActionContext = {
@@ -44,7 +45,16 @@ export type AugmentedActionContext = {
 export interface Actions {
   [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string): void;
   [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, name: string): void;
-  [ActionTypes.FETCH_ORDERS]({ commit }: AugmentedActionContext, options: {id__contains?: string; cash?: boolean; status?: string; created?: Date}): void;
+  [ActionTypes.FETCH_ORDERS]({ commit }: AugmentedActionContext, 
+    options: {
+      buyer__company?: number;
+      seller_company?: number;
+      id__contains?: string;
+      cash?: boolean;
+      status?: string;
+      created?: Date;
+    }
+  ): void;
   [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
@@ -62,6 +72,7 @@ export interface Actions {
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}): void;
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
+  [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -95,6 +106,8 @@ Actions = {
   async [ActionTypes.FETCH_ORDERS](
     { commit }: AugmentedActionContext,
     options: {
+      buyer__company?: number;
+      seller_company?: number;
       id__contains?: string;
       cash?: boolean;
       status?: string;
@@ -263,6 +276,12 @@ Actions = {
   },
   async [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request) {
     const response = await serverRequest('patch', `response/${request.id}/`, true, request);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
+    const response = await serverRequest('patch', `order/${order.id}/`, true, order);
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }
