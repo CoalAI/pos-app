@@ -154,7 +154,6 @@ export default defineComponent({
       this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
       this.transaction.amount = this.expenseMethod === 'credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
       this.transaction.payor = this.userdata.id;
-      debugger
       await this.createExpense(this.transaction as Transaction);
       this.$router.go(0)
     }
