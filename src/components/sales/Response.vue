@@ -1,76 +1,156 @@
 <template>
   <div class="diff-shadow pad-2">
-    <h2>Request Items</h2>
-    <div class="search-grid-list-pages">
-      <div class="flex-box"> 
-        <label class="pad-label w100">
-          <strong>Status filter:</strong>
-        </label>
-        <select class="transtype custom-select" v-model="searchStatus" @change="onChangeStatusFilter">
-          <option value="">All</option>
-          <option value="PENDING">PENDING</option>
-          <option value="APPROVED">APPROVED</option>
-          <option value="COMPLETE">COMPLETE</option>
-          <option value="CANCEL">CANCEL</option>
-        </select>
+    <h2>Responses</h2>
+    <ul class="nav nav-tabs">
+      <li class="nav-item" @click="tab = 'Request'">
+        <span :class="tab === 'Request' ? 'nav-link active' : 'nav-link'">
+          <strong>Request Items</strong>
+        </span>
+      </li>
+      <li class="nav-item" @click="tab = 'Order'">
+        <span :class="tab === 'Order' ? 'nav-link active' : 'nav-link'">
+          <strong>Orders</strong>
+        </span>
+      </li>
+    </ul>
+    <div v-if="tab === 'Request'">
+      <div class="search-grid-list-pages">
+        <div class="flex-box"> 
+          <label class="pad-label w100">
+            <strong>Status filter:</strong>
+          </label>
+          <select class="transtype custom-select" v-model="searchStatus" @change="onChangeStatusFilter">
+            <option value="">All</option>
+            <option value="PENDING">PENDING</option>
+            <option value="APPROVED">APPROVED</option>
+            <option value="COMPLETE">COMPLETE</option>
+            <option value="CANCEL">CANCEL</option>
+          </select>
+        </div>
+      </div>
+      <div class="mr-2">
+        <div class="box1-tab">
+          <table>
+            <colgroup>
+              <col span="1" style="width: 5%;">
+              <col span="1" style="width: 5%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 25%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 15%;">
+            </colgroup>
+
+            <tr>
+              <th>Sr No.</th>
+              <th>Req Id</th>
+              <th>From</th>
+              <th>to</th>
+              <th>Request Type</th>
+              <th>Description</th>
+              <th>Created On</th>
+              <th>Delivery Date</th>
+              <th>Status</th>
+            </tr>
+            <template v-for="(request,index) in requests" v-bind:key="request.id">
+              <tr @click="selectRequest(request.id)" :class="selected_request===request.id?'table-active':''">
+                <td>{{index+1}}</td>
+                <td>{{request.id}}</td>
+                <td>{{request.sender.username}}<br>{{request.sender.company.company_name}}</td>
+                <td>{{request.receiver.username}}<br>{{request.receiver.company.company_name}}</td>
+                <td>{{request.request_type}}</td>
+                <td>{{request.description}}</td>
+                <td>{{datestr(request.created)}}</td>
+                <td>{{request.expected_delivery_date}}</td>
+                <td>
+                  <select
+                  class="custom-select"
+                  v-model="request.status"
+                  @change="sendResponse(request.id)"
+                  :disabled="diableRequestStatus(request.id)">
+                    <option value="PENDING">PENDING</option>
+                    <option v-if="request.status === 'APPROVED' || user.company.company_type == 'STORE'" value="APPROVED">APPROVED</option>
+                    <option v-if="request.status === 'COMPLETE' || user.company.company_type == 'STORE'" value="COMPLETE">COMPLETE</option>
+                    <option value="CANCEL">CANCEL</option>
+                  </select>
+                </td>
+              </tr>      
+            </template>
+          </table>
+        </div>
       </div>
     </div>
-    <div class="mr-2">
-      <div class="box1-tab">
-        <table>
-          <colgroup>
-            <col span="1" style="width: 5%;">
-            <col span="1" style="width: 5%;">
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 25%;">
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 15%;">
-          </colgroup>
+    <div v-else-if="tab === 'Order'">
+      <div class="search-grid-list-pages">
+        <div class="flex-box"> 
+          <label class="pad-label w100">
+            <strong>Status filter:</strong>
+          </label>
+          <select
+          class="transtype custom-select"
+          v-model="orderStatus"
+          @change="onOrderStatusChangeFilter"
+          >
+            <option value="">ANY</option>
+            <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
+            {{item.status}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="mr-2">
+        <div class="box1-tab">
+          <table>
+            <colgroup>
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 20%;">
+              <col span="1" style="width: 25%;">
+              <col span="1" style="width: 15%;">
+            </colgroup>
 
-          <tr>
-            <th>Sr No.</th>
-            <th>Req Id</th>
-            <th>From</th>
-            <th>to</th>
-            <th>Request Type</th>
-            <th>Description</th>
-            <th>Created On</th>
-            <th>Delivery Date</th>
-            <th>Status</th>
-          </tr>
-          <template v-for="(request,index) in requests" v-bind:key="request.id">
-            <tr @click="selectRequest(request.id)" :class="selected_request===request.id?'table-active':''">
-              <td>{{index+1}}</td>
-              <td>{{request.id}}</td>
-              <td>{{request.sender.username}}<br>{{request.sender.company.company_name}}</td>
-              <td>{{request.receiver.username}}<br>{{request.receiver.company.company_name}}</td>
-              <td>{{request.request_type}}</td>
-              <td>{{request.description}}</td>
-              <td>{{datestr(request.created)}}</td>
-              <td>{{request.expected_delivery_date}}</td>
-              <td>
-                <select
-                class="custom-select"
-                v-model="request.status"
-                @change="sendResponse(request.id)"
-                :disabled="diableRequestStatus(request.id)">
-                  <option value="PENDING">PENDING</option>
-                  <option v-if="request.status === 'APPROVED' || user.company.company_type == 'STORE'" value="APPROVED">APPROVED</option>
-                  <option v-if="request.status === 'COMPLETE' || user.company.company_type == 'STORE'" value="COMPLETE">COMPLETE</option>
-                  <option value="CANCEL">CANCEL</option>
-                </select>
-              </td>
-            </tr>      
-          </template>
-        </table>
+            <tr>
+              <th>Sr No.</th>
+              <th>Order Id</th>
+              <th>Buyer</th>
+              <th>Seller</th>
+              <th>Total</th>
+              <th>Created On</th>
+              <th>Status</th>
+            </tr>
+            <template v-for="(order, index) in orders" v-bind:key="order.id">
+              <tr @click="selectOrder(order.id)" :class="selected_order===order.id?'table-active':''">
+                <td>{{index+1}}</td>
+                <td>{{order.id}}</td>
+                <td>{{order.buyer}}</td>
+                <td>{{order.seller}}</td>
+                <td>{{trimDecimalPlaces(order.total)}}</td>
+                <td>{{datestr(order.created)}}</td>
+                <td>
+                  <select
+                  class="custom-select"
+                  v-model="order.status"
+                  @change="onChangeOrderStatus(order.id)"
+                  :disabled="diableOrderStatus(order.id)"
+                  >
+                    <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
+                      {{item.status}}
+                    </option>
+                  </select>
+                </td>
+              </tr>      
+            </template>
+          </table>
+        </div>
       </div>
-      <div class="container">
-        <h2>Request Detail</h2>
-        <textarea id="requestdetail" type="text" v-bind:value="request_detail" readonly></textarea>
-      </div>
+    </div>
+    <div class="container">
+      <h2>{{tab}} Detail</h2>
+      <textarea id="requestdetail" type="text" v-bind:value="request_detail" readonly></textarea>
     </div>
   </div>
 </template>
@@ -81,6 +161,8 @@ import { mapActions, mapGetters } from 'vuex';
 import { Request } from '@/store/models/request';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import { Order } from '@/store/models/order';
+import { OrderItem } from '@/store/models/orderItem';
 
 
 export default defineComponent({
@@ -90,12 +172,17 @@ export default defineComponent({
       request_detail:'request detail here!',
       searchStatus: 'PENDING',
       selected_request: 0,
+      tab: 'Request',
+      orderStatus: '',
+      selected_order: 0,
     }
   },
   computed: {
     ...mapGetters({
       requests: 'getListOfRequests',
       user: 'getUser',
+      orders: 'getListOfOrders',
+      statuses: 'getOrderStatuses',
     })
   },
   methods:{
@@ -146,15 +233,83 @@ export default defineComponent({
       return _date.getFullYear() + '-' + _date.getMonth() + '-' + _date.getDate();
     },
 
+    trimDecimalPlaces: function (value: string | undefined) {
+      return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
+    },
+
+    onOrderStatusChangeFilter: async function () {
+      if (this.user) {
+        let filter = {};
+        if (this.user.company.company_type == 'RETIAL') filter = {buyer__company: this.user.company.id, status: this.orderStatus};
+        else if (this.user.company.company_type == 'STORE') filter = {seller__company: this.user.company.id, status: this.orderStatus};
+        await this.fetchOrders(filter);
+      }
+    },
+
+    selectOrder: function (orderID: number) {
+      const order = this.orders.find((item: Order) => item.id && item.id == orderID);
+      let buffer = '';
+      if (order) {
+        buffer+=order.id +'\r\n';
+        buffer+=order.seller+'\r\n';
+        buffer+=order.buyer+'\r\n';
+        buffer+=this.trimDecimalPlaces(order.total)+'\r\n';
+        buffer+=order.created+'\r\n';
+        buffer+=order.status+'\r\n';
+        buffer+='Order Items:'+'\r\n';
+        buffer+='BarCode \t Product Name \t Quantity \t Price \t Discount'+'\r\n';
+        order.order_item.forEach((orderItem: OrderItem) => {
+          if (orderItem.batch &&
+          typeof orderItem.batch !== 'number' &&
+          orderItem.batch.product_variant && 
+          typeof orderItem.batch.product_variant !== 'number' &&
+           orderItem.batch.product_variant.product && 
+          typeof orderItem.batch.product_variant.product !== 'number') {
+            buffer += orderItem.batch.product_variant.product.bar_code + ', ';
+            buffer += orderItem.batch.product_variant.product.name + ', ';
+            buffer += this.trimDecimalPlaces(orderItem.quantity) + ', ';
+            buffer += this.trimDecimalPlaces(orderItem.price) + ', ';
+            buffer += orderItem.discount + '\r\n';
+          }
+        });
+      }
+      this.request_detail=buffer+'\r\n';
+      this.selected_order = orderID;
+    },
+
+    diableOrderStatus: function (orderID: number) {
+      const request = this.orders.find((item: Order) => item.id && item.id == orderID);
+      if (request.status === 'COMPLETE') {
+        return true;
+      }
+      return false;
+    },
+
+    onChangeOrderStatus: async function (orderID: number) {
+      const selectedOrder = this.orders.find((item: Order) => item.id && item.id == orderID);
+      if (selectedOrder) {
+        const order = {
+          id: selectedOrder.id,
+          status: selectedOrder.status,
+        }
+        await this.updateOrderStatus(order);
+      }
+    },
+
     ...mapActions({
       fetchRequests: OrderActionTypes.FETCH_REQUESTS,
       updateRequest: OrderActionTypes.UPDATE_REQUEST,
       userdata: AuthActionTypes.USER_DATA,
+      fetchOrders: OrderActionTypes.FETCH_ORDERS,
+      fetchOrderStatuses: OrderActionTypes.FETCH_ORDER_STATUSES,
+      updateOrderStatus: OrderActionTypes.UPDATE_ORDER,
     })
   },
   async beforeMount () {
     await this.userdata();
     await this.onChangeStatusFilter();
+    await this.fetchOrderStatuses();
+    await this.onOrderStatusChangeFilter();
   }
 });
 </script>
@@ -182,5 +337,42 @@ export default defineComponent({
   .box1-tab {
     overflow-y: auto;
     height: $order-item-table-height;
+  }
+
+  .nav {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+  }
+
+  .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .nav-tabs .nav-item {
+    margin-bottom: -1px;
+  }
+
+  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #000;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+  }
+
+  .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+  }
+
+  .nav-link {
+    color: #495057;
+    display: block;
+    padding: .5rem 1rem;
   }
 </style>
