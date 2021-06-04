@@ -7,6 +7,7 @@ export type State = {
     token: string;
     listOfUsers: User[];
     ListOfVendors: User[];
+    // eslint-disable-next-line
     types: any[];
     companies: Company[];
     transactions: Transaction[];

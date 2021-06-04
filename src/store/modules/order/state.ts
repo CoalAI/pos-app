@@ -19,6 +19,7 @@ export type State = {
     units: Unit[];
     batch: Batch;
     invoice_id: string;
+    request: Request;
 };
 
 export const state: State = {
@@ -35,4 +36,5 @@ export const state: State = {
   units: [],
   batch: {},
   invoice_id: '',
+  request: {},
 };

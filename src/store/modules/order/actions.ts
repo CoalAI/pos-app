@@ -28,6 +28,7 @@ export enum ActionTypes {
   FETCH_INVENTORY = "FETCH_INVENTORY",
   INTERNAL_ORDER = "INTERNAL_ORDER",
   FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
+  CREATE_REQUEST = "CREATE_REQUEST",
   FETCH_REQUESTS = "FETCH_REQUESTS",
   UPDATE_REQUEST = "UPDATE_REQUEST",
 }
@@ -60,6 +61,7 @@ export interface Actions {
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}): void;
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
 }
@@ -248,6 +250,16 @@ Actions = {
       if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
         commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
       }
+    }
+  },
+  async [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request) {
+    const response = await serverRequest('post', `request/`, true, request);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetRequest, response.data);
+    }
+    if(isAxiosError(response) && response.response && response.response.data) {
+      commit(MutationTypes.SetRequest, {});
+      commit('setError', response.response.data, {root: true});
     }
   },
   async [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}) {

@@ -40,7 +40,7 @@ export interface Actions {
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
@@ -100,17 +100,15 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string) {
+  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}) {
     let response;
-    if (search) {
-      response = await serverRequest('get', 'user/', true, undefined, {search: search});
+    if (options) {
+      response = await serverRequest('get', 'user/', true, undefined, options);
     } else {
       response = await serverRequest('get', 'user/', true, undefined, undefined);
     }
     if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
-        commit(MutationTypes.SetListOfUsers, response.data.results)
-      }
+      commit(MutationTypes.SetListOfUsers, response.data.results)
     }
   },
   async [ActionTypes.GET_USERS_BY_TYPES]({ commit}: AugmentedActionContext, user_types: string[]) {
