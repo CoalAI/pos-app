@@ -5,6 +5,7 @@ import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/re
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Company } from '@/store/models/company';
+import { Transaction } from "@/store/models/transaction";
 
 export enum ActionTypes {
   FETCH_TOEKN = "FETCH_TOEKN",
@@ -15,6 +16,7 @@ export enum ActionTypes {
   USER_DATA = "USER_DATA",
   GET_USERS = "GET_USERS",
   GET_USERS_BY_TYPES = "GET_USERS_BY_TYPES",
+  CREATE_EXPENSE = "CREATE_EXPENSE",
   FETCH_TYPES = "FETCH_TYPES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
   CREATE_COMPANY = "CREATE_COMPANY",
@@ -42,6 +44,7 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
+  [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
   [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
@@ -126,6 +129,17 @@ Actions = {
       }
     }
   },
+  async [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction) {
+    const response = await serverRequest('post', `transaction/`, true, transaction);
+    if(isAxiosResponse(response)) {
+      commit(MutationTypes.SetExpense, response.data)
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetExpense, {})
+      commit('setError', response.message , {root: true});
+    }
+  },
+
   async [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext) {
     const response = await serverRequest('get', 'type/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
