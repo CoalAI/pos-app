@@ -12,8 +12,8 @@ export enum MutationTypes {
   SetListOfVendors = "SET_LIST_OF_VENDORS",
   SetTypes = "SET_TYPES",
   SetCompanies = "SET_COMPANIES",
-  SetTransactions = "SET_TRANSACTIONS"
-
+  SetTransactions = "SET_TRANSACTIONS",
+  SetExpense = "SET_EXPENSE"
 }
 
 export type Mutations = {
@@ -25,6 +25,7 @@ export type Mutations = {
   [MutationTypes.SetTypes](state: State, types: any[]): void;
   [MutationTypes.SetCompanies](state: State, companies: Company[]): void;
   [MutationTypes.SetTransactions](state: State, transactions: Transaction[]): void;
+  [MutationTypes.SetExpense](state: State, transactions: Transaction): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -53,4 +54,7 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetTransactions](state: State, transactions: Transaction[]) {
     state.transactions = transactions;
   },
+  [MutationTypes.SetExpense](state: State, transaction: Transaction) {
+    state.expense = transaction
+  }
 }

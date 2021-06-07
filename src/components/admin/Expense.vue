@@ -1,4 +1,5 @@
 <template>
+  <Alert v-if="create_expense" :type="create_expense?'success':'error'" >{{ create_expense }}</Alert>
   <div id="expense">
     <div class="diff-shadow">
       <h2>Expense</h2>
@@ -85,6 +86,7 @@
       </div>
     </div>
   </div>
+  <Loader v-show="loader"></Loader>
 </template>
 
 <script lang="ts">
@@ -93,9 +95,13 @@ import { mapActions, mapGetters } from'vuex';
 
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Transaction } from '@/store/models/transaction';
+import Alert from '@/components/common-components/Alert.vue'
 
 export default defineComponent({
   name: 'Expense',
+  components: {
+    Alert
+  },
   data() {
     return {
       expenseMethod: 'credit',
@@ -105,13 +111,16 @@ export default defineComponent({
         amount:'',
         transaction_id:'',
         description:'',
-        clear: function(){
-           this.payor=-1
-           this.payee=-1
-           this.amount=''
-           this.description=''
+        clear: function() {
+          this.payor = -1;
+          this.payee = -1;
+          this.amount = '';
+          this.transaction_id = '',
+          this.description = ''
         }
-    }
+      }, 
+      create_expense : '',
+      loader: false
     }
   },
   computed: {
@@ -140,7 +149,8 @@ export default defineComponent({
 
     ...mapGetters({
       users: 'getListOfUsers',
-      userdata: 'getUser'
+      userdata: 'getUser',
+      expense: 'getExpense'
     })
   },
   methods: {
@@ -154,9 +164,12 @@ export default defineComponent({
       this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
       this.transaction.amount = this.expenseMethod === 'credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
       this.transaction.payor = this.userdata.id;
-      await this.createExpense(this.transaction as Transaction);
-      this.$router.go(0)
-    }
+      this.loader = true
+      await this.createExpense(this.transaction as Transaction).finally(() => this.loader = false);
+      this.create_expense = this.expense && this.expense.id? "Transaction Successful!": "Transaction Failed!"
+      this.transaction.clear();
+      await this.fetchUserData();
+    },
   },
   async beforeMount () {
     await this.fetchUsers();

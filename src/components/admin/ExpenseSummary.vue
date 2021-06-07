@@ -157,15 +157,14 @@ export default defineComponent({
                   const company = payor.company as Company;
                   const company_id = company.id;
 
-                   if(element.amount && company_id === requester_company){
-                    sum = sum + parseFloat(element.amount);
-                    
-                  }
+                   if(element.amount && company_id === requester_company && parseFloat(element.amount)<0) {
+                     sum = sum + parseFloat(element.amount);
+                   }
               }
             }
         });
       }
-      return sum.toFixed(4);
+      return Math.abs(sum).toFixed(4);
     },
     getBalance: function(): number {
 

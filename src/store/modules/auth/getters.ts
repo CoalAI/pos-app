@@ -23,6 +23,8 @@ export interface Getters {
   // eslint-disable-next-line
   getTransactions(state: State): Transaction[];
   // eslint-disable-next-line
+  getExpense(state: State): Transaction;
+  // eslint-disable-next-line
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -75,4 +77,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     return vendor;
   },
   getTransactions: (state: State) => state.transactions,
+  getExpense: (state: State)  => state.expense
 };

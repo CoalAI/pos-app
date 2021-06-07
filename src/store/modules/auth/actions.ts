@@ -131,8 +131,12 @@ Actions = {
   },
   async [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction) {
     const response = await serverRequest('post', `transaction/`, true, transaction);
+    if(isAxiosResponse(response)) {
+      commit(MutationTypes.SetExpense, response.data)
+    }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit(MutationTypes.SetExpense, {})
+      commit('setError', response.message , {root: true});
     }
   },
 
