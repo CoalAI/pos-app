@@ -1,5 +1,5 @@
 <template>
-  <Alert v-if="create_expense" :type="create_expense?'success':'error'" >{{ create_expense }}</Alert>
+  <Alert v-if="create_expense" type="success" >"Transaction Successful!"</Alert>
   <div id="expense">
     <div class="diff-shadow">
       <h2>Expense</h2>
@@ -119,7 +119,7 @@ export default defineComponent({
           this.description = ''
         }
       }, 
-      create_expense : '',
+      create_expense : false,
       loader: false
     }
   },
@@ -161,14 +161,16 @@ export default defineComponent({
       createExpense: AuthActionTypes.CREATE_EXPENSE
     }),
     addExpense: async function(){
-      this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
-      this.transaction.amount = this.expenseMethod === 'credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
-      this.transaction.payor = this.userdata.id;
-      this.loader = true
-      await this.createExpense(this.transaction as Transaction).finally(() => this.loader = false);
-      this.create_expense = this.expense && this.expense.id? "Transaction Successful!": "Transaction Failed!"
-      this.transaction.clear();
-      await this.fetchUserData();
+      if(this.amountValidation==null && this.descriptionValidation == null) {
+        this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+        this.transaction.amount = this.expenseMethod === 'credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
+        this.transaction.payor = this.userdata.id;
+        this.loader = true
+        await this.createExpense(this.transaction as Transaction).finally(() => this.loader = false);
+        this.create_expense = this.expense && this.expense.id;
+        this.transaction.clear();
+        await this.fetchUserData();
+      }
     },
   },
   async beforeMount () {
