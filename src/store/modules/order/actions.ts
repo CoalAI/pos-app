@@ -136,11 +136,10 @@ Actions = {
     }
   },
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
-    const response = await serverRequest('post', 'order/', true, undefined);
+    const response = await serverRequest('post', 'order/', true, order);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
       commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
-      commit(MutationTypes.SetError, undefined);   
     }
     if(isAxiosError(response)) {
       if (response.response && response.response.data){
@@ -190,8 +189,7 @@ Actions = {
     }
   },
   async [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}) {
-    const response = await serverRequest('put', `product/${data.productID}/`, true, undefined, undefined);
-    // const response = await serverRequest('put', `product/${data.productID}/`, true, data.product, undefined);
+    const response = await serverRequest('put', `product/${data.productID}/`, true, data.product, undefined);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
     }
