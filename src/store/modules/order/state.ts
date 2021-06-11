@@ -20,7 +20,9 @@ export type State = {
     batch: Batch;
     invoice_id: string;
     request: Request;
+    error: any;
 };
+
 
 export const state: State = {
   currentOrderStatus: '',
@@ -37,4 +39,5 @@ export const state: State = {
   batch: {},
   invoice_id: '',
   request: {},
+  error: {}
 };

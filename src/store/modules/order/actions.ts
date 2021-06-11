@@ -34,6 +34,8 @@ export enum ActionTypes {
   UPDATE_ORDER = "UPDATE_ORDER",
 }
 
+
+
 export type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
     key: K | string,
@@ -121,7 +123,7 @@ Actions = {
       commit(MutationTypes.SetListOfOrders, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', 'Failed to fetch orders!', {root: true});
     }
   },
   async [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext) {
@@ -130,22 +132,25 @@ Actions = {
       commit(MutationTypes.SetOrderStatuses, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', 'Failed to fetch order statuses!', {root: true});
     }
   },
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
     const response = await serverRequest('post', 'order/', true, order);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
-      commit(MutationTypes.SetOrderStatus, 'Order is completed successfully.');
+      commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
-      if (response.response && response.response.data &&  response.response.data.non_field_errors) {
-        commit(MutationTypes.SetOrderStatus, response.response.data.non_field_errors);
-      } else {
-        commit(MutationTypes.SetOrderStatus, "Server side error. Kindly try again.");
+      if (response.response && response.response.data){
+          if( response.response.data.non_field_errors) {
+            commit('setError', response.response.data.non_field_errors, {root: true});
+          } else {
+            commit(MutationTypes.SetError, response.response.data);   
+          }
+          commit('setError', "Server side error. Kindly try again.", {root: true});
       }
+      commit(MutationTypes.SetOrderStatus, "Failed to create the Order!.");
     }
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {
@@ -299,3 +304,4 @@ Actions = {
     }
   },
 };
+

@@ -22,6 +22,7 @@ export enum MutationTypes {
   SetBatch = 'SET_BATCH',
   SetInvoiceID = "SET_INVOICEID",
   SetRequest = "SET_REQUEST",
+  SetError = "SET_ERROR",
 }
 
 export type Mutations = {
@@ -38,6 +39,7 @@ export type Mutations = {
   [MutationTypes.SetBatch](state: State, batch: Batch): void;
   [MutationTypes.SetInvoiceID](state: State, id: string): void;
   [MutationTypes.SetRequest](state: State, request: Request): void;
+  [MutationTypes.SetError](state: State, error: any): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -80,4 +82,7 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetRequest](state: State, request: Request) {
     state.request = request;
   },
+  [MutationTypes.SetError](state: State, error: any) {
+    state.error = error;
+  }
 }

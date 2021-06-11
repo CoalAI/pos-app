@@ -275,7 +275,9 @@
                 v-bind:value="totalAmount"
                 readonly
               />
+            <span v-if="field_errors.total" class="form-error">{{ field_errors.total[0] }}</span>
             </div>
+            
 
             <label class="pad-label q mr-l" for="total_discount">
               <strong>Total Discount:</strong>
@@ -299,6 +301,7 @@
                 </select>
               </div>
               <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
+              <div v-if="field_errors.total_discount" class="form-error">{{ field_errors.total_discount[0] }}</div>
             </div>
 
             <label class="pad-label pn" for="barcode">
@@ -311,7 +314,8 @@
                 name="cash_received"
                 v-model="cashReceived"
               />
-              <span v-if="orderCashReceivedValidation" class="form-error">{{ orderCashReceivedValidation }}</span>
+              <div v-if="field_errors.amount_received" class="form-error">{{ field_errors.amount_received[0] }}</div>
+              <span v-else class="form-error">{{ orderCashReceivedValidation }}</span>
             </div>
             
 
@@ -778,6 +782,7 @@ export default defineComponent({
       orderStatus: 'getOrderStatus',
       customers: 'getListOfUsers',
       invoiceID: 'getInvoiceID',
+      field_errors: 'getFieldError',
     })
   },
   methods: {
@@ -953,7 +958,7 @@ export default defineComponent({
         invoice_id: this.invoiceID,
         deduct_balance: this.deduct_balance
       }
-      this.createOrder(singleOrder);
+      await this.createOrder(singleOrder);
     },
 
     changeQuantity: function (index: number) {

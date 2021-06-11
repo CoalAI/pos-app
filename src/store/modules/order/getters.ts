@@ -25,6 +25,7 @@ export interface Getters {
   getBatch(state: State): Batch;
   getInvoiceID(state: State): string;
   getRequest(state: State): Request;
+  getFieldError(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -75,4 +76,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getRequest: (state: State) => {
     return state.request;
   },
+  getFieldError: (state: State) => state.error,
 };
