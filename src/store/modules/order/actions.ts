@@ -6,6 +6,7 @@ import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
 import { Batch } from '@/store/models/batch';
+import { Request } from "@/store/models/request";
 
 
 export enum ActionTypes {
@@ -27,7 +28,13 @@ export enum ActionTypes {
   FETCH_INVENTORY = "FETCH_INVENTORY",
   INTERNAL_ORDER = "INTERNAL_ORDER",
   FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
+  CREATE_REQUEST = "CREATE_REQUEST",
+  FETCH_REQUESTS = "FETCH_REQUESTS",
+  UPDATE_REQUEST = "UPDATE_REQUEST",
+  UPDATE_ORDER = "UPDATE_ORDER",
 }
+
+
 
 export type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
@@ -41,7 +48,16 @@ export type AugmentedActionContext = {
 export interface Actions {
   [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string): void;
   [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, name: string): void;
-  [ActionTypes.FETCH_ORDERS]({ commit }: AugmentedActionContext, options: {id__contains?: string; cash?: boolean; status?: string; created?: Date}): void;
+  [ActionTypes.FETCH_ORDERS]({ commit }: AugmentedActionContext, 
+    options: {
+      buyer__company?: number;
+      seller_company?: number;
+      id__contains?: string;
+      cash?: boolean;
+      status?: string;
+      created?: Date;
+    }
+  ): void;
   [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
@@ -57,6 +73,10 @@ export interface Actions {
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
+  [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}): void;
+  [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
+  [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -90,6 +110,8 @@ Actions = {
   async [ActionTypes.FETCH_ORDERS](
     { commit }: AugmentedActionContext,
     options: {
+      buyer__company?: number;
+      seller_company?: number;
       id__contains?: string;
       cash?: boolean;
       status?: string;
@@ -101,7 +123,7 @@ Actions = {
       commit(MutationTypes.SetListOfOrders, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', 'Failed to fetch orders!', {root: true});
     }
   },
   async [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext) {
@@ -110,22 +132,25 @@ Actions = {
       commit(MutationTypes.SetOrderStatuses, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', 'Failed to fetch order statuses!', {root: true});
     }
   },
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
     const response = await serverRequest('post', 'order/', true, order);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
-      commit(MutationTypes.SetOrderStatus, 'Order is completed successfully.');
+      commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
-      if (response.response && response.response.data &&  response.response.data.non_field_errors) {
-        commit(MutationTypes.SetOrderStatus, response.response.data.non_field_errors);
-      } else {
-        commit(MutationTypes.SetOrderStatus, "Server side error. Kindly try again.");
+      if (response.response && response.response.data){
+          if( response.response.data.non_field_errors) {
+            commit('setError', response.response.data.non_field_errors, {root: true});
+          } else {
+            commit(MutationTypes.SetError, response.response.data);   
+          }
+          commit('setError', "Server side error. Kindly try again.", {root: true});
       }
+      commit(MutationTypes.SetOrderStatus, "Failed to create the Order!.");
     }
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {
@@ -245,4 +270,38 @@ Actions = {
       }
     }
   },
+  async [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request) {
+    const response = await serverRequest('post', `request/`, true, request);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetRequest, response.data);
+    }
+    if(isAxiosError(response) && response.response && response.response.data) {
+      commit(MutationTypes.SetRequest, {});
+      commit('setError', response.response.data, {root: true});
+    }
+  },
+  async [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}) {
+    let response;
+    if (options) {
+      response = await serverRequest('get', 'request/', true, undefined, options);
+    } else {
+      response = await serverRequest('get', 'request/', true, undefined, undefined);
+    } 
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfRequests, response.data.results);
+    }
+  },
+  async [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request) {
+    const response = await serverRequest('patch', `response/${request.id}/`, true, request);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
+    const response = await serverRequest('patch', `order/${order.id}/`, true, order);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
 };
+
