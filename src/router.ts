@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Report from "./components/sales/Report.vue";
 import Order from "./components/sales/Order.vue";
 import OrdersList from "./components/sales/OrdersList.vue";
@@ -22,66 +22,21 @@ import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
 import ExpenseSummary from "./components/admin/ExpenseSummary.vue";
 import Expense from "./components/admin/Expense.vue";
-import { store } from "./store";
-import { ActionTypes } from '@/store/modules/auth/actions';
+import { admin, redirectToAdmin, superAdmin, salesStaff, storeAdmin } from  '@/permissions';
 
-async function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN','VENDOR'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if(role!=null && role!='' && allowedRoles.includes(role)){
-    next();
-  }else{
-    next('/404');
-  }
-}
-
-
-async function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['ADMIN','SUPER_ADMIN','VENDOR'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if(role!=null && role!='' && allowedRoles.includes(role)){
-    next();
-  }else{
-    next('/404');
-  }
-}
-
-async function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['SUPER_ADMIN'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if(role!=null && role!='' && allowedRoles.includes(role)){
-    next();
-  }else{
-    next('/404');
-  }
-}
-
-async function redirectToAdmin(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext){
-  const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if (role!=null && role!='' && allowedRoles.includes(role)){
-    next('/admin/order');
-  } else {
-    next()
-  }
-}
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Order",
     component: Order,
-    beforeEnter: redirectToAdmin,
+    beforeEnter: redirectToAdmin
   },
   {
     path: "/admin/order",
     name: "AdminOrder",
     component: ZeroOrder,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/orders",
@@ -215,7 +170,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/request',
     name: "Request",
-    component: Request
+    component: Request,
+    beforeEnter: admin,
   },
   {
     path: '/requests/:id',
@@ -233,6 +189,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/expense-summary',
     name: 'ExpenseSummary',
     component: ExpenseSummary,
+    beforeEnter: admin
   },
   {
     path: '/expense',

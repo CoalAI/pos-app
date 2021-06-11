@@ -5,6 +5,7 @@ import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/re
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Company } from '@/store/models/company';
+import { Transaction } from "@/store/models/transaction";
 
 export enum ActionTypes {
   FETCH_TOEKN = "FETCH_TOEKN",
@@ -15,12 +16,14 @@ export enum ActionTypes {
   USER_DATA = "USER_DATA",
   GET_USERS = "GET_USERS",
   GET_USERS_BY_TYPES = "GET_USERS_BY_TYPES",
+  CREATE_EXPENSE = "CREATE_EXPENSE",
   FETCH_TYPES = "FETCH_TYPES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
   CREATE_COMPANY = "CREATE_COMPANY",
   UPDATE_COMPANY = "UPDATE_COMPANY",
   DELETE_COMPANY = "DELETE_COMPANY",
   FETCH_VENDORS = "FETCH_VENDORS",
+  FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
 }
 
 export type AugmentedActionContext = {
@@ -39,14 +42,16 @@ export interface Actions {
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
+  [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
   [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -98,17 +103,15 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, search: string) {
+  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}) {
     let response;
-    if (search) {
-      response = await serverRequest('get', 'user/', true, undefined, {search: search});
+    if (options) {
+      response = await serverRequest('get', 'user/', true, undefined, options);
     } else {
       response = await serverRequest('get', 'user/', true, undefined, undefined);
     }
     if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
-        commit(MutationTypes.SetListOfUsers, response.data.results)
-      }
+      commit(MutationTypes.SetListOfUsers, response.data.results)
     }
   },
   async [ActionTypes.GET_USERS_BY_TYPES]({ commit}: AugmentedActionContext, user_types: string[]) {
@@ -126,6 +129,17 @@ Actions = {
       }
     }
   },
+  async [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction) {
+    const response = await serverRequest('post', `transaction/`, true, transaction);
+    if(isAxiosResponse(response)) {
+      commit(MutationTypes.SetExpense, response.data)
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetExpense, {})
+      commit('setError', response.message , {root: true});
+    }
+  },
+
   async [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext) {
     const response = await serverRequest('get', 'type/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
@@ -183,4 +197,21 @@ Actions = {
       }
     }
   },
+  async [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}) {
+    let response;
+    if (search_criteria) {
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: search_criteria.start_date, end_date:search_criteria.end_date});
+    } else {
+      const now = new Date().toLocaleDateString()
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now});
+    }
+    if (isAxiosResponse(response)) {
+        commit(MutationTypes.SetTransactions, response.data.results)
+    }
+    if(isAxiosError(response)) {
+      if(response.response && response.response.data){
+        commit('setError', response.response.data, {root: true});
+      }
+    }
+  }
 };

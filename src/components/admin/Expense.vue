@@ -1,21 +1,22 @@
 <template>
+  <Alert v-if="create_expense" type="success" >"Transaction Successful!"</Alert>
   <div id="expense">
     <div class="diff-shadow">
-      <h2>Expense (To Be Implemented)</h2>
+      <h2>Expense</h2>
       <div class="flex-box">
         <label class="pad-label w100" for="products">
-          <strong>Company:</strong>
+          <strong>Payee:</strong>
         </label>
         <select
-          id="company-type"
-          name="company-type"
+          id="user-dropdown"
+          name="user-dropdown"
           class="custom-select"
-          v-model="company"
-          @change="onChangeCompany"
+          v-model="transaction.payee"
         >
-          <option :value="0">None</option>
-          <option class="batches-op" v-for="item in companies" v-bind:key="item.id" v-bind:value="item.id">
-            {{item.company_name}}
+          <option :value="-1">SELF</option>
+          <option disabled>--- username - company ---</option>
+          <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+            <span>{{item.username}} - {{item.company.company_name}}</span>
           </option>
         </select>
       </div>
@@ -28,7 +29,7 @@
             name="balance"
             type="text"
             placeholder="Balance of company"
-            v-model="balance"
+            v-model="userdata.company.balance"
             readonly
           />
           <!-- <span v-if="batchQuantityValidation" class="form-error">{{ batchQuantityValidation }}</span> -->
@@ -43,7 +44,7 @@
             name="amount"
             type="number"
             placeholder="Enter amount"
-            v-model="amount"
+            v-model="transaction.amount"
           />
           <span v-if="amountValidation" class="form-error">{{ amountValidation }}</span>
         </div>
@@ -68,7 +69,7 @@
             name="description"
             rows="7"
             placeholder="description"
-            v-model="description"
+            v-model="transaction.description"
           ></textarea>
           <span v-if="descriptionValidation" class="form-error">{{ descriptionValidation }}</span>
         </div>
@@ -81,10 +82,11 @@
         >Cancel</router-link>
         <button
           class="btn btn-orange btn-mr"
-          style="width: 150px">Add Expense</button>
+          style="width: 150px" @click="addExpense">Add Expense</button>
       </div>
     </div>
   </div>
+  <Loader v-show="loader"></Loader>
 </template>
 
 <script lang="ts">
@@ -92,27 +94,43 @@ import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from'vuex';
 
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
-import { Company } from '@/store/models/company';
+import { Transaction } from '@/store/models/transaction';
+import Alert from '@/components/common-components/Alert.vue'
 
 export default defineComponent({
   name: 'Expense',
+  components: {
+    Alert
+  },
   data() {
     return {
-      company: 0,
-      balance: 0,
-      amount: '',
       expenseMethod: 'credit',
-      description: ''
+      transaction: {
+        payor:-1,
+        payee:-1,
+        amount:'',
+        transaction_id:'',
+        description:'',
+        clear: function() {
+          this.payor = -1;
+          this.payee = -1;
+          this.amount = '';
+          this.transaction_id = '',
+          this.description = ''
+        }
+      }, 
+      create_expense : false,
+      loader: false
     }
   },
   computed: {
     amountValidation: function () {
       let errorMessage = null;
-      if (this.amount === '') {
+      if (this.transaction.amount === '') {
         errorMessage = 'Amount is required';
       }
-      else if (this.amount !== undefined) {
-        const value = parseFloat(this.amount);
+      else if (this.transaction.amount !== undefined) {
+        const value = parseFloat(this.transaction.amount);
         if (isNaN(value)) 
         {
           errorMessage = 'Only numbers are allowed';
@@ -123,34 +141,41 @@ export default defineComponent({
 
     descriptionValidation: function () {
       let errorMessage = null;
-      if (this.description === '') {
+      if (this.transaction.description === '') {
         errorMessage = 'Description is required';
       }
       return errorMessage;
     },
 
     ...mapGetters({
-      companies: 'getCompanies'
+      users: 'getListOfUsers',
+      userdata: 'getUser',
+      expense: 'getExpense'
     })
   },
   methods: {
-    onChangeCompany: async function () {
-      if (this.company && this.company > 0) {
-        const currentCompany = this.companies.find((item: Company) => item.id == this.company)
-        this.balance = currentCompany &&  currentCompany.credit ?  currentCompany.credit : 0;
+    ...mapActions({
+      fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
+      fetchUsers: AuthActionTypes.GET_USERS,
+      fetchUserData: AuthActionTypes.USER_DATA,
+      createExpense: AuthActionTypes.CREATE_EXPENSE
+    }),
+    addExpense: async function(){
+      if(this.amountValidation==null && this.descriptionValidation == null) {
+        this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+        this.transaction.amount = this.expenseMethod === 'credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
+        this.transaction.payor = this.userdata.id;
+        this.loader = true
+        await this.createExpense(this.transaction as Transaction).finally(() => this.loader = false);
+        this.create_expense = this.expense && this.expense.id;
+        this.transaction.clear();
+        await this.fetchUserData();
       }
     },
-
-    ...mapActions({
-      fetchCompanies: AuthActionTypes.FETCH_COMPANIES
-    })
   },
   async beforeMount () {
-    await this.fetchCompanies();
-    if (this.companies && this.companies.length > 0) {
-      this.company = this.companies[0].id;
-      this.balance = this.companies[0].credit ? this.companies[0].credit : 0;
-    }
+    await this.fetchUsers();
+    await this.fetchUserData();
   }
 });
 </script>

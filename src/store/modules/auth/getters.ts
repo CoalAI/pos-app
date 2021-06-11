@@ -1,8 +1,9 @@
 import { GetterTree } from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User } from '@/store/models/user';
-import { state, State } from './state';
+import { State } from './state';
 import { Company } from "@/store/models/company";
+import { Transaction } from "@/store/models/transaction";
 
 export interface Getters {
   getUser(state: State): User;
@@ -11,6 +12,7 @@ export interface Getters {
   getListOfVendors(state: State): User[];
   getRoles(state: State): string[];
   getCompanyTypes(state: State): string[];
+  getRequestTypes(state: State): string[];
   getCompanies(state: State): Company[];
   // eslint-disable-next-line
   getSignleUser(state: State, id: number): any;
@@ -18,6 +20,11 @@ export interface Getters {
   getSignleCompany(state: State, id: number): any;
   // eslint-disable-next-line
   getSignleVendor(state: State): any;
+  // eslint-disable-next-line
+  getTransactions(state: State): Transaction[];
+  // eslint-disable-next-line
+  getExpense(state: State): Transaction;
+  // eslint-disable-next-line
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -47,6 +54,13 @@ export const getters: GetterTree<State, IRootState> & Getters = {
       }
     }
   },
+  getRequestTypes: (state: State) => {
+    for (const object of state.types) {
+      if (object.request_type) {
+        return object.request_type;
+      }
+    }
+  },
   getCompanies: (state: State) => {
     return state.companies;
   },
@@ -62,4 +76,6 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     const vendor = state.ListOfVendors.find((item: User) => item.id && item.id === id);
     return vendor;
   },
+  getTransactions: (state: State) => state.transactions,
+  getExpense: (state: State)  => state.expense
 };
