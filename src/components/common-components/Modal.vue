@@ -40,6 +40,13 @@ export default defineComponent({
     height: 100%;
     background-color: $modal-backgorund-color;
     display: table;
+    overflow-y: auto !important;
+    webkit-transform: translate3d(0,0,0) !important;
+    display: -webkit-box !important;
+    display: -moz-box !important;
+    display: -ms-flexbox !important;
+    display: -webkit-flex !important;
+    display: flex !important;
     transition: opacity 0.3s ease;
   }
 
@@ -55,6 +62,8 @@ export default defineComponent({
     border-radius: 2px;
     box-shadow: 0 2px 8px $modal-shadow-color;
     transition: all 0.3s ease;
+    // overflow-y: auto;
+    // height: 600px;
 
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
