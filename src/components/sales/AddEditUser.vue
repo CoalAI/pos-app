@@ -53,7 +53,8 @@
             placeholder="Enter User Name"
             v-model="user.userName"
           />
-          <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span>
+          <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
+          <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
         </div>
       </div>
       <div v-if="!userId" class="flex-box">
@@ -69,6 +70,7 @@
             v-model="user.password"
           />
           <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
+          <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
         </div>
       </div>
       <div v-if="!userId" class="flex-box">
@@ -119,6 +121,7 @@
           </option>
         </select>
         <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+        <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
       </div>
       <div class="flex-box">
         <label class="pad-label w100" for="contact_number">
@@ -162,10 +165,14 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
+import ErrorField from '@/components/common-components/ErrorField.vue';
 
 export default defineComponent({
   name: 'AddEditUser',
   props: ['userId'],
+  components: {
+    ErrorField,
+  },
   data () {
     return {
       user: {
@@ -260,7 +267,8 @@ export default defineComponent({
 
     ...mapGetters({
       roles: 'getRoles',
-      companies: 'getCompanies'
+      companies: 'getCompanies',
+      fieldErrors: 'getAuthFieldError',
     })
   },
   methods: {
@@ -290,7 +298,11 @@ export default defineComponent({
         user.password = this.user.password;
         await this.registerUser(user);
       }
-      this.$router.push({name: 'User'});
+      if (Object.keys(this.fieldErrors).length === 0) {
+        this.$router.push({name: 'User'});
+      } else {
+        window.scrollTo(0,0);
+      }
     },
 
     loadData: function (user: User) {
@@ -314,7 +326,8 @@ export default defineComponent({
       fetchTypes: ActionTypes.FETCH_TYPES,
       fetchCompanies: ActionTypes.FETCH_COMPANIES,
       updateUser: ActionTypes.UPDATE_USER,
-      getUsersList: ActionTypes.GET_USERS
+      getUsersList: ActionTypes.GET_USERS,
+      setFieldError: ActionTypes.SET_FIELD_ERROR,
     })
   },
   async beforeMount () {
@@ -337,7 +350,10 @@ export default defineComponent({
         this.$router.push({name: 'notFound'});
       }
     }
-  }
+  },
+  async unmounted () {
+    await this.setFieldError({});
+  },
 });
 </script>
 
