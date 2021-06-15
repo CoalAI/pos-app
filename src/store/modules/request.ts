@@ -34,7 +34,7 @@ const serverRequest = async (
     data,
     params,
     headers,
-    baseURL: 'http://127.0.0.1:8000/api/',
+    baseURL: 'https://api.pos.coaldev.com/api/',
   }
   try {
     const response = await axios(config);
