@@ -25,6 +25,7 @@ export interface Getters {
   // eslint-disable-next-line
   getExpense(state: State): Transaction;
   // eslint-disable-next-line
+  getAuthFieldError(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -77,5 +78,6 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     return vendor;
   },
   getTransactions: (state: State) => state.transactions,
-  getExpense: (state: State)  => state.expense
+  getExpense: (state: State)  => state.expense,
+  getAuthFieldError: (state: State) => state.error,
 };

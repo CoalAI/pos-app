@@ -90,7 +90,7 @@ Actions = {
         commit(MutationTypes.SetProductResults, response.data.results);
       }
       if(isAxiosError(response)) {
-        commit('setError', response, {root: true});
+        commit('setError', "Failed to search product!", {root: true});
       }
     }
   },
@@ -140,17 +140,18 @@ Actions = {
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
       commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
+      commit(MutationTypes.SetError, {});  
     }
     if(isAxiosError(response)) {
       if (response.response && response.response.data){
           if( response.response.data.non_field_errors) {
-            commit('setError', response.response.data.non_field_errors, {root: true});
+            commit('setError', response.response.data.non_field_errors[0], {root: true});
           } else {
             commit(MutationTypes.SetError, response.response.data);   
           }
-          commit('setError', "Server side error. Kindly try again.", {root: true});
       }
       commit(MutationTypes.SetOrderStatus, "Failed to create the Order!.");
+
     }
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {
