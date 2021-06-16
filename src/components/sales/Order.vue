@@ -473,11 +473,7 @@
         <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
         <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
         <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>
-<<<<<<< HEAD
-        <div v-if="auth_field_errors.username" class="form-error">{{auth_field_errors.username[0]}}</div>
-=======
         <ErrorField v-if="authFieldErrors.username" :errorField="authFieldErrors.username"></ErrorField>
->>>>>>> ed1eb0dd199e5d226a91eecbb899e61289eede35
       </template>
 
       <template v-slot:footer>
@@ -825,11 +821,7 @@ export default defineComponent({
       customers: 'getListOfUsers',
       invoiceID: 'getInvoiceID',
       field_errors: 'getFieldError',
-<<<<<<< HEAD
-      auth_field_errors: 'getAuthFieldError',
-=======
       authFieldErrors: 'getAuthFieldError',
->>>>>>> ed1eb0dd199e5d226a91eecbb899e61289eede35
     })
   },
   methods: {
@@ -914,12 +906,8 @@ export default defineComponent({
       }
 
       await this.registerUser(user);
-<<<<<<< HEAD
-      if(this.auth_field_errors.username === undefined){
-=======
 
       if (Object.keys(this.authFieldErrors).length === 0) {
->>>>>>> ed1eb0dd199e5d226a91eecbb899e61289eede35
         this.addCustModal=false
       }
     },
