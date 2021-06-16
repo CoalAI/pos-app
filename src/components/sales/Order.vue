@@ -480,15 +480,13 @@
       </template>
     </Modal>
 
-
-
-    <Modal v-if="orderStatus">
+    <Modal v-if="orderStatus" type="scrollable">
       <template v-slot:header>
         <h2>Order Status</h2>
       </template>
 
       <template v-slot:body>
-        <p>{{ orderStatus }}</p>
+        <OrderBill />
       </template>
 
       <template v-slot:footer>
@@ -513,12 +511,14 @@ import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
 import { User } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
+import OrderBill from '@/components/sales/OrderBill.vue';
 
 export default defineComponent({
   name: 'Order',
   components: {
     Modal,
     ErrorField,
+    OrderBill,
   },
 
   data() {
@@ -568,7 +568,7 @@ export default defineComponent({
       showCustDropdown:false,
       walkinCustomer:{},
       regularCustomer:{},
-      deduct_balance:false
+      deduct_balance:false,
     }
   },
   created: async function(){
@@ -680,6 +680,7 @@ export default defineComponent({
       return disable
 
     },
+
     addCustButton: function(){
       if(this.nameValidation===null &&
       this.contactnoValidation===null)
@@ -751,6 +752,7 @@ export default defineComponent({
       }
       return null;
     },
+
     nameValidation: function(){
         if(this.user.firstName==='' && this.user.lastName===''){
           return 'name can not be empty!'
@@ -767,6 +769,7 @@ export default defineComponent({
       }
       return disable
     },
+
     getFullName: function(): string{
       const cust: User = this.regularCustomer as User;
       const firstname: string =  cust.first_name!==undefined?cust.first_name:''
@@ -775,6 +778,7 @@ export default defineComponent({
       
       return fullname
     },
+
     showDeductBalance: function(): boolean{
       return false;
     },
@@ -806,6 +810,7 @@ export default defineComponent({
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
     },
+
     clearTransaction: function(){
       this.transactionId=''
       this.paymentService=this.paymentMethod==='cash'?'':'BANK'
@@ -814,6 +819,7 @@ export default defineComponent({
       this.user.lastName=''
       this.user.company=''
     },
+
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = '';
       const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
@@ -873,6 +879,7 @@ export default defineComponent({
         this.addCustModal=false
       }
     },
+
     addOrderItem: async function () {
       
       this.errorIndication = false;
@@ -1085,9 +1092,11 @@ export default defineComponent({
       }
       this.product.buyPrice = buyPrice.toString();
     },
+
     trimQuantity: function(quan: string): string{
         return parseFloat(quan!==undefined?quan:'0.0').toFixed(2);
     },
+
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: ActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1284,5 +1293,4 @@ export default defineComponent({
   .single-search-item:hover {
     background-color: $search-hover-color;
   }
-
 </style>
