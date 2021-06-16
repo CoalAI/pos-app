@@ -22,7 +22,7 @@ import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
 import ExpenseSummary from "./components/admin/ExpenseSummary.vue";
 import Expense from "./components/admin/Expense.vue";
-import { admin, redirectToAdmin, superAdmin, salesStaff, storeAdmin } from  '@/permissions';
+import { admin, redirectToAdmin, superAdmin, salesStaff, storeAdmin, manager } from  '@/permissions';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -42,14 +42,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/orders",
     name: "OrdersList",
     component: OrdersList,
-    beforeEnter: salesStaff
+    beforeEnter: manager
   },
   {
     path: "/orders/:orderId",
     name: "OrderDetails",
     component: EditOrder,
     props: true,
-    beforeEnter: salesStaff
+    beforeEnter: manager
   },
   {
     path: "/report",
@@ -61,13 +61,13 @@ const routes: Array<RouteRecordRaw> = [
     path: "/editorder",
     name: "EditOrder",
     component: EditOrder,
-    beforeEnter: salesStaff,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/products",
     name: "Product",
     component: Product,
-    beforeEnter: salesStaff,
+    beforeEnter: storeAdmin,
 
   },
   {
@@ -75,95 +75,95 @@ const routes: Array<RouteRecordRaw> = [
     name: "EditProduct",
     component: AddEditProduct,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/batchs",
     name: "Batch",
     component: Batch,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/users",
     name: "User",
     component: User,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/product/create",
     name: "CreateProduct",
     component: AddEditProduct,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/batch/create",
     name: "",
     component: AddEditBatch,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/batch/edit/:productId/:productVariantId/:batchId",
     name: "EditBatch",
     component: AddEditBatch,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/user/create",
     name: "",
     component: AddEditUser,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/user/edit/:userId",
     name: "EditUser",
     component: AddEditUser,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/departments",
     name: "department",
     component: Department,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/department/create",
     name: "CreateDepartment",
     component: DepartmentAddEdit,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/department/edit/:companyId",
     name: "EditDepartment",
     component: DepartmentAddEdit,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/vendors",
     name: "Vendor",
     component: Vendor,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/vendor/create",
     name: "CreateVendor",
     component: VendorAddEdit,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/vendor/edit/:vendorId",
     name: "EditVendor",
     component: VendorAddEdit,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: '/settings',
     name: "Settings",
     component: Settings,
-    beforeEnter: admin,
+    beforeEnter: superAdmin,
   },
   { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:catchAll(.*)', redirect: '/404' },
@@ -171,35 +171,38 @@ const routes: Array<RouteRecordRaw> = [
     path: '/request',
     name: "Request",
     component: Request,
-    beforeEnter: admin,
+    beforeEnter: manager,
   },
   {
     path: '/requests/:id',
     name: "RequestDetail",
     component: RequestDetail,
-    beforeEnter: admin,
+    beforeEnter: manager,
 
   },
   {
     path: '/inventory',
     name: "Inventory",
-    component: Inventory
+    component: Inventory,
+    beforeEnter: manager
   },
   {
     path: '/expense-summary',
     name: 'ExpenseSummary',
     component: ExpenseSummary,
-    beforeEnter: admin
+    beforeEnter: manager
   },
   {
     path: '/expense',
     name: 'expense',
-    component: Expense
+    component: Expense,
+    beforeEnter: manager
   },
   {
     path: '/response',
     name: "Response",
-    component: Response
+    component: Response,
+    beforeEnter: manager
   }
 ];
 
