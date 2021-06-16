@@ -24,5 +24,5 @@ export const state: State = {
   companies: [],
   transactions: [],
   expense: {},
-  error: {}
+  error: {},
 };

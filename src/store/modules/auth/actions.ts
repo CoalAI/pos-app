@@ -25,6 +25,7 @@ export enum ActionTypes {
   DELETE_COMPANY = "DELETE_COMPANY",
   FETCH_VENDORS = "FETCH_VENDORS",
   FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
+  SET_FIELD_ERROR = "SET_FIELD_ERROR",
 }
 
 export type AugmentedActionContext = {
@@ -54,6 +55,7 @@ export interface Actions {
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
+  [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -83,18 +85,15 @@ Actions = {
   },
   async [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User) {
     const response = await serverRequest('post', 'create/user/', true, user);
-    if(isAxiosResponse(response)){
-      commit(MutationTypes.SetError, {});   
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetError, {});
     }
-    if(isAxiosError(response)) {
-      if (response.response && response.response.data){
-        if( response.response.data.non_field_errors) {
-          commit('setError', response.response.data.non_field_errors, {root: true});
-        } else {
-          commit(MutationTypes.SetError, response.response.data);   
-        }
+    if(isAxiosError(response) && response.response && response.response.data) {
+      if (response.response.data.non_field_errors) {
+        commit('setError', response.response.data.non_field_errors, {root: true});
+      } else {
+        commit(MutationTypes.SetError, response.response.data);
       }
-      commit('setError', 'Failed to create the user!', {root: true});
     }
   },
   async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
@@ -210,7 +209,7 @@ Actions = {
   async [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number) {
     const response = await serverRequest('delete', `company/${companyID}/`, true);
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string) {
@@ -247,5 +246,8 @@ Actions = {
         commit('setError', response.response.data, {root: true});
       }
     }
-  }
+  },
+  async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
+    commit(MutationTypes.SetError, error);
+  },
 };

@@ -473,7 +473,11 @@
         <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
         <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
         <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>
+<<<<<<< HEAD
         <div v-if="auth_field_errors.username" class="form-error">{{auth_field_errors.username[0]}}</div>
+=======
+        <ErrorField v-if="authFieldErrors.username" :errorField="authFieldErrors.username"></ErrorField>
+>>>>>>> ed1eb0dd199e5d226a91eecbb899e61289eede35
       </template>
 
       <template v-slot:footer>
@@ -484,15 +488,13 @@
       </template>
     </Modal>
 
-
-
-    <Modal v-if="orderStatus">
+    <Modal v-if="orderStatus" type="scrollable">
       <template v-slot:header>
         <h2>Order Status</h2>
       </template>
 
       <template v-slot:body>
-        <p>{{ orderStatus }}</p>
+        <OrderBill />
       </template>
 
       <template v-slot:footer>
@@ -516,11 +518,15 @@ import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
 import { User } from '@/store/models/user';
+import ErrorField from '@/components/common-components/ErrorField.vue';
+import OrderBill from '@/components/sales/OrderBill.vue';
 
 export default defineComponent({
   name: 'Order',
   components: {
     Modal,
+    ErrorField,
+    OrderBill,
   },
 
   data() {
@@ -570,7 +576,7 @@ export default defineComponent({
       showCustDropdown:false,
       walkinCustomer:{},
       regularCustomer:{},
-      deduct_balance:false
+      deduct_balance:false,
     }
   },
   created: async function(){
@@ -701,6 +707,7 @@ export default defineComponent({
       return disable
 
     },
+
     addCustButton: function(){
       if(this.nameValidation===null &&
         this.contactnoValidation===null
@@ -777,6 +784,7 @@ export default defineComponent({
       }
       return null;
     },
+
     nameValidation: function(){
         if(this.user.firstName==='' && this.user.lastName===''){
           return 'name can not be empty!'
@@ -796,6 +804,7 @@ export default defineComponent({
       }
       return disable
     },
+
     getFullName: function(): string{
       const cust: User = this.regularCustomer as User;
       const firstname: string =  cust.first_name!==undefined?cust.first_name:''
@@ -804,6 +813,7 @@ export default defineComponent({
       
       return fullname
     },
+
     showDeductBalance: function(): boolean{
       return false;
     },
@@ -815,7 +825,11 @@ export default defineComponent({
       customers: 'getListOfUsers',
       invoiceID: 'getInvoiceID',
       field_errors: 'getFieldError',
+<<<<<<< HEAD
       auth_field_errors: 'getAuthFieldError',
+=======
+      authFieldErrors: 'getAuthFieldError',
+>>>>>>> ed1eb0dd199e5d226a91eecbb899e61289eede35
     })
   },
   methods: {
@@ -835,6 +849,7 @@ export default defineComponent({
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
     },
+
     clearTransaction: function(){
       this.transactionId=''
       this.paymentService='BANK'
@@ -844,6 +859,7 @@ export default defineComponent({
       this.user.company=''
       this.regularCustomer = {}
     },
+
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = '';
       const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
@@ -852,7 +868,9 @@ export default defineComponent({
 
       // Check If the product is already in Order Items
       const duplicate = await this.orderItems
-        .find((item: OrderItem) => item.product && item.product === currentProduct);
+        .find((item: OrderItem) => item.product && item.product === currentProduct
+        && item.productVariant && item.productVariant === currentVariant
+        );
       
       if (duplicate) {
         this.duplicateMessage = 'The product is already added to the order items.';
@@ -896,10 +914,16 @@ export default defineComponent({
       }
 
       await this.registerUser(user);
+<<<<<<< HEAD
       if(this.auth_field_errors.username === undefined){
+=======
+
+      if (Object.keys(this.authFieldErrors).length === 0) {
+>>>>>>> ed1eb0dd199e5d226a91eecbb899e61289eede35
         this.addCustModal=false
       }
     },
+
     addOrderItem: async function () {
       
       this.errorIndication = false;
@@ -1115,9 +1139,11 @@ export default defineComponent({
       }
       this.product.buyPrice = buyPrice.toString();
     },
+
     trimQuantity: function(quan: string): string{
         return parseFloat(quan!==undefined?quan:'0.0').toFixed(2);
     },
+
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: ActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1127,11 +1153,15 @@ export default defineComponent({
       getUsersByType: AuthActionTypes.GET_USERS_BY_TYPE,
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
+      setFieldError: ActionTypes.SET_FIELD_ERROR,
     })
   },
   async beforeMount () {
     await this.fetchInvoiceID();
-  }
+  },
+  async unmounted () {
+    await this.setFieldError({});
+  },
 });
 </script>
 
@@ -1311,5 +1341,4 @@ export default defineComponent({
   .single-search-item:hover {
     background-color: $search-hover-color;
   }
-
 </style>
