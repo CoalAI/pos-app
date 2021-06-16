@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { User } from '@/store/models/user';
-import { State } from './state'
+import { state, State } from './state'
 import { Company } from '@/store/models/company';
 import { Transaction } from '@/store/models/transaction';
 
