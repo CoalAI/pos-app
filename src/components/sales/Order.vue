@@ -469,6 +469,7 @@
         <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
         <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
         <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>
+        <ErrorField v-if="authFieldErrors.username" :errorField="authFieldErrors.username"></ErrorField>
       </template>
 
       <template v-slot:footer>
@@ -509,12 +510,14 @@ import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
 import { User } from '@/store/models/user';
+import ErrorField from '@/components/common-components/ErrorField.vue';
 import OrderBill from '@/components/sales/OrderBill.vue';
 
 export default defineComponent({
   name: 'Order',
   components: {
     Modal,
+    ErrorField,
     OrderBill,
   },
 
@@ -787,6 +790,7 @@ export default defineComponent({
       customers: 'getListOfUsers',
       invoiceID: 'getInvoiceID',
       field_errors: 'getFieldError',
+      authFieldErrors: 'getAuthFieldError',
     })
   },
   methods: {
@@ -824,7 +828,9 @@ export default defineComponent({
 
       // Check If the product is already in Order Items
       const duplicate = await this.orderItems
-        .find((item: OrderItem) => item.product && item.product === currentProduct);
+        .find((item: OrderItem) => item.product && item.product === currentProduct
+        && item.productVariant && item.productVariant === currentVariant
+        );
       
       if (duplicate) {
         this.duplicateMessage = 'The product is already added to the order items.';
@@ -869,10 +875,9 @@ export default defineComponent({
 
       await this.registerUser(user);
 
-      // this.$router.push({name: 'User'});
-
-
-      this.addCustModal=false
+      if (Object.keys(this.authFieldErrors).length === 0) {
+        this.addCustModal=false
+      }
     },
 
     addOrderItem: async function () {
@@ -1100,11 +1105,15 @@ export default defineComponent({
       getUsers: AuthActionTypes.GET_USERS,
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
+      setFieldError: ActionTypes.SET_FIELD_ERROR,
     })
   },
   async beforeMount () {
     await this.fetchInvoiceID();
-  }
+  },
+  async unmounted () {
+    await this.setFieldError({});
+  },
 });
 </script>
 

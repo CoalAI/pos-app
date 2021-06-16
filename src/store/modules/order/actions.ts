@@ -32,6 +32,7 @@ export enum ActionTypes {
   FETCH_REQUESTS = "FETCH_REQUESTS",
   UPDATE_REQUEST = "UPDATE_REQUEST",
   UPDATE_ORDER = "UPDATE_ORDER",
+  SET_FIELD_ERROR = "SET_FIELD_ERROR",
 }
 
 
@@ -77,6 +78,7 @@ export interface Actions {
   [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}): void;
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
+  [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -182,10 +184,14 @@ Actions = {
   async [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product) {
     const response = await serverRequest('post', 'product/', true, product);
     if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetOrder, response.data);
+      commit(MutationTypes.SetError, {});
     }
-    if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+    if(isAxiosError(response) && response.response && response.response.data) {
+      if (response.response.data.non_field_errors) {
+        commit('setError', response.response.data.non_field_errors, {root: true});
+      } else {
+        commit(MutationTypes.SetError, response.response.data);
+      }
     }
   },
   async [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}) {
@@ -302,6 +308,9 @@ Actions = {
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }
+  },
+  async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
+    commit(MutationTypes.SetError, error);
   },
 };
 
