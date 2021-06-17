@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
     <div class="modal-mask" v-bind:class="classObject">
-      <div class="modal-wrapper">
+      <div class="modal-wrapper" v-bind:class="classObject2">
         <div class="modal-container">
 
           <div class="modal-header">
@@ -35,7 +35,11 @@ export default defineComponent({
   data() {
     return {
       classObject: {
-        'scroll':  this.type == 'scrollable'
+        'scroll':  this.type == 'scrollable',
+        
+      },
+      classObject2: {
+        'center-align': this.type == 'scrollable',
       }
     }
   }
@@ -70,6 +74,10 @@ export default defineComponent({
     display: table-cell;
     vertical-align: middle;
   }
+
+  .center-align {
+    padding-left: 25%
+  } 
 
   .modal-container {
     width: 40%;

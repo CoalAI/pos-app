@@ -1,5 +1,5 @@
 <template>
-  <div id="bill-preview">
+  <div id="bill-preview" class="maindiv-print">
 		<div id="header-section">
 			<div>
 				<img class="img-responsive" src="../../assets/rohi_logo.jpg" alt="Rohi">
@@ -43,63 +43,13 @@
 					<th>Rate</th>
 					<th>Amount</th>
 				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
+				<tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
+					<td>{{ index+1 }}</td>
+					<td>{{ orderItem.product.name }}</td>
+					<td>{{ orderItem.quantity}}</td>
+					<td>{{ orderItem.price }}</td>
+					<td>{{ orderItem.totalPrice}}</td>
 				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td style="text-align: left;">Strawberry Cake</td>
-					<td>2.00</td>
-					<td>1000</td>
-					<td style="text-align: right;">2000</td>
-				</tr>
-				
 			</table>
 		</div>
 
@@ -112,11 +62,11 @@
 					</colgroup>
 					<tr>
 						<td><strong>Total Units: </strong></td>
-						<td>4</td>
+						<td>{{orderItems.length}}</td>
 					</tr>
 					<tr>
 						<td><strong>Total Discount: </strong></td>
-						<td>0</td>
+						<td>{{totalDiscount}}</td>
 					</tr>
 				</table>
 			</div>
@@ -128,19 +78,19 @@
 					</colgroup>
 					<tr>
 						<td><strong>Total: </strong></td>
-						<td>8000</td>
+						<td>{{total}}</td>
 					</tr>
 					<tr>
 						<td><strong>Net Payable: </strong></td>
-						<td>8000</td>
+						<td>{{net_payable}}</td>
 					</tr>
 					<tr>
 						<td><strong>Received: </strong></td>
-						<td>8500</td>
+						<td>{{cashReceived}}</td>
 					</tr>
 					<tr>
 						<td><strong>Change: </strong></td>
-						<td>500</td>
+						<td>{{change}}</td>
 					</tr>
 				</table>
 			</div>
@@ -160,17 +110,88 @@
 </template>
 
 <script lang="ts">
+import { OrderItem } from '@/store/models/orderItem';
+import printJS from 'print-js';
 import { defineComponent } from 'vue';
+
 
 export default defineComponent({
   name: 'OrderBill',
+  methods:{
+		getElementTag: function(tag: keyof HTMLElementTagNameMap): string {
+			const html: string[] = [];
+			const elements = document.getElementsByTagName(tag);
+			for (let index = 0; index < elements.length; index++) {
+				html.push(elements[index].outerHTML);
+			}
+			return html.join('\r\n');
+		},
+
+		printBill: function(){
+			const styles = this.getElementTag('style');
+			printJS({printable:'bill-preview', type: 'html', style: styles, maxWidth:850});
+			
+		},
+    },
+	computed:{
+		total: function(): number {
+			let sum = 0;
+			(this.orderItems as OrderItem[]).map((item: OrderItem) => {
+				sum = sum + parseFloat(item.price?item.price:'0')*parseFloat(item.quantity?item.quantity:'0')
+			})
+			return sum;
+		},
+		net_payable: function(): number{
+			let sum = 0;
+			(this.orderItems as OrderItem[]).map((item: OrderItem) => {
+				if(item && item.totalPrice)
+					sum = sum + item.totalPrice
+			})
+			return sum;
+		},
+		change: function(): number {
+			return parseFloat(this.cashReceived) - this.net_payable;
+		},
+		totalDiscount: function(): string {
+			const disc = (this.total - this.net_payable)/this.total * 100;
+			return `${disc.toFixed(2)}%`;
+		}
+	},
+	props:{
+		print:{
+			default:false
+		},
+		orderItems: {
+			default: []
+		},
+		cashReceived: {
+			default: '0'
+		}
+	},
+
+	watch:{
+		print: function(newVal, oldVal) {
+			this.printBill();
+		}
+	},
 });
 </script>
 
 <style lang="scss" scoped>
-    #bill-preview {
+
+@page {
+	size: 80mm;
+	margin: 0
+}
+
+  .maindiv {
     border: 1px solid black;
     padding: 10px;
+  }
+  
+  .maindiv-print {
+    padding: 4px;
+	max-width: 800px;
   }
 
    #header-section {

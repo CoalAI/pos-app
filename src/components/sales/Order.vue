@@ -17,6 +17,7 @@
               @input="searchByBarcode"
               ref="barcode"
               v-focus
+              autocomplete="off"
             />
             <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
           </div>
@@ -490,7 +491,7 @@
       </template>
 
       <template v-slot:body>
-        <OrderBill />
+        <OrderBill :print="print" :orderItems="orderItems" :cashReceived="cashReceived"/>
       </template>
 
       <template v-slot:footer>
@@ -516,6 +517,7 @@ import { Product, ProductVariant } from '@/store/models/product';
 import { User } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
 import OrderBill from '@/components/sales/OrderBill.vue';
+import printJS from 'print-js'
 
 export default defineComponent({
   name: 'Order',
@@ -530,6 +532,7 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     return {
+      print: false,
       cancelModal: false,
       addCustModal: false,
       product: {
@@ -1002,7 +1005,8 @@ export default defineComponent({
         invoice_id: this.invoiceID,
         deduct_balance: this.deduct_balance
       }
-      await this.createOrder(singleOrder);
+       await this.createOrder(singleOrder);
+       this.print = true
 
     },
 
@@ -1079,6 +1083,7 @@ export default defineComponent({
         event.preventDefault()
       }
       this.searchProductByBarcode(this.product.barCode);
+      this.product.barCode=''
     },
 
     sumQuantity: function (item: ProductVariant): number {
@@ -1102,6 +1107,7 @@ export default defineComponent({
       this.totalDiscount = '';
       this.paymentMethod = 'cash';
       this.cancelModal = false;
+      this.print = false;
     },
 
     changeProductPrice: function () {
@@ -1149,6 +1155,7 @@ export default defineComponent({
   },
   async unmounted () {
     await this.setFieldError({});
+    this.handleOrderStatus();
   },
 });
 </script>
