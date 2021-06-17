@@ -14,7 +14,7 @@
               name="barcode"
               :maxlength="BarCodeMaxLength"
               v-model="product.barCode"
-              @input="searchByBarcode"
+              v-debounce:250="searchByBarcode"
               ref="barcode"
               v-focus
               autocomplete="off"
@@ -843,6 +843,7 @@ export default defineComponent({
       this.duplicateMessage = '';
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
+      (this.$refs.barcode as any).focus();
     },
 
     clearTransaction: function(){
@@ -1079,11 +1080,9 @@ export default defineComponent({
     },
 
     searchByBarcode: function (event: Event) {
-      if (event) {
-        event.preventDefault()
-      }
+
       this.searchProductByBarcode(this.product.barCode);
-      this.product.barCode=''
+
     },
 
     sumQuantity: function (item: ProductVariant): number {
