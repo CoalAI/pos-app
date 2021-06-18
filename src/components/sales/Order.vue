@@ -274,7 +274,7 @@
               <input
                 type="text"
                 name="total_amount"
-                v-bind:value="totalAmount"
+                v-bind:value="totalAmount.toFixed(2)"
                 readonly
               />
             <span v-if="field_errors.total" class="form-error">{{ field_errors.total[0] }}</span>
@@ -531,7 +531,6 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     return {
-      print: false,
       cancelModal: false,
       addCustModal: false,
       product: {
@@ -1105,7 +1104,6 @@ export default defineComponent({
       this.totalDiscount = '';
       this.paymentMethod = 'cash';
       this.cancelModal = false;
-      this.print = false;
     },
 
     changeProductPrice: function () {

@@ -46,8 +46,8 @@
 				<tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
 					<td>{{ index+1 }}</td>
 					<td>{{ getProductName(orderItem) }}</td>
-					<td>{{ parseFloat(orderItem.quantity).toFixed(2) }}</td>
-					<td>{{ parseFloat(orderItem.price).toFixed(2) }}</td>
+					<td>{{ trimNumber(orderItem.quantity) }}</td>
+					<td>{{ trimNumber(orderItem.price) }}</td>
 					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
 				</tr>
 			</table>
@@ -170,9 +170,6 @@ export default defineComponent({
 		})
 	},
 	props:{
-		print:{
-			default:false
-		},
 		orderId: {
 			default: 0
 		}
