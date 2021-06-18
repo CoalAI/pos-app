@@ -15,8 +15,8 @@
 		</div>
 
 		<div id="date-section" class="mb-5">
-			<p class="text-center">3:44 pm</p>
-			<p class="text-center">Friday, 11 June, 2021</p>
+			<p class="text-center">{{getCurrentTime()}}</p>
+			<p class="text-center">{{getCurrentDate()}}</p>
 		</div>
 
 		<div id="customer-details-sections" style="margin-bottom: 5px">
@@ -43,12 +43,12 @@
 					<th>Rate</th>
 					<th>Amount</th>
 				</tr>
-				<tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
+				<tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
 					<td>{{ index+1 }}</td>
-					<td>{{ orderItem.product.name }}</td>
-					<td>{{ orderItem.quantity}}</td>
-					<td>{{ orderItem.price }}</td>
-					<td>{{ orderItem.totalPrice}}</td>
+					<td>{{ getProductName(orderItem) }}</td>
+					<td>{{ parseFloat(orderItem.quantity).toFixed(2) }}</td>
+					<td>{{ parseFloat(orderItem.price).toFixed(2) }}</td>
+					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
 				</tr>
 			</table>
 		</div>
@@ -62,11 +62,11 @@
 					</colgroup>
 					<tr>
 						<td><strong>Total Units: </strong></td>
-						<td>{{orderItems.length}}</td>
+						<td>{{order.order_item?.length}}</td>
 					</tr>
 					<tr>
 						<td><strong>Total Discount: </strong></td>
-						<td>{{totalDiscount}}</td>
+						<td>{{ trimNumber(order.total_discount) }}</td>
 					</tr>
 				</table>
 			</div>
@@ -82,15 +82,15 @@
 					</tr>
 					<tr>
 						<td><strong>Net Payable: </strong></td>
-						<td>{{net_payable}}</td>
+						<td>{{ trimNumber(order?.total) }}</td>
 					</tr>
 					<tr>
 						<td><strong>Received: </strong></td>
-						<td>{{cashReceived}}</td>
+						<td>{{ trimNumber(order?.amount_received) }}</td>
 					</tr>
 					<tr>
 						<td><strong>Change: </strong></td>
-						<td>{{change}}</td>
+						<td>{{ change }}</td>
 					</tr>
 				</table>
 			</div>
@@ -110,10 +110,10 @@
 </template>
 
 <script lang="ts">
-import { OrderItem } from '@/store/models/orderItem';
+import { ActionTypes } from '@/store/modules/order/actions';
 import printJS from 'print-js';
 import { defineComponent } from 'vue';
-
+import {mapActions, mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'OrderBill',
@@ -126,54 +126,68 @@ export default defineComponent({
 			}
 			return html.join('\r\n');
 		},
+		trimNumber: function(value: string) {
+			return parseFloat(value).toFixed(2);
 
+		},
 		printBill: function(){
 			const styles = this.getElementTag('style');
 			printJS({printable:'bill-preview', type: 'html', style: styles, maxWidth:850});
 			
 		},
+		getCurrentTime(){
+			return new Date().toLocaleTimeString();
+		},
+		getCurrentDate(){
+			return new Date().toDateString();
+		},
+		getItemTotal: function(price: string, quantity: string): string {
+			return (parseFloat(price)*parseFloat(quantity)).toFixed(2);
+
+		},
+		getProductName: function(orderItem: any) {
+			return orderItem.batch?.product_variant?.product?.name;
+		},
+		...mapActions({
+			fetchOrder: ActionTypes.FETCH_ORDER,
+			clearOrder: ActionTypes.CHANGE_ORDER_STATUS,
+		}),
     },
 	computed:{
-		total: function(): number {
+		total: function(): string {
 			let sum = 0;
-			(this.orderItems as OrderItem[]).map((item: OrderItem) => {
+			(this.order?.order_item).map((item: any) => {
 				sum = sum + parseFloat(item.price?item.price:'0')*parseFloat(item.quantity?item.quantity:'0')
 			})
-			return sum;
+			return sum.toFixed(2);
 		},
-		net_payable: function(): number{
-			let sum = 0;
-			(this.orderItems as OrderItem[]).map((item: OrderItem) => {
-				if(item && item.totalPrice)
-					sum = sum + item.totalPrice
-			})
-			return sum;
+		change: function(): string {
+			return (parseFloat(this.order.amount_received) - parseFloat(this.order?.total)).toFixed(2);
 		},
-		change: function(): number {
-			return parseFloat(this.cashReceived) - this.net_payable;
-		},
-		totalDiscount: function(): string {
-			const disc = (this.total - this.net_payable)/this.total * 100;
-			return `${disc.toFixed(2)}%`;
-		}
+
+		...mapGetters({
+			order: 'getOrder'
+		})
 	},
 	props:{
 		print:{
 			default:false
 		},
-		orderItems: {
-			default: []
-		},
-		cashReceived: {
-			default: '0'
+		orderId: {
+			default: 0
 		}
 	},
+	mounted: function () {
+		this.printBill();
+	}
+	,
+	beforeMount: async function() {
+		await this.fetchOrder(this.orderId);
+	},
+	unmounted: async function() {
+		await this.clearOrder();
+	}
 
-	watch:{
-		print: function(newVal, oldVal) {
-			this.printBill();
-		}
-	},
 });
 </script>
 

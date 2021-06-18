@@ -485,18 +485,18 @@
       </template>
     </Modal>
 
-    <Modal v-if="orderStatus" type="scrollable">
+    <Modal v-if="order_response.id" type="scrollable">
       <template v-slot:header>
         <h2>Order Status</h2>
       </template>
 
       <template v-slot:body>
-        <OrderBill :print="print" :orderItems="orderItems" :cashReceived="cashReceived"/>
+        <OrderBill :orderId="order_response.id"/>
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button @click="handleOrderStatus()" class="btn btn-orange btn-mr" v-focus>New Order</button>
+          <button @click="handleOrderStatus();" class="btn btn-orange btn-mr" v-focus>New Order</button>
         </div>
       </template>
     </Modal>
@@ -825,6 +825,7 @@ export default defineComponent({
       invoiceID: 'getInvoiceID',
       field_errors: 'getFieldError',
       authFieldErrors: 'getAuthFieldError',
+      order_response: 'getOrder',
     })
   },
   methods: {
@@ -843,7 +844,7 @@ export default defineComponent({
       this.duplicateMessage = '';
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
-      (this.$refs.barcode as any).focus();
+      (this.$refs.barcode as any)?.focus();
     },
 
     clearTransaction: function(){
@@ -1006,8 +1007,7 @@ export default defineComponent({
         invoice_id: this.invoiceID,
         deduct_balance: this.deduct_balance
       }
-       await this.createOrder(singleOrder);
-       this.print = true
+      await this.createOrder(singleOrder);
 
     },
 
@@ -1147,6 +1147,7 @@ export default defineComponent({
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
       setFieldError: ActionTypes.SET_FIELD_ERROR,
+      fetchOrder: ActionTypes.FETCH_ORDER
     })
   },
   async beforeMount () {
