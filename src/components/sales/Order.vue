@@ -517,7 +517,6 @@ import { Product, ProductVariant } from '@/store/models/product';
 import { User } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
 import OrderBill from '@/components/sales/OrderBill.vue';
-import printJS from 'print-js'
 
 export default defineComponent({
   name: 'Order',
