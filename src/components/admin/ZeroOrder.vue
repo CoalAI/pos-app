@@ -953,11 +953,13 @@ export default defineComponent({
         return unproxiedOrderItem;
       });
 
-      if (this.orderType == 'from') {
-        for (const singleOrderItem of unproxiedOrderItems) {
-          if (singleOrderItem.batch) {
+      for (const singleOrderItem of unproxiedOrderItems) {
+        if (singleOrderItem.batch) {
+          if (this.orderType == 'from') {
             await this.createBatch(singleOrderItem.batch);
             singleOrderItem.batch = this.newBatch.id;
+          } else if (this.orderType == 'to' && typeof singleOrderItem.batch !== 'number') {
+            singleOrderItem.batch = singleOrderItem.batch.id;
           }
         }
       }
@@ -1060,6 +1062,7 @@ export default defineComponent({
     handleOrderStatus: async function () {
       this.changeOrderStatus('');
       this.clearProduct();
+      await this.searchProductByBarcode('');  //this statement will clear the search results from action
       this.orderItems = [];
       this.cashReceived = '';
       this.totalDiscount = '';
