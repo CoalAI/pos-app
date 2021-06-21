@@ -484,7 +484,7 @@
       </template>
     </Modal>
 
-    <Modal v-if="orderStatus" type="scrollable">
+    <Modal type="scrollable">
       <template v-slot:header>
         <h2>Order Status</h2>
       </template>
