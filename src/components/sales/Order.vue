@@ -246,7 +246,6 @@
               v-model="customersearch"
               @focus="showCustDropdown=!showCustDropdown"
               @input="searchCustomer"
-              autocomplete="off"
             />
           <div v-show="showCustDropdown" class="search-result-upper">
             <ul class="search-result">
@@ -368,9 +367,8 @@
                   readonly
                   v-bind:value="getFullName"
                 />
-              <span v-if="validateRegularCustomer" class="form-error">{{validateRegularCustomer}}</span>
               </div>
-              
+
               <label class="pad-label mr-l e" for="return">
                 <strong>Balance:</strong>
               </label>
@@ -401,10 +399,8 @@
             <label class="pad-label w100 mr-l q" for="deduct">
               <strong>Deduct Balance:</strong>
             </label>
-            <div>
             <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct" v-bind:checked="deduct_balance" @change="deduct_balance=!deduct_balance">
-            <div v-if="validateDeductBalance" class="form-error">{{validateDeductBalance}}</div>
-            </div>
+
             <template v-if="creditPaymentMethod === 'card'">
               <label class="pad-label pn" for="return">
                 <strong>Payment Service:</strong>
@@ -457,7 +453,7 @@
       <template v-slot:footer>
         <div class="flex-box">
           <button class="btn btn-orange btn-mr" @click="cancelModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr" @click="handleOrderStatus()">Yes</button>
+          <button class="btn btn-orange btn-mr" @click="handleOrderStatus">Yes</button>
         </div>
       </template>
     </Modal>
@@ -473,7 +469,6 @@
         <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
         <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
         <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>
-        <ErrorField v-if="authFieldErrors.username" :errorField="authFieldErrors.username"></ErrorField>
       </template>
 
       <template v-slot:footer>
@@ -484,13 +479,15 @@
       </template>
     </Modal>
 
-    <Modal v-if="orderStatus" type="scrollable">
+
+
+    <Modal v-if="orderStatus">
       <template v-slot:header>
         <h2>Order Status</h2>
       </template>
 
       <template v-slot:body>
-        <OrderBill />
+        <p>{{ orderStatus }}</p>
       </template>
 
       <template v-slot:footer>
@@ -514,15 +511,11 @@ import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
 import { User } from '@/store/models/user';
-import ErrorField from '@/components/common-components/ErrorField.vue';
-import OrderBill from '@/components/sales/OrderBill.vue';
 
 export default defineComponent({
   name: 'Order',
   components: {
     Modal,
-    ErrorField,
-    OrderBill,
   },
 
   data() {
@@ -553,7 +546,7 @@ export default defineComponent({
       productId: 0,
       productVariantId: 0,
       productBatchSelect: batches,
-      cashReceived: '0',
+      cashReceived: '',
       totalDiscount: '',
       paymentMethod: 'cash',
       errorIndication: true,
@@ -572,13 +565,12 @@ export default defineComponent({
       showCustDropdown:false,
       walkinCustomer:{},
       regularCustomer:{},
-      deduct_balance:false,
+      deduct_balance:false
     }
   },
   created: async function(){
-    await this.getUsersByType({user_type:'WALK_IN_CUSTOMER'});
+    await this.getUsers();
     this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === 'WALK_IN_CUSTOMER');
-    await this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
   },
   computed: {
     totalAmount: function (): number {
@@ -661,25 +653,7 @@ export default defineComponent({
       }
       return errorMessage;
     },
-    validateDeductBalance: function() {
-      let error_message = null;
-      if(this.paymentMethod === 'credit') {
-        if(parseFloat(this.cashReceived) <=0 && this.deduct_balance === false){
-          error_message = 'check Deduct Balance if no cash received!'
-        }
-      }
-      return error_message;
-    },
-    validateRegularCustomer: function() {
-      let error_message = null;
-      if(this.paymentMethod === 'credit') {
-        const regular_cust = this.regularCustomer as User;
-        if(regular_cust === undefined || regular_cust.id === undefined){
-          error_message = 'select regular customer!'
-        }
-      }
-      return error_message;
-    },
+
     selectedBatchQuantity: function(): number {
       let selectedBatchQuantity = 0.0;
       const batchID = parseInt(this.product.batch);
@@ -703,11 +677,9 @@ export default defineComponent({
       return disable
 
     },
-
     addCustButton: function(){
       if(this.nameValidation===null &&
-        this.contactnoValidation===null
-      )
+      this.contactnoValidation===null)
       {
         return false;
       }
@@ -753,21 +725,17 @@ export default defineComponent({
     },
 
     orderCashReceivedValidation: function () {
-      
       let errorMessage = null;
-      if(this.paymentMethod!=='credit'){
-        if (this.cashReceived !== undefined && this.cashReceived === '') {
-          errorMessage = "Cash is required"
-        }
-        if (this.cashReceived !== undefined && this.cashReceived !== '') {
-          const value = parseFloat(this.cashReceived);
-          if (isNaN(value)) {
-            errorMessage = 'Only numbers are allowed';
-          } else {
-
-            if (value < this.totalAmount) {
-              errorMessage = 'Cash is less than total amount';
-            }
+      if (this.cashReceived !== undefined && this.cashReceived === '') {
+        errorMessage = "Cash is required"
+      }
+      if (this.cashReceived !== undefined && this.cashReceived !== '') {
+        const value = parseFloat(this.cashReceived);
+        if (isNaN(value)) {
+          errorMessage = 'Only numbers are allowed';
+        } else {
+          if (value < this.totalAmount) {
+            errorMessage = 'Cash is less than total amount';
           }
         }
       }
@@ -780,7 +748,6 @@ export default defineComponent({
       }
       return null;
     },
-
     nameValidation: function(){
         if(this.user.firstName==='' && this.user.lastName===''){
           return 'name can not be empty!'
@@ -792,15 +759,11 @@ export default defineComponent({
       let disable = true;
       if ( this.orderItems.length > 0 &&
       this.orderTotalDiscountValidation === null &&
-      this.orderCashReceivedValidation === null && 
-      this.validateDeductBalance === null &&
-      this.validateRegularCustomer === null
-      )  {
+      this.orderCashReceivedValidation === null) {
         disable = false;
       }
       return disable
     },
-
     getFullName: function(): string{
       const cust: User = this.regularCustomer as User;
       const firstname: string =  cust.first_name!==undefined?cust.first_name:''
@@ -809,7 +772,6 @@ export default defineComponent({
       
       return fullname
     },
-
     showDeductBalance: function(): boolean{
       return false;
     },
@@ -821,7 +783,6 @@ export default defineComponent({
       customers: 'getListOfUsers',
       invoiceID: 'getInvoiceID',
       field_errors: 'getFieldError',
-      authFieldErrors: 'getAuthFieldError',
     })
   },
   methods: {
@@ -841,17 +802,14 @@ export default defineComponent({
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
     },
-
     clearTransaction: function(){
       this.transactionId=''
-      this.paymentService='BANK'
+      this.paymentService=this.paymentMethod==='cash'?'':'BANK'
       this.user.userName=''
       this.user.firstName=''
       this.user.lastName=''
       this.user.company=''
-      this.regularCustomer = {}
     },
-
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = '';
       const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
@@ -860,9 +818,7 @@ export default defineComponent({
 
       // Check If the product is already in Order Items
       const duplicate = await this.orderItems
-        .find((item: OrderItem) => item.product && item.product === currentProduct
-        && item.productVariant && item.productVariant === currentVariant
-        );
+        .find((item: OrderItem) => item.product && item.product === currentProduct);
       
       if (duplicate) {
         this.duplicateMessage = 'The product is already added to the order items.';
@@ -889,7 +845,7 @@ export default defineComponent({
       if(customer.credit===undefined){
         customer.credit=0;
       }
-
+      
       this.regularCustomer=customer;
       this.showCustDropdown=false;
       this.customersearch=customer.contact_number===undefined?'':customer.contact_number;
@@ -907,11 +863,11 @@ export default defineComponent({
 
       await this.registerUser(user);
 
-      if (Object.keys(this.authFieldErrors).length === 0) {
-        this.addCustModal=false
-      }
-    },
+      // this.$router.push({name: 'User'});
 
+
+      this.addCustModal=false
+    },
     addOrderItem: async function () {
       
       this.errorIndication = false;
@@ -990,11 +946,11 @@ export default defineComponent({
 
       const singleOrder: Order = {
         order_item: unproxiedOrderItem,
-        buyer: buyer && buyer.id ? buyer.id:this.userdata.id,
+        buyer: buyer.id,
         seller: this.userdata.id,
         total_discount: isNaN(discount) ? '0' : discount.toString(),
         total: this.totalAmount.toString(),
-        cash_payment: this.paymentMethod === 'cash' ? true : this.creditPaymentMethod === 'cash',
+        cash_payment: this.paymentMethod === 'cash' ? true : false,
         amount_received: isNaN(cash) ? '0' : cash.toString(),
         amount_discount: this.discountMethod === 'amount' ? true : false,
         payment_service: this.paymentMethod === 'cash'? 'BANK' : this.paymentService,
@@ -1060,9 +1016,8 @@ export default defineComponent({
       if(event)
         event.preventDefault()
 
-      this.getUsersByType({
-        search: this.customersearch,
-        user_type:'REGULAR_CUSTOMER'
+      this.getUsers({
+        search: this.customersearch
       });
     },
 
@@ -1092,10 +1047,9 @@ export default defineComponent({
       return sum
     },
 
-    handleOrderStatus: async function () {
+    handleOrderStatus: function () {
       this.changeOrderStatus('');
       this.clearProduct();
-      await this.searchProductByBarcode('');  //this statement will clear the search results from action
       this.orderItems = [];
       this.cashReceived = '';
       this.totalDiscount = '';
@@ -1126,29 +1080,22 @@ export default defineComponent({
       }
       this.product.buyPrice = buyPrice.toString();
     },
-
     trimQuantity: function(quan: string): string{
         return parseFloat(quan!==undefined?quan:'0.0').toFixed(2);
     },
-
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: ActionTypes.SEARCH_PRODUCT_BY_BARCODE,
       createOrder: ActionTypes.CREATE_ORDER,
       changeOrderStatus: ActionTypes.CHANGE_ORDER_STATUS,
       getUsers: AuthActionTypes.GET_USERS,
-      getUsersByType: AuthActionTypes.GET_USERS_BY_TYPE,
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
-      setFieldError: ActionTypes.SET_FIELD_ERROR,
     })
   },
   async beforeMount () {
     await this.fetchInvoiceID();
-  },
-  async unmounted () {
-    await this.setFieldError({});
-  },
+  }
 });
 </script>
 
@@ -1328,4 +1275,5 @@ export default defineComponent({
   .single-search-item:hover {
     background-color: $search-hover-color;
   }
+
 </style>

@@ -16,7 +16,6 @@ export enum ActionTypes {
   USER_DATA = "USER_DATA",
   GET_USERS = "GET_USERS",
   GET_USERS_BY_TYPES = "GET_USERS_BY_TYPES",
-  GET_USERS_BY_TYPE = "GET_USERS_BY_TYPE",
   CREATE_EXPENSE = "CREATE_EXPENSE",
   FETCH_TYPES = "FETCH_TYPES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
@@ -25,8 +24,6 @@ export enum ActionTypes {
   DELETE_COMPANY = "DELETE_COMPANY",
   FETCH_VENDORS = "FETCH_VENDORS",
   FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
-  SET_FIELD_ERROR = "SET_FIELD_ERROR",
-
 }
 
 export type AugmentedActionContext = {
@@ -47,8 +44,6 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
-
-  [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string }): void;
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
@@ -57,8 +52,6 @@ export interface Actions {
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
-  [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
-
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -88,15 +81,8 @@ Actions = {
   },
   async [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User) {
     const response = await serverRequest('post', 'create/user/', true, user);
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetError, {});
-    }
-    if(isAxiosError(response) && response.response && response.response.data) {
-      if (response.response.data.non_field_errors) {
-        commit('setError', response.response.data.non_field_errors, {root: true});
-      } else {
-        commit(MutationTypes.SetError, response.response.data);
-      }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
@@ -143,15 +129,6 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string}) {
-    const response = await serverRequest('get', 'user/', true, undefined, options);
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
-        const usersData = response.data.results;
-        commit(MutationTypes.SetListOfUsers, usersData)
-      }
-    }
-  },
   async [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction) {
     const response = await serverRequest('post', `transaction/`, true, transaction);
     if(isAxiosResponse(response)) {
@@ -186,33 +163,20 @@ Actions = {
   },
   async [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company) {
     const response = await serverRequest('post', `company/`, true, company);
-    
-    if(isAxiosResponse(response)){
-      commit(MutationTypes.SetError, {});
-    }
-    
     if(isAxiosError(response)) {
-      let error_message = "Failed to create company!";
-      if (response.response && response.response.data){
-        if( response.response.data.non_field_errors) {
-          error_message = response.response.data.non_field_errors[0];
-        } else {
-          commit(MutationTypes.SetError, response.response.data);   
-        }
-      }
-      commit('setError', error_message, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company) {
     const response = await serverRequest('patch', `company/${company.id}/`, true, company);
     if(isAxiosError(response)) {
-      commit('setError', `Failed to update company with id: ${company.id}!`, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number) {
     const response = await serverRequest('delete', `company/${companyID}/`, true);
     if(isAxiosError(response)) {
-      commit('setError', response.message, {root: true});
+      commit('setError', response, {root: true});
     }
   },
   async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string) {
@@ -249,8 +213,5 @@ Actions = {
         commit('setError', response.response.data, {root: true});
       }
     }
-  },
-  async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
-    commit(MutationTypes.SetError, error);
-  },
+  }
 };

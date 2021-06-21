@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { User } from '@/store/models/user';
-import { state, State } from './state'
+import { State } from './state'
 import { Company } from '@/store/models/company';
 import { Transaction } from '@/store/models/transaction';
 
@@ -13,8 +13,7 @@ export enum MutationTypes {
   SetTypes = "SET_TYPES",
   SetCompanies = "SET_COMPANIES",
   SetTransactions = "SET_TRANSACTIONS",
-  SetExpense = "SET_EXPENSE",
-  SetError = "SET_AUTH_ERROR",
+  SetExpense = "SET_EXPENSE"
 }
 
 export type Mutations = {
@@ -27,7 +26,6 @@ export type Mutations = {
   [MutationTypes.SetCompanies](state: State, companies: Company[]): void;
   [MutationTypes.SetTransactions](state: State, transactions: Transaction[]): void;
   [MutationTypes.SetExpense](state: State, transactions: Transaction): void;
-  [MutationTypes.SetError](state: State, error: any): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -58,8 +56,5 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetExpense](state: State, transaction: Transaction) {
     state.expense = transaction
-  },
-  [MutationTypes.SetError](state: State, error: any) {
-    state.error = error;
   }
 }
