@@ -915,7 +915,6 @@ export default defineComponent({
           } as Batch;
         })
         .find((item: Batch) => item && item.id && item.id.toString() == this.product.batch);
-        batch = batch?batch.id:batch;
       } else {
         batch = {
           manufacturing_date: this.product.manufacturedDate,
@@ -953,11 +952,13 @@ export default defineComponent({
         return unproxiedOrderItem;
       });
 
-      if (this.orderType == 'from') {
-        for (const singleOrderItem of unproxiedOrderItems) {
-          if (singleOrderItem.batch) {
+      for (const singleOrderItem of unproxiedOrderItems) {
+        if (singleOrderItem.batch) {
+          if (this.orderType == 'from') {
             await this.createBatch(singleOrderItem.batch);
             singleOrderItem.batch = this.newBatch.id;
+          } else if (this.orderType == 'to' && typeof singleOrderItem.batch !== 'number') {
+            singleOrderItem.batch = singleOrderItem.batch.id;
           }
         }
       }
