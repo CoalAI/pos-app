@@ -1,6 +1,6 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" v-bind:class="classObject">
+    <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
 
@@ -27,18 +27,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'modal',
-  props: {
-    type: {
-      type: String,
-    }
-  },
-  data() {
-    return {
-      classObject: {
-        'scroll':  this.type == 'scrollable'
-      }
-    }
-  }
 });
 </script>
 
@@ -52,18 +40,7 @@ export default defineComponent({
     height: 100%;
     background-color: $modal-backgorund-color;
     display: table;
-    
     transition: opacity 0.3s ease;
-  }
-
-  .scroll {
-    overflow-y: auto !important;
-    webkit-transform: translate3d(0,0,0) !important;
-    display: -webkit-box !important;
-    display: -moz-box !important;
-    display: -ms-flexbox !important;
-    display: -webkit-flex !important;
-    display: flex !important;
   }
 
   .modal-wrapper {
@@ -78,8 +55,6 @@ export default defineComponent({
     border-radius: 2px;
     box-shadow: 0 2px 8px $modal-shadow-color;
     transition: all 0.3s ease;
-    // overflow-y: auto;
-    // height: 600px;
 
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;

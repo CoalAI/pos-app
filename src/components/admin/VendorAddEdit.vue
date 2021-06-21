@@ -40,7 +40,6 @@
               v-model="vendor.contact"
             />
             <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
-            <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
           </div>
         </div>
 
@@ -55,7 +54,6 @@
               </option>
             </select>
             <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
           </div>
         </div>
 
@@ -86,15 +84,10 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { User } from '@/store/models/user';
 import { ActionTypes } from '@/store/modules/auth/actions';
-import ErrorField from '@/components/common-components/ErrorField.vue';
-
 
 export default defineComponent({
   name: 'VendorAddEdit',
   props: ['vendorId'],
-  components: {
-    ErrorField,
-  },
   data () {
     return {
       vendor: {
@@ -131,8 +124,7 @@ export default defineComponent({
     },
 
     ...mapGetters({
-      companies: 'getCompanies',
-      fieldErrors: 'getAuthFieldError',
+      companies: 'getCompanies'
     })
   },
   methods: {
@@ -159,11 +151,7 @@ export default defineComponent({
         user.user_type = 'VENDOR';
         await this.registerUser(user);
       }
-      if (Object.keys(this.fieldErrors).length === 0) {
-        this.$router.push({name: 'Vendor'});
-      } else {
-        window.scrollTo(0,0);
-      }
+      this.$router.push({name: 'Vendor'});
     },
 
     loadData: function (vendor: User) {
@@ -177,8 +165,7 @@ export default defineComponent({
       registerUser: ActionTypes.REGISTER_USER,
       updateUser: ActionTypes.UPDATE_USER,
       fetchCompanies: ActionTypes.FETCH_COMPANIES,
-      getVendorsList: ActionTypes.FETCH_VENDORS,
-      setFieldError: ActionTypes.SET_FIELD_ERROR,
+      getVendorsList: ActionTypes.FETCH_VENDORS
     })
   },
   async beforeMount () {
@@ -203,10 +190,7 @@ export default defineComponent({
         this.$router.push({name: 'notFound'});
       }
     }
-  },
-  async unmounted () {
-    await this.setFieldError({});
-  },
+  }
 });
 </script>
 
