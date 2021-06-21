@@ -35,7 +35,7 @@
           <span v-if="loginValidation" class="form-error">{{ loginValidation }}</span>
         </form>
 
-        <button class="btn btn-orange btn-lg login-btn"
+        <button class="btn btn-orange btn-lg"
         @click="submitLogin">Login</button>
         <a href="forgetpassword">
           <span>Forget Password?</span>
@@ -113,9 +113,5 @@ export default defineComponent({
 
   .pad-label {
     padding:20px;
-  }
-
-  .login-btn {
-    background-color: $header-color !important;
   }
 </style>

@@ -80,4 +80,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getTransactions: (state: State) => state.transactions,
   getExpense: (state: State)  => state.expense,
   getAuthFieldError: (state: State) => state.error,
+
 };
