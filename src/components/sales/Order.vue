@@ -484,15 +484,13 @@
       </template>
     </Modal>
 
-    <!-- <Modal v-if="orderStatus" type="scrollable"> -->
-    <Modal v-if="orderStatus">
+    <Modal v-if="orderStatus" type="scrollable">
       <template v-slot:header>
         <h2>Order Status</h2>
       </template>
 
       <template v-slot:body>
-        <!-- <OrderBill /> -->
-        {{orderStatus}}
+        <OrderBill />
       </template>
 
       <template v-slot:footer>
@@ -524,7 +522,7 @@ export default defineComponent({
   components: {
     Modal,
     ErrorField,
-    // OrderBill,
+    OrderBill,
   },
 
   data() {
