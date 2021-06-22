@@ -136,14 +136,6 @@ export default defineComponent({
       }
       return false;
     },
-    manager(){
-      const allowedRoles = ['ADMIN'];
-      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type) && 
-      this.userdata.company.company_type == 'RETIAL'){
-        return true;
-      }
-      return false;
-    }
   },
   methods: {
     clear: function () {
