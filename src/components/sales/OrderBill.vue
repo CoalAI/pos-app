@@ -159,9 +159,11 @@
 	</div>
 	<div v-if="tokenPrinting">
 		<div id="TokenPreview">
-			<p class="mb-5 text-center" style="font-size: 20px;"><strong>Rohi Sweets & Bakers</strong></p>
-			<p class="text-center" style="border: 1px solid black; padding: 2px;">30806</p>
-			<div id="order-items-section" class="mb-5">
+			<p class="text-center" style="font-size: 20px;"><strong>Rohi Sweets & Bakers</strong></p>
+			<p class="text-center" style="margin: 10px 0px 10px">
+				<span style="border: 1px solid black; padding: 2px 20px;">30806</span>
+			</p>
+			<div id="order-items-section">
 				<table>
 					<colgroup>
 						<col span="1" style="width: 20%;">
@@ -170,22 +172,21 @@
 					</colgroup>
 
 					<tr>
-						<th></th>
-						<th>Item's Name</th>
-						<th>Sr#</th>
+						<th>قیمت</th>
+						<th>تفصیل</th>
+						<th>تعداد</th>
 					</tr>
 
 					<tr>
 						<td>50</td>
-						<td>Single Scope</td>
+						<td style="text-align: right;"> سنگل سکوپ </td>
 						<td>1</td>
 					</tr>
 				</table>
 			</div>
 			<hr class="dashed">
-			<div>50</div>
-			<hr>
-			<div id="date-section" class="mb-5">
+			<div class="mb-5">50</div>
+			<div id="date-section">
 				<p class="text-center">3:44 pm</p>
 				<p class="text-center">Friday, 11 June, 2021</p>
 			</div>
@@ -200,7 +201,7 @@ export default defineComponent({
   name: 'OrderBill',
   data () {
         return {
-            tokenPrinting: true
+            tokenPrinting: false
         }
   }
 });
@@ -214,7 +215,7 @@ export default defineComponent({
 
   #TokenPreview {
 	border: 1px solid black;
-    padding: 10px;
+    padding: 20px 30px;
   }
 
    #header-section {
