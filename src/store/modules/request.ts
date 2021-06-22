@@ -34,7 +34,7 @@ const serverRequest = async (
     data,
     params,
     headers,
-    baseURL: 'https://api.pos.coaldev.com/api/',
+    baseURL: process.env.VUE_APP_BACKEND_IP || 'https://api.pos.coaldev.com/api/',
   }
   try {
     const response = await axios(config);

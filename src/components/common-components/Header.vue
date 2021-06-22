@@ -14,16 +14,22 @@
         target="_blank">New Order</a>
         <a class="btn btn-grid btn-orange btn-mr" href="/admin/order" v-else-if="admin"
         target="_blank">New Order</a>
-        <router-link v-show="admin" to="/inventory" class="btn btn-grid btn-orange btn-mr">Inventory</router-link>
-        <router-link v-show="admin" to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
+        <router-link v-show="manager" to="/inventory" class="btn btn-grid btn-orange btn-mr">Inventory</router-link>
+        <router-link v-show="superadmin" to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
         <router-link v-show="admin" to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
       
       </div>
       <div class="flex-box">
-        <router-link to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
+        <router-link v-show="admin" to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
         <router-link v-show="admin" to="/batchs" class="btn btn-grid btn-orange btn-mr">Batches</router-link>
         <router-link v-show='admin' to="/vendors" class="btn btn-grid btn-orange btn-mr">Vendors</router-link>
         <router-link v-show='admin' to="/departments" class="btn btn-grid btn-orange btn-mr">Deparments</router-link>
+      </div>
+      <div class="flex-box">
+        <router-link v-show="manager" to="/request" class="btn btn-grid btn-orange btn-mr">Request</router-link>
+        <router-link v-show="manager" to="/response" class="btn btn-grid btn-orange btn-mr">Responses</router-link>
+        <router-link v-show="manager" to="/expense-summary" class="btn btn-grid btn-orange btn-mr">Summary</router-link>
+        <router-link v-show="manager" to="/expense" class="btn btn-grid btn-orange btn-mr">Expense</router-link>
       </div>
     </div>
     <div class="s">
@@ -95,8 +101,11 @@ export default defineComponent({
       orders: 'getListOfOrders'
     }),
     admin(){
-      const allowedRoles = ['ADMIN','SUPER_ADMIN'];
-      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)){
+      const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+      const allowedCompanies = ['PARENT', 'STORE'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)
+        && allowedCompanies.includes(this.userdata.company.company_type) 
+      ){
         return true;
       }
       return false;
@@ -109,12 +118,24 @@ export default defineComponent({
       return false;
     },
     salesStaff(){
-      const allowedRoles = ['SALES_STAFF'];
-      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)){
+      const allowedRoles = ['SALES_STAFF', 'SUPER_ADMIN', 'ADMIN' ];
+      const allowedCompanies = ['PARENT', 'STORE', 'RETIAL']
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)
+          && allowedCompanies.includes(this.userdata.company.company_type)){
         return true;
       }
       return false;
-    }
+    },
+    manager(){
+      const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+      const allowedCompanies = ['PARENT', 'STORE', 'RETIAL']
+      
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type) && 
+          allowedCompanies.includes(this.userdata.company.company_type)){
+        return true;
+      }
+      return false;
+    },
   },
   methods: {
     clear: function () {

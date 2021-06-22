@@ -53,7 +53,8 @@
             placeholder="Enter User Name"
             v-model="user.userName"
           />
-          <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span>
+          <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
+          <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
         </div>
       </div>
       <div v-if="!userId" class="flex-box">
@@ -62,12 +63,14 @@
         </label>
         <div class="full-width">
           <input
+            autocomplete="new-password"
             name="thisuserpassword"
             type="password"
             placeholder="Enter Password"
             v-model="user.password"
           />
           <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
+          <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
         </div>
       </div>
       <div v-if="!userId" class="flex-box">
@@ -97,13 +100,13 @@
         >
       </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="unit">
+        <label class="pad-label w100" for="role">
           <strong>Role:</strong>
         </label>
 
-        <select name="cars" class="custom-select" id="unit" v-model="user.user_type">
-          <option v-for="role in roles" v-bind:key="role.user_type" v-bind:value="role.user_type">
-            {{ role.user_type }}
+        <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+          <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+            {{ role }}
           </option>
         </select>
       </div>
@@ -118,6 +121,7 @@
           </option>
         </select>
         <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+        <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
       </div>
       <div class="flex-box">
         <label class="pad-label w100" for="contact_number">
@@ -161,10 +165,14 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
+import ErrorField from '@/components/common-components/ErrorField.vue';
 
 export default defineComponent({
   name: 'AddEditUser',
   props: ['userId'],
+  components: {
+    ErrorField,
+  },
   data () {
     return {
       user: {
@@ -259,7 +267,8 @@ export default defineComponent({
 
     ...mapGetters({
       roles: 'getRoles',
-      companies: 'getCompanies'
+      companies: 'getCompanies',
+      fieldErrors: 'getAuthFieldError',
     })
   },
   methods: {
@@ -289,7 +298,11 @@ export default defineComponent({
         user.password = this.user.password;
         await this.registerUser(user);
       }
-      this.$router.push({name: 'User'});
+      if (Object.keys(this.fieldErrors).length === 0) {
+        this.$router.push({name: 'User'});
+      } else {
+        window.scrollTo(0,0);
+      }
     },
 
     loadData: function (user: User) {
@@ -310,14 +323,15 @@ export default defineComponent({
 
     ...mapActions({
       registerUser: ActionTypes.REGISTER_USER,
-      fetchRoles: ActionTypes.FETCH_ROLES,
+      fetchTypes: ActionTypes.FETCH_TYPES,
       fetchCompanies: ActionTypes.FETCH_COMPANIES,
       updateUser: ActionTypes.UPDATE_USER,
-      getUsersList: ActionTypes.GET_USERS
+      getUsersList: ActionTypes.GET_USERS,
+      setFieldError: ActionTypes.SET_FIELD_ERROR,
     })
   },
   async beforeMount () {
-    await this.fetchRoles();
+    await this.fetchTypes();
     await this.fetchCompanies();
 
     if (this.companies && this.companies.length > 0) {
@@ -325,7 +339,7 @@ export default defineComponent({
     }
 
     if (this.userId) {
-      await this.getUsersList('');
+      await this.getUsersList();
       const user_id = parseInt(this.userId);
       const user = isNaN(user_id) ? undefined : this.$store.getters.getSignleUser(user_id);
       if (user) {
@@ -336,7 +350,10 @@ export default defineComponent({
         this.$router.push({name: 'notFound'});
       }
     }
-  }
+  },
+  async unmounted () {
+    await this.setFieldError({});
+  },
 });
 </script>
 

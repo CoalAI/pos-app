@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Report from "./components/sales/Report.vue";
 import Order from "./components/sales/Order.vue";
 import OrdersList from "./components/sales/OrdersList.vue";
@@ -17,81 +17,39 @@ import NotFound from "./components/common-components/NotFound.vue";
 import Settings from "./components/common-components/Settings.vue";
 import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
+import Response from "./components/sales/Response.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
-import { store } from "./store";
-import { ActionTypes } from '@/store/modules/auth/actions';
+import ExpenseSummary from "./components/admin/ExpenseSummary.vue";
+import Expense from "./components/admin/Expense.vue";
+import { admin, redirectToAdmin, superAdmin, salesStaff, storeAdmin, manager } from  '@/permissions';
 
-async function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN','VENDOR'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if(role!=null && role!='' && allowedRoles.includes(role)){
-    next();
-  }else{
-    next('/404');
-  }
-}
-
-
-async function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['ADMIN','SUPER_ADMIN','VENDOR'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if(role!=null && role!='' && allowedRoles.includes(role)){
-    next();
-  }else{
-    next('/404');
-  }
-}
-
-async function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
-  const allowedRoles = ['SUPER_ADMIN'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if(role!=null && role!='' && allowedRoles.includes(role)){
-    next();
-  }else{
-    next('/404');
-  }
-}
-
-async function redirectToAdmin(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext){
-  const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
-  await store.dispatch(ActionTypes.USER_DATA);
-  const role = store.getters.getUser? store.getters.getUser.user_type:'';
-  if (role!=null && role!='' && allowedRoles.includes(role)){
-    next('/admin/order');
-  } else {
-    next()
-  }
-}
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Order",
     component: Order,
-    beforeEnter: redirectToAdmin,
+    beforeEnter: redirectToAdmin
   },
   {
     path: "/admin/order",
     name: "AdminOrder",
     component: ZeroOrder,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/orders",
     name: "OrdersList",
     component: OrdersList,
-    beforeEnter: salesStaff
+    beforeEnter: manager
   },
   {
     path: "/orders/:orderId",
     name: "OrderDetails",
     component: EditOrder,
     props: true,
-    beforeEnter: salesStaff
+    beforeEnter: manager
   },
   {
     path: "/report",
@@ -103,13 +61,13 @@ const routes: Array<RouteRecordRaw> = [
     path: "/editorder",
     name: "EditOrder",
     component: EditOrder,
-    beforeEnter: salesStaff,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/products",
     name: "Product",
     component: Product,
-    beforeEnter: salesStaff,
+    beforeEnter: storeAdmin,
 
   },
   {
@@ -117,115 +75,135 @@ const routes: Array<RouteRecordRaw> = [
     name: "EditProduct",
     component: AddEditProduct,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/batchs",
     name: "Batch",
     component: Batch,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/users",
     name: "User",
     component: User,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/product/create",
     name: "CreateProduct",
     component: AddEditProduct,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/batch/create",
     name: "",
     component: AddEditBatch,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/batch/edit/:productId/:productVariantId/:batchId",
     name: "EditBatch",
     component: AddEditBatch,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/user/create",
     name: "",
     component: AddEditUser,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/user/edit/:userId",
     name: "EditUser",
     component: AddEditUser,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/departments",
     name: "department",
     component: Department,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/department/create",
     name: "CreateDepartment",
     component: DepartmentAddEdit,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/department/edit/:companyId",
     name: "EditDepartment",
     component: DepartmentAddEdit,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/vendors",
     name: "Vendor",
     component: Vendor,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/vendor/create",
     name: "CreateVendor",
     component: VendorAddEdit,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: "/vendor/edit/:vendorId",
     name: "EditVendor",
     component: VendorAddEdit,
     props: true,
-    beforeEnter: admin,
+    beforeEnter: storeAdmin,
   },
   {
     path: '/settings',
     name: "Settings",
     component: Settings,
-    beforeEnter: admin,
+    beforeEnter: superAdmin,
   },
   { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:catchAll(.*)', redirect: '/404' },
   {
-    path: '/requests',
+    path: '/request',
     name: "Request",
     component: Request,
-    beforeEnter: admin,
+    beforeEnter: manager,
   },
   {
     path: '/requests/:id',
     name: "RequestDetail",
     component: RequestDetail,
-    beforeEnter: admin,
+    beforeEnter: manager,
 
   },
   {
     path: '/inventory',
     name: "Inventory",
-    component: Inventory
+    component: Inventory,
+    beforeEnter: manager
+  },
+  {
+    path: '/expense-summary',
+    name: 'ExpenseSummary',
+    component: ExpenseSummary,
+    beforeEnter: manager
+
+  },
+  {
+    path: '/expense',
+    name: 'expense',
+    component: Expense,
+    beforeEnter: manager
+  },
+  {
+    path: '/response',
+    name: "Response",
+    component: Response,
+    beforeEnter: manager
   }
 ];
 

@@ -156,7 +156,7 @@
           </tr>
           <tr>
             <td><strong>Invoice no:</strong></td>
-            <td>00000111</td>
+            <td>{{ invoiceID }}</td>
           </tr>
         </table>
         <div id="orderTypes" class="mr-2">
@@ -792,7 +792,8 @@ export default defineComponent({
       users: 'getListOfUsers',
       vendors: 'getListOfVendors',
       newBatch: 'getBatch',
-      companies: 'getCompanies'
+      companies: 'getCompanies',
+      invoiceID: 'getInvoiceID',
     })
   },
   methods: {
@@ -921,8 +922,8 @@ export default defineComponent({
           quantity: this.product.quantity,
           product_variant: this.productVariantId
         } as Batch;
+      
       }
-
       const SingleOrderItem: OrderItem = {
         batch: batch,
         product: currentProduct,
@@ -951,11 +952,13 @@ export default defineComponent({
         return unproxiedOrderItem;
       });
 
-      if (this.orderType == 'from') {
-        for (const singleOrderItem of unproxiedOrderItems) {
-          if (singleOrderItem.batch) {
+      for (const singleOrderItem of unproxiedOrderItems) {
+        if (singleOrderItem.batch) {
+          if (this.orderType == 'from') {
             await this.createBatch(singleOrderItem.batch);
             singleOrderItem.batch = this.newBatch.id;
+          } else if (this.orderType == 'to' && typeof singleOrderItem.batch !== 'number') {
+            singleOrderItem.batch = singleOrderItem.batch.id;
           }
         }
       }
@@ -971,7 +974,7 @@ export default defineComponent({
         total: this.totalAmount.toString(),
         amount_received: isNaN(cash) ? '0' : cash.toString(),
         amount_discount: this.discountMethod === 'amount' ? true : false,
-        invoice_id: "00001",
+        invoice_id: this.invoiceID,
         internal_order: true,
       }
 
@@ -1058,6 +1061,7 @@ export default defineComponent({
     handleOrderStatus: async function () {
       this.changeOrderStatus('');
       this.clearProduct();
+      await this.searchProductByBarcode('');  //this statement will clear the search results from action
       this.orderItems = [];
       this.cashReceived = '';
       this.totalDiscount = '';
@@ -1133,9 +1137,11 @@ export default defineComponent({
       createBatch: OrderActionTypes.CREATE_BATCH,
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
+      fetchInvoiceID: OrderActionTypes.FETCH_INVOICE_ID,
     })
   },
   async beforeMount () {
+    await this.fetchInvoiceID();
     await this.getUsers(['ADMIN']);
     await this.getVendors('');
     await this.fetchCompanies({

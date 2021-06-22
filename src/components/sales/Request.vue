@@ -1,122 +1,268 @@
 <template>
-  <div class="diff-shadow">
-    <h2>Requests</h2>
-    <div class="search-grid-list-pages">
-        <router-link to="/request/create" class="btn btn-orange add-btn-width">Create Request</router-link>
-        <div class="float-right">
-          <form class="flex-box">
-            <input
-              label="Username"
-              name="username"
-              type="text"
-              placeholder="Enter Request number to search"
-              class="search-input"
-            />
-            <button class="btn btn-orange search-btn">Search Request</button>
-          </form>
+  <div id="request">
+    <div class="diff-shadow">
+      <h2>Send Request</h2>
+      <Alert type="success" v-if="created">{{created}}</Alert>
+      <div class="flex-box">
+        <label class="pad-label w100" for="products">
+          <strong>Company:</strong>
+        </label>
+        <div class="full-width">
+          <select
+            id="company-type"
+            name="company-type"
+            class="custom-select"
+            v-model="company"
+            @change="onChangeCompany"
+          >
+            <option :value="0">None</option>
+            <option class="batches-op" v-for="item in companies" v-bind:key="item.id" v-bind:value="item.id">
+              {{item.company_name}}
+            </option>
+          </select>
+          <span v-if="companyValidation" class="form-error">{{ companyValidation }}</span>
         </div>
-    </div>
-    <div class="mr-2">
-      <table>
-        <colgroup>
-          <col span="1" style="width: 5%;">
-          <col span="1" style="width: 20%;">
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 40%;">
-          <col span="1" style="width: 25%;">
-        </colgroup>
-
-        <tr>
-          <th>Sr No.</th>
-          <th>Branch</th>
-          <th>Date</th>
-          <th>Out of stock Products</th>
-          <th></th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Bakery 1</td>
-          <td>12-02-2021</td>
-          <td>-</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="deleteRequestModal = true">Cancel</a>
-              <a class="btn btn-orange btn-mr-inner">Details</a>
-              <a class="btn btn-orange btn-mr-inner">Accept</a>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Bakery 2</td>
-          <td>12-02-2021</td>
-          <td>Sugar, Strawberry Cake</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="deleteRequestModal = true">Cancel</a>
-              <a class="btn btn-orange btn-mr-inner">Details</a>
-              <a class="btn btn-orange btn-mr-inner">Accept</a>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <!-- The deletion Modal -->
-    <Modal v-if="deleteRequestModal">
-      <template v-slot:header>
-        <h2>Confirm Deletion</h2>
-      </template>
-
-      <template v-slot:body>
-        <p>Are you sure you want to delete this Request?</p>
-      </template>
-
-      <template v-slot:footer>
-        <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="deleteRequestModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr">Yes</button>
+      </div>
+      <div class="flex-box">
+        <label class="pad-label w100" for="users">
+          <strong>User:</strong>
+        </label>
+        <div class="full-width">
+          <select
+            id="users"
+            name="users"
+            class="custom-select"
+            v-model="requestee"
+          >
+            <option :value="0">None</option>
+            <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+              {{item.username}}
+            </option>
+          </select>
+          <span v-if="requesteeValidation" class="form-error">{{ requesteeValidation }}</span>
         </div>
-      </template>
-    </Modal>
-
+      </div>
+      <div class="flex-box">
+        <label class="pad-label w100" for="balance">
+          <strong>Balance:</strong>
+        </label>
+        <select
+          id="company-type"
+          name="company-type"
+          class="custom-select"
+          v-model="requestType"
+        >
+          <option v-for="rType in requestTypes" v-bind:key="rType" v-bind:value="rType">
+            {{ rType }}
+          </option>
+        </select>
+      </div>
+      <div class="flex-box">
+        <label class="pad-label w100" for="delivery">
+          <strong>Delivery:</strong>
+        </label>
+        <div class="full-width">
+          <input
+            name="delivery"
+            type="date"
+            v-model="delivery"
+          />
+          <span v-if="deliveryValidation" class="form-error">{{ deliveryValidation }}</span>
+        </div>
+      </div>
+      <div class="flex-box">
+        <label class="pad-label w100" for="amount">
+          <strong>Description:</strong>
+        </label>
+        <div class="full-width">
+          <textarea 
+            name="description"
+            rows="7"
+            placeholder="description"
+            v-model="description"
+          ></textarea>
+          <span v-if="descriptionValidation" class="form-error">{{ descriptionValidation }}</span>
+        </div>
+      </div>
+      <div style="text-align: right; padding-bottom: 50px">
+        <router-link
+          to="/"
+          style="margin-right: 20px"
+          class="btn btn-orange btn-mr btn-link"
+        >Cancel</router-link>
+        <button
+          :disabled="addBtn"
+          @click="addRequestbtn"
+          class="btn btn-orange btn-mr"
+          style="width: 150px">Send Request</button>
+      </div>
+      <Loader v-show="loader"></Loader>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Modal from '@/components/common-components/Modal.vue';
+import { mapActions, mapGetters } from'vuex';
+
+import Loader from '@/components/common-components/Loader.vue';
+import Alert from '@/components/common-components/Alert.vue';
+import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
+import { Request } from '@/store/models/request';
 
 export default defineComponent({
   name: 'Request',
   components: {
-    Modal,
+    Loader,
+    Alert
   },
+
   data() {
     return {
-      deleteRequestModal: false
+      loader: false,
+      company: 0,
+      requestee: 0,
+      requestType: 'SPECIAL_ORDER',
+      delivery: '',
+      description: '',
+      created: ''
     }
   },
-  // define methods under the `methods` object
-  methods: {
-    closeDeleteRequestModal: function(id: string) {
-      this.deleteRequestModal = false;
-      // perform delete logic
+  computed: {
+    companyValidation: function () {
+      let errorMessage = null;
+      if (this.companies.length <= 0) {
+        errorMessage = "Comapny is required. Add store to system"
+      }
+      return errorMessage;
     },
+
+    requesteeValidation: function () {
+      let errorMessage = null;
+      if (this.users.length <= 0) {
+        errorMessage = "Requestee is required. Add selected store's user to system"
+      }
+      return errorMessage;
+    },
+
+    deliveryValidation: function () {
+      let errorMessage = null;
+      if (this.delivery === '') {
+        errorMessage = 'Delivery is required';
+      }
+      return errorMessage;
+    },
+
+    descriptionValidation: function () {
+      let errorMessage = null;
+      if (this.description === '') {
+        errorMessage = 'Description is required';
+      }
+      return errorMessage;
+    },
+
+    addBtn: function () {
+      let disable = true;
+      if ( this.companyValidation === null &&
+      this.requesteeValidation === null &&
+      this.deliveryValidation === null &&
+      this.descriptionValidation === null) {
+        disable = false;
+      }
+      return disable
+    },
+
+    ...mapGetters({
+      companies: 'getCompanies',
+      requestTypes: 'getRequestTypes',
+      userData: 'getUser',
+      users: 'getListOfUsers',
+      requestSent: 'getRequest',
+    })
   },
+  methods: {
+    onChangeCompany: async function () {
+      if (this.company > 0) {
+        await this.getUsers({
+          company: this.company
+        });
+        if (this.users && this.users.length > 0) {
+          this.requestee = this.users[0].id;
+        }
+      }
+    },
+
+    addRequestbtn: async function () {
+      this.loader = true;
+      const request: Request = {
+        sender: this.userData.id,
+        receiver: this.requestee,
+        expected_delivery_date: this.delivery,
+        description: this.description,
+        request_type: this.requestType,
+      };
+
+      await this.createRequest(request);
+
+      this.delivery = '';
+      this.description = '';
+      this.requestType = 'SPECIAL_ORDER';
+      this.loader = false;
+
+      this.created = '';
+      if (this.requestSent && this.requestSent.id) {
+        this.created = `Request is sent. Request id is ${this.requestSent.id}`;
+      }
+    },
+
+    ...mapActions({
+      fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
+      fetchTypes: AuthActionTypes.FETCH_TYPES,
+      createRequest: OrderActionTypes.CREATE_REQUEST,
+      getUserData: AuthActionTypes.USER_DATA,
+      getUsers: AuthActionTypes.GET_USERS,
+    })
+  },
+  async beforeMount () {
+    await this.getUserData();
+    await this.fetchTypes();
+    await this.fetchCompanies({
+      company_type: 'STORE',
+      search: ''
+    });
+    if (this.companies && this.companies.length > 0) {
+      this.company = this.companies[0].id;
+      await this.onChangeCompany();
+    }
+  }
 });
 </script>
 
 <style lang="scss" scoped>
-  .btn-mr{
-    margin: 10px;
+  #request {
+    padding-left: 15%;
+    padding-right: 15%;
+    margin-top: 3%;
   }
 
-  .btn-mr-inner{
-    margin: 1px 1px 1px 5px;
+  .pad-label {
+    padding: 20px 20px 20px 0px;
   }
 
-  .pr-var-mr {
-    margin: 10px;
+  .w100 {
+    width: $w150;
+  }
+
+  label {
+    text-align: left;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .checkbox-label {
+    font-size: $label-font-size;
   }
 </style>

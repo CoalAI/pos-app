@@ -6,6 +6,7 @@ export interface Company extends DatesInterface {
   parent?: number | null;
   company_type?: string;
   company_name?: string;
+  credit?: string;
 }
 
 export interface Inventory extends DatesInterface {
