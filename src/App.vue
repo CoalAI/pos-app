@@ -276,4 +276,13 @@ export default defineComponent({
     outline-color: $primary-color;
     background-color: $input-background-color;
   }
+
+  .img-responsive {
+    width: 100%;
+    height: auto;
+  }
+
+  body.modal-open {
+    overflow: hidden;
+  }
 </style>
