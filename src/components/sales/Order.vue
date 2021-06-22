@@ -73,7 +73,6 @@
               v-model="product.buyPrice"
               @input="changeProductPrice"
             />
-            <!-- <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span> -->
           </div>
           
           
@@ -491,7 +490,7 @@
       </template>
 
       <template v-slot:body>
-        <OrderBill :orderId="order_response.id"/>
+        <OrderBill :orderId="order_response.id" :customer="customer"/>
       </template>
 
       <template v-slot:footer>
@@ -573,6 +572,7 @@ export default defineComponent({
       showCustDropdown:false,
       walkinCustomer:{},
       regularCustomer:{},
+      customer:{},
       deduct_balance:false,
     }
   },
@@ -990,7 +990,7 @@ export default defineComponent({
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
       const buyer: User = this.paymentMethod==='credit'?this.regularCustomer:this.walkinCustomer;
-
+      this.customer = buyer;
       const singleOrder: Order = {
         order_item: unproxiedOrderItem,
         buyer: buyer && buyer.id ? buyer.id:this.userdata.id,
@@ -1006,7 +1006,6 @@ export default defineComponent({
         deduct_balance: this.deduct_balance
       }
       await this.createOrder(singleOrder);
-
     },
 
     changeQuantity: function (index: number) {
@@ -1066,7 +1065,7 @@ export default defineComponent({
 
       this.getUsersByType({
         search: this.customersearch,
-        user_type:'REGULAR_CUSTOMER'
+        user_type: 'REGULAR_CUSTOMER'
       });
     },
 

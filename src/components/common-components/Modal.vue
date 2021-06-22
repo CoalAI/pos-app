@@ -76,7 +76,7 @@ export default defineComponent({
   }
 
   .center-align {
-    padding-left: 25%
+    width: 100%;
   } 
 
   .modal-container {

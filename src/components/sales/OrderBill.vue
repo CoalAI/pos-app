@@ -4,13 +4,12 @@
 			<div>
 				<img class="img-responsive" src="../../assets/rohi_logo.jpg" alt="Rohi">
 			</div>
-			<div>
-				<p class="mb-5" style="font-size: 30px;"><strong>Rohi Sweets & Bakers</strong></p>
+			<div class="company-info">
+				<p class="mb-5 pb-5" style="font-size: 30px;"><strong>Rohi Sweets &amp; Bakers</strong></p>
 				<p class="text-center">Zahirpir Road Khanpur</p>
 				<p class="text-center">068-5572999</p>
 				<p class="text-center">Sales Invoice</p>
-				<p class="text-center" style="border: 1px solid black; padding: 2px;">30806</p>
-
+				<span class="text-center" style="border: 1px solid black; padding: 2px;">{{order.invoice_id}}</span>
 			</div>
 		</div>
 
@@ -20,9 +19,9 @@
 		</div>
 
 		<div id="customer-details-sections" style="margin-bottom: 5px">
-			<p>
+			<p v-if="getCustomerFullName()!=='' && customer.user_type!=='WALK_IN_CUSTOMER'">
 				<span><strong>Customer's Name: </strong></span>
-				<span>Omer Ali</span>
+				<span>{{getCustomerFullName()}}</span>
 			</p>
 		</div>
 
@@ -62,7 +61,7 @@
 					</colgroup>
 					<tr>
 						<td><strong>Total Units: </strong></td>
-						<td>{{order.order_item?.length}}</td>
+						<td>{{order.order_item.length}}</td>
 					</tr>
 					<tr>
 						<td><strong>Total Discount: </strong></td>
@@ -82,27 +81,24 @@
 					</tr>
 					<tr>
 						<td><strong>Net Payable: </strong></td>
-						<td>{{ trimNumber(order?.total) }}</td>
+						<td>{{trimNumber(order.total)}}</td>
 					</tr>
 					<tr>
 						<td><strong>Received: </strong></td>
-						<td>{{ trimNumber(order?.amount_received) }}</td>
+						<td>{{trimNumber(order.amount_received)}}</td>
 					</tr>
 					<tr>
 						<td><strong>Change: </strong></td>
-						<td>{{ change }}</td>
+						<td>{{change}}</td>
 					</tr>
 				</table>
-			</div>
-			<div>
-				1
 			</div>
 		</div>
 
 		<div id="footer-section">
 			<p>
 				<span>Operator: </span>
-				<span>Ammar Haider</span>
+				<span>{{getOperatorFullName()}}</span>
 			</p>
 			<p class="text-center" style="font-size: 20px;"><strong>Thanks for Visiting</strong></p>
 		</div>
@@ -111,12 +107,16 @@
 
 <script lang="ts">
 import { ActionTypes } from '@/store/modules/order/actions';
-import printJS from 'print-js';
 import { defineComponent } from 'vue';
 import {mapActions, mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'OrderBill',
+  data(){
+		return{
+			printDelay: 0
+		}
+  },
   methods:{
 		getElementTag: function(tag: keyof HTMLElementTagNameMap): string {
 			const html: string[] = [];
@@ -126,142 +126,196 @@ export default defineComponent({
 			}
 			return html.join('\r\n');
 		},
-		trimNumber: function(value: string) {
-			return parseFloat(value).toFixed(2);
-
+		getHtmlContents: function() {
+			const printContents = document.getElementById("bill-preview");
+			return printContents && printContents.innerHTML?printContents.innerHTML:'';
 		},
-		printBill: function(){
-			const styles = this.getElementTag('style');
-			printJS({printable:'bill-preview', type: 'html', style: styles, maxWidth:850});
+		printBill: function() {
+			let styles = '', links = '';
+			styles = this.getElementTag('style');
+			links = this.getElementTag('link');
+			const endscripttag = "/script"
+			const printContents = this.getHtmlContents();
+			const popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto,focused=false");
 			
+			if(popupWin){
+				popupWin.document.open()
+				
+				popupWin.document.write(`
+				<html>
+					<head>
+					<title></title>
+					${styles}
+					${links}
+					</head>
+					<body>
+					${printContents}
+					<script defer>
+						function triggerPrint(event) {
+						window.removeEventListener('load', triggerPrint, false);
+						setTimeout(function() {
+							closeWindow(window.print());
+						}, ${this.printDelay});
+						}
+						function closeWindow(){
+							window.close();
+						}
+						window.addEventListener('load', triggerPrint, false);
+					<${endscripttag}>
+					</body>
+				</html>`);
+				popupWin.document.close();
+			}
 		},
 		getCurrentTime(){
-			return new Date().toLocaleTimeString();
+			return new Date(this.order.created).toLocaleTimeString();
 		},
 		getCurrentDate(){
-			return new Date().toDateString();
+			return new Date(this.order.created).toDateString();
 		},
 		getItemTotal: function(price: string, quantity: string): string {
 			return (parseFloat(price)*parseFloat(quantity)).toFixed(2);
 
 		},
 		getProductName: function(orderItem: any) {
-			return orderItem.batch?.product_variant?.product?.name;
+			return orderItem.batch.product_variant.product.name;
+		},
+		getOperatorFullName: function() {
+			const firstname = this.operator.first_name!==undefined?this.operator.first_name:'';
+			const lastname = this.operator.last_name!==undefined?this.operator.last_name:'';
+			return `${firstname} ${lastname}`;
+		},
+		getCustomerFullName: function() {
+			const firstname = this.customer.first_name!==undefined?this.customer.first_name:'';
+			const lastname = this.customer.last_name!==undefined?this.customer.last_name:'';
+			return `${firstname} ${lastname}`;
+		},
+		trimNumber: function(value: string) {
+			return parseFloat(value).toFixed(2);
+
 		},
 		...mapActions({
 			fetchOrder: ActionTypes.FETCH_ORDER,
-			clearOrder: ActionTypes.CHANGE_ORDER_STATUS,
+			clearOrder: ActionTypes.CHANGE_ORDER_STATUS
 		}),
     },
 	computed:{
 		total: function(): string {
 			let sum = 0;
-			(this.order?.order_item).map((item: any) => {
+			(this.order.order_item).map((item: any) => {
 				sum = sum + parseFloat(item.price?item.price:'0')*parseFloat(item.quantity?item.quantity:'0')
 			})
 			return sum.toFixed(2);
 		},
 		change: function(): string {
-			return (parseFloat(this.order.amount_received) - parseFloat(this.order?.total)).toFixed(2);
+			return (parseFloat(this.order.amount_received) - parseFloat(this.order.total)).toFixed(2);
 		},
 
 		...mapGetters({
-			order: 'getOrder'
+			order: 'getOrder',
+			operator: 'getUser',
 		})
 	},
 	props:{
 		orderId: {
 			default: 0
+		},
+		customer: {
+			default: {
+				first_name:'',
+				last_name:'',
+				user_type: 'WALK_IN_CUSTOMER'
+			}
 		}
 	},
 	mounted: function () {
 		this.printBill();
-	}
-	,
+	},
 	beforeMount: async function() {
 		await this.fetchOrder(this.orderId);
 	},
 	unmounted: async function() {
 		await this.clearOrder();
 	}
-
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>	
+	@page {
+		size: 80mm;
+		margin: 0
+	}
+	.company-info{
+		display: flex;
+		flex-wrap: nowrap;
+		flex-direction: column;
+		align-content: center;
+		justify-content: center;
+		align-items: center;
+	}
 
-@page {
-	size: 80mm;
-	margin: 0
-}
+	.maindiv-print {
+		padding: 4px;
+		max-width: 800px;
+	}
 
-  .maindiv {
-    border: 1px solid black;
-    padding: 10px;
-  }
-  
-  .maindiv-print {
-    padding: 4px;
-	max-width: 800px;
-  }
+	#header-section {
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		grid-template-rows: 1fr;
+		gap: 0.1em 0.1em;
+	}
 
-   #header-section {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr;
-    gap: 0.1em 0.1em;
-  }
+	#date-section {
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		grid-template-rows: 1fr;
+		gap: 0.1em 0.1em;
+	}
 
-  #date-section {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr;
-    gap: 0.1em 0.1em;
-  }
+	#order-items-section table {
+		border-collapse: separate;
+	}
 
-  #order-items-section table {
-    border-collapse: separate;
-  }
+	#order-items-section th {
+		border-color: black;
+		text-align: center;
+		padding: 1px;
+	}
 
-  #order-items-section th {
-    border-color: black;
-    text-align: center;
-    padding: 1px;
-  }
+	#order-items-section td {
+		border: none;
+		text-align: center;
+		padding: 1px;
+	}
 
-  #order-items-section td {
-    border: none;
-    text-align: center;
-    padding: 1px;
-  }
+	#order-items-section tr:nth-child(even) {
+		background-color: white;
+	}
 
-  #order-items-section tr:nth-child(even) {
-    background-color: white;
-  }
+	#totals-section {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr;
+		gap: 0.1em 0.1em;
+	}
 
-  #totals-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-    gap: 0.1em 0.1em;
-  }
+	#totals-section p {
+		text-align: right;
+	}
 
-  #totals-section p {
-    text-align: right;
-  }
+	#totals-section td {
+		border: none;
+		text-align: right;
+		padding: 1px;
+	}
 
-  #totals-section td {
-    border: none;
-    text-align: right;
-    padding: 1px;
-  }
+	#totals-section tr:nth-child(even) {
+		background-color: white;
+	}
 
-  #totals-section tr:nth-child(even) {
-    background-color: white;
-  }
-
-  .mb-5 {
-    border-bottom: 2px solid black;
-    padding-bottom: 5px;
-  }
+	.mb-5 {
+		border-bottom: 2px solid black;
+		padding-bottom: 5px;
+	}
 </style>
