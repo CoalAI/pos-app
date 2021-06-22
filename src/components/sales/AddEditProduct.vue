@@ -19,6 +19,7 @@
               v-model="product.name"
             />
             <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
+            <ErrorField v-if="fieldErrors.name" :errorField="fieldErrors.name"></ErrorField>
           </div>
         </div>
         <div class="flex-box">
@@ -34,6 +35,7 @@
               v-model="product.barcode"
             />
             <span v-if="productBarCodeValidation" class="form-error">{{productBarCodeValidation}}</span>
+            <ErrorField v-if="fieldErrors.bar_code" :errorField="fieldErrors.bar_code"></ErrorField>
           </div>
         </div>
         <div class="flex-box">
@@ -180,14 +182,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onUnmounted } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { Product, ProductVariant, Unit } from '@/store/models/product';
 import { ActionTypes } from '@/store/modules/order/actions';
+import ErrorField from '@/components/common-components/ErrorField.vue';
 
 export default defineComponent({
   name: 'AddEditProduct',
   props: ['productId'],
+  components: {
+    ErrorField,
+  },
   data() {
     const productVariants: ProductVariant[] = [];
     return {
@@ -255,7 +261,8 @@ export default defineComponent({
 
     ...mapGetters({
       units: 'getUnits',
-      getSignleProduct: 'getSignleProduct'
+      getSignleProduct: 'getSignleProduct',
+      fieldErrors: 'getFieldError',
     })
   },
   methods: {
@@ -375,7 +382,11 @@ export default defineComponent({
       } else {
         await this.createProduct(currentProduct);
       }
-      this.$router.push({name: 'Product'});
+      if (Object.keys(this.fieldErrors).length === 0) {
+        this.$router.push({name: 'Product'});
+      } else {
+        window.scrollTo(0,0);
+      }
     },
 
     loadData: function (product: Product) {
@@ -392,6 +403,7 @@ export default defineComponent({
       createProduct: ActionTypes.CREATE_PRODUCT,
       updateProduct: ActionTypes.UPDATE_PRODUCT,
       deleteProductVariant: ActionTypes.DELETE_PRODUCT_Variant,
+      setFieldError: ActionTypes.SET_FIELD_ERROR,
     })
   },
   async created () {
@@ -409,6 +421,9 @@ export default defineComponent({
         this.$router.push({name: 'notFound'});
       }
     }
+  },
+  async unmounted () {
+    await this.setFieldError({});
   }
 });
 </script>

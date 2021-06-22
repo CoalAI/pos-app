@@ -32,6 +32,7 @@ export enum ActionTypes {
   FETCH_REQUESTS = "FETCH_REQUESTS",
   UPDATE_REQUEST = "UPDATE_REQUEST",
   UPDATE_ORDER = "UPDATE_ORDER",
+  SET_FIELD_ERROR = "SET_FIELD_ERROR",
 }
 
 
@@ -77,6 +78,7 @@ export interface Actions {
   [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}): void;
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
+  [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -90,7 +92,7 @@ Actions = {
         commit(MutationTypes.SetProductResults, response.data.results);
       }
       if(isAxiosError(response)) {
-        commit('setError', response, {root: true});
+        commit('setError', "Failed to search product!", {root: true});
       }
     }
   },
@@ -103,7 +105,7 @@ Actions = {
         commit(MutationTypes.SetProductResults, response.data.results);
       }
       if(isAxiosError(response)) {
-        commit('setError', response, {root: true});
+        commit('setError', response.message, {root: true});
       }
     }
   },
@@ -140,15 +142,15 @@ Actions = {
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
       commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
+      commit(MutationTypes.SetError, {});  
     }
     if(isAxiosError(response)) {
       if (response.response && response.response.data){
           if( response.response.data.non_field_errors) {
-            commit('setError', response.response.data.non_field_errors, {root: true});
+            commit('setError', response.response.data.non_field_errors[0], {root: true});
           } else {
             commit(MutationTypes.SetError, response.response.data);   
           }
-          commit('setError', "Server side error. Kindly try again.", {root: true});
       }
       commit(MutationTypes.SetOrderStatus, "Failed to create the Order!.");
     }
@@ -167,7 +169,7 @@ Actions = {
       commit(MutationTypes.SetListOfProducts, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext) {
@@ -176,16 +178,20 @@ Actions = {
       commit(MutationTypes.SetUnit, response.data.results);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product) {
     const response = await serverRequest('post', 'product/', true, product);
     if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetOrder, response.data);
+      commit(MutationTypes.SetError, {});
     }
-    if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+    if(isAxiosError(response) && response.response && response.response.data) {
+      if (response.response.data.non_field_errors) {
+        commit('setError', response.response.data.non_field_errors, {root: true});
+      } else {
+        commit(MutationTypes.SetError, response.response.data);
+      }
     }
   },
   async [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}) {
@@ -194,13 +200,13 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string) {
     const response = await serverRequest('delete', `product/${productID}/`, true);
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.DELETE_PRODUCT_Variant]({ commit }: AugmentedActionContext, productVariantID: string) {
@@ -209,7 +215,7 @@ Actions = {
       commit(MutationTypes.SetOrder, response.data);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
@@ -218,7 +224,7 @@ Actions = {
       commit(MutationTypes.SetBatch, response.data);
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch) {
@@ -230,7 +236,7 @@ Actions = {
   async [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string) {
     const response = await serverRequest('delete', `batch/${batchID}/`, true);
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data?: {company?: number; search?: string}) {
@@ -244,7 +250,7 @@ Actions = {
       commit(MutationTypes.SetInventory, response.data.results)
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
+      commit('setError', response.message, {root: true});
     }
   },
   async [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order) {
@@ -254,7 +260,6 @@ Actions = {
       commit(MutationTypes.SetOrderStatus, 'Order is completed successfully.');
     }
     if(isAxiosError(response)) {
-      commit('setError', response, {root: true});
       if (response.response && response.response.data &&  response.response.data.non_field_errors) {
         commit(MutationTypes.SetOrderStatus, response.response.data.non_field_errors);
       } else {
@@ -302,6 +307,9 @@ Actions = {
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }
+  },
+  async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
+    commit(MutationTypes.SetError, error);
   },
 };
 

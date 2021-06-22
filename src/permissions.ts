@@ -68,7 +68,85 @@ export async function salesStaff(from: RouteLocationNormalized,to: RouteLocation
       allowedCompanies.includes(company_type) &&
       allowedRoles.includes(role)){
       next();
+    } 
+    else if(from.path==='/admin/order')
+        next('/')
+    else
+        next('/404')
+    
+  }
+
+  export async function manager(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext){
+    const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+    const allowedCompanies = ['PARENT', 'STORE', 'RETIAL']
+    await store.dispatch(ActionTypes.USER_DATA);
+    const role = store.getters.getUser ? store.getters.getUser.user_type : '';
+    const company_type = store.getters.getUser && store.getters.getUser.company ? store.getters.getUser.company.company_type : '';
+    if (role != null &&
+      company_type != null &&
+      company_type != '' &&
+      role != '' &&
+      allowedCompanies.includes(company_type) &&
+      allowedRoles.includes(role)){
+      next();
     } else {
-      next('/')
+      next('/404')
     }
   }
+
+  export async function isManager(){
+    const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+    const allowedCompanies = ['PARENT', 'STORE', 'RETIAL']
+    await store.dispatch(ActionTypes.USER_DATA);
+    const role = store.getters.getUser ? store.getters.getUser.user_type : '';
+    const company_type = store.getters.getUser && store.getters.getUser.company ? store.getters.getUser.company.company_type : '';
+    if (role != null &&
+      company_type != null &&
+      company_type != '' &&
+      role != '' &&
+      allowedCompanies.includes(company_type) &&
+      allowedRoles.includes(role)){
+        debugger
+        return true;
+    }
+    debugger
+    return false;
+  }
+
+
+  export async function isStoreAdmin(){
+    const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+    const allowedCompanies = ['PARENT', 'STORE']
+    await store.dispatch(ActionTypes.USER_DATA);
+    const role = store.getters.getUser ? store.getters.getUser.user_type : '';
+    const company_type = store.getters.getUser && store.getters.getUser.company ? store.getters.getUser.company.company_type : '';
+    if (role != null &&
+      company_type != null &&
+      company_type != '' &&
+      role != '' &&
+      allowedCompanies.includes(company_type) &&
+      allowedRoles.includes(role)){
+        return true;
+    }
+
+    return false;
+  }  
+
+
+  export async function isSuperAdmin(){
+    const allowedRoles = ['SUPER_ADMIN'];
+    const allowedCompanies = ['PARENT', 'STORE']
+    await store.dispatch(ActionTypes.USER_DATA);
+    const role = store.getters.getUser ? store.getters.getUser.user_type : '';
+    const company_type = store.getters.getUser && store.getters.getUser.company ? store.getters.getUser.company.company_type : '';
+    if (role != null &&
+      company_type != null &&
+      company_type != '' &&
+      role != '' &&
+      allowedCompanies.includes(company_type) &&
+      allowedRoles.includes(role)){
+        return true;
+    }
+
+    return false;
+  }  
