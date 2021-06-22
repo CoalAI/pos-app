@@ -1003,7 +1003,6 @@ export default defineComponent({
         deduct_balance: this.deduct_balance
       }
       await this.createOrder(singleOrder);
-
     },
 
     changeQuantity: function (index: number) {

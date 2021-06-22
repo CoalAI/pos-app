@@ -153,7 +153,6 @@ Actions = {
           }
       }
       commit(MutationTypes.SetOrderStatus, "Failed to create the Order!.");
-
     }
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {

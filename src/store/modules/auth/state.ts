@@ -13,6 +13,7 @@ export type State = {
     transactions: Transaction[];
     expense: Transaction;
     error: any;
+
 };
 
 export const state: State = {

@@ -915,6 +915,7 @@ export default defineComponent({
           } as Batch;
         })
         .find((item: Batch) => item && item.id && item.id.toString() == this.product.batch);
+        batch = batch?batch.id:batch;
       } else {
         batch = {
           manufacturing_date: this.product.manufacturedDate,
