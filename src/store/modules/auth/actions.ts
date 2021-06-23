@@ -26,6 +26,7 @@ export enum ActionTypes {
   FETCH_VENDORS = "FETCH_VENDORS",
   FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
+
 }
 
 export type AugmentedActionContext = {
@@ -46,6 +47,7 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
+
   [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string }): void;
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
@@ -56,6 +58,7 @@ export interface Actions {
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
+
 }
 
 export const actions: ActionTree<State, IRootState> &

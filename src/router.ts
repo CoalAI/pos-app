@@ -191,6 +191,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ExpenseSummary',
     component: ExpenseSummary,
     beforeEnter: manager
+
   },
   {
     path: '/expense',
