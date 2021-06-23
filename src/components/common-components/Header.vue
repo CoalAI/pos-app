@@ -135,7 +135,7 @@ export default defineComponent({
         return true;
       }
       return false;
-    }
+    },
   },
   methods: {
     clear: function () {
