@@ -136,11 +136,10 @@ export default defineComponent({
 
     ...mapGetters({
       companyTypes: 'getCompanyTypes',
+      userdata: 'getUser',
     })
   },
   methods: {
-    
-
     addUpdateDepartment: async function () {
       let companyIdNumber = 0;
       if (this.companyId) {
@@ -159,7 +158,14 @@ export default defineComponent({
         company.id = companyIdNumber;
         await this.updateCompany(company);
       } else {
-        await this.createCompany(company);
+        if (this.userdata && this.userdata.company) {
+          if (this.userdata.company.company_type === 'PARENT') {
+            company.parent = this.userdata.company.id;
+          } else {
+            company.parent = this.userdata.company.parent;
+          }
+          await this.createCompany(company);
+        }
       }
       this.$router.push({name: 'department'});
     },
@@ -176,10 +182,12 @@ export default defineComponent({
       updateCompany: ActionTypes.UPDATE_COMPANY,
       getCompaniesList: ActionTypes.FETCH_COMPANIES,
       fetchTypes: ActionTypes.FETCH_TYPES,
+      getUserData: ActionTypes.USER_DATA,
     })
   },
   async beforeMount () {
     await this.fetchTypes();
+    await this.getUserData()
 
     if (this.companyId) {
       await this.getCompaniesList({
