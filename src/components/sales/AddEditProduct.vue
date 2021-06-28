@@ -65,16 +65,18 @@
         <div class="product_Variant_box">
           <table class="mr-2">
             <colgroup>
-              <col span="1" style="width: 12%;">
-              <col span="1" style="width: 12%;">
-              <col span="1" style="width: 12%;">
-              <col span="1" style="width: 60%;">
+              <col span="1">
+              <col span="1">
+              <col span="1">
+              <col span="1">
+              <col span="1" style="width: 40%;">
               <col span="1" style="width: 4%;">
             </colgroup>
             <tr>
               <th>Color</th>
               <th>Size</th>
-              <th>Pirce</th>
+              <th>Price</th>
+              <th>Sale Price</th>
               <th>Description</th>
               <th></th>
             </tr>
@@ -101,6 +103,15 @@
                   type="text"
                   placeholder="Price"
                   v-model="productVariant.price"
+                  @input="checkTablePrice(index)"
+                />
+              </td>
+              <td>
+                <input
+                  class="tbl_item_input"
+                  type="text"
+                  placeholder="Sale Price"
+                  v-model="productVariant.sale_price"
                   @input="checkTablePrice(index)"
                 />
               </td>
@@ -145,6 +156,13 @@
               type="number"
               placeholder="Price"
               v-model="currentProductVariant.price"
+            />
+            <input
+              class="pr-var-mr"
+              name="sale_price"
+              type="number"
+              placeholder="Sale Price"
+              v-model="currentProductVariant.sale_price"
             />
           </div>
           <textarea 
@@ -216,6 +234,7 @@ export default defineComponent({
         color: '',
         size: '',
         price: '',
+        sale_price: '',
         description: ''
       },
       VariantPriceValidation: '',
@@ -270,6 +289,7 @@ export default defineComponent({
       this.currentProductVariant.color = '';
       this.currentProductVariant.size = '';
       this.currentProductVariant.price = '';
+      this.currentProductVariant.sale_price = '';
       this.currentProductVariant.description = '';
     },
 
@@ -298,6 +318,7 @@ export default defineComponent({
         color: this.currentProductVariant.color,
         size: this.currentProductVariant.size,
         price: this.currentProductVariant.price,
+        sale_price: this.currentProductVariant.sale_price,
         description: this.currentProductVariant.description
       }
 
@@ -343,6 +364,7 @@ export default defineComponent({
       const unproxiedProductVariants = this.product.productVariants.map((item: ProductVariant) => {
         const Variant = {
           price: item.price,
+          sale_price: item.sale_price,
           color: item.color,
           description: item.description,
           size: item.size

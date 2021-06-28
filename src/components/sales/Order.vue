@@ -237,14 +237,14 @@
             <span class="checkmark"></span>
           </label>
         </div>
-        <div v-if="paymentMethod === 'credit'">
+        <div v-if="paymentMethod === 'credit'" @mouseout="showCustDropdown=false" @mouseover="showCustDropdown=true">
           <input
               type="text"
               tabindex="1"
               placeholder="Search Walk-In Customer"
               name="barcode"
               v-model="customersearch"
-              @focus="showCustDropdown=!showCustDropdown"
+              @mouseover="showCustDropdown=true"
               @input="searchCustomer"
               autocomplete="off"
             />
@@ -472,8 +472,9 @@
         <input type="text" placeholder="Last Name" v-model="user.lastName"/>
         <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
         <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
-        <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>
-        <ErrorField v-if="authFieldErrors.username" :errorField="authFieldErrors.username"></ErrorField>
+        <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>        
+        <ErrorField v-if="authFieldErrors.contact_number" :errorField="authFieldErrors.contact_number"></ErrorField>
+        <input type="text" placeholder="Description" required v-model="user.description"/>
       </template>
 
       <template v-slot:footer>
@@ -513,7 +514,7 @@ import { Order } from '@/store/models/order';
 import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
-import { User } from '@/store/models/user';
+import { User, UserExtra } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
 import OrderBill from '@/components/sales/OrderBill.vue';
 
@@ -546,7 +547,8 @@ export default defineComponent({
         userName: '',
         firstName: '',
         lastName: '',
-        company:''
+        company:'',
+        description: ''
       },
       date: today,
       orderItems: orderItems,
@@ -575,11 +577,6 @@ export default defineComponent({
       customer:{},
       deduct_balance:false,
     }
-  },
-  created: async function(){
-    await this.getUsersByType({user_type:'WALK_IN_CUSTOMER'});
-    this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === 'WALK_IN_CUSTOMER');
-    await this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
   },
   computed: {
     totalAmount: function (): number {
@@ -665,8 +662,8 @@ export default defineComponent({
     validateDeductBalance: function() {
       let error_message = null;
       if(this.paymentMethod === 'credit') {
-        if(parseFloat(this.cashReceived) <=0 && this.deduct_balance === false){
-          error_message = 'check Deduct Balance if no cash received!'
+        if(parseFloat(this.cashReceived) <= this.totalAmount && this.deduct_balance === false){
+          error_message = 'Cash Received is less than total so check Deduct Balance!'
         }
       }
       return error_message;
@@ -901,17 +898,24 @@ export default defineComponent({
     addNewCustomer:async function(){
       const companyId = this.userdata.company.id;  
 
+      const user_extra: UserExtra = {
+        description: this.user.description
+      }
+
       const user: User = {
         username: this.user.userName,
+        contact_number: this.user.userName,
         first_name: this.user.firstName,
         last_name: this.user.lastName,
-        company:companyId
+        company:companyId,
+        user_extra: user_extra
       }
 
       await this.registerUser(user);
 
       if (Object.keys(this.authFieldErrors).length === 0) {
-        this.addCustModal=false
+        this.addCustModal=false;
+        this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
       }
     },
 
@@ -1006,7 +1010,8 @@ export default defineComponent({
         deduct_balance: this.deduct_balance
       }
       await this.createOrder(singleOrder);
-    },
+      await this.getUsersByType({user_type: 'REGULAR_CUSTOMER'});
+  },
 
     changeQuantity: function (index: number) {
       const currentVariant = this.orderItems[index].productVariant;
@@ -1148,6 +1153,9 @@ export default defineComponent({
   },
   async beforeMount () {
     await this.fetchInvoiceID();
+    await this.getUsersByType({user_type:'WALK_IN_CUSTOMER'});
+    this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`);
+    await this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
   },
   async unmounted () {
     await this.setFieldError({});

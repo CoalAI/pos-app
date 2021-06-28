@@ -16,7 +16,13 @@ export interface User extends DatesInterface {
   user_type?: string;
   contact_number?: string;
   credit?: number;
+  user_extra?: UserExtra
 }
+
+export interface UserExtra extends DatesInterface {
+  description?: string;
+}
+
 
 export interface Credentials {
   username?: string;
