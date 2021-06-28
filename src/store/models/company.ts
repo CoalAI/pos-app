@@ -7,6 +7,8 @@ export interface Company extends DatesInterface {
   company_type?: string;
   company_name?: string;
   credit?: string;
+  address?: string;
+  contact_number?: string;
 }
 
 export interface Inventory extends DatesInterface {

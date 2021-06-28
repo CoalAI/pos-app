@@ -26,16 +26,18 @@
               v-model="search"
               @input="onSearchCompany"
             />
-            <button class="btn btn-orange search-btn" @click="onSearchCompany">Search Department by name</button>
+            <button class="btn btn-orange search-btn" @click="onSearchCompany">Search Department</button>
           </form>
         </div>
     </div>
     <div class="mr-2">
       <table>
         <colgroup>
+          <col span="1" style="width: 5%;">
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 20%;">
           <col span="1" style="width: 10%;">
-          <col span="1" style="width: 40%;">
-          <col span="1" style="width: 15%;">
+          <col span="1" style="width: 10%;">
           <col span="1" style="width: 15%;">
           <col span="1" style="width: 30%;">
         </colgroup>
@@ -43,6 +45,8 @@
         <tr>
           <th>Sr No.</th>
           <th>Department Name</th>
+          <th>Address</th>
+          <th>Phone Number</th>
           <th>Type</th>
           <th>credit</th>
           <th></th>
@@ -50,6 +54,8 @@
         <tr v-for="(company, index) in companies" v-bind:key="company.id">
           <td>{{index + 1}}</td>
           <td>{{company.company_name}}</td>
+          <td>{{company.address}}</td>
+          <td>{{company.contact_number}}</td>
           <td>{{company.company_type}}</td>
           <td v-if="company.credit">{{company.credit}}</td>
           <td v-else class="text-center">-</td>
