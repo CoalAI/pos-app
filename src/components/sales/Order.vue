@@ -434,11 +434,15 @@
         <div id="pay-box2">
             <button v-if="paymentMethod === 'credit'" class="btn btn-orange" @click="addCustModal=true">Add New Customer</button>
             <button
-              class="btn btn-orange"
-              @click="submitOrder"
-              :disabled="submitOrderButton"
+            class="btn btn-orange"
+            @click="submitOrder(true)"
+            :disabled="submitOrderButton"
             >Submit and Print</button>
-            <button class="btn btn-orange">Submit</button>
+            <button
+            class="btn btn-orange"
+            @click="submitOrder(false)"
+            :disabled="submitOrderButton"
+            >Submit</button>
             <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
         </div>
       </div>
@@ -490,7 +494,7 @@
       </template>
 
       <template v-slot:body>
-        <OrderBill :orderId="order_response.id" :customer="customer"/>
+        <OrderBill :orderId="order_response.id" :customer="customer" :print="print" />
       </template>
 
       <template v-slot:footer>
@@ -574,6 +578,7 @@ export default defineComponent({
       regularCustomer:{},
       customer:{},
       deduct_balance:false,
+      print: true,
     }
   },
   created: async function(){
@@ -974,9 +979,10 @@ export default defineComponent({
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
     },
 
-    submitOrder: async function () {
+    submitOrder: async function (print: boolean) {
       if (this.orderItems.length < 0) return;
       if (this.cashReceived === '') return;
+      this.print = print;
 
       const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
         return {
