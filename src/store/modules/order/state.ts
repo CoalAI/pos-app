@@ -21,6 +21,7 @@ export type State = {
     invoice_id: string;
     request: Request;
     error: any;
+    productsCount: number;
 };
 
 
@@ -39,5 +40,6 @@ export const state: State = {
   batch: {},
   invoice_id: '',
   request: {},
-  error: {}
+  error: {},
+  productsCount: 0
 };

@@ -23,6 +23,7 @@ export enum MutationTypes {
   SetInvoiceID = "SET_INVOICEID",
   SetRequest = "SET_REQUEST",
   SetError = "SET_ERROR",
+  SetProductsCount = "SET_PRODUCTS_COUNT"
 }
 
 export type Mutations = {
@@ -33,6 +34,7 @@ export type Mutations = {
   [MutationTypes.SetListOfOrders](state: State, orders: Order[]): void;
   [MutationTypes.SetOrderStatuses](state: State, statuses: {status: string}[]): void;
   [MutationTypes.SetListOfProducts](state: State, products: Product[]): void;
+  [MutationTypes.SetProductsCount](state: State, productCount: number): void;
   [MutationTypes.SetInventory](state: State, inventory: Inventory[]): void;
   [MutationTypes.SetListOfRequests](state: State, requests: Request[]): void;
   [MutationTypes.SetUnit](state: State, units: Unit[]): void;
@@ -63,6 +65,9 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetListOfProducts](state, products) {
     state.listOfProducts = products;
+  },
+  [MutationTypes.SetProductsCount](state: State, productCount: number) {
+    state.productsCount = productCount;
   },
   [MutationTypes.SetInventory](state, inventory) {
     state.inventory = inventory;
