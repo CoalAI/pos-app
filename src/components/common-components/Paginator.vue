@@ -1,10 +1,12 @@
 <template>
     <div class="pagination">
-        <a href="#" @click="moveLeft">&laquo;</a>
+        <a href="#" @click="moveLeft"><strong>&lt;&lt;</strong></a>
+        <a href="#" @click="prev"><strong>&lt;</strong></a>
         <span v-for="p in pageNo_list" :key="p">
             <a :class="p===selected?'active':''" href="#" @click="pageSelected(p)">{{p}}</a>
         </span>
-        <a href="#" @click="moveRight">&raquo;</a>
+        <a href="#" @click="next"><strong>&gt;</strong></a>
+        <a href="#" @click="moveRight"><strong>&gt;&gt;</strong></a>
     </div>
 </template>
 
@@ -21,52 +23,73 @@ export default defineComponent({
         return {
             records_per_page : 10,
             selected: 1,
-            // total_pages: 59,
+            // total_pages: 5,
             list_max: 5,
-            offset: 0,
+            offset: 1,
         }
     },
     computed: {
         pageNo_list: function() {
             const pages: number[] = []
             for(let i=this.offset;i<this.end;++i){
-                pages.push(i+1);
+                pages.push(i);
             }
             return pages;
 
         },
         end: function(): number {
             const new_end = this.offset + this.list_max
-            return new_end >= this.total_pages? this.total_pages : new_end
+            return new_end >= this.total_pages? this.total_pages + 1 : new_end
+        },
+        start: function(): number {
+            const new_start = this.offset - this.list_max
+            return new_start < 1 ? 1 : new_start
         },
         total_pages(): number {
             return this.count/this.records_per_page;
         }
     },
     methods: {
-        moveRight: function(){
+        moveRight: function(reset=true){
             if(this.end < this.total_pages){
                 this.offset = this.end;
             }
-            console.log(this.offset);
+            if(reset)
+                this.selected=this.offset;
         },
-        moveLeft: function(){
-            if(this.offset > 0){
-                this.offset = this.offset - this.list_max;
+        moveLeft: function(reset=true){
+            if(this.offset > 1){
+                this.offset = this.start;
             }
-            console.log(this.offset);
+            if(reset)
+                this.selected=this.offset;
         },
         pageSelected: function(page: number) {
             this.selected = page;
-            this.$emit('pageChange', page);
+        },
+        next: function(){
+            if (this.selected+1<this.end){
+                this.selected=this.selected+1;
+            }else {
+                this.moveRight();
+            }
+        },
+        prev: function(){
+            if(this.selected>1){
+                if (this.offset===this.selected){
+                    this.moveLeft(false);
+                }
+                this.selected--;
+            }
+      
         }
     },
-    
-    mounted: function(){
-        console.log(this.count);
-        debugger
+    watch: {
+        selected: function(){
+            console.log(`watcher: ${this.selected}`);
+            this.$emit('pageChange', this.selected);
+        }
     },
-
 })
 </script>
 
@@ -74,7 +97,7 @@ export default defineComponent({
 <style lang="scss" scoped>
     .pagination {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
     }
 
     .pagination a {
