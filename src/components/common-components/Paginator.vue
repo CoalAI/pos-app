@@ -86,7 +86,6 @@ export default defineComponent({
     },
     watch: {
         selected: function(){
-            console.log(`watcher: ${this.selected}`);
             this.$emit('pageChange', this.selected);
         }
     },
