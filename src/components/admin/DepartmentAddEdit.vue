@@ -1,4 +1,6 @@
 <template>
+  <div id="departmentEditAdd">
+    <Header />
     <div id="AddEditdepartment">
       <div class="diff-shadow">
         <h2>
@@ -56,6 +58,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -64,8 +67,10 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { Company } from '@/store/models/company';
 import { ActionTypes } from '@/store/modules/auth/actions';
+import Header from '../common-components/Header.vue';
 
 export default defineComponent({
+  components: { Header },
   name: 'DepartmentAddEdit',
   props: ['companyId'],
   data () {

@@ -285,4 +285,8 @@ export default defineComponent({
   body.modal-open {
     overflow: hidden;
   }
+
+  .page-mr {
+    margin: $page-margin;
+  }
 </style>

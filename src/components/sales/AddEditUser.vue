@@ -1,159 +1,162 @@
 <template>
-  <div id="AddEditUser">
-    <div class="diff-shadow">
-      <h2>
-        <span v-if="userId">Update</span>
-        <span v-else>Add New</span>
-        <span> User</span>
-      </h2>
-      <div class="flex-box">
-        <label class="pad-label w100" for="first_name">
-          <strong>First Name:</strong>
-        </label>
-        <input
-          name="first_name"
-          type="text"
-          placeholder="Enter First Name"
-          v-model="user.firstName"
-        />
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="last_name">
-          <strong>Last Name:</strong>
-        </label>
-        <input
-          name="last_name"
-          type="text"
-          placeholder="Enter Last Name"
-          v-model="user.lastName"
-        />
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="email">
-          <strong>Email:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="email"
-            type="text"
-            placeholder="Enter Email"
-            v-model="user.email"
-          />
-          <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
-        </div>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="thisusername">
-          <strong>Username:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="thisusername"
-            type="text"
-            placeholder="Enter User Name"
-            v-model="user.userName"
-          />
-          <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
-          <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
-        </div>
-      </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="thisuserpassword">
-          <strong>Password:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            autocomplete="new-password"
-            name="thisuserpassword"
-            type="password"
-            placeholder="Enter Password"
-            v-model="user.password"
-          />
-          <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
-          <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
-        </div>
-      </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="confirmpassword">
-          <strong>Confirm Pwd:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="confirmpassword"
-            type="password"
-            placeholder="Enter confirm password"
-            v-model="user.confirmPassword"
-          />
-          <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span>
-        </div>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="in_stock">
-          <strong>Active:</strong>
-        </label>
-        <input
-          style="margin-top: 21px"
-          type="checkbox"
-          id="active"
-          name="active"
-          v-model="user.active"
-        >
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="role">
-          <strong>Role:</strong>
-        </label>
-
-        <select name="role" class="custom-select" id="unit" v-model="user.user_type">
-          <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
-            {{ role }}
-          </option>
-        </select>
-      </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="companies">
-          <strong>Company:</strong>
-        </label>
-
-        <select name="companies" class="custom-select" id="companies" v-model="user.company">
-          <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-            {{ company.company_name }}
-          </option>
-        </select>
-        <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-        <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="contact_number">
-          <strong>Contact Number:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="contact_number"
-            type="text"
-            placeholder="Enter contact number"
-            v-model="user.contactNumber"
-          />
-          <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
-        </div>
-      </div>
-
-      <div class="mr-2" style="text-align: right; padding-bottom: 50px">
-        <router-link
-          to="/users"
-          style="margin-right: 20px"
-          class="btn btn-orange btn-mr btn-link"
-        >Cancel</router-link>
-        <button
-          class="btn btn-orange btn-mr"
-          style="width: 150px"
-          :disabled="addEditBtn"
-          @click="addUpdateUser"
-        >
+  <div id="usereditadd">
+    <Header />
+    <div id="AddEditUser">
+      <div class="diff-shadow page-mr">
+        <h2>
           <span v-if="userId">Update</span>
-          <span v-else>Add</span>
+          <span v-else>Add New</span>
           <span> User</span>
-        </button>
+        </h2>
+        <div class="flex-box">
+          <label class="pad-label w100" for="first_name">
+            <strong>First Name:</strong>
+          </label>
+          <input
+            name="first_name"
+            type="text"
+            placeholder="Enter First Name"
+            v-model="user.firstName"
+          />
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="last_name">
+            <strong>Last Name:</strong>
+          </label>
+          <input
+            name="last_name"
+            type="text"
+            placeholder="Enter Last Name"
+            v-model="user.lastName"
+          />
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="email">
+            <strong>Email:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="email"
+              type="text"
+              placeholder="Enter Email"
+              v-model="user.email"
+            />
+            <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+          </div>
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="thisusername">
+            <strong>Username:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="thisusername"
+              type="text"
+              placeholder="Enter User Name"
+              v-model="user.userName"
+            />
+            <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
+            <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+          </div>
+        </div>
+        <div v-if="!userId" class="flex-box">
+          <label class="pad-label w100" for="thisuserpassword">
+            <strong>Password:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              autocomplete="new-password"
+              name="thisuserpassword"
+              type="password"
+              placeholder="Enter Password"
+              v-model="user.password"
+            />
+            <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
+            <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+          </div>
+        </div>
+        <div v-if="!userId" class="flex-box">
+          <label class="pad-label w100" for="confirmpassword">
+            <strong>Confirm Pwd:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="confirmpassword"
+              type="password"
+              placeholder="Enter confirm password"
+              v-model="user.confirmPassword"
+            />
+            <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span>
+          </div>
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="in_stock">
+            <strong>Active:</strong>
+          </label>
+          <input
+            style="margin-top: 21px"
+            type="checkbox"
+            id="active"
+            name="active"
+            v-model="user.active"
+          >
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="role">
+            <strong>Role:</strong>
+          </label>
+
+          <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+            <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+              {{ role }}
+            </option>
+          </select>
+        </div>
+        <div v-if="!userId" class="flex-box">
+          <label class="pad-label w100" for="companies">
+            <strong>Company:</strong>
+          </label>
+
+          <select name="companies" class="custom-select" id="companies" v-model="user.company">
+            <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+              {{ company.company_name }}
+            </option>
+          </select>
+          <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+          <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="contact_number">
+            <strong>Contact Number:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="contact_number"
+              type="text"
+              placeholder="Enter contact number"
+              v-model="user.contactNumber"
+            />
+            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+          </div>
+        </div>
+
+        <div class="mr-2" style="text-align: right; padding-bottom: 50px">
+          <router-link
+            to="/users"
+            style="margin-right: 20px"
+            class="btn btn-orange btn-mr btn-link"
+          >Cancel</router-link>
+          <button
+            class="btn btn-orange btn-mr"
+            style="width: 150px"
+            :disabled="addEditBtn"
+            @click="addUpdateUser"
+          >
+            <span v-if="userId">Update</span>
+            <span v-else>Add</span>
+            <span> User</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -163,6 +166,7 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
+import Header from '@/components/common-components/Header.vue';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
@@ -172,6 +176,7 @@ export default defineComponent({
   props: ['userId'],
   components: {
     ErrorField,
+    Header
   },
   data () {
     return {

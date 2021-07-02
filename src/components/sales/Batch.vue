@@ -1,75 +1,77 @@
 <template>
-  <div class="diff-shadow">
-    <h2>Batches</h2>
-    <div class="search-grid-list-pages">
-        <router-link to="/batch/create" class="btn btn-orange add-btn-width">Add New Batch</router-link>
-        <div class="float-right">
-          <form class="flex-box">
-            <input
-              label="Username"
-              name="username"
-              type="text"
-              placeholder="Enter product name to search"
-              class="search-input"
-              v-model="search"
-              @input="searchProducts"
-            />
-            <button class="btn btn-orange search-btn" @click="searchProducts">Search batch</button>
-          </form>
-        </div>
-    </div>
-    <div class="mr-2">
-      <table>
-        <colgroup>
-          <col span="1" style="width: 40%;">
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 20%;">
-        </colgroup>
+  <div id="batch">
+    <Header />
+    <div class="diff-shadow page-mr">
+      <h2>Batches</h2>
+      <div class="search-grid-list-pages">
+          <router-link to="/batch/create" class="btn btn-orange add-btn-width">Add New Batch</router-link>
+          <div class="float-right">
+            <form class="flex-box">
+              <input
+                label="Username"
+                name="username"
+                type="text"
+                placeholder="Enter product name to search"
+                class="search-input"
+                v-model="search"
+                @input="searchProducts"
+              />
+              <button class="btn btn-orange search-btn" @click="searchProducts">Search batch</button>
+            </form>
+          </div>
+      </div>
+      <div class="mr-2">
+        <table>
+          <colgroup>
+            <col span="1" style="width: 40%;">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 20%;">
+          </colgroup>
 
-        <tr>
-          <th>Product Name</th>
-          <th>Quantity</th>
-          <th>Manufactured Date</th>
-          <th>Expiry Date</th>
-          <th>In stock</th>
-          <th></th>
-        </tr>
+          <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Manufactured Date</th>
+            <th>Expiry Date</th>
+            <th>In stock</th>
+            <th></th>
+          </tr>
 
-        <template v-for="product in products" v-bind:key="product.id">
-          <template v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
-            <tr v-for="productVariantBatch in productVariant.batch" v-bind:key="productVariantBatch.id">
-              <td>{{product.name}}: {{productVariant.price}}</td>
-              <td>{{productVariantBatch.quantity}}</td>
-              <td>{{productVariantBatch.manufacturing_date}}</td>
-              <td>{{productVariantBatch.expiry_date}}</td>
-              <td>{{productVariantBatch.in_stock}}</td>
-              <td style="width: 150px">
-                <div class="flex-box">
-                  <button
-                    class="btn btn-orange btn-mr-inner"
-                    @click="openDeleteBatchModal(product.name + ': ' + productVariant.price, productVariantBatch)"
-                  >delete</button>
-                  <router-link
-                    :to="{
-                      name: 'EditBatch',
-                      params: {
-                        productId: product.id,
-                        productVariantId: productVariant.id,
-                        batchId: productVariantBatch.id
-                      }
-                    }"
-                    class="btn btn-orange btn-mr-inner">edit</router-link>
-                </div>
-              </td>
-            </tr>
+          <template v-for="product in products" v-bind:key="product.id">
+            <template v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
+              <tr v-for="productVariantBatch in productVariant.batch" v-bind:key="productVariantBatch.id">
+                <td>{{product.name}}: {{productVariant.price}}</td>
+                <td>{{productVariantBatch.quantity}}</td>
+                <td>{{productVariantBatch.manufacturing_date}}</td>
+                <td>{{productVariantBatch.expiry_date}}</td>
+                <td>{{productVariantBatch.in_stock}}</td>
+                <td style="width: 150px">
+                  <div class="flex-box">
+                    <button
+                      class="btn btn-orange btn-mr-inner"
+                      @click="openDeleteBatchModal(product.name + ': ' + productVariant.price, productVariantBatch)"
+                    >delete</button>
+                    <router-link
+                      :to="{
+                        name: 'EditBatch',
+                        params: {
+                          productId: product.id,
+                          productVariantId: productVariant.id,
+                          batchId: productVariantBatch.id
+                        }
+                      }"
+                      class="btn btn-orange btn-mr-inner">edit</router-link>
+                  </div>
+                </td>
+              </tr>
+            </template>
           </template>
-        </template>
-      </table>
+        </table>
+      </div>
     </div>
-
     <!-- The deletion Modal -->
     <Modal v-if="deleteBatchModal">
       <template v-slot:header>
@@ -107,7 +109,6 @@
         </div>
       </template>
     </Modal>
-
   </div>
 </template>
 
@@ -116,6 +117,7 @@ import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/order/actions';
+import Header from '@/components/common-components/Header.vue';
 import Modal from '@/components/common-components/Modal.vue';
 import { Batch } from '@/store/models/batch';
 
@@ -123,6 +125,7 @@ export default defineComponent({
   name: 'Batch',
   components: {
     Modal,
+    Header
   },
   data() {
     return {

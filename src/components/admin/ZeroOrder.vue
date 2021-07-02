@@ -1,408 +1,410 @@
 <template>
   <div id="zero-order">
-
-    <div class="split-container diff-shadow">
-      <div class="box1">
-        <div class="form-container">
-          <label class="bc pad-label" for="barcode">
-            <strong>Bar Code:</strong>
-          </label>
-          <div class="bc-i">
-            <input
-              type="text"
-              tabindex="1"
-              placeholder="Bar code"
-              name="barcode"
-              :maxlength="BarCodeMaxLength"
-              v-model="product.barCode"
-              @input="searchByBarcode"
-              ref="barcode"
-              v-focus
-            />
-            <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
-          </div>
-
-          <label class="q pad-label mr-l" for="quantity">
-            <strong>Quantity:</strong>
-          </label>
-          <div class="q-i">
-            <input
-              type="number"
-              tabindex="4"
-              placeholder="quantity"
-              name="quantity" 
-              :max="24"
-              :min="0"
-              v-model="product.quantity"
-              @input="changeProductQuantity"
-            />
-            <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
-          </div>
-          
-
-          <div class="ap-e">
-            <button class="btn btn-orange ap" @click="clearProduct">Clear Product</button>
-          </div>
-
-          <label class="pn pad-label" for="productname">
-            <strong>Product Name:</strong>
-          </label>
-          <div class="pn-i">
-            <input
-              type="text"
-              tabindex="2"
-              placeholder="Product Name"
-              name="productname"
-              :maxlength="ProductNameMaxLength"
-              v-model="product.name"
-              @input="searchByName"
-            />
-            <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
-          </div>
-          
-
-          <label class="d pad-label mr-l" for="discount">
-            <strong>Price:</strong>
-          </label>
-          <div class="d-i">
-            <input
-              type="number"
-              tabindex="5"
-              placeholder="discount percentage"
-              name="discount"
-              v-model="product.buyPrice"
-              @input="changeProductPrice"
-            />
-            <!-- <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span> -->
-          </div>
-          
-          
-          <div class="ap">
-            <button class="btn btn-orange ap"
-              tabindex="7"
-              @click="addOrderItem"
-              :disabled="addProductButton"
-            >Add Product</button>
-          </div>
-
-          <template v-if="orderType === 'from'">
-            <label class="bt pad-label" for="barcode">
-              <strong>Manufactured Date:</strong>
+    <Header />
+    <div class="page-mr">
+      <div class="split-container diff-shadow">
+        <div class="box1">
+          <div class="form-container">
+            <label class="bc pad-label" for="barcode">
+              <strong>Bar Code:</strong>
             </label>
-            <div class="bt-i">
+            <div class="bc-i">
               <input
-                tabindex="3"
-                type="date"
-                v-model="product.manufacturedDate"
-              >
-              <span v-if="productManufacturedValidation" class="form-error">{{ productManufacturedValidation }}</span>
+                type="text"
+                tabindex="1"
+                placeholder="Bar code"
+                name="barcode"
+                :maxlength="BarCodeMaxLength"
+                v-model="product.barCode"
+                @input="searchByBarcode"
+                ref="barcode"
+                v-focus
+              />
+              <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
             </div>
 
-            <label class="e pad-label mr-l" for="discount">
-              <strong>Expiry Date:</strong>
+            <label class="q pad-label mr-l" for="quantity">
+              <strong>Quantity:</strong>
             </label>
-            <div class="e-i">
-              <input
-                tabindex="6"
-                type="date"
-                v-model="product.expiryDate"
-              >
-              <span v-if="productExpiryValidation" class="form-error">{{ productExpiryValidation }}</span>
-            </div>
-          </template>
-
-          <template v-if="orderType === 'to'">
-            <label class="bt pad-label" for="barcode">
-              <strong>Batches:</strong>
-            </label>
-            <div class="bt-i">
-              <select
-                tabindex="3"
-                name="productBatch"
-                class="custom-select"
-                v-model="product.batch"
-                ref="batches"
-              >
-                <option v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
-                  #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimNumber(batch.quantity)}}
-                </option>
-              </select>
-              <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
-            </div>
-
-            <label class="e pad-label mr-l" for="discount">
-              <strong>Discount (%):</strong>
-            </label>
-            <div class="e-i">
+            <div class="q-i">
               <input
                 type="number"
-                tabindex="6"
+                tabindex="4"
+                placeholder="quantity"
+                name="quantity" 
+                :max="24"
+                :min="0"
+                v-model="product.quantity"
+                @input="changeProductQuantity"
+              />
+              <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
+            </div>
+            
+
+            <div class="ap-e">
+              <button class="btn btn-orange ap" @click="clearProduct">Clear Product</button>
+            </div>
+
+            <label class="pn pad-label" for="productname">
+              <strong>Product Name:</strong>
+            </label>
+            <div class="pn-i">
+              <input
+                type="text"
+                tabindex="2"
+                placeholder="Product Name"
+                name="productname"
+                :maxlength="ProductNameMaxLength"
+                v-model="product.name"
+                @input="searchByName"
+              />
+              <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
+            </div>
+            
+
+            <label class="d pad-label mr-l" for="discount">
+              <strong>Price:</strong>
+            </label>
+            <div class="d-i">
+              <input
+                type="number"
+                tabindex="5"
                 placeholder="discount percentage"
                 name="discount"
-                v-model="product.discount"
+                v-model="product.buyPrice"
+                @input="changeProductPrice"
               />
-              <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
+              <!-- <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span> -->
             </div>
-          </template>
+            
+            
+            <div class="ap">
+              <button class="btn btn-orange ap"
+                tabindex="7"
+                @click="addOrderItem"
+                :disabled="addProductButton"
+              >Add Product</button>
+            </div>
 
-          <div class="e-ap"><span class="form-error">{{ duplicateMessage }}</span></div>
-        </div>
-      </div>
-      <div class="box-22">
-        <table class="pr-s-r-table">
-          <tr>
-            <td><strong>Date:</strong></td>
-            <td>{{ date }}</td>
-          </tr>
-          <tr>
-            <td><strong>Invoice no:</strong></td>
-            <td>{{ invoiceID }}</td>
-          </tr>
-        </table>
-        <div id="orderTypes" class="mr-2">
-          <label class="custom-radio" style="margin-right: 10px">From Vendor or Department
-            <input type="radio" name="order_type" value="from"
-            :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
-            <span class="checkmark"></span>
-          </label>
-          <label class="custom-radio" style="margin-right: 10px">To Department
-            <input type="radio" name="order_type" value="to"
-            :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
-            <span class="checkmark"></span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="diff-shadow">
-      <div class="table-container" style="margin-top: 0;">
-        <p><strong>Product Results</strong></p>
-        <p style="margin-left: 15px"><strong>Order Items</strong></p>
-      </div>
-
-      <!-- Order Items table -->
-      <div class="table-container">
-        <div class="box2 box1-tab">
-          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
-            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
-              <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.bar_code }}</td>
-                  </tr>
-                  <tr>
-                    <td>{{ itemVariant.price }}</td>
-                    <td>{{ itemVariant.size }}</td>
-                  </tr>
-                </table>
+            <template v-if="orderType === 'from'">
+              <label class="bt pad-label" for="barcode">
+                <strong>Manufactured Date:</strong>
+              </label>
+              <div class="bt-i">
+                <input
+                  tabindex="3"
+                  type="date"
+                  v-model="product.manufacturedDate"
+                >
+                <span v-if="productManufacturedValidation" class="form-error">{{ productManufacturedValidation }}</span>
               </div>
-            </li>
-          </ul>
-        </div>
-        <div class="box1-tab" style="margin-left: 15px">
-          <table style="width: 100%">
-            <colgroup>
-              <col span="1" style="width: 3%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 25%;">
-              <col span="1" style="width: 8%;">
-              <col span="1" style="width: 8%;">
-              <col span="1" style="width: 6%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 8%;">
-              <col span="1" style="width: 8%;">
-              <col span="1" style="width: 4%;">
-            </colgroup>
 
+              <label class="e pad-label mr-l" for="discount">
+                <strong>Expiry Date:</strong>
+              </label>
+              <div class="e-i">
+                <input
+                  tabindex="6"
+                  type="date"
+                  v-model="product.expiryDate"
+                >
+                <span v-if="productExpiryValidation" class="form-error">{{ productExpiryValidation }}</span>
+              </div>
+            </template>
+
+            <template v-if="orderType === 'to'">
+              <label class="bt pad-label" for="barcode">
+                <strong>Batches:</strong>
+              </label>
+              <div class="bt-i">
+                <select
+                  tabindex="3"
+                  name="productBatch"
+                  class="custom-select"
+                  v-model="product.batch"
+                  ref="batches"
+                >
+                  <option v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
+                    #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimNumber(batch.quantity)}}
+                  </option>
+                </select>
+                <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
+              </div>
+
+              <label class="e pad-label mr-l" for="discount">
+                <strong>Discount (%):</strong>
+              </label>
+              <div class="e-i">
+                <input
+                  type="number"
+                  tabindex="6"
+                  placeholder="discount percentage"
+                  name="discount"
+                  v-model="product.discount"
+                />
+                <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
+              </div>
+            </template>
+
+            <div class="e-ap"><span class="form-error">{{ duplicateMessage }}</span></div>
+          </div>
+        </div>
+        <div class="box-22">
+          <table class="pr-s-r-table">
             <tr>
-              <th>Sr No.</th>
-              <th>Bar Code</th>
-              <th>Name</th>
-              <th>Quantity</th>
-              <th>Unit Price</th>
-              <th>Disc</th>
-              <th>Manu Date</th>
-              <th>Expiry Date</th>
-              <th>Batch Qty</th>
-              <th>Total Price</th>
-              <th></th>
+              <td><strong>Date:</strong></td>
+              <td>{{ date }}</td>
             </tr>
-            <tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
-              <td>{{ index+1 }}</td>
-              <td>{{ orderItem.product.bar_code }}</td>
-              <td>{{ orderItem.product.name }}</td>
-              <td>
-                <input
-                  class="order_item_input"
-                  type="number"
-                  placeholder="quantity"
-                  v-model="orderItem.quantity"
-                  @input="changeQuantity(index)"
-                />
-              </td>
-              <td>{{ trimNumber(orderItem.price) }}</td>
-              <td>
-                <input
-                  class="order_item_input"
-                  type="number"
-                  placeholder="discount"
-                  v-model="orderItem.discount"
-                  @input="changeDiscount(index)"
-                />
-              </td>
-              <td>{{ orderItem.batch.manufacturing_date }}</td>
-              <td>{{ orderItem.batch.expiry_date }}</td>
-              <td>{{ trimNumber(orderItem.batch.quantity) }}</td>
-              <td>{{ orderItem.totalPrice }}</td>
-              <td style="cursor: pointer;" @click="removeItem(index)">
-                <hr style="border: 1px solid red">
-              </td>
+            <tr>
+              <td><strong>Invoice no:</strong></td>
+              <td>{{ invoiceID }}</td>
             </tr>
           </table>
+          <div id="orderTypes" class="mr-2">
+            <label class="custom-radio" style="margin-right: 10px">From Vendor or Department
+              <input type="radio" name="order_type" value="from"
+              :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
+              <span class="checkmark"></span>
+            </label>
+            <label class="custom-radio" style="margin-right: 10px">To Department
+              <input type="radio" name="order_type" value="to"
+              :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
+              <span class="checkmark"></span>
+            </label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="diff-shadow">
-      <div id="container-zero-order">
-        <div id="box1" class="form-container">
-          <label class="pad-label w100 bc" for="sellerID">
-            <strong>Seller:</strong>
-          </label>
+      <div class="diff-shadow">
+        <div class="table-container" style="margin-top: 0;">
+          <p><strong>Product Results</strong></p>
+          <p style="margin-left: 15px"><strong>Order Items</strong></p>
+        </div>
 
-          <div class="bc-i">
-            <input
-              v-if="orderType === 'to'"
-              type="text"
-              name="sellerID"
-              :value="userdata.username"
-              readonly
-            >
-            <select
-              v-else
-              name="sellerID"
-              class="custom-select"
-              id="sellerID"
-              v-model="seller"
-              @change="sellerVendorCheck"
-            >
-              <option disabled value="0">select a seller</option>
-              <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">
-                <span v-if="user.first_name && user.last_name">{{user.first_name}} {{user.last_name}}</span>
-                <span v-else>{{user.username}}</span>
-                <span v-if="user.company && user.company.company_name">- {{user.company.company_name}}</span>
-              </option>
-              <option disabled>----VENDORS----</option>
-              <option v-for="vendor in vendors" v-bind:key="vendor.id" v-bind:value="vendor.id">
-                <span v-if="vendor.first_name && vendor.last_name">{{vendor.first_name}} {{vendor.last_name}}</span>
-                <span v-else>{{vendor.username}}</span>
-                <span v-if="vendor.company && vendor.company.company_name">- {{vendor.company.company_name}}</span>
-              </option>
-            </select>
+        <!-- Order Items table -->
+        <div class="table-container">
+          <div class="box2 box1-tab">
+            <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
+              <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
+                <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
+                  <table class="pr-s-r-table">
+                    <tr>
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.bar_code }}</td>
+                    </tr>
+                    <tr>
+                      <td>{{ itemVariant.price }}</td>
+                      <td>{{ itemVariant.size }}</td>
+                    </tr>
+                  </table>
+                </div>
+              </li>
+            </ul>
           </div>
+          <div class="box1-tab" style="margin-left: 15px">
+            <table style="width: 100%">
+              <colgroup>
+                <col span="1" style="width: 3%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 25%;">
+                <col span="1" style="width: 8%;">
+                <col span="1" style="width: 8%;">
+                <col span="1" style="width: 6%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 8%;">
+                <col span="1" style="width: 8%;">
+                <col span="1" style="width: 4%;">
+              </colgroup>
 
-          <label class="pad-label w100 mr-l q" for="BuyerID">
-            <strong>Buyer:</strong>
-          </label>
-
-          <div class="q-i">
-            <input
-              v-if="orderType === 'from'"
-              type="text"
-              name="BuyerID"
-              :value="userdata.username"
-              readonly
-            >
-            <select
-              v-else
-              name="BuyerID"
-              class="custom-select"
-              id="BuyerID"
-              v-model="buyer"
-            >
-              <option disabled value="0">select a buyer</option>
-              <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">
-                <span v-if="user.first_name && user.last_name">{{user.first_name}} {{user.last_name}}</span>
-                <span v-else>{{user.username}}</span>
-                <span v-if="user.company && user.company.company_name">- {{user.company.company_name}}</span>
-              </option>
-            </select>
+              <tr>
+                <th>Sr No.</th>
+                <th>Bar Code</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Disc</th>
+                <th>Manu Date</th>
+                <th>Expiry Date</th>
+                <th>Batch Qty</th>
+                <th>Total Price</th>
+                <th></th>
+              </tr>
+              <tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
+                <td>{{ index+1 }}</td>
+                <td>{{ orderItem.product.bar_code }}</td>
+                <td>{{ orderItem.product.name }}</td>
+                <td>
+                  <input
+                    class="order_item_input"
+                    type="number"
+                    placeholder="quantity"
+                    v-model="orderItem.quantity"
+                    @input="changeQuantity(index)"
+                  />
+                </td>
+                <td>{{ trimNumber(orderItem.price) }}</td>
+                <td>
+                  <input
+                    class="order_item_input"
+                    type="number"
+                    placeholder="discount"
+                    v-model="orderItem.discount"
+                    @input="changeDiscount(index)"
+                  />
+                </td>
+                <td>{{ orderItem.batch.manufacturing_date }}</td>
+                <td>{{ orderItem.batch.expiry_date }}</td>
+                <td>{{ trimNumber(orderItem.batch.quantity) }}</td>
+                <td>{{ orderItem.totalPrice }}</td>
+                <td style="cursor: pointer;" @click="removeItem(index)">
+                  <hr style="border: 1px solid red">
+                </td>
+              </tr>
+            </table>
           </div>
+        </div>
+      </div>
 
-          <label class="pad-label w100 pn" for="totalAmount">
-            <strong>Total Amount:</strong>
-          </label>
-
-          <div class="pn-i">
-            <input
-              name="totalAmount"
-              type="text"
-              placeholder="Companies balance"
-              v-bind:value="totalAmount"
-              readonly
-            >
-          </div>
-
-          <label class="pad-label d mr-l" for="total_discount">
-            <strong>Total Discount:</strong>
-          </label>
-          <div class="d-i">
-            <div class="flex-box">
-              <input
-                style="width: 60%"
-                type="number"
-                placeholder="Discount"
-                name="total_discount"
-                v-model="totalDiscount"
-              />
-              <select
-                style="width: 40%; margin-left: 5px;"
-                name="discountMethod"
-                v-model="discountMethod"
-              >
-                <option value="amount">Amount</option>
-                <option value="percentage">Perc (%)</option>
-              </select>
-            </div>
-            <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
-          </div>
-          
-          <template v-if="vendorUser && vendorUser.user_type === 'VENDOR'">
-            <label class="pad-label w100 bt" for="balance">
-              <strong>Company Balance:</strong>
+      <div class="diff-shadow">
+        <div id="container-zero-order">
+          <div id="box1" class="form-container">
+            <label class="pad-label w100 bc" for="sellerID">
+              <strong>Seller:</strong>
             </label>
 
-            <div class="bt-i">
+            <div class="bc-i">
               <input
-                name="balance"
+                v-if="orderType === 'to'"
+                type="text"
+                name="sellerID"
+                :value="userdata.username"
+                readonly
+              >
+              <select
+                v-else
+                name="sellerID"
+                class="custom-select"
+                id="sellerID"
+                v-model="seller"
+                @change="sellerVendorCheck"
+              >
+                <option disabled value="0">select a seller</option>
+                <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">
+                  <span v-if="user.first_name && user.last_name">{{user.first_name}} {{user.last_name}}</span>
+                  <span v-else>{{user.username}}</span>
+                  <span v-if="user.company && user.company.company_name">- {{user.company.company_name}}</span>
+                </option>
+                <option disabled>----VENDORS----</option>
+                <option v-for="vendor in vendors" v-bind:key="vendor.id" v-bind:value="vendor.id">
+                  <span v-if="vendor.first_name && vendor.last_name">{{vendor.first_name}} {{vendor.last_name}}</span>
+                  <span v-else>{{vendor.username}}</span>
+                  <span v-if="vendor.company && vendor.company.company_name">- {{vendor.company.company_name}}</span>
+                </option>
+              </select>
+            </div>
+
+            <label class="pad-label w100 mr-l q" for="BuyerID">
+              <strong>Buyer:</strong>
+            </label>
+
+            <div class="q-i">
+              <input
+                v-if="orderType === 'from'"
+                type="text"
+                name="BuyerID"
+                :value="userdata.username"
+                readonly
+              >
+              <select
+                v-else
+                name="BuyerID"
+                class="custom-select"
+                id="BuyerID"
+                v-model="buyer"
+              >
+                <option disabled value="0">select a buyer</option>
+                <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">
+                  <span v-if="user.first_name && user.last_name">{{user.first_name}} {{user.last_name}}</span>
+                  <span v-else>{{user.username}}</span>
+                  <span v-if="user.company && user.company.company_name">- {{user.company.company_name}}</span>
+                </option>
+              </select>
+            </div>
+
+            <label class="pad-label w100 pn" for="totalAmount">
+              <strong>Total Amount:</strong>
+            </label>
+
+            <div class="pn-i">
+              <input
+                name="totalAmount"
                 type="text"
                 placeholder="Companies balance"
-                v-bind:value="vendorUser.company.credit"
-                :style="[vendorUser.company.credit > 0 ? {'color': 'green'} : {'color': 'red'}]"
+                v-bind:value="totalAmount"
                 readonly
               >
             </div>
 
-            <label class="pad-label w100 mr-l e" for="products">
-              <strong>Cash Given:</strong>
+            <label class="pad-label d mr-l" for="total_discount">
+              <strong>Total Discount:</strong>
             </label>
-
-            <div class="e-i">
-              <input
-                type="number"
-                placeholder="Cash given to vendor"
-                v-model="cashReceived"
-              >
-              <span v-if="orderCashReceivedValidation" class="form-error">{{ orderCashReceivedValidation }}</span>
+            <div class="d-i">
+              <div class="flex-box">
+                <input
+                  style="width: 60%"
+                  type="number"
+                  placeholder="Discount"
+                  name="total_discount"
+                  v-model="totalDiscount"
+                />
+                <select
+                  style="width: 40%; margin-left: 5px;"
+                  name="discountMethod"
+                  v-model="discountMethod"
+                >
+                  <option value="amount">Amount</option>
+                  <option value="percentage">Perc (%)</option>
+                </select>
+              </div>
+              <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
             </div>
-          </template>
-        </div>
-        <div id="box2">
-          <button class="btn btn-orange" @click="submitOrder" :disabled="submitOrderButton">Submit and Print</button>
-          <button class="btn btn-orange" @click="openAddVendorModal">Add New Vendor</button>
-          <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
+            
+            <template v-if="vendorUser && vendorUser.user_type === 'VENDOR'">
+              <label class="pad-label w100 bt" for="balance">
+                <strong>Company Balance:</strong>
+              </label>
+
+              <div class="bt-i">
+                <input
+                  name="balance"
+                  type="text"
+                  placeholder="Companies balance"
+                  v-bind:value="vendorUser.company.credit"
+                  :style="[vendorUser.company.credit > 0 ? {'color': 'green'} : {'color': 'red'}]"
+                  readonly
+                >
+              </div>
+
+              <label class="pad-label w100 mr-l e" for="products">
+                <strong>Cash Given:</strong>
+              </label>
+
+              <div class="e-i">
+                <input
+                  type="number"
+                  placeholder="Cash given to vendor"
+                  v-model="cashReceived"
+                >
+                <span v-if="orderCashReceivedValidation" class="form-error">{{ orderCashReceivedValidation }}</span>
+              </div>
+            </template>
+          </div>
+          <div id="box2">
+            <button class="btn btn-orange" @click="submitOrder" :disabled="submitOrderButton">Submit and Print</button>
+            <button class="btn btn-orange" @click="openAddVendorModal">Add New Vendor</button>
+            <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
+          </div>
         </div>
       </div>
     </div>
@@ -513,6 +515,7 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
+import Header from '@/components/common-components/Header.vue';
 import Modal from '@/components/common-components/Modal.vue';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
@@ -525,7 +528,8 @@ import { Product, ProductVariant } from '@/store/models/product';
 export default defineComponent({
   name: 'ZeroOrder',
   components: {
-    Modal
+    Modal,
+    Header,
   },
   data() {
     const today = new Date().toDateString();

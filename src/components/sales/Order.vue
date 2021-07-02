@@ -1,448 +1,450 @@
 <template>
   <div id="order-page">
-    <div class="product-container diff-shadow">
-      <div class="box1">
-        <div class="form-container">
-          <label class="bc pad-label" for="barcode">
-            <strong>Bar Code:</strong>
-          </label>
-          <div class="bc-i">
-            <input
-              type="text"
-              tabindex="1"
-              placeholder="Bar code"
-              name="barcode"
-              :maxlength="BarCodeMaxLength"
-              v-model="product.barCode"
-              v-debounce:250="searchByBarcode"
-              ref="barcode"
-              v-focus
-              autocomplete="off"
-            />
-            <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
-          </div>
+    <Header />
+    <div class="page-mr">
+      <div class="product-container diff-shadow">
+        <div class="box1">
+          <div class="form-container">
+            <label class="bc pad-label" for="barcode">
+              <strong>Bar Code:</strong>
+            </label>
+            <div class="bc-i">
+              <input
+                type="text"
+                tabindex="1"
+                placeholder="Bar code"
+                name="barcode"
+                :maxlength="BarCodeMaxLength"
+                v-model="product.barCode"
+                v-debounce:250="searchByBarcode"
+                ref="barcode"
+                v-focus
+                autocomplete="off"
+              />
+              <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
+            </div>
 
-          <label class="q pad-label mr-l" for="quantity">
-            <strong>Quantity:</strong>
-          </label>
-          <div class="q-i">
-            <input
-              type="number"
-              tabindex="4"
-              placeholder="quantity"
-              name="quantity" 
-              :max="24"
-              :min="0"
-              v-model="product.quantity"
-              @input="changeProductQuantity"
-            />
-            <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
-          </div>
-          
+            <label class="q pad-label mr-l" for="quantity">
+              <strong>Quantity:</strong>
+            </label>
+            <div class="q-i">
+              <input
+                type="number"
+                tabindex="4"
+                placeholder="quantity"
+                name="quantity" 
+                :max="24"
+                :min="0"
+                v-model="product.quantity"
+                @input="changeProductQuantity"
+              />
+              <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
+            </div>
+            
 
-          <div class="ap-e">
-            <button class="btn btn-orange ap" @click="clearProduct">Clear Product</button>
-          </div>
+            <div class="ap-e">
+              <button class="btn btn-orange ap" @click="clearProduct">Clear Product</button>
+            </div>
 
-          <label class="pn pad-label" for="productname">
-            <strong>Product Name:</strong>
-          </label>
-          <div class="pn-i">
-            <input
-              type="text"
-              tabindex="2"
-              placeholder="Product Name"
-              name="productname"
-              :maxlength="ProductNameMaxLength"
-              v-model="product.name"
-              @input="searchByName"
-            />
-            <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
-          </div>
-          
+            <label class="pn pad-label" for="productname">
+              <strong>Product Name:</strong>
+            </label>
+            <div class="pn-i">
+              <input
+                type="text"
+                tabindex="2"
+                placeholder="Product Name"
+                name="productname"
+                :maxlength="ProductNameMaxLength"
+                v-model="product.name"
+                @input="searchByName"
+              />
+              <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
+            </div>
+            
 
-          <label class="d pad-label mr-l" for="discount">
-            <strong>Price:</strong>
-          </label>
-          <div class="d-i">
-            <input
-              type="number"
-              tabindex="5"
-              placeholder="discount percentage"
-              name="discount"
-              v-model="product.buyPrice"
-              @input="changeProductPrice"
-            />
-          </div>
-          
-          
-          <div class="ap">
-            <button class="btn btn-orange ap"
-              tabindex="7"
-              @click="addOrderItem"
-              :disabled="addProductButton"
-            >Add Product</button>
-          </div>
+            <label class="d pad-label mr-l" for="discount">
+              <strong>Price:</strong>
+            </label>
+            <div class="d-i">
+              <input
+                type="number"
+                tabindex="5"
+                placeholder="discount percentage"
+                name="discount"
+                v-model="product.buyPrice"
+                @input="changeProductPrice"
+              />
+            </div>
+            
+            
+            <div class="ap">
+              <button class="btn btn-orange ap"
+                tabindex="7"
+                @click="addOrderItem"
+                :disabled="addProductButton"
+              >Add Product</button>
+            </div>
 
-          <label class="bt pad-label" for="barcode">
-            <strong>Batches:</strong>
-          </label>
-          <div class="bt-i">
-            <select
-              tabindex="3"
-              name="productBatch"
-              class="custom-select"
-              v-model="product.batch"
-              ref="batches"
-            >
-              <option class="batches-op" v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
-                #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimQuantity(batch.quantity)}}
-              </option>
-            </select>
-            <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
-          </div>
+            <label class="bt pad-label" for="barcode">
+              <strong>Batches:</strong>
+            </label>
+            <div class="bt-i">
+              <select
+                tabindex="3"
+                name="productBatch"
+                class="custom-select"
+                v-model="product.batch"
+                ref="batches"
+              >
+                <option class="batches-op" v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
+                  #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimQuantity(batch.quantity)}}
+                </option>
+              </select>
+              <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
+            </div>
 
-          <label class="e pad-label mr-l" for="discount">
-            <strong>Discount (%):</strong>
-          </label>
-          <div class="e-i">
-            <input
-              type="number"
-              tabindex="6"
-              placeholder="discount percentage"
-              name="discount"
-              v-model="product.discount"
-            />
-            <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
-          </div>
+            <label class="e pad-label mr-l" for="discount">
+              <strong>Discount (%):</strong>
+            </label>
+            <div class="e-i">
+              <input
+                type="number"
+                tabindex="6"
+                placeholder="discount percentage"
+                name="discount"
+                v-model="product.discount"
+              />
+              <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
+            </div>
 
-          <div class="e-ap"><span class="form-error">{{ duplicateMessage }}</span></div>
+            <div class="e-ap"><span class="form-error">{{ duplicateMessage }}</span></div>
+          </div>
         </div>
-      </div>
-      <div class="box-22">
-        <table class="pr-s-r-table">
-          <tr>
-            <td><strong>Date:</strong></td>
-            <td>{{ date }}</td>
-          </tr>
-          <tr>
-            <td><strong>Invoice no:</strong></td>
-            <td>{{ invoiceID }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="diff-shadow">
-      <div class="table-container" style="margin-top: 0;">
-        <p><strong>Product Results</strong></p>
-        <p style="margin-left: 15px"><strong>Order Items</strong></p>
-      </div>
-
-      <!-- Order Items table -->
-      <div class="table-container">
-        <div class="box2 box1-tab">
-          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
-            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
-              <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.bar_code }}</td>
-                    <td>{{ itemVariant.color }}</td>
-                  </tr>
-                  <tr>
-                    <td>{{ itemVariant.price }}</td>
-                    <td v-if="sumQuantity(itemVariant) > 0">{{ sumQuantity(itemVariant) }}</td>
-                    <td v-else class="out-of-stock">Out of Stock</td>
-                    <td>{{ itemVariant.size }}</td>
-                  </tr>
-                </table>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="box1-tab" style="margin-left: 15px">
-          <table style="width: 100%">
-            <colgroup>
-              <col span="1" style="width: 5%;">
-              <col span="1" style="width: 20%;">
-              <col span="1" style="width: 35%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 6%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 4%;">
-            </colgroup>
-
+        <div class="box-22">
+          <table class="pr-s-r-table">
             <tr>
-              <th>Sr No.</th>
-              <th>Bar Code</th>
-              <th>Name</th>
-              <th>Quantity</th>
-              <th>Unit Price</th>
-              <th>Disc</th>
-              <th>Total Price</th>
-              <th></th>
+              <td><strong>Date:</strong></td>
+              <td>{{ date }}</td>
             </tr>
-            <tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
-              <td>{{ index+1 }}</td>
-              <td>{{ orderItem.product.bar_code }}</td>
-              <td>{{ orderItem.product.name }}</td>
-              <td>
-                <input
-                  class="order_item_input"
-                  type="number"
-                  placeholder="quantity"
-                  v-model="orderItem.quantity"
-                  @input="changeQuantity(index)"
-                />
-              </td>
-              <td>{{ orderItem.price }}</td>
-              <td>
-                <input
-                  class="order_item_input"
-                  type="number"
-                  placeholder="discount"
-                  v-model="orderItem.discount"
-                  @input="changeDiscount(index)"
-                />
-              </td>
-              <td>{{orderItem.totalPrice}}</td>
-              <td style="cursor: pointer;" @click="removeItem(index)">
-                <hr style="border: 1px solid red">
-              </td>
+            <tr>
+              <td><strong>Invoice no:</strong></td>
+              <td>{{ invoiceID }}</td>
             </tr>
           </table>
         </div>
       </div>
-    </div>
-    
 
-    <div class="diff-shadow">
-
-      <div id="payment-selection" class="payment-method-container">
-        <div class="flex-box mr-2">
-          <p class="labl-txt"><strong>Payment method:</strong></p>
-          <label class="custom-radio" style="margin-right: 10px">Cash
-            <input type="radio" name="payment_method" value="cash" v-model="paymentMethod" @change="clearTransaction">
-            <span class="checkmark"></span>
-          </label>
-          <label class="custom-radio" style="margin-right: 10px">Card
-            <input type="radio" name="payment_method" value="card" v-model="paymentMethod" @change="clearTransaction">
-            <span class="checkmark"></span>
-          </label>
-          <label class="custom-radio">Credit
-            <input type="radio" name="payment_method" value="credit" v-model="paymentMethod" @change="clearTransaction">
-            <span class="checkmark"></span>
-          </label>
+      <div class="diff-shadow">
+        <div class="table-container" style="margin-top: 0;">
+          <p><strong>Product Results</strong></p>
+          <p style="margin-left: 15px"><strong>Order Items</strong></p>
         </div>
-        <div v-if="paymentMethod === 'credit'">
-          <input
-              type="text"
-              tabindex="1"
-              placeholder="Search Walk-In Customer"
-              name="barcode"
-              v-model="customersearch"
-              @focus="showCustDropdown=!showCustDropdown"
-              @input="searchCustomer"
-              autocomplete="off"
-            />
-          <div v-show="showCustDropdown" class="search-result-upper">
-            <ul class="search-result">
-              <li
-                class="single-search-item"
-                v-for="customer in customers" v-bind:key="customer.id" @click="selectCustomer(customer)">
-                <span><strong>{{customer.contact_number?customer.contact_number:customer.username}}</strong></span>
-                <span>{{customer.first_name}}</span>
+
+        <!-- Order Items table -->
+        <div class="table-container">
+          <div class="box2 box1-tab">
+            <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
+              <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
+                <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
+                  <table class="pr-s-r-table">
+                    <tr>
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.bar_code }}</td>
+                      <td>{{ itemVariant.color }}</td>
+                    </tr>
+                    <tr>
+                      <td>{{ itemVariant.price }}</td>
+                      <td v-if="sumQuantity(itemVariant) > 0">{{ sumQuantity(itemVariant) }}</td>
+                      <td v-else class="out-of-stock">Out of Stock</td>
+                      <td>{{ itemVariant.size }}</td>
+                    </tr>
+                  </table>
+                </div>
               </li>
             </ul>
+          </div>
+          <div class="box1-tab" style="margin-left: 15px">
+            <table style="width: 100%">
+              <colgroup>
+                <col span="1" style="width: 5%;">
+                <col span="1" style="width: 20%;">
+                <col span="1" style="width: 35%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 6%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 4%;">
+              </colgroup>
+
+              <tr>
+                <th>Sr No.</th>
+                <th>Bar Code</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Disc</th>
+                <th>Total Price</th>
+                <th></th>
+              </tr>
+              <tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
+                <td>{{ index+1 }}</td>
+                <td>{{ orderItem.product.bar_code }}</td>
+                <td>{{ orderItem.product.name }}</td>
+                <td>
+                  <input
+                    class="order_item_input"
+                    type="number"
+                    placeholder="quantity"
+                    v-model="orderItem.quantity"
+                    @input="changeQuantity(index)"
+                  />
+                </td>
+                <td>{{ orderItem.price }}</td>
+                <td>
+                  <input
+                    class="order_item_input"
+                    type="number"
+                    placeholder="discount"
+                    v-model="orderItem.discount"
+                    @input="changeDiscount(index)"
+                  />
+                </td>
+                <td>{{orderItem.totalPrice}}</td>
+                <td style="cursor: pointer;" @click="removeItem(index)">
+                  <hr style="border: 1px solid red">
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
 
-      <!-- Payment Process -->
-      <div class="payment-container">
-        <div id="pay-box1">
-          <div class="form-container">
-            
-            <label class="pad-label bc" for="barcode">
-              <strong>Total Amount:</strong>
+      <div class="diff-shadow">
+
+        <div id="payment-selection" class="payment-method-container">
+          <div class="flex-box mr-2">
+            <p class="labl-txt"><strong>Payment method:</strong></p>
+            <label class="custom-radio" style="margin-right: 10px">Cash
+              <input type="radio" name="payment_method" value="cash" v-model="paymentMethod" @change="clearTransaction">
+              <span class="checkmark"></span>
             </label>
-            <div class="bc-i">
-              <input
+            <label class="custom-radio" style="margin-right: 10px">Card
+              <input type="radio" name="payment_method" value="card" v-model="paymentMethod" @change="clearTransaction">
+              <span class="checkmark"></span>
+            </label>
+            <label class="custom-radio">Credit
+              <input type="radio" name="payment_method" value="credit" v-model="paymentMethod" @change="clearTransaction">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div v-if="paymentMethod === 'credit'">
+            <input
                 type="text"
-                name="total_amount"
-                v-bind:value="totalAmount.toFixed(2)"
-                readonly
+                tabindex="1"
+                placeholder="Search Walk-In Customer"
+                name="barcode"
+                v-model="customersearch"
+                @focus="showCustDropdown=!showCustDropdown"
+                @input="searchCustomer"
+                autocomplete="off"
               />
-            <span v-if="field_errors.total" class="form-error">{{ field_errors.total[0] }}</span>
+            <div v-show="showCustDropdown" class="search-result-upper">
+              <ul class="search-result">
+                <li
+                  class="single-search-item"
+                  v-for="customer in customers" v-bind:key="customer.id" @click="selectCustomer(customer)">
+                  <span><strong>{{customer.contact_number?customer.contact_number:customer.username}}</strong></span>
+                  <span>{{customer.first_name}}</span>
+                </li>
+              </ul>
             </div>
-            
+          </div>
+        </div>
 
-            <label class="pad-label q mr-l" for="total_discount">
-              <strong>Total Discount:</strong>
-            </label>
-            <div class="q-i">
-              <div class="flex-box">
-                <input
-                  style="width: 60%"
-                  type="number"
-                  placeholder="Discount"
-                  name="total_discount"
-                  v-model="totalDiscount"
-                />
-                <select
-                  style="width: 40%; margin-left: 5px;"
-                  name="discountMethod"
-                  v-model="discountMethod"
-                >
-                  <option value="amount">Amount</option>
-                  <option value="percentage">Perc (%)</option>
-                </select>
-              </div>
-              <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
-              <div v-if="field_errors.total_discount" class="form-error">{{ field_errors.total_discount[0] }}</div>
-            </div>
-
-            <label class="pad-label pn" for="barcode">
-              <strong>Cash Received:</strong>
-            </label>
-            <div class="pn-i">
-              <input
-                type="number"
-                placeholder="Enter Cash Received"
-                name="cash_received"
-                v-model="cashReceived"
-              />
-              <div v-if="field_errors.amount_received" class="form-error">{{ field_errors.amount_received[0] }}</div>
-              <span v-else class="form-error">{{ orderCashReceivedValidation }}</span>
-            </div>
-            
-
-            <label class="pad-label mr-l d" for="return">
-              <strong>Cash Returned:</strong>
-            </label>
-            <div class="d-i">
-              <input
-                type="text"
-                name="return"
-                v-bind:value="cashReturned"
-                readonly
-              />
-            </div>
-
-            <template v-if="paymentMethod === 'card'">
-              <label class="pad-label bt" for="return">
-                <strong>Payment Service:</strong>
+        <!-- Payment Process -->
+        <div class="payment-container">
+          <div id="pay-box1">
+            <div class="form-container">
+              
+              <label class="pad-label bc" for="barcode">
+                <strong>Total Amount:</strong>
               </label>
-              <div class="bt-i">
-                <select name="return" v-model="paymentService">
-                  <option value="BANK">Bank</option>
-                  <option value="JAZZ_CASH">Jazzcash</option>
-                  <option value="EASY_PAISA">Easypaisa</option>
-                </select>
-              </div>
-              <label class="pad-label mr-l e" for="return">
-                <strong>Reference Number:</strong>
-              </label>
-              <div class="e-i">
+              <div class="bc-i">
                 <input
                   type="text"
-                  name="reference"
-                  placeholder="Transaction ID"
-                  v-model="transactionId"
-                />
-              </div>
-            </template>
-
-            <template v-if="paymentMethod === 'credit'">
-              <label class="pad-label bt" for="return">
-                <strong>Customer Name:</strong>
-              </label>
-              <div class="bt-i">
-                <input
-                  type="text"
-                  name="customername"
-                  placeholder="Customer Name"
+                  name="total_amount"
+                  v-bind:value="totalAmount.toFixed(2)"
                   readonly
-                  v-bind:value="getFullName"
                 />
-              <span v-if="validateRegularCustomer" class="form-error">{{validateRegularCustomer}}</span>
+              <span v-if="field_errors.total" class="form-error">{{ field_errors.total[0] }}</span>
               </div>
               
-              <label class="pad-label mr-l e" for="return">
-                <strong>Balance:</strong>
-              </label>
-              <div class="e-i">
-                <input
-                  type="text"
-                  name="balance"
-                  placeholder="Balance"
-                  readonly
-                  v-bind:value="regularCustomer.credit"
-                />
-              </div>
-            </template>
-          </div>
-          <div v-if="paymentMethod === 'credit'" class="form-container">
-            <label class="pad-label bc" for="total_discount">
-              <strong>Payment Type:</strong>
-            </label>
-            <div class="bc-i">
-              <select
-                name="creditPaymentMethod"
-                v-model="creditPaymentMethod">
-                <option value="cash">Cash</option>
-                <option value="card">Card</option>
-              </select>
-            </div>
 
-            <label class="pad-label w100 mr-l q" for="deduct">
-              <strong>Deduct Balance:</strong>
-            </label>
-            <div>
-            <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct" v-bind:checked="deduct_balance" @change="deduct_balance=!deduct_balance">
-            <div v-if="validateDeductBalance" class="form-error">{{validateDeductBalance}}</div>
-            </div>
-            <template v-if="creditPaymentMethod === 'card'">
-              <label class="pad-label pn" for="return">
-                <strong>Payment Service:</strong>
+              <label class="pad-label q mr-l" for="total_discount">
+                <strong>Total Discount:</strong>
+              </label>
+              <div class="q-i">
+                <div class="flex-box">
+                  <input
+                    style="width: 60%"
+                    type="number"
+                    placeholder="Discount"
+                    name="total_discount"
+                    v-model="totalDiscount"
+                  />
+                  <select
+                    style="width: 40%; margin-left: 5px;"
+                    name="discountMethod"
+                    v-model="discountMethod"
+                  >
+                    <option value="amount">Amount</option>
+                    <option value="percentage">Perc (%)</option>
+                  </select>
+                </div>
+                <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
+                <div v-if="field_errors.total_discount" class="form-error">{{ field_errors.total_discount[0] }}</div>
+              </div>
+
+              <label class="pad-label pn" for="barcode">
+                <strong>Cash Received:</strong>
               </label>
               <div class="pn-i">
-                <select type="text" name="return" v-model="paymentService">
-                  <option value="BANK">Bank</option>
-                  <option value="JAZZ_CASH">Jazzcash</option>
-                  <option value="EASY_PAISA">Easypaisa</option>
-                </select>
+                <input
+                  type="number"
+                  placeholder="Enter Cash Received"
+                  name="cash_received"
+                  v-model="cashReceived"
+                />
+                <div v-if="field_errors.amount_received" class="form-error">{{ field_errors.amount_received[0] }}</div>
+                <span v-else class="form-error">{{ orderCashReceivedValidation }}</span>
               </div>
+              
 
               <label class="pad-label mr-l d" for="return">
-                <strong>Reference Number:</strong>
+                <strong>Cash Returned:</strong>
               </label>
               <div class="d-i">
                 <input
                   type="text"
-                  name="reference"
-                  placeholder="Transaction ID"
-                  v-model="transactionId"
+                  name="return"
+                  v-bind:value="cashReturned"
+                  readonly
                 />
               </div>
-            </template>
+
+              <template v-if="paymentMethod === 'card'">
+                <label class="pad-label bt" for="return">
+                  <strong>Payment Service:</strong>
+                </label>
+                <div class="bt-i">
+                  <select name="return" v-model="paymentService">
+                    <option value="BANK">Bank</option>
+                    <option value="JAZZ_CASH">Jazzcash</option>
+                    <option value="EASY_PAISA">Easypaisa</option>
+                  </select>
+                </div>
+                <label class="pad-label mr-l e" for="return">
+                  <strong>Reference Number:</strong>
+                </label>
+                <div class="e-i">
+                  <input
+                    type="text"
+                    name="reference"
+                    placeholder="Transaction ID"
+                    v-model="transactionId"
+                  />
+                </div>
+              </template>
+
+              <template v-if="paymentMethod === 'credit'">
+                <label class="pad-label bt" for="return">
+                  <strong>Customer Name:</strong>
+                </label>
+                <div class="bt-i">
+                  <input
+                    type="text"
+                    name="customername"
+                    placeholder="Customer Name"
+                    readonly
+                    v-bind:value="getFullName"
+                  />
+                <span v-if="validateRegularCustomer" class="form-error">{{validateRegularCustomer}}</span>
+                </div>
+                
+                <label class="pad-label mr-l e" for="return">
+                  <strong>Balance:</strong>
+                </label>
+                <div class="e-i">
+                  <input
+                    type="text"
+                    name="balance"
+                    placeholder="Balance"
+                    readonly
+                    v-bind:value="regularCustomer.credit"
+                  />
+                </div>
+              </template>
+            </div>
+            <div v-if="paymentMethod === 'credit'" class="form-container">
+              <label class="pad-label bc" for="total_discount">
+                <strong>Payment Type:</strong>
+              </label>
+              <div class="bc-i">
+                <select
+                  name="creditPaymentMethod"
+                  v-model="creditPaymentMethod">
+                  <option value="cash">Cash</option>
+                  <option value="card">Card</option>
+                </select>
+              </div>
+
+              <label class="pad-label w100 mr-l q" for="deduct">
+                <strong>Deduct Balance:</strong>
+              </label>
+              <div>
+              <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct" v-bind:checked="deduct_balance" @change="deduct_balance=!deduct_balance">
+              <div v-if="validateDeductBalance" class="form-error">{{validateDeductBalance}}</div>
+              </div>
+              <template v-if="creditPaymentMethod === 'card'">
+                <label class="pad-label pn" for="return">
+                  <strong>Payment Service:</strong>
+                </label>
+                <div class="pn-i">
+                  <select type="text" name="return" v-model="paymentService">
+                    <option value="BANK">Bank</option>
+                    <option value="JAZZ_CASH">Jazzcash</option>
+                    <option value="EASY_PAISA">Easypaisa</option>
+                  </select>
+                </div>
+
+                <label class="pad-label mr-l d" for="return">
+                  <strong>Reference Number:</strong>
+                </label>
+                <div class="d-i">
+                  <input
+                    type="text"
+                    name="reference"
+                    placeholder="Transaction ID"
+                    v-model="transactionId"
+                  />
+                </div>
+              </template>
+            </div>
+          </div>
+          <div id="pay-box2">
+              <button v-if="paymentMethod === 'credit'" class="btn btn-orange" @click="addCustModal=true">Add New Customer</button>
+              <button
+                class="btn btn-orange"
+                @click="submitOrder"
+                :disabled="submitOrderButton"
+              >Submit and Print</button>
+              <button class="btn btn-orange">Submit</button>
+              <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
           </div>
         </div>
-        <div id="pay-box2">
-            <button v-if="paymentMethod === 'credit'" class="btn btn-orange" @click="addCustModal=true">Add New Customer</button>
-            <button
-              class="btn btn-orange"
-              @click="submitOrder"
-              :disabled="submitOrderButton"
-            >Submit and Print</button>
-            <button class="btn btn-orange">Submit</button>
-            <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
-        </div>
-      </div>
 
+      </div>
     </div>
 
     <Modal v-if="cancelModal">
@@ -499,12 +501,12 @@
         </div>
       </template>
     </Modal>
-
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import Header from '@/components/common-components/Header.vue';
 import Modal from '@/components/common-components/Modal.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
@@ -523,6 +525,7 @@ export default defineComponent({
     Modal,
     ErrorField,
     OrderBill,
+    Header,
   },
 
   data() {

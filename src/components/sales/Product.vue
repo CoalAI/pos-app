@@ -1,78 +1,81 @@
 <template>
-  <div class="diff-shadow pad-2">
-    <h2>Products</h2>
-    <div class="search-grid-list-pages">
-        <router-link v-show="allowedAddProduct" to="/product/create" class="btn btn-orange add-btn-width">Add New Product</router-link>
-        <div class="float-right">
-          <form class="flex-box">
-            <input
-              label="Username"
-              name="username"
-              type="text"
-              placeholder="Enter product name or barcode to search"
-              class="search-input"
-              v-model="search"
-              @input="searchProducts"
-            />
-            <button class="btn btn-orange search-btn" @click="searchProducts">Search product</button>
-          </form>
-        </div>
-    </div>
-    <div class="mr-2">
-      <table>
-        <colgroup>
-          <col span="1" style="width: 2%;">
-          <col span="1" style="width: 20%;">
-          <col span="1" style="width: 20%;">
-          <col span="1" style="width: 14%;">
-          <col span="1" style="width: 24%;">
-          <col span="1" style="width: 20%;">
-        </colgroup>
+  <div id="product">
+    <Header />
+    <div class="page-mr diff-shadow pad-2">
+      <h2>Products</h2>
+      <div class="search-grid-list-pages">
+          <router-link v-show="allowedAddProduct" to="/product/create" class="btn btn-orange add-btn-width">Add New Product</router-link>
+          <div class="float-right">
+            <form class="flex-box">
+              <input
+                label="Username"
+                name="username"
+                type="text"
+                placeholder="Enter product name or barcode to search"
+                class="search-input"
+                v-model="search"
+                @input="searchProducts"
+              />
+              <button class="btn btn-orange search-btn" @click="searchProducts">Search product</button>
+            </form>
+          </div>
+      </div>
+      <div class="mr-2">
+        <table>
+          <colgroup>
+            <col span="1" style="width: 2%;">
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 14%;">
+            <col span="1" style="width: 24%;">
+            <col span="1" style="width: 20%;">
+          </colgroup>
 
-        <tr>
-          <th>Sr No.</th>
-          <th>Product Name</th>
-          <th>Bar code</th>
-          <th>Token</th>
-          <th>Product Variants</th>
-          <th></th>
-        </tr>
-        <template v-for="(product, index) in productsList" v-bind:key="product.id">
           <tr>
-            <td>{{ index + 1 }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.bar_code }}</td>
-            <td v-if="product.token">Yes</td><td v-else>No</td>
-            <td>
-              <table class="nested-table">
-                <colgroup>
-                  <col span="1" style="width: 40%;">
-                  <col span="1" style="width: 30%;">
-                  <col span="1" style="width: 30%;">
-                </colgroup>
-
-                <tr>
-                  <th>Price</th>
-                  <th>Size</th>
-                  <th>Color</th>
-                </tr>
-
-                <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
-                  <td>{{ productVariant.price }}</td>
-                  <td v-if="productVariant.size">{{productVariant.size}}</td><td v-else class="text-center">-</td>
-                  <td v-if="productVariant.color">{{productVariant.color}}</td><td v-else class="text-center">-</td>
-                </tr>
-              </table>
-            </td>
-            <td style="width: 150px">
-              <div class="flex-box">
-                <a class="btn btn-orange btn-mr-inner" @click="OpenDeleteProductModal(product)">delete</a>
-                <router-link :to="{name: 'EditProduct', params: {productId: product.id}}" class="btn btn-orange btn-mr-inner">edit</router-link>
-              </div>
-            </td>
+            <th>Sr No.</th>
+            <th>Product Name</th>
+            <th>Bar code</th>
+            <th>Token</th>
+            <th>Product Variants</th>
+            <th></th>
           </tr>
-        </template>
-      </table>
+          <template v-for="(product, index) in productsList" v-bind:key="product.id">
+            <tr>
+              <td>{{ index + 1 }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.bar_code }}</td>
+              <td v-if="product.token">Yes</td><td v-else>No</td>
+              <td>
+                <table class="nested-table">
+                  <colgroup>
+                    <col span="1" style="width: 40%;">
+                    <col span="1" style="width: 30%;">
+                    <col span="1" style="width: 30%;">
+                  </colgroup>
+
+                  <tr>
+                    <th>Price</th>
+                    <th>Size</th>
+                    <th>Color</th>
+                  </tr>
+
+                  <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
+                    <td>{{ productVariant.price }}</td>
+                    <td v-if="productVariant.size">{{productVariant.size}}</td><td v-else class="text-center">-</td>
+                    <td v-if="productVariant.color">{{productVariant.color}}</td><td v-else class="text-center">-</td>
+                  </tr>
+                </table>
+              </td>
+              <td style="width: 150px">
+                <div class="flex-box">
+                  <a class="btn btn-orange btn-mr-inner" @click="OpenDeleteProductModal(product)">delete</a>
+                  <router-link :to="{name: 'EditProduct', params: {productId: product.id}}" class="btn btn-orange btn-mr-inner">edit</router-link>
+                </div>
+              </td>
+            </tr>
+          </template>
+        </table>
+      </div>
     </div>
 
     <!-- The deletion Modal -->
@@ -110,6 +113,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import Header from '@/components/common-components/Header.vue';
 import Modal from '@/components/common-components/Modal.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
@@ -119,6 +123,7 @@ export default defineComponent({
   name: 'Product',
   components: {
     Modal,
+    Header
   },
   data() {
     return {

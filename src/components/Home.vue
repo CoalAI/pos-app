@@ -1,43 +1,24 @@
 <template>
-  <div class="hello">
-    <div v-if="getToken">
-      <Header />
-      <router-view class="page-mr" />
-      <p class="coaldev-name">Created by CoalDev</p>
-    </div>
-    <div v-else>
-      <Login/>
-    </div>
+  <div id="Home">
+    <router-view />
+    <p class="coaldev-name">Created by CoalDev</p>
     <ErrorHandler v-if="getError"></ErrorHandler>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions, mapGetters } from 'vuex';
-import { ActionTypes } from '@/store/modules/auth/actions';
+import { mapGetters } from 'vuex';
 
-import Header from './common-components/Header.vue';
-import Login from './auth/Login.vue';
 import ErrorHandler from './common-components/ErrorHandler.vue'
 
 export default defineComponent({
   name: 'App',
-  components: { 
-    Header,
-    Login,
+  components: {
     ErrorHandler,
   },
   computed: {
-    ...mapGetters(['getToken', 'getError'])
-  },
-  methods: {
-    ...mapActions({
-      fetchToken: ActionTypes.FETCH_TOEKN
-    })
-  },
-  created() {
-    this.fetchToken();
+    ...mapGetters(['getError'])
   },
 });
 </script>
@@ -63,9 +44,5 @@ li {
   margin-block-end: 0px;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
-}
-
-.page-mr {
-  margin: $page-margin;
 }
 </style>

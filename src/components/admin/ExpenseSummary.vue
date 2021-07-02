@@ -1,108 +1,113 @@
 <template>
-  <div class="diff-shadow">
-    <h2>Expense Summary</h2>
-    <div class="filter-grid mr-2">
-      <div class="sw">
-        <label class="custom-radio" style="margin-right: 10px">Daily
-          <input type="radio" name="order_type" value="from" :checked="!custom_range"  @change="custom_range=false">
-          <span class="checkmark"></span>
-        </label>
-        <label class="custom-radio" style="margin-right: 10px">Custom
-          <input type="radio" name="order_type" value="to" :checked="custom_range" @change="custom_range=true">
-          <span class="checkmark"></span>
-        </label>
-      </div>
-      <label class="pad-label ls" for="start_date">
-        <strong>Start:</strong>
-      </label>
-      <div class="s-i">
-        <input
-          name="start_date"
-          type="date"
-          v-model="from"
-        />
-      </div>
-      <label class="pad-label mr-l le" for="end_date">
-        <strong>End:</strong>
-      </label>
-      <div class="e-i">
-        <input
-          name="end_date"
-          type="date"
-          v-model="to"
-        />
-        <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
-      </div>
-      <div class="b">
-        <button class="btn btn-orange" @click="fetchTrans">Search Summary</button>
-      </div>
-    </div>
-    <div class="mr-2 box1-tab">
-      <table>
-        <colgroup>
-          <col span="1" style="width: auto;">
-          <col span="1" style="width: auto;">
-          <col span="1" style="width: auto;">
-          <col span="1" style="width: auto;">
-          <col span="1" style="width: auto;">
-        </colgroup>
-        <tr>
-          <th>Sr No.</th>
-          <th>Transaction ID</th>
-           <th>Order ID</th>
-          <th>Received From</th>
-          <th>To</th>           
-          <th>Payment Service</th>
-          <th>Description</th>
-          <th>Amount</th>
-        </tr>
-        <template v-for="(transaction,index) in transactions" :key="transaction.id">
-          <tr>
-            <td>{{index+1}}</td>
-            <td>{{transaction.transaction_id}}</td>
-            <td>{{transaction.order}}</td>
-            <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
-            <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
-            <td>{{transaction.payment_service}}</td>
-            <td>{{transaction.description}}</td>
-            <td>{{transaction.amount}}</td>
-          </tr>
-        </template>
-      </table>
-    </div>
-    <div id="Balance-information" class="mr-2">
-      <label class="pad-label" for="balance">
-        <strong>Current Balance:</strong>
-      </label>
-      <div>
-        <input
-          name="balance"
-          type="text"
-          :value="getBalance"
-          readonly
-        />
-      </div>
-      <label class="pad-label" for="Starting-Balance">
-        <strong>Starting Balance:</strong>
-      </label>
-      <div>
-        <input
-          name="Starting-Balance"
-          type="text"
-          value="0.0000"
-          readonly
-        />
-      </div>
-      <label class="pad-label" for="expense">
-        <strong>Total Expense:</strong>
-      </label>
-      <div>
-        <input
-          name="expense"
-          type="text"
-          :value="totalExpense"
-          readonly
-        />
+  <div id="expenseSummary">
+    <Header/>
+    <div class="page-mr">
+      <div class="diff-shadow">
+        <h2>Expense Summary</h2>
+        <div class="filter-grid mr-2">
+          <div class="sw">
+            <label class="custom-radio" style="margin-right: 10px">Daily
+              <input type="radio" name="order_type" value="from" :checked="!custom_range"  @change="custom_range=false">
+              <span class="checkmark"></span>
+            </label>
+            <label class="custom-radio" style="margin-right: 10px">Custom
+              <input type="radio" name="order_type" value="to" :checked="custom_range" @change="custom_range=true">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <label class="pad-label ls" for="start_date">
+            <strong>Start:</strong>
+          </label>
+          <div class="s-i">
+            <input
+              name="start_date"
+              type="date"
+              v-model="from"
+            />
+          </div>
+          <label class="pad-label mr-l le" for="end_date">
+            <strong>End:</strong>
+          </label>
+          <div class="e-i">
+            <input
+              name="end_date"
+              type="date"
+              v-model="to"
+            />
+            <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
+          </div>
+          <div class="b">
+            <button class="btn btn-orange" @click="fetchTrans">Search Summary</button>
+          </div>
+        </div>
+        <div class="mr-2 box1-tab">
+          <table>
+            <colgroup>
+              <col span="1" style="width: auto;">
+              <col span="1" style="width: auto;">
+              <col span="1" style="width: auto;">
+              <col span="1" style="width: auto;">
+              <col span="1" style="width: auto;">
+            </colgroup>
+            <tr>
+              <th>Sr No.</th>
+              <th>Transaction ID</th>
+              <th>Order ID</th>
+              <th>Received From</th>
+              <th>To</th>           
+              <th>Payment Service</th>
+              <th>Description</th>
+              <th>Amount</th>
+            </tr>
+            <template v-for="(transaction,index) in transactions" :key="transaction.id">
+              <tr>
+                <td>{{index+1}}</td>
+                <td>{{transaction.transaction_id}}</td>
+                <td>{{transaction.order}}</td>
+                <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
+                <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
+                <td>{{transaction.payment_service}}</td>
+                <td>{{transaction.description}}</td>
+                <td>{{transaction.amount}}</td>
+              </tr>
+            </template>
+          </table>
+        </div>
+        <div id="Balance-information" class="mr-2">
+          <label class="pad-label" for="balance">
+            <strong>Current Balance:</strong>
+          </label>
+          <div>
+            <input
+              name="balance"
+              type="text"
+              :value="getBalance"
+              readonly
+            />
+          </div>
+          <label class="pad-label" for="Starting-Balance">
+            <strong>Starting Balance:</strong>
+          </label>
+          <div>
+            <input
+              name="Starting-Balance"
+              type="text"
+              value="0.0000"
+              readonly
+            />
+          </div>
+          <label class="pad-label" for="expense">
+            <strong>Total Expense:</strong>
+          </label>
+          <div>
+            <input
+              name="expense"
+              type="text"
+              :value="totalExpense"
+              readonly
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -115,10 +120,13 @@ import { ActionTypes } from '@/store/modules/auth/actions';
 import { Transaction } from '@/store/models/transaction';
 import { User } from '@/store/models/user';
 import { Company } from '@/store/models/company';
-
+import Header from '../common-components/Header.vue';
 
 export default defineComponent({
   name: 'ExpenseSummary',
+  components: {
+    Header
+  },
   data(){
     return {
       custom_range : false,

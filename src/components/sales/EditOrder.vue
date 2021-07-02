@@ -1,5 +1,7 @@
 <template>
-    <div class="diff-shadow">
+  <div id="editOrder">
+    <Header />
+    <div class="diff-shadow page-mr">
       <div class="pad-1">
         <p>
           <strong>Order Number: </strong><span>#{{order.id}}</span>
@@ -88,18 +90,23 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { mapActions } from 'vuex';
 import { defineComponent } from 'vue';
 
+import Header from '@/components/common-components/Header.vue';
 import { Order } from '@/store/models/order';
 import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'EditOrder',
   props: ['orderId'],
+  components: {
+    Header
+  },
   data () {
     const orderObject: Order = {};
     return {

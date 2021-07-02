@@ -1,4 +1,6 @@
 <template>
+  <div id="productEditAdd">
+    <Header />
     <div id="AddEditProduct">
       <div class="diff-shadow">
         <h2>
@@ -179,11 +181,14 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from 'vue';
+import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+
+import Header from '@/components/common-components/Header.vue';
 import { Product, ProductVariant, Unit } from '@/store/models/product';
 import { ActionTypes } from '@/store/modules/order/actions';
 import ErrorField from '@/components/common-components/ErrorField.vue';
@@ -193,6 +198,7 @@ export default defineComponent({
   props: ['productId'],
   components: {
     ErrorField,
+    Header
   },
   data() {
     const productVariants: ProductVariant[] = [];

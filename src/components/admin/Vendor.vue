@@ -1,51 +1,54 @@
 <template>
-  <div class="diff-shadow">
-    <h2>Vendors</h2>
-    <div class="search-grid-list-pages">
-        <router-link to="/vendor/create" class="btn btn-orange add-btn-width">Add New Vendor</router-link>
-        <div class="float-right">
-          <form class="flex-box">
-            <input
-              type="text"
-              placeholder="Enter vendor contact to search"
-              class="search-input"
-              v-model="search"
-              @input="searchVendors"
-            />
-            <button class="btn btn-orange search-btn" @click="searchVendors">Search Vendor</button>
-          </form>
-        </div>
-    </div>
-    <div class="mr-2">
-      <table>
-        <colgroup>
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 50%;">
-          <col span="1" style="width: 20%;">
-          <col span="1" style="width: 30%;">
-        </colgroup>
+  <div id="vendor">
+    <Header/>
+    <div class="diff-shadow page-mr">
+      <h2>Vendors</h2>
+      <div class="search-grid-list-pages">
+          <router-link to="/vendor/create" class="btn btn-orange add-btn-width">Add New Vendor</router-link>
+          <div class="float-right">
+            <form class="flex-box">
+              <input
+                type="text"
+                placeholder="Enter vendor contact to search"
+                class="search-input"
+                v-model="search"
+                @input="searchVendors"
+              />
+              <button class="btn btn-orange search-btn" @click="searchVendors">Search Vendor</button>
+            </form>
+          </div>
+      </div>
+      <div class="mr-2">
+        <table>
+          <colgroup>
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 50%;">
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 30%;">
+          </colgroup>
 
-        <tr>
-          <th>Sr No.</th>
-          <th>Vendor Name</th>
-          <th>Contact</th>
-          <th></th>
-        </tr>
-        <tr v-for="(vendor, index) in vendors" v-bind:key="vendor.id">
-          <td>{{index + 1}}</td>
-          <td>{{vendor.first_name}} {{vendor.last_name}}</td>
-          <td>{{vendor.contact_number}}</td>
-          <td style="width: 150px">
-            <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="openDeleteVendorModal(vendor)">delete</a>
-              <router-link
-                :to="{name: 'EditVendor', params: {vendorId: vendor.id}}" 
-                class="btn btn-orange btn-mr-inner"
-              >edit</router-link>
-            </div>
-          </td>
-        </tr>
-      </table>
+          <tr>
+            <th>Sr No.</th>
+            <th>Vendor Name</th>
+            <th>Contact</th>
+            <th></th>
+          </tr>
+          <tr v-for="(vendor, index) in vendors" v-bind:key="vendor.id">
+            <td>{{index + 1}}</td>
+            <td>{{vendor.first_name}} {{vendor.last_name}}</td>
+            <td>{{vendor.contact_number}}</td>
+            <td style="width: 150px">
+              <div class="flex-box">
+                <a class="btn btn-orange btn-mr-inner" @click="openDeleteVendorModal(vendor)">delete</a>
+                <router-link
+                  :to="{name: 'EditVendor', params: {vendorId: vendor.id}}" 
+                  class="btn btn-orange btn-mr-inner"
+                >edit</router-link>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
 
     <!-- The deletion Modal -->
@@ -77,7 +80,6 @@
         </div>
       </template>
     </Modal>
-
   </div>
 </template>
 
@@ -86,6 +88,7 @@ import { defineComponent } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 
 import Modal from '@/components/common-components/Modal.vue';
+import Header from '../common-components/Header.vue';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
 
@@ -93,6 +96,7 @@ export default defineComponent({
   name: 'Vendor',
   components: {
     Modal,
+    Header
   },
   data() {
     return {

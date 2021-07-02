@@ -188,7 +188,8 @@ export default defineComponent({
     },
 
     logout() {
-      this.logoutUser();
+      // this.logoutUser();
+      this.$router.push({name: 'logout'});
     }
   },
   created() {

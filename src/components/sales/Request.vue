@@ -1,4 +1,5 @@
 <template>
+  <Header/>
   <div id="request">
     <div class="diff-shadow">
       <h2>Send Request</h2>
@@ -105,6 +106,7 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from'vuex';
 
+import Header from '@/components/common-components/Header.vue';
 import Loader from '@/components/common-components/Loader.vue';
 import Alert from '@/components/common-components/Alert.vue';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
@@ -115,9 +117,9 @@ export default defineComponent({
   name: 'Request',
   components: {
     Loader,
-    Alert
+    Alert,
+    Header
   },
-
   data() {
     return {
       loader: false,

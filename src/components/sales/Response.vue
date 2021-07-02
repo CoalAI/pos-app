@@ -1,156 +1,159 @@
 <template>
-  <div class="diff-shadow pad-2">
-    <h2>Responses</h2>
-    <ul class="nav nav-tabs">
-      <li class="nav-item" @click="tab = 'Request'">
-        <span :class="tab === 'Request' ? 'nav-link active' : 'nav-link'">
-          <strong>Request Items</strong>
-        </span>
-      </li>
-      <li class="nav-item" @click="tab = 'Order'">
-        <span :class="tab === 'Order' ? 'nav-link active' : 'nav-link'">
-          <strong>Orders</strong>
-        </span>
-      </li>
-    </ul>
-    <div v-if="tab === 'Request'">
-      <div class="search-grid-list-pages">
-        <div class="flex-box"> 
-          <label class="pad-label w100">
-            <strong>Status filter:</strong>
-          </label>
-          <select class="transtype custom-select" v-model="searchStatus" @change="onChangeStatusFilter">
-            <option value="">All</option>
-            <option value="PENDING">PENDING</option>
-            <option value="APPROVED">APPROVED</option>
-            <option value="COMPLETE">COMPLETE</option>
-            <option value="CANCEL">CANCEL</option>
-          </select>
+  <div id="response">
+    <Header />
+    <div class="diff-shadow pad-2 page-mr">
+      <h2>Responses</h2>
+      <ul class="nav nav-tabs">
+        <li class="nav-item" @click="tab = 'Request'">
+          <span :class="tab === 'Request' ? 'nav-link active' : 'nav-link'">
+            <strong>Request Items</strong>
+          </span>
+        </li>
+        <li class="nav-item" @click="tab = 'Order'">
+          <span :class="tab === 'Order' ? 'nav-link active' : 'nav-link'">
+            <strong>Orders</strong>
+          </span>
+        </li>
+      </ul>
+      <div v-if="tab === 'Request'">
+        <div class="search-grid-list-pages">
+          <div class="flex-box"> 
+            <label class="pad-label w100">
+              <strong>Status filter:</strong>
+            </label>
+            <select class="transtype custom-select" v-model="searchStatus" @change="onChangeStatusFilter">
+              <option value="">All</option>
+              <option value="PENDING">PENDING</option>
+              <option value="APPROVED">APPROVED</option>
+              <option value="COMPLETE">COMPLETE</option>
+              <option value="CANCEL">CANCEL</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="mr-2">
-        <div class="box1-tab">
-          <table>
-            <colgroup>
-              <col span="1" style="width: 5%;">
-              <col span="1" style="width: 5%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 25%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 15%;">
-            </colgroup>
+        <div class="mr-2">
+          <div class="box1-tab">
+            <table>
+              <colgroup>
+                <col span="1" style="width: 5%;">
+                <col span="1" style="width: 5%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 25%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 15%;">
+              </colgroup>
 
-            <tr>
-              <th>Sr No.</th>
-              <th>Req Id</th>
-              <th>From</th>
-              <th>to</th>
-              <th>Request Type</th>
-              <th>Description</th>
-              <th>Created On</th>
-              <th>Delivery Date</th>
-              <th>Status</th>
-            </tr>
-            <template v-for="(request,index) in requests" v-bind:key="request.id">
-              <tr @click="selectRequest(request.id)" :class="selected_request===request.id?'table-active':''">
-                <td>{{index+1}}</td>
-                <td>{{request.id}}</td>
-                <td>{{request.sender.username}}<br>{{request.sender.company.company_name}}</td>
-                <td>{{request.receiver.username}}<br>{{request.receiver.company.company_name}}</td>
-                <td>{{request.request_type}}</td>
-                <td>{{request.description}}</td>
-                <td>{{datestr(request.created)}}</td>
-                <td>{{request.expected_delivery_date}}</td>
-                <td>
-                  <select
-                  class="custom-select"
-                  v-model="request.status"
-                  @change="sendResponse(request.id)"
-                  :disabled="diableRequestStatus(request.id)">
-                    <option value="PENDING">PENDING</option>
-                    <option v-if="request.status === 'APPROVED' || user.company.company_type == 'STORE'" value="APPROVED">APPROVED</option>
-                    <option v-if="request.status === 'COMPLETE' || user.company.company_type == 'STORE'" value="COMPLETE">COMPLETE</option>
-                    <option value="CANCEL">CANCEL</option>
-                  </select>
-                </td>
-              </tr>      
-            </template>
-          </table>
+              <tr>
+                <th>Sr No.</th>
+                <th>Req Id</th>
+                <th>From</th>
+                <th>to</th>
+                <th>Request Type</th>
+                <th>Description</th>
+                <th>Created On</th>
+                <th>Delivery Date</th>
+                <th>Status</th>
+              </tr>
+              <template v-for="(request,index) in requests" v-bind:key="request.id">
+                <tr @click="selectRequest(request.id)" :class="selected_request===request.id?'table-active':''">
+                  <td>{{index+1}}</td>
+                  <td>{{request.id}}</td>
+                  <td>{{request.sender.username}}<br>{{request.sender.company.company_name}}</td>
+                  <td>{{request.receiver.username}}<br>{{request.receiver.company.company_name}}</td>
+                  <td>{{request.request_type}}</td>
+                  <td>{{request.description}}</td>
+                  <td>{{datestr(request.created)}}</td>
+                  <td>{{request.expected_delivery_date}}</td>
+                  <td>
+                    <select
+                    class="custom-select"
+                    v-model="request.status"
+                    @change="sendResponse(request.id)"
+                    :disabled="diableRequestStatus(request.id)">
+                      <option value="PENDING">PENDING</option>
+                      <option v-if="request.status === 'APPROVED' || user.company.company_type == 'STORE'" value="APPROVED">APPROVED</option>
+                      <option v-if="request.status === 'COMPLETE' || user.company.company_type == 'STORE'" value="COMPLETE">COMPLETE</option>
+                      <option value="CANCEL">CANCEL</option>
+                    </select>
+                  </td>
+                </tr>      
+              </template>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-    <div v-else-if="tab === 'Order'">
-      <div class="search-grid-list-pages">
-        <div class="flex-box"> 
-          <label class="pad-label w100">
-            <strong>Status filter:</strong>
-          </label>
-          <select
-          class="transtype custom-select"
-          v-model="orderStatus"
-          @change="onOrderStatusChangeFilter"
-          >
-            <option value="">ANY</option>
-            <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
-            {{item.status}}
-            </option>
-          </select>
+      <div v-else-if="tab === 'Order'">
+        <div class="search-grid-list-pages">
+          <div class="flex-box"> 
+            <label class="pad-label w100">
+              <strong>Status filter:</strong>
+            </label>
+            <select
+            class="transtype custom-select"
+            v-model="orderStatus"
+            @change="onOrderStatusChangeFilter"
+            >
+              <option value="">ANY</option>
+              <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
+              {{item.status}}
+              </option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="mr-2">
-        <div class="box1-tab">
-          <table>
-            <colgroup>
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 20%;">
-              <col span="1" style="width: 25%;">
-              <col span="1" style="width: 15%;">
-            </colgroup>
+        <div class="mr-2">
+          <div class="box1-tab">
+            <table>
+              <colgroup>
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 20%;">
+                <col span="1" style="width: 25%;">
+                <col span="1" style="width: 15%;">
+              </colgroup>
 
-            <tr>
-              <th>Sr No.</th>
-              <th>Order Id</th>
-              <th>Buyer</th>
-              <th>Seller</th>
-              <th>Total</th>
-              <th>Created On</th>
-              <th>Status</th>
-            </tr>
-            <template v-for="(order, index) in orders" v-bind:key="order.id">
-              <tr @click="selectOrder(order.id)" :class="selected_order===order.id?'table-active':''">
-                <td>{{index+1}}</td>
-                <td>{{order.id}}</td>
-                <td>{{order.buyer}}</td>
-                <td>{{order.seller}}</td>
-                <td>{{trimDecimalPlaces(order.total)}}</td>
-                <td>{{datestr(order.created)}}</td>
-                <td>
-                  <select
-                  class="custom-select"
-                  v-model="order.status"
-                  @change="onChangeOrderStatus(order.id)"
-                  :disabled="diableOrderStatus(order.id)"
-                  >
-                    <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
-                      {{item.status}}
-                    </option>
-                  </select>
-                </td>
-              </tr>      
-            </template>
-          </table>
+              <tr>
+                <th>Sr No.</th>
+                <th>Order Id</th>
+                <th>Buyer</th>
+                <th>Seller</th>
+                <th>Total</th>
+                <th>Created On</th>
+                <th>Status</th>
+              </tr>
+              <template v-for="(order, index) in orders" v-bind:key="order.id">
+                <tr @click="selectOrder(order.id)" :class="selected_order===order.id?'table-active':''">
+                  <td>{{index+1}}</td>
+                  <td>{{order.id}}</td>
+                  <td>{{order.buyer}}</td>
+                  <td>{{order.seller}}</td>
+                  <td>{{trimDecimalPlaces(order.total)}}</td>
+                  <td>{{datestr(order.created)}}</td>
+                  <td>
+                    <select
+                    class="custom-select"
+                    v-model="order.status"
+                    @change="onChangeOrderStatus(order.id)"
+                    :disabled="diableOrderStatus(order.id)"
+                    >
+                      <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
+                        {{item.status}}
+                      </option>
+                    </select>
+                  </td>
+                </tr>      
+              </template>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="container">
-      <h2>{{tab}} Detail</h2>
-      <textarea id="requestdetail" type="text" v-bind:value="request_detail" readonly></textarea>
+      <div class="container">
+        <h2>{{tab}} Detail</h2>
+        <textarea id="requestdetail" type="text" v-bind:value="request_detail" readonly></textarea>
+      </div>
     </div>
   </div>
 </template>
@@ -158,6 +161,7 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
+import Header from '@/components/common-components/Header.vue';
 import { Request } from '@/store/models/request';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
@@ -167,6 +171,9 @@ import { OrderItem } from '@/store/models/orderItem';
 
 export default defineComponent({
   name:'Response',
+  components: {
+    Header
+  },
   data(){
     return {
       request_detail:'request detail here!',

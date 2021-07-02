@@ -1,4 +1,6 @@
 <template>
+  <div id="batchEditAdd">
+    <Header />
     <div id="AddEditBatch">
       <div class="diff-shadow">
         <h2>
@@ -88,12 +90,14 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
+import Header from '@/components/common-components/Header.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { Batch } from '@/store/models/batch';
 import { ProductVariant } from '@/store/models/product';
@@ -101,6 +105,9 @@ import { ProductVariant } from '@/store/models/product';
 export default defineComponent({
   name: 'AddEditBatch',
   props: ['productId', 'productVariantId', 'batchId'],
+  components: {
+    Header
+  },
   data () {
     return {
       batch: {

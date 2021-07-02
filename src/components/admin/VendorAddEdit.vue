@@ -1,4 +1,6 @@
 <template>
+  <div id="vendorEditAdd">
+    <Header/>
     <div id="AddEditVendor">
       <div class="diff-shadow">
         <h2>
@@ -78,12 +80,14 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
+import Header from '../common-components/Header.vue';
 import { User } from '@/store/models/user';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import ErrorField from '@/components/common-components/ErrorField.vue';
@@ -94,6 +98,7 @@ export default defineComponent({
   props: ['vendorId'],
   components: {
     ErrorField,
+    Header
   },
   data () {
     return {
