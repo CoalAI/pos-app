@@ -49,11 +49,13 @@
         <tr>
           <th>Sr No.</th>
           <th>Transaction ID</th>
-           <th>Order ID</th>
+          <th>Order ID</th>
           <th>Received From</th>
           <th>To</th>           
           <th>Payment Service</th>
           <th>Description</th>
+          <th>Credit</th>
+          <th>Debit</th>
           <th>Amount</th>
         </tr>
         <template v-for="(transaction,index) in transactions" :key="transaction.id">
@@ -65,7 +67,15 @@
             <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
             <td>{{transaction.payment_service}}</td>
             <td>{{transaction.description}}</td>
-            <td>{{transaction.amount}}</td>
+            <template v-if="transaction.amount > 0">
+              <td>{{trimNumber(transaction.amount)}}</td>
+              <td></td>
+            </template>
+            <template v-else>
+              <td></td>
+              <td>{{trimNumber(transaction.amount * -1)}}</td>
+            </template>
+            <td>{{trimNumber(transaction.amount)}}</td>
           </tr>
         </template>
       </table>
@@ -179,6 +189,11 @@ export default defineComponent({
        getTransactions : ActionTypes.FETCH_TRANSACTIONS,
        getUserData: ActionTypes.USER_DATA
     }),
+
+    trimNumber: function(value: string): string{
+        return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
+    },
+
     fetchTrans: async function(){
       if(this.custom_range){
          if (this.dateValidation === null)
