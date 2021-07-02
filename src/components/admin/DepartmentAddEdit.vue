@@ -36,6 +36,33 @@
             </option>
           </select>
         </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="company-address">
+            <strong>Address:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="company-address"
+              type="text"
+              placeholder="Enter address"
+              v-model="company.address"
+            />
+          </div>
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="company-number">
+            <strong>Phone Number:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="company-number"
+              type="text"
+              placeholder="Enter phone number"
+              v-model="company.contactNumber"
+            />
+            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+          </div>
+        </div>
 
         <div style="text-align: right; padding-bottom: 50px">
           <router-link 
@@ -72,6 +99,8 @@ export default defineComponent({
     return {
       company: {
         name: '',
+        address: '',
+        contactNumber: '',
         type: 'FACTORY',
       }
     }
@@ -85,9 +114,21 @@ export default defineComponent({
       return errorMessage;
     },
 
+    contactNumberValidation: function () {
+      let errorMessage = null;
+      if (this.company.contactNumber !== '') {
+        const regex = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{3,5}-{0,1}\d{7}$/;
+        if (!regex.test(this.company.contactNumber)) {
+          errorMessage = "Phone number is not valid"
+        }
+      }
+      return errorMessage;
+    },
+
     addEditBtn:  function () {
       let disable = true;
-      if (this.comapanyNameValidation === null) {
+      if (this.comapanyNameValidation === null &&
+      this.contactNumberValidation === null) {
         disable = false
       }
       return disable;
@@ -95,6 +136,7 @@ export default defineComponent({
 
     ...mapGetters({
       companyTypes: 'getCompanyTypes',
+      userdata: 'getUser',
     })
   },
   methods: {
@@ -108,13 +150,22 @@ export default defineComponent({
       const company: Company = {
         company_name: this.company.name,
         company_type: this.company.type,
+        address: this.company.address,
+        contact_number: this.company.contactNumber,
       };
 
       if (this.companyId) {
         company.id = companyIdNumber;
         await this.updateCompany(company);
       } else {
-        await this.createCompany(company);
+        if (this.userdata && this.userdata.company) {
+          if (this.userdata.company.company_type === 'PARENT') {
+            company.parent = this.userdata.company.id;
+          } else {
+            company.parent = this.userdata.company.parent;
+          }
+          await this.createCompany(company);
+        }
       }
       this.$router.push({name: 'department'});
     },
@@ -122,6 +173,8 @@ export default defineComponent({
     loadData: function (company: Company) {
       this.company.name = company.company_name ? company.company_name : '';
       this.company.type = company.company_type ? company.company_type : '';
+      this.company.address = company.address? company.address : '';
+      this.company.contactNumber = company.contact_number? company.contact_number : '';
     },
 
     ...mapActions({
@@ -129,10 +182,12 @@ export default defineComponent({
       updateCompany: ActionTypes.UPDATE_COMPANY,
       getCompaniesList: ActionTypes.FETCH_COMPANIES,
       fetchTypes: ActionTypes.FETCH_TYPES,
+      getUserData: ActionTypes.USER_DATA,
     })
   },
   async beforeMount () {
     await this.fetchTypes();
+    await this.getUserData()
 
     if (this.companyId) {
       await this.getCompaniesList({

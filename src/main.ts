@@ -14,6 +14,7 @@ app.directive('focus', {
       el.focus();
   },
 });
+
 app.use(vueDebounce);
 app.use(store);
 app.use(router);
