@@ -161,7 +161,6 @@ Actions = {
       commit('setError', response.message , {root: true});
     }
   },
-
   async [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext) {
     const response = await serverRequest('get', 'type/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
@@ -222,7 +221,7 @@ Actions = {
       response = await serverRequest('get', 'vendor/', true, undefined, undefined);
     }
     if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
+      if (response.data.results) {
         commit(MutationTypes.SetListOfVendors, response.data.results)
       }
     }
