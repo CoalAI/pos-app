@@ -144,6 +144,7 @@ Actions = {
   },
   async [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string}) {
     const response = await serverRequest('get', 'user/', true, undefined, options);
+    commit(MutationTypes.SetListOfUsers, {});
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
         const usersData = response.data.results;
