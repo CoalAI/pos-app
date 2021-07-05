@@ -47,7 +47,6 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
-
   [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string }): void;
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
@@ -162,7 +161,6 @@ Actions = {
       commit('setError', response.message , {root: true});
     }
   },
-
   async [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext) {
     const response = await serverRequest('get', 'type/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
@@ -174,7 +172,7 @@ Actions = {
   async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}) {
     const response = await serverRequest('get', 'company/', true, undefined, options);
     if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
+      if (response.data.results) {
         commit(MutationTypes.SetCompanies, response.data.results)
       }
     }
@@ -223,7 +221,7 @@ Actions = {
       response = await serverRequest('get', 'vendor/', true, undefined, undefined);
     }
     if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
+      if (response.data.results) {
         commit(MutationTypes.SetListOfVendors, response.data.results)
       }
     }

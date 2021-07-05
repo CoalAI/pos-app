@@ -66,7 +66,7 @@ export async function redirectToAdmin(from: RouteLocationNormalized, to: RouteLo
       next();
     }
   } else {
-    next('/');
+    next('/login');
   } 
 }
 

@@ -28,23 +28,27 @@
                 v-model="search"
                 @input="onSearchCompany"
               />
-              <button class="btn btn-orange search-btn" @click="onSearchCompany">Search Department by name</button>
+              <button class="btn btn-orange search-btn" @click="onSearchCompany">Search Department</button>
             </form>
           </div>
       </div>
       <div class="mr-2">
         <table>
           <colgroup>
+            <col span="1" style="width: 5%;">
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 20%;">
             <col span="1" style="width: 10%;">
-            <col span="1" style="width: 40%;">
+            <col span="1" style="width: 10%;">
             <col span="1" style="width: 15%;">
-            <col span="1" style="width: 15%;">
-            <col span="1" style="width: 30%;">
+            <col span="1" style="width: 20%;">
           </colgroup>
 
           <tr>
             <th>Sr No.</th>
             <th>Department Name</th>
+            <th>Address</th>
+            <th>Phone Number</th>
             <th>Type</th>
             <th>credit</th>
             <th></th>
@@ -52,6 +56,8 @@
           <tr v-for="(company, index) in companies" v-bind:key="company.id">
             <td>{{index + 1}}</td>
             <td>{{company.company_name}}</td>
+            <td>{{company.address}}</td>
+            <td>{{company.contact_number}}</td>
             <td>{{company.company_type}}</td>
             <td v-if="company.credit">{{company.credit}}</td>
             <td v-else class="text-center">-</td>
@@ -67,36 +73,33 @@
           </tr>
         </table>
       </div>
-
-      <!-- The deletion Modal -->
-      <Modal v-if="deleteCompanyModal">
-        <template v-slot:header>
-          <h2>Confirm Deletion</h2>
-        </template>
-
-        <template v-slot:body>
-          <p>Are you sure you want to delete this department?</p>
-          <template v-if="company">
-            <table id="delete-table" class="mr-2">
-              <tr>
-                <td><strong>Name:</strong></td>
-                <td>{{company.name}}</td>
-              </tr>
-            </table>
-          </template>
-        </template>
-
-        <template v-slot:footer>
-          <div class="flex-box">
-            <button class="btn btn-orange btn-mr" @click="closeDeleteCompanyModal">Cancel</button>
-            <button class="btn btn-orange btn-mr" @click="deletecompany">Yes</button>
-          </div>
-        </template>
-      </Modal>
-
     </div>
+    <!-- The deletion Modal -->
+    <Modal v-if="deleteCompanyModal">
+      <template v-slot:header>
+        <h2>Confirm Deletion</h2>
+      </template>
+
+      <template v-slot:body>
+        <p>Are you sure you want to delete this department?</p>
+        <template v-if="company">
+          <table id="delete-table" class="mr-2">
+            <tr>
+              <td><strong>Name:</strong></td>
+              <td>{{company.name}}</td>
+            </tr>
+          </table>
+        </template>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button class="btn btn-orange btn-mr" @click="closeDeleteCompanyModal">Cancel</button>
+          <button class="btn btn-orange btn-mr" @click="deletecompany">Yes</button>
+        </div>
+      </template>
+    </Modal>
   </div>
-  
 </template>
 
 <script lang="ts">

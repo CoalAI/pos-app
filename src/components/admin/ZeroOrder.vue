@@ -548,7 +548,7 @@ export default defineComponent({
         discount: '',
         buyPrice: '',
         actualPrice: 0,
-        manufacturedDate: '',
+        manufacturedDate: new Date().toISOString().slice(0,10),
         expiryDate: '',
       },
       date: today,
@@ -681,7 +681,7 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.errorIndication) {
         // CheckIF product exist on the backend
-        if (this.product.manufacturedDate === undefined || this.product.manufacturedDate === '')
+        if (this.product.manufacturedDate === undefined)
         {
           errorMessage = 'Manufactured date is required';
         }
@@ -816,8 +816,7 @@ export default defineComponent({
       this.duplicateMessage = '';
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
-      this.product.manufacturedDate = '';
-      this.product.expiryDate = '';
+      this.product.manufacturedDate = new Date().toISOString().slice(0,10);
     },
 
     trimNumber: function(value: string): string{
@@ -878,7 +877,7 @@ export default defineComponent({
       if (this.product.buyPrice === '') return;
       if (this.orderType === 'to' && this.product.batch === '') return;
       if (this.orderType === 'to' && quantity > this.selectedBatchQuantity) return;
-      if (this.orderType === 'from' && this.product.manufacturedDate === '') return;
+      if (this.orderType === 'from' && this.product.manufacturedDate === undefined) return;
       if (this.orderType === 'from' && this.product.expiryDate === '') return;
 
       const discount = isNaN(parseFloat(this.product.discount)) ? 0 : parseFloat(this.product.discount);
@@ -922,7 +921,7 @@ export default defineComponent({
         batch = batch?batch.id:batch;
       } else {
         batch = {
-          manufacturing_date: this.product.manufacturedDate,
+          manufacturing_date: this.product.manufacturedDate.toString(),
           expiry_date: this.product.expiryDate,
           quantity: this.product.quantity,
           product_variant: this.productVariantId
