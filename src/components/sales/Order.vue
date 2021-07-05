@@ -662,7 +662,7 @@ export default defineComponent({
     validateDeductBalance: function() {
       let error_message = null;
       if(this.paymentMethod === 'credit') {
-        if(parseFloat(this.cashReceived) <= this.totalAmount && this.deduct_balance === false){
+        if(parseFloat(this.cashReceived) < this.totalAmount && this.deduct_balance === false){
           error_message = 'Cash Received is less than total so check Deduct Balance!'
         }
       }

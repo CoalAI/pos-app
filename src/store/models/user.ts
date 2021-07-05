@@ -20,9 +20,9 @@ export interface User extends DatesInterface {
 }
 
 export interface UserExtra extends DatesInterface {
+  id?: number;
   description?: string;
 }
-
 
 export interface Credentials {
   username?: string;

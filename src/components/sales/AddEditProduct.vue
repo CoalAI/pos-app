@@ -65,10 +65,10 @@
         <div class="product_Variant_box">
           <table class="mr-2">
             <colgroup>
-              <col span="1">
-              <col span="1">
-              <col span="1">
-              <col span="1">
+              <col span="1" style="width: 14%;">
+              <col span="1" style="width: 14%;">
+              <col span="1" style="width: 14%;">
+              <col span="1" style="width: 14%;">
               <col span="1" style="width: 40%;">
               <col span="1" style="width: 4%;">
             </colgroup>
