@@ -81,8 +81,10 @@ export default defineComponent({
         this.loginUser({
           username: this.username,
           password: this.password
-        }).finally(()=>this.showLoader=false)
-        
+        }).finally(()=> {
+          this.showLoader=false;
+          this.$router.push({name: 'Order'});
+        });
       }
     },
   },
