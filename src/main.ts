@@ -17,7 +17,10 @@ app.directive('focus', {
   },
 });
 
+<<<<<<< HEAD
 app.use(new VueSocketIO(process.env.NOTIFICATION_SERVER_IP, ['notification']));
+=======
+>>>>>>> 470d67495083250577403a3661f16fbc17b8aff9
 app.use(vueDebounce);
 app.use(store);
 app.use(router);

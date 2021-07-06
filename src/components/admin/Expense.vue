@@ -2,7 +2,19 @@
   <Alert v-if="create_expense" type="success" >"Transaction Successful!"</Alert>
   <div id="expense">
     <div class="diff-shadow">
-      <h2>Expense</h2>
+      <ul class="nav nav-tabs">
+        <li class="nav-item" @click="expenseMethod = 'credit'">
+          <span :class="expenseMethod === 'credit' ? 'nav-link active' : 'nav-link'">
+            <strong>Credit</strong>
+          </span>
+        </li>
+        <li class="nav-item" @click="expenseMethod = 'debit'">
+          <span :class="expenseMethod === 'debit' ? 'nav-link active' : 'nav-link'">
+            <strong>Debit</strong>
+          </span>
+        </li>
+      </ul>
+      <h2>Expense {{expenseMethod}}</h2>
       <div class="flex-box">
         <label class="pad-label w100" for="products">
           <strong>Payee:</strong>
@@ -37,7 +49,7 @@
       </div>
       <div class="flex-box">
         <label class="pad-label w100" for="amount">
-          <strong>Amount:</strong>
+          <strong>Amount {{expenseMethod}}:</strong>
         </label>
         <div class="full-width">
           <input
@@ -48,17 +60,6 @@
           />
           <span v-if="amountValidation" class="form-error">{{ amountValidation }}</span>
         </div>
-      </div>
-      <div class="flex-box mr-2">
-        <p class="checkbox-label w100"><strong>Expense type:</strong></p>
-        <label class="custom-radio" style="margin-right: 10px">Credit
-          <input type="radio" name="expense_method" value="credit" v-model="expenseMethod">
-          <span class="checkmark"></span>
-        </label>
-        <label class="custom-radio" style="margin-right: 10px">Debit
-          <input type="radio" name="expense_method" value="debit" v-model="expenseMethod">
-          <span class="checkmark"></span>
-        </label>
       </div>
       <div class="flex-box">
         <label class="pad-label w100" for="amount">
@@ -205,5 +206,43 @@ export default defineComponent({
 
   .checkbox-label {
     font-size: $label-font-size;
+  }
+
+  .nav {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+  }
+
+  .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .nav-tabs .nav-item {
+    margin-bottom: -1px;
+    width: 50%;
+  }
+
+  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: $primary-color;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+  }
+
+  .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+  }
+
+  .nav-link {
+    color: #495057;
+    display: block;
+    padding: .5rem 1rem;
   }
 </style>

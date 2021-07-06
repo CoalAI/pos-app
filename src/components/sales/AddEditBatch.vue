@@ -54,13 +54,18 @@
           <label class="pad-label w100" for="manufactured">
             <strong>Manufactured date:</strong>
           </label>
-          <input type="date" id="manufactured" name="manufactured" v-model="batch.manufacturedDate">
+          <div class="full-width">
+            <input type="date" id="manufactured" name="manufactured" v-model="batch.manufacturedDate">
+          </div>
         </div>
         <div class="flex-box">
           <label class="pad-label w100" for="expiry">
             <strong>Expiry date:</strong>
           </label>
-          <input type="date" id="expiry" name="expiry" v-model="batch.expiryDate">
+          <div class="full-width">
+            <input type="date" id="expiry" name="expiry" v-model="batch.expiryDate">
+            <div v-if="expiryDateValidation" class="form-error">{{ expiryDateValidation }}</div>  
+          </div>
         </div>
         <div class="flex-box">
           <label class="pad-label w100" for="in_stock">
@@ -141,10 +146,20 @@ export default defineComponent({
       return errorMessage;
     },
 
+    expiryDateValidation: function() {
+      let errorMessage = null;
+      if(!this.batch.manufacturedDate || !this.batch.expiryDate){
+        errorMessage = 'Manufacture & Expiry Dates are required'
+      }
+      return errorMessage;
+    },
+
     addEditBtn: function () {
       let disable = true;
       if ( this.batchQuantityValidation === null &&
-      this.productVariantValidation === null) {
+      this.productVariantValidation === null &&
+      this.expiryDateValidation === null
+      ) {
         disable = false;
       }
       return disable

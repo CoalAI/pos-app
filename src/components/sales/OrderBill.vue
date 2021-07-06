@@ -14,8 +14,8 @@
 		</div>
 
 		<div id="date-section" class="mb-5">
-			<p class="text-center">{{getCurrentTime()}}</p>
-			<p class="text-center">{{getCurrentDate()}}</p>
+			<p class="text-center">{{getCurrentTime(order.created)}}</p>
+			<p class="text-center">{{getCurrentDate(order.created)}}</p>
 		</div>
 
 		<div id="customer-details-sections" style="margin-bottom: 5px">
@@ -103,44 +103,10 @@
 			<p class="text-center" style="font-size: 20px;"><strong>Thanks for Visiting</strong></p>
 		</div>
 	</div>
-	<div v-if="tokenPrinting">
-		<div id="TokenPreview">
-			<p class="text-center" style="font-size: 20px;"><strong>Rohi Sweets & Bakers</strong></p>
-			<p class="text-center" style="margin: 10px 0px 10px">
-				<span style="border: 1px solid black; padding: 2px 20px;">30806</span>
-			</p>
-			<div id="order-items-section">
-				<table>
-					<colgroup>
-						<col span="1" style="width: 20%;">
-						<col span="1" style="width: 70%;">
-						<col span="1" style="width: 10%;">
-					</colgroup>
-
-					<tr>
-						<th>قیمت</th>
-						<th>تفصیل</th>
-						<th>تعداد</th>
-					</tr>
-
-					<tr>
-						<td>50</td>
-						<td style="text-align: right;"> سنگل سکوپ </td>
-						<td>1</td>
-					</tr>
-				</table>
-			</div>
-			<hr class="dashed">
-			<div class="mb-5">50</div>
-			<div id="date-section">
-				<p class="text-center">3:44 pm</p>
-				<p class="text-center">Friday, 11 June, 2021</p>
-			</div>
-		</div>
-	</div>
 </template>
 
 <script lang="ts">
+import { OrderItem } from '@/store/models/orderItem';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { defineComponent } from 'vue';
 import {mapActions, mapGetters } from 'vuex';
@@ -149,7 +115,7 @@ export default defineComponent({
   name: 'OrderBill',
   data(){
 		return{
-			printDelay: 0,
+			printDelay: 200,
 			tokenPrinting: false
 		}
   },
@@ -162,74 +128,234 @@ export default defineComponent({
 			}
 			return html.join('\r\n');
 		},
+
 		getHtmlContents: function() {
 			const printContents = document.getElementById("bill-preview");
 			return printContents && printContents.innerHTML?printContents.innerHTML:'';
 		},
+
 		printBill: function() {
 			let styles = '', links = '';
 			styles = this.getElementTag('style');
 			links = this.getElementTag('link');
-			const endscripttag = "/script"
 			const printContents = this.getHtmlContents();
-			const popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto,focused=false");
-			
-			if(popupWin){
-				popupWin.document.open()
-				
-				popupWin.document.write(`
-				<html>
-					<head>
-					<title></title>
-					${styles}
-					${links}
-					</head>
-					<body>
-					${printContents}
-					<script defer>
-						function triggerPrint(event) {
-						window.removeEventListener('load', triggerPrint, false);
-						setTimeout(function() {
-							closeWindow(window.print());
-						}, ${this.printDelay});
-						}
-						function closeWindow(){
-							window.close();
-						}
-						window.addEventListener('load', triggerPrint, false);
-					<${endscripttag}>
-					</body>
-				</html>`);
-				popupWin.document.close();
-			}
+      this.printContent(printContents, styles, links);
+      this.checkToken();
 		},
-		getCurrentTime(){
-			return new Date(this.order.created).toLocaleTimeString();
+
+		getCurrentTime(date: Date){
+			return new Date(date).toLocaleTimeString();
 		},
-		getCurrentDate(){
-			return new Date(this.order.created).toDateString();
+
+		getCurrentDate(date: Date){
+			return new Date(date).toDateString();
 		},
+
 		getItemTotal: function(price: string, quantity: string): string {
 			return (parseFloat(price)*parseFloat(quantity)).toFixed(2);
-
 		},
+
 		getProductName: function(orderItem: any) {
 			return orderItem.batch.product_variant.product.name;
 		},
+
 		getOperatorFullName: function() {
 			const firstname = this.operator.first_name!==undefined?this.operator.first_name:'';
 			const lastname = this.operator.last_name!==undefined?this.operator.last_name:'';
 			return `${firstname} ${lastname}`;
 		},
+
 		getCustomerFullName: function() {
 			const firstname = this.customer.first_name!==undefined?this.customer.first_name:'';
 			const lastname = this.customer.last_name!==undefined?this.customer.last_name:'';
 			return `${firstname} ${lastname}`;
 		},
+
 		trimNumber: function(value: string) {
 			return parseFloat(value).toFixed(2);
 
 		},
+
+    printContent: function(htmlcontent: string, styles: string, links: string) {
+
+      const endscripttag = "/script"
+      const popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto,focused=false");
+        
+      if (popupWin) {
+        popupWin.document.open()
+        popupWin.document.write(`
+        <html>
+          <head>
+          <title></title>
+          ${styles}
+          ${links}
+          </head>
+          <body>
+          ${htmlcontent}
+          <script defer>
+            function triggerPrint(event) {
+            window.removeEventListener('load', triggerPrint, false);
+            setTimeout(function() {
+              closeWindow(window.print());
+            }, ${this.printDelay});
+            }
+            function closeWindow(){
+              window.close();
+            }
+            window.addEventListener('load', triggerPrint, false);
+          <${endscripttag}>
+          </body>
+        </html>`);
+        popupWin.document.close();
+      }
+    },
+
+    checkToken: function () {
+      if (this.order.order_item) {
+        for (const orderItem of this.order.order_item) {
+          if (orderItem.batch.product_variant.product.token) {
+            this.printToken(orderItem, this.order.created)
+          }
+        }
+      }
+    },
+
+    printToken: function (orderItem: OrderItem, created: Date) {
+      if (orderItem.price &&
+      orderItem.quantity &&
+      orderItem.batch &&
+      typeof orderItem.batch !== 'number' &&
+      orderItem.batch.product_variant &&
+      typeof orderItem.batch.product_variant !== 'number' &&
+      orderItem.batch.product_variant.product &&
+      typeof orderItem.batch.product_variant.product !== 'number' &&
+        orderItem.batch.product_variant.product.name) {
+          let styles = '', links = '';
+        styles = `
+        <style>
+        @page {
+          size: 80mm;
+          margin: 0
+        }
+        .company-info{
+          display: flex;
+          flex-wrap: nowrap;
+          flex-direction: column;
+          align-content: center;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .maindiv-print {
+          padding: 4px;
+          max-width: 800px;
+        }
+
+        #header-section {
+          display: grid;
+          grid-template-columns: 1fr 2fr;
+          grid-template-rows: 1fr;
+          gap: 0.1em 0.1em;
+        }
+
+        #date-section {
+          display: grid;
+          grid-template-columns: 1fr 2fr;
+          grid-template-rows: 1fr;
+          gap: 0.1em 0.1em;
+        }
+
+        #order-items-section table {
+          border-collapse: separate;
+        }
+
+        #order-items-section th {
+          border: 1px solid black;
+          text-align: center;
+          padding: 1px;
+        }
+
+        #order-items-section td {
+          border: none;
+          text-align: center;
+          padding: 1px;
+        }
+
+        #order-items-section tr:nth-child(even) {
+          background-color: white;
+        }
+
+        #totals-section {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr;
+          gap: 0.1em 0.1em;
+        }
+
+        #totals-section p {
+          text-align: right;
+        }
+
+        #totals-section td {
+          border: none;
+          text-align: right;
+          padding: 1px;
+        }
+
+        #totals-section tr:nth-child(even) {
+          background-color: white;
+        }
+
+        .mb-5 {
+          border-bottom: 2px solid black;
+          padding-bottom: 5px;
+        }
+        </style>
+        `;
+        links = this.getElementTag('link');
+        const printContents = `
+        <div id="TokenPreview">
+          <p class="text-center" style="font-size: 20px; text-align: center;"><strong>Rohi Sweets & Bakers</strong></p>
+          <p class="text-center" style="margin: 10px 0px 10px; text-align: center;">
+            <span style="border: 1px solid black; padding: 2px 20px;">30806</span>
+          </p>
+          <div id="order-items-section">
+            <table>
+              <colgroup>
+                <col span="1" style="width: 20%;">
+                <col span="1" style="width: 70%;">
+                <col span="1" style="width: 10%;">
+              </colgroup>
+
+              <tr>
+                <th>قیمت</th>
+                <th style="text-align: right;">تفصیل</th>
+                <th>تعداد</th>
+              </tr>
+
+              <tr>
+                <td>${this.trimNumber(orderItem.price)}</td>
+                <td style="text-align: right;">${orderItem.batch.product_variant.product.name}</td>
+                <td>${this.trimNumber(orderItem.quantity)}</td>
+              </tr>
+            </table>
+          </div>
+          <hr class="dashed">
+          <div class="mb-5">${this.getItemTotal(orderItem.price, orderItem.quantity)}</div>
+          <div id="date-section">
+            <p class="text-center">${this.getCurrentTime(created)}</p>
+            <p class="text-center">${this.getCurrentDate(created)}</p>
+          </div>
+        </div>
+        `;
+        this.printContent(printContents, styles, links);
+      }
+    },
+
+    sleep: function (ms: number) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+
 		...mapActions({
 			fetchOrder: ActionTypes.FETCH_ORDER,
 			clearOrder: ActionTypes.CHANGE_ORDER_STATUS
@@ -243,6 +369,7 @@ export default defineComponent({
 			})
 			return sum.toFixed(2);
 		},
+
 		change: function(): string {
 			return (parseFloat(this.order.amount_received) - parseFloat(this.order.total)).toFixed(2);
 		},
@@ -254,18 +381,23 @@ export default defineComponent({
 	},
 	props:{
 		orderId: {
-			default: 0
+			default: 0,
 		},
 		customer: {
 			default: {
 				first_name:'',
 				last_name:'',
-				user_type: 'WALK_IN_CUSTOMER'
+				user_type: 'WALK_IN_CUSTOMER',
 			}
-		}
+		},
+    print: {
+      default: true,
+    },
 	},
 	mounted: function () {
-		this.printBill();
+    if (this.print) {
+      this.printBill();
+    }
 	},
 	beforeMount: async function() {
 		await this.fetchOrder(this.orderId);
