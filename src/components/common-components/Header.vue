@@ -100,7 +100,6 @@ export default defineComponent({
       userdata: 'getUser',
       orders: 'getListOfOrders',
       user_company: 'getUserCompany',
-      socket: 'getSocketIO'
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -195,10 +194,6 @@ export default defineComponent({
   },
   beforeMount: async function() {
     await this.getuserdate();
-    // if(!this.socket){
-    // this.connect_socket_io(this.user_company.id);
-    // }
-    // debugger
   },
 });
 </script>

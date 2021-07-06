@@ -20,7 +20,6 @@ export default defineComponent({
     },
     methods:{
         ...mapActions({
-            connect_socket_io: ActionTypes.SOCKET_IO,
             userdata: ActionTypes.USER_DATA
         })
     },
