@@ -98,7 +98,9 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       userdata: 'getUser',
-      orders: 'getListOfOrders'
+      orders: 'getListOfOrders',
+      user_company: 'getUserCompany',
+      socket: 'getSocketIO'
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -191,8 +193,12 @@ export default defineComponent({
       this.logoutUser();
     }
   },
-  created() {
-    this.getuserdate();
+  beforeMount: async function() {
+    await this.getuserdate();
+    // if(!this.socket){
+    // this.connect_socket_io(this.user_company.id);
+    // }
+    // debugger
   },
 });
 </script>

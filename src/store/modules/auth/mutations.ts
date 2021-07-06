@@ -15,6 +15,7 @@ export enum MutationTypes {
   SetTransactions = "SET_TRANSACTIONS",
   SetExpense = "SET_EXPENSE",
   SetError = "SET_AUTH_ERROR",
+  AppendNotification = "APPEND_NOTIFICATION"
 }
 
 export type Mutations = {
@@ -28,6 +29,7 @@ export type Mutations = {
   [MutationTypes.SetTransactions](state: State, transactions: Transaction[]): void;
   [MutationTypes.SetExpense](state: State, transactions: Transaction): void;
   [MutationTypes.SetError](state: State, error: any): void;
+  [MutationTypes.AppendNotification](state: State, notification: Notification): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -61,5 +63,8 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetError](state: State, error: any) {
     state.error = error;
+  },
+  [MutationTypes.AppendNotification](state: State, notification: Notification) {
+    state.notifications.push(notification);
   }
 }
