@@ -1,13 +1,10 @@
 <template>
   <div class="hello">
-    <div v-if="getToken">
+    <template v-if="getToken">
       <Header />
-      <router-view class="page-mr" />
-      <p class="coaldev-name">Created by CoalDev</p>
-    </div>
-    <div v-else>
-      <Login/>
-    </div>
+    </template>
+    <router-view class="page-mr" />
+    <p class="coaldev-name">Created by CoalDev</p>
     <ErrorHandler v-if="getError"></ErrorHandler>
   </div>
 </template>
@@ -18,14 +15,12 @@ import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 
 import Header from './common-components/Header.vue';
-import Login from './auth/Login.vue';
 import ErrorHandler from './common-components/ErrorHandler.vue'
 
 export default defineComponent({
   name: 'App',
   components: { 
     Header,
-    Login,
     ErrorHandler,
   },
   computed: {

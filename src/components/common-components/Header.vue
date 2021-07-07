@@ -171,7 +171,6 @@ export default defineComponent({
     },
 
     ...mapActions({
-      logoutUser: ActionTypes.LOGOUT_USER,
       getuserdate: ActionTypes.USER_DATA,
       fetchOrders: OrderActionTypes.FETCH_ORDERS,
     }),
@@ -188,7 +187,7 @@ export default defineComponent({
     },
 
     logout() {
-      this.logoutUser();
+      this.$router.push({name: 'logout'});
     }
   },
   beforeMount: async function() {

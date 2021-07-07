@@ -23,7 +23,10 @@ import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
 import ExpenseSummary from "./components/admin/ExpenseSummary.vue";
 import Expense from "./components/admin/Expense.vue";
-import { admin, redirectToAdmin, superAdmin, salesStaff, storeAdmin, manager } from  '@/permissions';
+import Login from './components/auth/Login.vue';
+import { redirectToAdmin, superAdmin, storeAdmin, manager } from  '@/permissions';
+import { store } from '@/store';
+import { ActionTypes } from '@/store/modules/auth/actions'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -32,6 +35,29 @@ const routes: Array<RouteRecordRaw> = [
     name: "Order",
     component: Order,
     beforeEnter: redirectToAdmin
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      if ('token' in localStorage) {
+        next('/');
+      } else {
+        next();
+      }
+    }
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: {
+      template: '<h1>logout</h1>'
+    },
+    beforeEnter: (to, form, next) => {
+      store.dispatch(ActionTypes.LOGOUT_USER);
+      next('/login')
+    }
   },
   {
     path: "/admin/order",
