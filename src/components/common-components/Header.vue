@@ -73,6 +73,22 @@
         <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
         <strong v-else >{{ userdata.username }}</strong>
       </span>
+      <div class="notification" @click="notificationPanel = !notificationPanel">
+        <span><img src="../../assets/bell.png" height="30"></span>
+        <span class="badge">3</span>
+      </div>
+      <div v-show="notificationPanel" class="search-result-upper notification-panel">
+        <ul class="search-result">
+          <li
+            class="single-search-item"
+            v-for="order in orders" v-bind:key="order.id"
+            @click="orderDetails(order.id)"
+          >
+            <span><strong>#{{order.id}}</strong></span>
+            <span>{{onlyDate(order.created)}}</span>
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="logout">
         <button class="btn btn-orange" @click="logout">Logout</button>
@@ -92,7 +108,8 @@ export default defineComponent({
     return{
       orderSearch: '',
       showResult: false,
-      orderDate: ''
+      notificationPanel: false,
+      orderDate: '',
     }
   },
   computed: {
@@ -290,5 +307,42 @@ export default defineComponent({
 
   .order-search-btn {
     width: 20%;
+  }
+
+  // Notifiction icon
+  .notification {
+    padding: 8px;
+    margin: 12px;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    border-radius: 20px;
+    background-color: $white-color;
+  }
+
+  .notification:hover {
+    cursor: pointer;
+  }
+
+  .notification .badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background-color: $primary-color;
+    color: $white-color;
+  }
+
+  .notification-panel {
+    right: 11%;
+    top: 12%;
+  }
+
+  @media screen and (min-width: 1900px) {
+    .notification-panel {
+      right: 10%;
+      top: 6%;
+    }
   }
 </style>
