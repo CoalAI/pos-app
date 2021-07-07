@@ -15,6 +15,7 @@ import Vendor from "./components/admin/Vendor.vue";
 import VendorAddEdit from "./components/admin/VendorAddEdit.vue";
 import NotFound from "./components/common-components/NotFound.vue";
 import Settings from "./components/common-components/Settings.vue";
+import Notifications from "./components/common-components/Notifications.vue";
 import Request from "./components/sales/Request.vue";
 import RequestDetail from "./components/sales/RequestDetail.vue";
 import Response from "./components/sales/Response.vue";
@@ -204,6 +205,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Response",
     component: Response,
     beforeEnter: manager
+  },
+  {
+    path: '/notification',
+    name: "Notificaiton",
+    component: Notifications
   }
 ];
 
