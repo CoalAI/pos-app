@@ -81,11 +81,13 @@
         <ul class="search-result">
           <li
             class="single-search-item"
-            v-for="order in orders" v-bind:key="order.id"
-            @click="orderDetails(order.id)"
-          >
-            <span><strong>#{{order.id}}</strong></span>
-            <span>{{onlyDate(order.created)}}</span>
+            v-for="notification in messages" v-bind:key="notification.id">
+            <span><strong>{{notification.message}}</strong></span>
+            <span>{{onlyDate(notification.created)}}</span>
+            <span v-if="!notification.read" class="dot"></span>
+          </li>
+          <li>
+            <router-link to="/notification" @click="notificationPanel = false"><p class="text-center">See More</p></router-link>
           </li>
         </ul>
       </div>
@@ -115,7 +117,8 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       userdata: 'getUser',
-      orders: 'getListOfOrders'
+      orders: 'getListOfOrders',
+      messages: 'getNotifications',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -210,6 +213,7 @@ export default defineComponent({
   },
   beforeMount: async function() {
     await this.getuserdate();
+    this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
   },
 });
 </script>
@@ -344,5 +348,13 @@ export default defineComponent({
       right: 10%;
       top: 6%;
     }
+  }
+
+  .dot {
+    height: 8px;
+    width: 8px;
+    background-color: $primary-color;
+    border-radius: 50%;
+    display: inline-block;
   }
 </style>
