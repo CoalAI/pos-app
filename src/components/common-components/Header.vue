@@ -191,8 +191,8 @@ export default defineComponent({
       this.logoutUser();
     }
   },
-  created() {
-    this.getuserdate();
+  beforeMount: async function() {
+    await this.getuserdate();
   },
 });
 </script>
