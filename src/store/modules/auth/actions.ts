@@ -6,7 +6,6 @@ import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Company } from '@/store/models/company';
 import { Transaction } from "@/store/models/transaction";
-import { io } from 'socket.io-client'
 
 
 export enum ActionTypes {
@@ -28,7 +27,7 @@ export enum ActionTypes {
   FETCH_VENDORS = "FETCH_VENDORS",
   FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
-  SOCKET_IO = "SOCKET_notification"
+  SOCKET_notification = "SOCKET_notification"
 }
 
 export type AugmentedActionContext = {
@@ -59,7 +58,7 @@ export interface Actions {
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
-  [ActionTypes.SOCKET_IO]({ commit }: AugmentedActionContext, data: any): void;
+  [ActionTypes.SOCKET_notification]({ commit }: AugmentedActionContext, data: any): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -254,7 +253,7 @@ Actions = {
   async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
     commit(MutationTypes.SetError, error);
   },
-  [ActionTypes.SOCKET_IO]({ commit }: AugmentedActionContext, data: Notification) {
+  [ActionTypes.SOCKET_notification]({ commit }: AugmentedActionContext, data: Notification) {
     commit(MutationTypes.AppendNotification, data);
   }
 };

@@ -1,13 +1,12 @@
 import { GetterTree } from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User } from '@/store/models/user';
-import { state, State } from './state';
+import { State } from './state';
 import { Company } from "@/store/models/company";
 import { Transaction } from "@/store/models/transaction";
 
 export interface Getters {
   getUser(state: State): User;
-  getUserCompany(state: State): Company | number | undefined;
   getToken(state: State): string;
   getListOfUsers(state: State): User[];
   getListOfVendors(state: State): User[];
@@ -34,7 +33,6 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getUser: (state: State) => {
     return state.user;
   },
-  getUserCompany: (state: State) => state.user.company,
   getToken: (state: State) => {
     return state.token;
   },
@@ -83,5 +81,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getTransactions: (state: State) => state.transactions,
   getExpense: (state: State)  => state.expense,
   getAuthFieldError: (state: State) => state.error,
-  getNotifications: (state: State) => state.notifications,
+  getNotifications: (state: State) => state.notifications.reverse(),
 };

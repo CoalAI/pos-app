@@ -12,7 +12,6 @@ export type State = {
     companies: Company[];
     transactions: Transaction[];
     expense: Transaction;
-    socket: any;
     notifications: Notification[];
     error: any;
 
@@ -27,7 +26,6 @@ export const state: State = {
   companies: [],
   transactions: [],
   expense: {},
-  socket: {},
   notifications: [],
   error: {},
   

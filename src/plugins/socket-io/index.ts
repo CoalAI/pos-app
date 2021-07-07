@@ -50,16 +50,3 @@ export default class VueSocketIO {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

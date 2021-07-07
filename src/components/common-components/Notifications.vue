@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, inject } from 'vue'
+import { defineComponent } from 'vue'
 import {ActionTypes} from '@/store/modules/auth/actions'
 import {mapActions, mapGetters} from 'vuex'
 
@@ -14,7 +14,6 @@ export default defineComponent({
     computed:{
         ...mapGetters({
             user: 'getUser',
-            user_company: 'getUserCompany',
             messages: 'getNotifications'
         })
     },
@@ -25,7 +24,7 @@ export default defineComponent({
     },
     beforeMount: async function(){
         await this.userdata();
-        this.$socket.emit('client_info', {id: this.user.id, company: this.user_company.id});
+        this.$socket.emit('client_info', {id: this.user.id, company: this.user.company.id});
     }
 })
 </script>
