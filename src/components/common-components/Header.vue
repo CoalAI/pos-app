@@ -98,8 +98,7 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       userdata: 'getUser',
-      orders: 'getListOfOrders',
-      user_company: 'getUserCompany',
+      orders: 'getListOfOrders'
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
