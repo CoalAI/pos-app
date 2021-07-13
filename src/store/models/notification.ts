@@ -6,4 +6,5 @@ export interface Notification extends DatesInterface {
   message?: string;
   read?: boolean;
   remove?: boolean;
+  notif_type?: string;
 }

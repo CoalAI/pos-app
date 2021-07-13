@@ -1,7 +1,7 @@
 <template>
   <div id="notification">
     <div class="diff-shadow">
-      <h2>Notification</h2>
+      <h2>Notification (To be implemented)</h2>
       <ul id="messages">
         <li v-for="(message, index) in messages" :key="message.id">{{index}}</li>
       </ul>

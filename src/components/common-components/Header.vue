@@ -75,16 +75,25 @@
       </span>
       <div class="notification" @click="notificationPanel = !notificationPanel">
         <span><img src="../../assets/bell.png" height="30"></span>
-        <span class="badge">3</span>
+        <span v-if="messages.length > 0" class="badge">{{messages.length}}</span>
       </div>
       <div v-show="notificationPanel" class="search-result-upper notification-panel">
         <ul class="search-result">
           <li
             class="single-search-item"
             v-for="notification in messages" v-bind:key="notification.id">
-            <span><strong>{{notification.message}}</strong></span>
-            <span>{{onlyDate(notification.created)}}</span>
-            <span v-if="!notification.read" class="dot"></span>
+            <router-link :to="findNotificationURL(notification.notif_type)">
+              <div class="flex-box ">
+                <img :src="findImageURL(notification.notif_type)" height="25">
+                <div style="float: right; margin-left: 10px;">
+                  <p>{{notification.message}}</p>
+                  <p style="font-size: 12px">
+                    <span>{{onlyDate(notification.created)}}</span>
+                    <span v-if="notification.read" style="margin-left: 10px" class="dot"></span>
+                  </p>
+                </div>
+              </div>
+            </router-link>
           </li>
           <li>
             <router-link to="/notification" @click="notificationPanel = false"><p class="text-center">See More</p></router-link>
@@ -103,6 +112,7 @@ import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions'
+import { Notification } from '@/store/models/notification';
 
 export default defineComponent({
   name: 'Header',
@@ -162,6 +172,25 @@ export default defineComponent({
       this.orderSearch = '';
       this.showResult = false;
       this.orderDate = '';
+    },
+
+    findNotificationURL: function (type: string) {
+      if (type === 'REQUEST' || type === 'RESPONSE') {
+        return '/response';
+      } else if (type === 'INV_QUANTITY') {
+        return '/inventory';
+      }
+    },
+
+    findImageURL: function (type: string) {
+      const images = require.context('../../assets/', false, /\.png$/)
+      if (type === 'REQUEST') {
+        return images('./email.png');
+      } else if (type === 'RESPONSE') {
+        return images('./arrow.png');
+      } else if (type === 'INV_QUANTITY') {
+        return images('./overflow.png');
+      }
     },
 
     searchOrder: function () {
