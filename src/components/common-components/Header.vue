@@ -73,6 +73,33 @@
         <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
         <strong v-else >{{ userdata.username }}</strong>
       </span>
+      <div class="notification" @click="notificationPanel = !notificationPanel">
+        <span><img src="../../assets/bell.png" height="30"></span>
+        <span v-if="messages.length > 0" class="badge">{{messages.length}}</span>
+      </div>
+      <div v-show="notificationPanel" class="search-result-upper notification-panel">
+        <ul class="search-result">
+          <li
+            class="single-search-item"
+            v-for="notification in messages" v-bind:key="notification.id">
+            <router-link :to="findNotificationURL(notification.notif_type)">
+              <div class="flex-box ">
+                <img :src="findImageURL(notification.notif_type)" height="25">
+                <div style="float: right; margin-left: 10px;">
+                  <p>{{notification.message}}</p>
+                  <p style="font-size: 12px">
+                    <span>{{onlyDate(notification.created)}}</span>
+                    <span v-if="notification.read" style="margin-left: 10px" class="dot"></span>
+                  </p>
+                </div>
+              </div>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/notification" @click="notificationPanel = false"><p class="text-center">See More</p></router-link>
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="logout">
         <button class="btn btn-orange" @click="logout">Logout</button>
@@ -85,6 +112,7 @@ import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions'
+import { Notification } from '@/store/models/notification';
 
 export default defineComponent({
   name: 'Header',
@@ -92,13 +120,15 @@ export default defineComponent({
     return{
       orderSearch: '',
       showResult: false,
-      orderDate: ''
+      notificationPanel: false,
+      orderDate: '',
     }
   },
   computed: {
     ...mapGetters({
       userdata: 'getUser',
-      orders: 'getListOfOrders'
+      orders: 'getListOfOrders',
+      messages: 'getNotifications',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -142,6 +172,25 @@ export default defineComponent({
       this.orderSearch = '';
       this.showResult = false;
       this.orderDate = '';
+    },
+
+    findNotificationURL: function (type: string) {
+      if (type === 'REQUEST' || type === 'RESPONSE') {
+        return '/response';
+      } else if (type === 'INV_QUANTITY') {
+        return '/inventory';
+      }
+    },
+
+    findImageURL: function (type: string) {
+      const images = require.context('../../assets/', false, /\.png$/)
+      if (type === 'REQUEST') {
+        return images('./email.png');
+      } else if (type === 'RESPONSE') {
+        return images('./arrow.png');
+      } else if (type === 'INV_QUANTITY') {
+        return images('./overflow.png');
+      }
     },
 
     searchOrder: function () {
@@ -192,6 +241,7 @@ export default defineComponent({
   },
   beforeMount: async function() {
     await this.getuserdate();
+    this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
   },
 });
 </script>
@@ -289,5 +339,50 @@ export default defineComponent({
 
   .order-search-btn {
     width: 20%;
+  }
+
+  // Notifiction icon
+  .notification {
+    padding: 8px;
+    margin: 12px;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    border-radius: 20px;
+    background-color: $white-color;
+  }
+
+  .notification:hover {
+    cursor: pointer;
+  }
+
+  .notification .badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background-color: $primary-color;
+    color: $white-color;
+  }
+
+  .notification-panel {
+    right: 11%;
+    top: 12%;
+  }
+
+  @media screen and (min-width: 1900px) {
+    .notification-panel {
+      right: 10%;
+      top: 6%;
+    }
+  }
+
+  .dot {
+    height: 8px;
+    width: 8px;
+    background-color: $primary-color;
+    border-radius: 50%;
+    display: inline-block;
   }
 </style>

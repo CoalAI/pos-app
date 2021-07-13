@@ -9,6 +9,7 @@
           class="custom-select"
           v-model="company"
           @change="onChangeCompany"
+          size="3"
         >
           <option value="">All</option>
           <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
@@ -119,7 +120,7 @@ export default defineComponent({
 
     ...mapActions({
       fetchInventory: ActionTypes.FETCH_INVENTORY,
-      fetchCompanies: AuthActionTypes.FETCH_COMPANIES
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES
     })
   },
   async beforeMount () {

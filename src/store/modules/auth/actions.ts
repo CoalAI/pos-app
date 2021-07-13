@@ -21,6 +21,7 @@ export enum ActionTypes {
   CREATE_EXPENSE = "CREATE_EXPENSE",
   FETCH_TYPES = "FETCH_TYPES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
+  FETCH_ALL_COMPANIES = "FETCH_ALL_COMPANIES",
   CREATE_COMPANY = "CREATE_COMPANY",
   UPDATE_COMPANY = "UPDATE_COMPANY",
   DELETE_COMPANY = "DELETE_COMPANY",
@@ -52,6 +53,7 @@ export interface Actions {
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
+  [ActionTypes.FETCH_ALL_COMPANIES]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
@@ -176,6 +178,30 @@ Actions = {
     if (isAxiosResponse(response)) {
       if (response.data.results) {
         commit(MutationTypes.SetCompanies, response.data.results)
+      }
+    }
+    if(isAxiosError(response)) {
+      if(response.response && response.response.data){
+        commit('setError', response.response.data, {root: true});
+      }
+    }
+  },
+  async [ActionTypes.FETCH_ALL_COMPANIES]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'company/', true);
+    if (isAxiosResponse(response)) {
+      if (response.data.results) {
+        commit(MutationTypes.SetCompanies, response.data.results);
+        debugger
+        let num = 2;
+        while (num <= Math.ceil(response.data.count/10)) {
+          const response = await serverRequest('get', 'company/', true, undefined, {page: num});
+          if (isAxiosResponse(response)) {
+            if (response.data.results) {
+              commit(MutationTypes.AppendCompany, response.data.results)
+            }
+          }
+          num += 1;
+        }
       }
     }
     if(isAxiosError(response)) {
