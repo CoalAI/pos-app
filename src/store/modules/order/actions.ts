@@ -91,7 +91,7 @@ Actions = {
     if (name === '') {
       commit(MutationTypes.SetProductResults, []);
     } else {
-      const response = await serverRequest('get', 'product/', true, undefined, {name__istartswith: name});
+      const response = await serverRequest('get', 'product/', true, undefined, {name__contains: name});
       if (isAxiosResponse(response)) {
         commit(MutationTypes.SetProductResults, response.data.results);
       }
