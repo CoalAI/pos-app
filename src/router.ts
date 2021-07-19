@@ -123,12 +123,6 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: storeAdmin,
   },
   {
-    path: "/batch/create",
-    name: "",
-    component: AddEditBatch,
-    beforeEnter: storeAdmin,
-  },
-  {
     path: "/batch/edit/:productId/:productVariantId/:batchId",
     name: "EditBatch",
     component: AddEditBatch,
