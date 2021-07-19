@@ -35,6 +35,7 @@
               :min="0"
               v-model="product.quantity"
               @input="changeProductQuantity"
+              ref="quantity"
             />
             <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
           </div>
@@ -887,7 +888,7 @@ export default defineComponent({
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
       const batchId = this.productBatchSelect.length > 0 ? (this.productBatchSelect[0] as Batch).id : undefined;
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
-      (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
+      (this.$refs.quantity as HTMLSelectElement & { focus: () => void }).focus();
     },
 
     selectCustomer: function(customer: User){
@@ -1087,10 +1088,15 @@ export default defineComponent({
       this.searchProductByName(this.product.name);
     },
 
-    searchByBarcode: function (event: Event) {
-
-      this.searchProductByBarcode(this.product.barCode);
-
+    searchByBarcode: async function (event: Event) {
+      await this.searchProductByBarcode(this.product.barCode);
+      
+      if(this.productResult.length === 1){
+      const searchedProduct: Product = this.productResult[0];
+      if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
+          await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
+      }
+      
     },
 
     sumQuantity: function (item: ProductVariant): number {
