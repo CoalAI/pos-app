@@ -2,7 +2,7 @@
   <div class="diff-shadow">
     <h2>Batches</h2>
     <div class="search-grid-list-pages">
-        <router-link to="/batch/create" class="btn btn-orange add-btn-width">Add New Batch</router-link>
+        <p></p>
         <div class="float-right">
           <form class="flex-box">
             <input
