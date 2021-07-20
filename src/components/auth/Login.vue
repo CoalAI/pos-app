@@ -4,7 +4,7 @@
     <!-- <img src="../../assets/logo.png" alt="coaldev"> -->
     <div class="wrapper mr-6">
       <div class="col">
-        <form>
+        <form method="POST" @submit="(e) => e.preventDefault()">
           <div class="flex-box">
             <label class="pad-label" for="username">
               <strong>Username:</strong>
@@ -33,14 +33,14 @@
             />
           </div>
           <span v-if="loginValidation" class="form-error">{{ loginValidation }}</span>
-        </form>
 
-        <button class="btn btn-orange btn-lg"
-        @click="submitLogin">Login</button>
-        <a href="forgetpassword">
-          <span>Forget Password?</span>
-        </a>
-         <Loader v-show="showLoader"/>
+          <input
+          type="submit"
+          class="btn btn-orange btn-lg"
+          @click="submitLogin"
+          value="login"/>
+        </form>
+        <Loader v-show="showLoader"/>
       </div>
     </div>
   </div>
@@ -81,8 +81,10 @@ export default defineComponent({
         this.loginUser({
           username: this.username,
           password: this.password
-        }).finally(()=>this.showLoader=false)
-        
+        }).finally(()=> {
+          this.showLoader=false;
+          this.$router.push({name: 'Order'});
+        });
       }
     },
   },

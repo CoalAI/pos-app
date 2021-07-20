@@ -7,6 +7,7 @@ import { State } from './state';
 import { Company } from '@/store/models/company';
 import { Transaction } from "@/store/models/transaction";
 
+
 export enum ActionTypes {
   FETCH_TOEKN = "FETCH_TOEKN",
   LOGIN_USER = "LOGIN_USER",
@@ -20,13 +21,14 @@ export enum ActionTypes {
   CREATE_EXPENSE = "CREATE_EXPENSE",
   FETCH_TYPES = "FETCH_TYPES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
+  FETCH_ALL_COMPANIES = "FETCH_ALL_COMPANIES",
   CREATE_COMPANY = "CREATE_COMPANY",
   UPDATE_COMPANY = "UPDATE_COMPANY",
   DELETE_COMPANY = "DELETE_COMPANY",
   FETCH_VENDORS = "FETCH_VENDORS",
   FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
-
+  SOCKET_notification = "SOCKET_notification"
 }
 
 export type AugmentedActionContext = {
@@ -47,18 +49,18 @@ export interface Actions {
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
-
   [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string }): void;
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
+  [ActionTypes.FETCH_ALL_COMPANIES]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
-
+  [ActionTypes.SOCKET_notification]({ commit }: AugmentedActionContext, data: any): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -145,6 +147,7 @@ Actions = {
   },
   async [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string}) {
     const response = await serverRequest('get', 'user/', true, undefined, options);
+    commit(MutationTypes.SetListOfUsers, {});
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
         const usersData = response.data.results;
@@ -162,7 +165,6 @@ Actions = {
       commit('setError', response.message , {root: true});
     }
   },
-
   async [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext) {
     const response = await serverRequest('get', 'type/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
@@ -174,8 +176,32 @@ Actions = {
   async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}) {
     const response = await serverRequest('get', 'company/', true, undefined, options);
     if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
+      if (response.data.results) {
         commit(MutationTypes.SetCompanies, response.data.results)
+      }
+    }
+    if(isAxiosError(response)) {
+      if(response.response && response.response.data){
+        commit('setError', response.response.data, {root: true});
+      }
+    }
+  },
+  async [ActionTypes.FETCH_ALL_COMPANIES]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'company/', true);
+    if (isAxiosResponse(response)) {
+      if (response.data.results) {
+        commit(MutationTypes.SetCompanies, response.data.results);
+        debugger
+        let num = 2;
+        while (num <= Math.ceil(response.data.count/10)) {
+          const response = await serverRequest('get', 'company/', true, undefined, {page: num});
+          if (isAxiosResponse(response)) {
+            if (response.data.results) {
+              commit(MutationTypes.AppendCompany, response.data.results)
+            }
+          }
+          num += 1;
+        }
       }
     }
     if(isAxiosError(response)) {
@@ -223,7 +249,7 @@ Actions = {
       response = await serverRequest('get', 'vendor/', true, undefined, undefined);
     }
     if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
+      if (response.data.results) {
         commit(MutationTypes.SetListOfVendors, response.data.results)
       }
     }
@@ -253,4 +279,7 @@ Actions = {
   async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
     commit(MutationTypes.SetError, error);
   },
+  [ActionTypes.SOCKET_notification]({ commit }: AugmentedActionContext, data: Notification) {
+    commit(MutationTypes.AppendNotification, data);
+  }
 };

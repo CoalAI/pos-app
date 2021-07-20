@@ -13,10 +13,12 @@ export enum ActionTypes {
   SEARCH_PRODUCT_BY_NAME = "SEARCH_PRODUCT_BY_NAME",
   SEARCH_PRODUCT_BY_BARCODE = "SEARCH_PRODUCT_BY_BARCODE",
   FETCH_ORDERS = "FETCH_ORDERS",
+  FETCH_ORDER = "FETCH_ORDER",
   FETCH_ORDER_STATUSES = "FETCH_ORDER_STATUSES",
   CREATE_ORDER = "CREATE_ORDER",
   CHANGE_ORDER_STATUS = "CHANGE_ORDER_STATUS",
   GET_PRODUCTS = "GET_PRODUCTS",
+  GET_PRODUCTS_BY_PAGE = "GET_PRODUCTS_BY_PAGE",
   GET_UNITS = "GET_UNITS",
   CREATE_PRODUCT = "CREATE_PRODUCT",
   UPDATE_PRODUCT = "UPDATE_PRODUCT",
@@ -59,10 +61,12 @@ export interface Actions {
       created?: Date;
     }
   ): void;
+  [ActionTypes.FETCH_ORDER]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
   [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.GET_PRODUCTS_BY_PAGE]({ commit }: AugmentedActionContext, page?: number): void;
   [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product): void;
   [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}): void;
@@ -87,7 +91,7 @@ Actions = {
     if (name === '') {
       commit(MutationTypes.SetProductResults, []);
     } else {
-      const response = await serverRequest('get', 'product/', true, undefined, {name__istartswith: name});
+      const response = await serverRequest('get', 'product/', true, undefined, {name__contains: name});
       if (isAxiosResponse(response)) {
         commit(MutationTypes.SetProductResults, response.data.results);
       }
@@ -128,6 +132,15 @@ Actions = {
       commit('setError', 'Failed to fetch orders!', {root: true});
     }
   },
+  async [ActionTypes.FETCH_ORDER]({ commit }: AugmentedActionContext, id: string){
+    const response = await serverRequest('get', `order/${id}`, true, undefined, undefined);
+    if (isAxiosResponse(response) && response.data.results.length===1) {
+      commit(MutationTypes.SetOrder, response.data.results[0]);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', `Failed to fetch order with id: ${id} !`, {root: true});
+    }
+  },
   async [ActionTypes.FETCH_ORDER_STATUSES]({ commit }: AugmentedActionContext) {
     const response = await serverRequest('get', 'order-type/', true);
     if (isAxiosResponse(response)) {
@@ -140,7 +153,9 @@ Actions = {
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
     const response = await serverRequest('post', 'order/', true, order);
     if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetOrder, response.data);
+      const response2 = await serverRequest('get', `order/${response.data.id}`, true);
+      if(isAxiosResponse(response2) && response2.data.results && response2.data.results.length === 1 )
+        commit(MutationTypes.SetOrder, response2.data.results[0]);
       commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
       commit(MutationTypes.SetError, {});  
     }
@@ -157,12 +172,30 @@ Actions = {
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {
     commit(MutationTypes.SetOrderStatus, value);
+    commit(MutationTypes.SetOrder, {});
   },
   async [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string) {
     let response;
     if (search) {
       response = await serverRequest('get', 'product/', true, undefined, {search: search});
-    } else {
+    }else{
+      response = await serverRequest('get', 'product/', true, undefined, undefined);
+    }
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfProducts, response.data.results);
+      if(!search){
+        commit(MutationTypes.SetProductsCount, response.data.count);
+      }
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.GET_PRODUCTS_BY_PAGE]({ commit }: AugmentedActionContext, page?: number) {
+    let response;
+    if (page) {
+      response = await serverRequest('get', 'product/', true, undefined, {page: page});
+    }else{
       response = await serverRequest('get', 'product/', true, undefined, undefined);
     }
     if (isAxiosResponse(response)) {

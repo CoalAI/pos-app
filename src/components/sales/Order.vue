@@ -14,9 +14,10 @@
               name="barcode"
               :maxlength="BarCodeMaxLength"
               v-model="product.barCode"
-              @input="searchByBarcode"
+              v-debounce:250="searchByBarcode"
               ref="barcode"
               v-focus
+              autocomplete="off"
             />
             <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
           </div>
@@ -34,6 +35,7 @@
               :min="0"
               v-model="product.quantity"
               @input="changeProductQuantity"
+              ref="quantity"
             />
             <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
           </div>
@@ -72,7 +74,6 @@
               v-model="product.buyPrice"
               @input="changeProductPrice"
             />
-            <!-- <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span> -->
           </div>
           
           
@@ -237,14 +238,14 @@
             <span class="checkmark"></span>
           </label>
         </div>
-        <div v-if="paymentMethod === 'credit'">
+        <div v-if="paymentMethod === 'credit'" @mouseout="showCustDropdown=false" @mouseover="showCustDropdown=true">
           <input
               type="text"
               tabindex="1"
               placeholder="Search Walk-In Customer"
               name="barcode"
               v-model="customersearch"
-              @focus="showCustDropdown=!showCustDropdown"
+              @mouseover="showCustDropdown=true"
               @input="searchCustomer"
               autocomplete="off"
             />
@@ -273,7 +274,7 @@
               <input
                 type="text"
                 name="total_amount"
-                v-bind:value="totalAmount"
+                v-bind:value="totalAmount.toFixed(2)"
                 readonly
               />
             <span v-if="field_errors.total" class="form-error">{{ field_errors.total[0] }}</span>
@@ -434,11 +435,15 @@
         <div id="pay-box2">
             <button v-if="paymentMethod === 'credit'" class="btn btn-orange" @click="addCustModal=true">Add New Customer</button>
             <button
-              class="btn btn-orange"
-              @click="submitOrder"
-              :disabled="submitOrderButton"
+            class="btn btn-orange"
+            @click="submitOrder(true)"
+            :disabled="submitOrderButton"
             >Submit and Print</button>
-            <button class="btn btn-orange">Submit</button>
+            <button
+            class="btn btn-orange"
+            @click="submitOrder(false)"
+            :disabled="submitOrderButton"
+            >Submit</button>
             <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
         </div>
       </div>
@@ -472,8 +477,9 @@
         <input type="text" placeholder="Last Name" v-model="user.lastName"/>
         <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
         <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
-        <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>
-        <ErrorField v-if="authFieldErrors.username" :errorField="authFieldErrors.username"></ErrorField>
+        <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>        
+        <ErrorField v-if="authFieldErrors.contact_number" :errorField="authFieldErrors.contact_number"></ErrorField>
+        <input type="text" placeholder="Description" required v-model="user.description"/>
       </template>
 
       <template v-slot:footer>
@@ -484,18 +490,18 @@
       </template>
     </Modal>
 
-    <Modal v-if="orderStatus" type="scrollable">
+    <Modal v-if="order_response.id" type="scrollable">
       <template v-slot:header>
         <h2>Order Status</h2>
       </template>
 
       <template v-slot:body>
-        <OrderBill />
+        <OrderBill :orderId="order_response.id" :customer="customer" :print="print" />
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button @click="handleOrderStatus()" class="btn btn-orange btn-mr" v-focus>New Order</button>
+          <button @click="handleOrderStatus();" class="btn btn-orange btn-mr" v-focus>New Order</button>
         </div>
       </template>
     </Modal>
@@ -513,7 +519,7 @@ import { Order } from '@/store/models/order';
 import { Batch } from '@/store/models/batch';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
-import { User } from '@/store/models/user';
+import { User, UserExtra } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
 import OrderBill from '@/components/sales/OrderBill.vue';
 
@@ -546,7 +552,8 @@ export default defineComponent({
         userName: '',
         firstName: '',
         lastName: '',
-        company:''
+        company:'',
+        description: ''
       },
       date: today,
       orderItems: orderItems,
@@ -572,13 +579,10 @@ export default defineComponent({
       showCustDropdown:false,
       walkinCustomer:{},
       regularCustomer:{},
+      customer:{},
       deduct_balance:false,
+      print: true,
     }
-  },
-  created: async function(){
-    await this.getUsersByType({user_type:'WALK_IN_CUSTOMER'});
-    this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === 'WALK_IN_CUSTOMER');
-    await this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
   },
   computed: {
     totalAmount: function (): number {
@@ -664,8 +668,8 @@ export default defineComponent({
     validateDeductBalance: function() {
       let error_message = null;
       if(this.paymentMethod === 'credit') {
-        if(parseFloat(this.cashReceived) <=0 && this.deduct_balance === false){
-          error_message = 'check Deduct Balance if no cash received!'
+        if(parseFloat(this.cashReceived) < this.totalAmount && this.deduct_balance === false){
+          error_message = 'Cash Received is less than total so check Deduct Balance!'
         }
       }
       return error_message;
@@ -822,6 +826,7 @@ export default defineComponent({
       invoiceID: 'getInvoiceID',
       field_errors: 'getFieldError',
       authFieldErrors: 'getAuthFieldError',
+      order_response: 'getOrder',
     })
   },
   methods: {
@@ -840,6 +845,7 @@ export default defineComponent({
       this.duplicateMessage = '';
       this.product.buyPrice = '';
       this.product.actualPrice = 0;
+      (this.$refs.barcode as any)?.focus();
     },
 
     clearTransaction: function(){
@@ -882,7 +888,7 @@ export default defineComponent({
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
       const batchId = this.productBatchSelect.length > 0 ? (this.productBatchSelect[0] as Batch).id : undefined;
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
-      (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
+      (this.$refs.quantity as HTMLSelectElement & { focus: () => void }).focus();
     },
 
     selectCustomer: function(customer: User){
@@ -898,17 +904,24 @@ export default defineComponent({
     addNewCustomer:async function(){
       const companyId = this.userdata.company.id;  
 
+      const user_extra: UserExtra = {
+        description: this.user.description
+      }
+
       const user: User = {
         username: this.user.userName,
+        contact_number: this.user.userName,
         first_name: this.user.firstName,
         last_name: this.user.lastName,
-        company:companyId
+        company:companyId,
+        user_extra: user_extra
       }
 
       await this.registerUser(user);
 
       if (Object.keys(this.authFieldErrors).length === 0) {
-        this.addCustModal=false
+        this.addCustModal=false;
+        this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
       }
     },
 
@@ -971,9 +984,10 @@ export default defineComponent({
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
     },
 
-    submitOrder: async function () {
+    submitOrder: async function (print: boolean) {
       if (this.orderItems.length < 0) return;
       if (this.cashReceived === '') return;
+      this.print = print;
 
       const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
         return {
@@ -987,7 +1001,7 @@ export default defineComponent({
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
       const buyer: User = this.paymentMethod==='credit'?this.regularCustomer:this.walkinCustomer;
-
+      this.customer = buyer;
       const singleOrder: Order = {
         order_item: unproxiedOrderItem,
         buyer: buyer && buyer.id ? buyer.id:this.userdata.id,
@@ -1003,7 +1017,8 @@ export default defineComponent({
         deduct_balance: this.deduct_balance
       }
       await this.createOrder(singleOrder);
-    },
+      await this.getUsersByType({user_type: 'REGULAR_CUSTOMER'});
+  },
 
     changeQuantity: function (index: number) {
       const currentVariant = this.orderItems[index].productVariant;
@@ -1062,7 +1077,7 @@ export default defineComponent({
 
       this.getUsersByType({
         search: this.customersearch,
-        user_type:'REGULAR_CUSTOMER'
+        user_type: 'REGULAR_CUSTOMER'
       });
     },
 
@@ -1073,11 +1088,15 @@ export default defineComponent({
       this.searchProductByName(this.product.name);
     },
 
-    searchByBarcode: function (event: Event) {
-      if (event) {
-        event.preventDefault()
+    searchByBarcode: async function (event: Event) {
+      await this.searchProductByBarcode(this.product.barCode);
+      
+      if(this.productResult.length === 1){
+      const searchedProduct: Product = this.productResult[0];
+      if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
+          await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
       }
-      this.searchProductByBarcode(this.product.barCode);
+      
     },
 
     sumQuantity: function (item: ProductVariant): number {
@@ -1141,13 +1160,18 @@ export default defineComponent({
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
       setFieldError: ActionTypes.SET_FIELD_ERROR,
+      fetchOrder: ActionTypes.FETCH_ORDER
     })
   },
   async beforeMount () {
     await this.fetchInvoiceID();
+    await this.getUsersByType({user_type:'WALK_IN_CUSTOMER'});
+    this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`);
+    await this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
   },
   async unmounted () {
     await this.setFieldError({});
+    this.handleOrderStatus();
   },
 });
 </script>
