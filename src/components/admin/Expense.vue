@@ -3,18 +3,23 @@
   <div id="expense">
     <div class="diff-shadow">
       <ul class="nav nav-tabs">
-        <li class="nav-item" @click="expenseMethod = 'credit'">
-          <span :class="expenseMethod === 'credit' ? 'nav-link active' : 'nav-link'">
+        <li class="nav-item" @click="expenseMethod = 'Credit'">
+          <span :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'">
             <strong>Credit</strong>
           </span>
         </li>
-        <li class="nav-item" @click="expenseMethod = 'debit'">
-          <span :class="expenseMethod === 'debit' ? 'nav-link active' : 'nav-link'">
+        <li class="nav-item" @click="expenseMethod = 'Debit'">
+          <span :class="expenseMethod === 'Debit' ? 'nav-link active' : 'nav-link'">
             <strong>Debit</strong>
           </span>
         </li>
+        <li class="nav-item" @click="expenseMethod = 'Expense'">
+          <span :class="expenseMethod === 'Expense' ? 'nav-link active' : 'nav-link'">
+            <strong>Expense</strong>
+          </span>
+        </li>
       </ul>
-      <h2>Expense {{expenseMethod}}</h2>
+      <h2>{{expenseMethod}}</h2>
       <div class="flex-box">
         <label class="pad-label w100" for="products">
           <strong>Payee:</strong>
@@ -30,6 +35,12 @@
           <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
             <span>{{item.username}} - {{item.company.company_name}}</span>
           </option>
+          <template v-if="expenseMethod === 'Expense'">
+            <option disabled>--- vendor - phone - company ---</option>
+            <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+              <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
+            </option>
+          </template>
         </select>
       </div>
       <div class="flex-box">
@@ -49,7 +60,7 @@
       </div>
       <div class="flex-box">
         <label class="pad-label w100" for="amount">
-          <strong>Amount {{expenseMethod}}:</strong>
+          <strong>{{expenseMethod}} amount:</strong>
         </label>
         <div class="full-width">
           <input
@@ -105,7 +116,7 @@ export default defineComponent({
   },
   data() {
     return {
-      expenseMethod: 'credit',
+      expenseMethod: 'Credit',
       transaction: {
         payor:-1,
         payee:-1,
@@ -151,7 +162,8 @@ export default defineComponent({
     ...mapGetters({
       users: 'getListOfUsers',
       userdata: 'getUser',
-      expense: 'getExpense'
+      expense: 'getExpense',
+      vendors: 'getListOfVendors',
     })
   },
   methods: {
@@ -159,12 +171,13 @@ export default defineComponent({
       fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
       fetchUsers: AuthActionTypes.GET_USERS,
       fetchUserData: AuthActionTypes.USER_DATA,
-      createExpense: AuthActionTypes.CREATE_EXPENSE
+      createExpense: AuthActionTypes.CREATE_EXPENSE,
+      getVendors: AuthActionTypes.FETCH_VENDORS,
     }),
     addExpense: async function(){
       if(this.amountValidation==null && this.descriptionValidation == null) {
         this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
-        this.transaction.amount = this.expenseMethod === 'credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
+        this.transaction.amount = this.expenseMethod === 'Credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
         this.transaction.payor = this.userdata.id;
         this.loader = true
         await this.createExpense(this.transaction as Transaction).finally(() => this.loader = false);
@@ -176,6 +189,7 @@ export default defineComponent({
   },
   async beforeMount () {
     await this.fetchUsers();
+    await this.getVendors();
     await this.fetchUserData();
   }
 });
@@ -225,7 +239,7 @@ export default defineComponent({
 
   .nav-tabs .nav-item {
     margin-bottom: -1px;
-    width: 50%;
+    width: 25%;
   }
 
   .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
