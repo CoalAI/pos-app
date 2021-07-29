@@ -59,6 +59,7 @@ export interface Actions {
       cash?: boolean;
       status?: string;
       created?: Date;
+      page?: number;
     }
   ): void;
   [ActionTypes.FETCH_ORDER]({ commit }: AugmentedActionContext, id: string): void;
@@ -75,11 +76,11 @@ export interface Actions {
   [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
   [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
   [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string): void;
-  [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string}): void;
+  [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; page?: number}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
-  [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}): void;
+  [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string; page?: number}): void;
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
@@ -122,10 +123,12 @@ Actions = {
       cash?: boolean;
       status?: string;
       created__date?: Date;
+      page?: number;
     }
   ) {
     const response = await serverRequest('get', 'order/', true, undefined, options);
     if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetOrdersCount, response.data.count);
       commit(MutationTypes.SetListOfOrders, response.data.results);
     }
     if(isAxiosError(response)) {
@@ -272,14 +275,15 @@ Actions = {
       commit('setError', response.message, {root: true});
     }
   },
-  async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data?: {company?: number; search?: string}) {
+  async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; page?: number}) {
     let response;
-    if (data) {
+    if (data && data.search && data.search) {
       response = await serverRequest('get', 'inventory/', true, undefined, data);
     } else {
-      response = await serverRequest('get', `inventory/`, true);
+      response = await serverRequest('get', `inventory/`, true, data);
     }
     if(isAxiosResponse(response)) {
+      commit(MutationTypes.SetInventoryCount, response.data.count)
       commit(MutationTypes.SetInventory, response.data.results)
     }
     if(isAxiosError(response)) {
@@ -318,14 +322,15 @@ Actions = {
       commit('setError', response.response.data, {root: true});
     }
   },
-  async [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string}) {
+  async [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options: {sender__company?: number; receiver__company?: number; status: string; page?: number}) {
     let response;
-    if (options) {
+    if (options.sender__company || options.receiver__company) {
       response = await serverRequest('get', 'request/', true, undefined, options);
     } else {
-      response = await serverRequest('get', 'request/', true, undefined, undefined);
+      response = await serverRequest('get', 'request/', true, undefined, {page: options.page});
     } 
     if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetRequestsCount,response.data.count);
       commit(MutationTypes.SetListOfRequests, response.data.results);
     }
   },

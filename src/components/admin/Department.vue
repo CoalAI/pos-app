@@ -70,6 +70,7 @@
           </td>
         </tr>
       </table>
+      <Paginator :count="counts.companies" @pageChange="changePage"/>
     </div>
 
     <!-- The deletion Modal -->
@@ -106,6 +107,7 @@ import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import Modal from '@/components/common-components/Modal.vue';
+import Paginator from '@/components/common-components/Paginator.vue';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { Company } from '@/store/models/company';
 
@@ -113,6 +115,7 @@ export default defineComponent({
   name: 'Department',
   components: {
     Modal,
+    Paginator,
   },
   data() {
     return {
@@ -128,7 +131,8 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       companies: 'getCompanies',
-      companyTypes: 'getCompanyTypes'
+      companyTypes: 'getCompanyTypes',
+      counts: 'getTotalCounts',
     })
   },
   // define methods under the `methods` object
@@ -173,6 +177,14 @@ export default defineComponent({
       await this.fetchCompanies({
         company_type: this.companyType,
         search: this.search
+      });
+    },
+
+    changePage: async function (pageNo: number) {
+      await this.fetchCompanies({
+        company_type: this.companyType,
+        search: this.search,
+        page: pageNo
       });
     },
 

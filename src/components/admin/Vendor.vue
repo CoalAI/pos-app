@@ -46,6 +46,7 @@
           </td>
         </tr>
       </table>
+      <Paginator :count="counts.vendors" @pageChange="changePage"/>
     </div>
 
     <!-- The deletion Modal -->
@@ -86,6 +87,7 @@ import { defineComponent } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 
 import Modal from '@/components/common-components/Modal.vue';
+import Paginator from '@/components/common-components/Paginator.vue';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
 
@@ -93,6 +95,7 @@ export default defineComponent({
   name: 'Vendor',
   components: {
     Modal,
+    Paginator,
   },
   data() {
     return {
@@ -108,7 +111,8 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      vendors: 'getListOfVendors'
+      vendors: 'getListOfVendors',
+      counts: 'getTotalCounts',
     })
   },
   // define methods under the `methods` object
@@ -149,6 +153,13 @@ export default defineComponent({
         event.preventDefault()
       }
       this.getVendors(this.search)
+    },
+
+    changePage: async function (pageNo: number) {
+      await this.getVendors({
+        search: this.search,
+        page: pageNo
+      });
     },
 
     ...mapActions({

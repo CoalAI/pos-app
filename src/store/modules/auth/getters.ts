@@ -27,6 +27,8 @@ export interface Getters {
   // eslint-disable-next-line
   getAuthFieldError(state: State): any;
   getNotifications(state: State): Notification[];
+  // eslint-disable-next-line
+  getTotalCounts(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -82,4 +84,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getExpense: (state: State)  => state.expense,
   getAuthFieldError: (state: State) => state.error,
   getNotifications: (state: State) => state.notifications.reverse(),
+  getTotalCounts: (state: State) => state.totalCounts,
 };
