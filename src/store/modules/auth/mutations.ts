@@ -16,7 +16,12 @@ export enum MutationTypes {
   SetExpense = "SET_EXPENSE",
   SetError = "SET_AUTH_ERROR",
   AppendNotification = "APPEND_NOTIFICATION",
+  AppendUser = "APPEND_USER",
   AppendCompany = "APPEND_COMPANY",
+  SetUsersCount = "SetUsersCount",
+  SetCompaniesCount = "SetCompaniesCount",
+  SetTransactionsCount = "SetTransactionsCount",
+  SetVendorsCount = "SetVendorsCount",
 }
 
 export type Mutations = {
@@ -32,6 +37,11 @@ export type Mutations = {
   [MutationTypes.SetError](state: State, error: any): void;
   [MutationTypes.AppendNotification](state: State, notification: Notification): void;
   [MutationTypes.AppendCompany](state: State, companies: Company[]): void;
+  [MutationTypes.AppendUser](state: State, users: User[]): void;
+  [MutationTypes.SetUsersCount](state: State, count: number): void;
+  [MutationTypes.SetCompaniesCount](state: State, count: number): void;
+  [MutationTypes.SetTransactionsCount](state: State, count: number): void;
+  [MutationTypes.SetVendorsCount](state: State, count: number): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -74,5 +84,23 @@ export const mutations: MutationTree<State> & Mutations = {
       ...state.companies,
       ...companies
     ]
+  },
+  [MutationTypes.AppendUser](state: State, users: User[]) {
+    state.listOfUsers = [
+      ...state.listOfUsers,
+      ...users
+    ]
+  },
+  [MutationTypes.SetUsersCount](state: State, count: number) {
+    state.totalCounts.users = count;
+  },
+  [MutationTypes.SetCompaniesCount](state: State, count: number) {
+    state.totalCounts.companies = count;
+  },
+  [MutationTypes.SetTransactionsCount](state: State, count: number) {
+    state.totalCounts.transactions = count;
+  },
+  [MutationTypes.SetVendorsCount](state: State, count: number) {
+    state.totalCounts.vendors = count;
   },
 }

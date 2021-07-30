@@ -16,6 +16,7 @@ export enum ActionTypes {
   LOGOUT_USER = "LOGOUT_USER",
   USER_DATA = "USER_DATA",
   GET_USERS = "GET_USERS",
+  GET_All_USERS = "GET_All_USERS",
   GET_USERS_BY_TYPES = "GET_USERS_BY_TYPES",
   GET_USERS_BY_TYPE = "GET_USERS_BY_TYPE",
   CREATE_EXPENSE = "CREATE_EXPENSE",
@@ -47,18 +48,19 @@ export interface Actions {
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}): void;
+  [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string; page?: number}): void;
+  [ActionTypes.GET_All_USERS]({ commit }: AugmentedActionContext, company?: string): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
-  [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string }): void;
+  [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}): void;
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}): void;
+  [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string; page?: number}): void;
   [ActionTypes.FETCH_ALL_COMPANIES]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
-  [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string): void;
-  [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}): void;
+  [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, options: {search?: string; page?: number}): void;
+  [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string; page?: number}): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
   [ActionTypes.SOCKET_notification]({ commit }: AugmentedActionContext, data: any): void;
 }
@@ -119,7 +121,7 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string}) {
+  async [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string; page?: number}) {
     let response;
     if (options) {
       response = await serverRequest('get', 'user/', true, undefined, options);
@@ -127,7 +129,26 @@ Actions = {
       response = await serverRequest('get', 'user/', true, undefined, undefined);
     }
     if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetUsersCount, response.data.count)
       commit(MutationTypes.SetListOfUsers, response.data.results)
+    }
+  },
+  async [ActionTypes.GET_All_USERS]({ commit }: AugmentedActionContext, user_type?: string) {
+    const response = await serverRequest('get', 'user/', true, undefined, {user_type});
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfUsers, response.data.results)
+      if (response.data.count > 10) {
+        let num = 2;
+        while (num <= Math.ceil(response.data.count/10)) {
+          const response = await serverRequest('get', 'user/', true, undefined, {user_type, page: num});
+          if (isAxiosResponse(response)) {
+            if (response.data.results) {
+              commit(MutationTypes.AppendUser, response.data.results)
+            }
+          }
+          num += 1;
+        }
+      }
     }
   },
   async [ActionTypes.GET_USERS_BY_TYPES]({ commit}: AugmentedActionContext, user_types: string[]) {
@@ -145,11 +166,12 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string}) {
+  async [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
     const response = await serverRequest('get', 'user/', true, undefined, options);
     commit(MutationTypes.SetListOfUsers, {});
     if (isAxiosResponse(response)) {
       if (response.data.results.length > 0) {
+        commit(MutationTypes.SetUsersCount, response.data.count)
         const usersData = response.data.results;
         commit(MutationTypes.SetListOfUsers, usersData)
       }
@@ -173,11 +195,12 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string}) {
+  async [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string; page?: number}) {
     const response = await serverRequest('get', 'company/', true, undefined, options);
     if (isAxiosResponse(response)) {
       if (response.data.results) {
         commit(MutationTypes.SetCompanies, response.data.results)
+        commit(MutationTypes.SetCompaniesCount, response.data.count)
       }
     }
     if(isAxiosError(response)) {
@@ -191,7 +214,6 @@ Actions = {
     if (isAxiosResponse(response)) {
       if (response.data.results) {
         commit(MutationTypes.SetCompanies, response.data.results);
-        debugger
         let num = 2;
         while (num <= Math.ceil(response.data.count/10)) {
           const response = await serverRequest('get', 'company/', true, undefined, {page: num});
@@ -241,15 +263,16 @@ Actions = {
       commit('setError', response.message, {root: true});
     }
   },
-  async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, search: string) {
+  async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, options: {search?: string; page?: number}) {
     let response;
-    if (search) {
-      response = await serverRequest('get', 'vendor/', true, undefined, {search: search});
+    if (options && options.search) {
+      response = await serverRequest('get', 'vendor/', true, undefined, options);
     } else {
-      response = await serverRequest('get', 'vendor/', true, undefined, undefined);
+      response = await serverRequest('get', 'vendor/', true, undefined, options);
     }
     if (isAxiosResponse(response)) {
       if (response.data.results) {
+        commit(MutationTypes.SetVendorsCount, response.data.count)
         commit(MutationTypes.SetListOfVendors, response.data.results)
       }
     }
@@ -259,16 +282,17 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string}) {
+  async [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string; page?: number}) {
     let response;
-    if (search_criteria) {
-      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: search_criteria.start_date, end_date:search_criteria.end_date});
+    if (search_criteria && search_criteria.start_date && search_criteria.end_date) {
+      response = await serverRequest('get', 'transaction/', true, undefined, search_criteria);
     } else {
       const now = new Date().toLocaleDateString()
-      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now});
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: 1});
     }
     if (isAxiosResponse(response)) {
-        commit(MutationTypes.SetTransactions, response.data.results)
+      commit(MutationTypes.SetTransactionsCount,response.data.count)
+      commit(MutationTypes.SetTransactions, response.data.results)
     }
     if(isAxiosError(response)) {
       if(response.response && response.response.data){

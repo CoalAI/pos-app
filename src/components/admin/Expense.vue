@@ -35,12 +35,10 @@
           <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
             <span>{{item.username}} - {{item.company.company_name}}</span>
           </option>
-          <template v-if="expenseMethod === 'Expense'">
-            <option disabled>--- vendor - phone - company ---</option>
-            <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
-              <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
-            </option>
-          </template>
+          <option disabled>--- vendor - phone - company ---</option>
+          <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+            <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
+          </option>
         </select>
       </div>
       <div class="flex-box">
@@ -108,11 +106,13 @@ import { mapActions, mapGetters } from'vuex';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Transaction } from '@/store/models/transaction';
 import Alert from '@/components/common-components/Alert.vue'
+import Loader from '@/components/common-components/Loader.vue'
 
 export default defineComponent({
   name: 'Expense',
   components: {
-    Alert
+    Alert,
+    Loader
   },
   data() {
     return {
@@ -169,7 +169,7 @@ export default defineComponent({
   methods: {
     ...mapActions({
       fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
-      fetchUsers: AuthActionTypes.GET_USERS,
+      fetchUsers: AuthActionTypes.GET_All_USERS,
       fetchUserData: AuthActionTypes.USER_DATA,
       createExpense: AuthActionTypes.CREATE_EXPENSE,
       getVendors: AuthActionTypes.FETCH_VENDORS,
@@ -188,7 +188,7 @@ export default defineComponent({
     },
   },
   async beforeMount () {
-    await this.fetchUsers();
+    await this.fetchUsers('ADMIN');
     await this.getVendors();
     await this.fetchUserData();
   }

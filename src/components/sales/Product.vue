@@ -73,7 +73,7 @@
           </tr>
         </template>
       </table>
-      <Paginator :count="productsCount" @pageChange="changePage" />
+      <Paginator :count="productsCount" @pageChange="changePage"/>
     </div>
 
     <!-- The deletion Modal -->
