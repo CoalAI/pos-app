@@ -5,7 +5,7 @@
       <ul class="nav nav-tabs">
         <li class="nav-item" @click="expenseMethod = 'Credit'">
           <span :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'">
-            <strong>Credit</strong>
+            <strong>Cash Received</strong>
           </span>
         </li>
         <li class="nav-item" @click="expenseMethod = 'Debit'">
@@ -13,11 +13,11 @@
             <strong>Debit</strong>
           </span>
         </li>
-        <li class="nav-item" @click="expenseMethod = 'Expense'">
+        <!-- <li class="nav-item" @click="expenseMethod = 'Expense'">
           <span :class="expenseMethod === 'Expense' ? 'nav-link active' : 'nav-link'">
             <strong>Expense</strong>
           </span>
-        </li>
+        </li> -->
       </ul>
       <h2>{{expenseMethod}}</h2>
       <div class="flex-box">
