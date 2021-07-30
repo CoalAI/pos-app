@@ -265,7 +265,7 @@ Actions = {
   },
   async [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, options: {search?: string; page?: number}) {
     let response;
-    if (options.search) {
+    if (options && options.search) {
       response = await serverRequest('get', 'vendor/', true, undefined, options);
     } else {
       response = await serverRequest('get', 'vendor/', true, undefined, options);
@@ -284,11 +284,11 @@ Actions = {
   },
   async [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string; page?: number}) {
     let response;
-    if (search_criteria.start_date && search_criteria.end_date) {
+    if (search_criteria && search_criteria.start_date && search_criteria.end_date) {
       response = await serverRequest('get', 'transaction/', true, undefined, search_criteria);
     } else {
       const now = new Date().toLocaleDateString()
-      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: search_criteria.page});
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: 1});
     }
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetTransactionsCount,response.data.count)

@@ -97,7 +97,7 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       inventory: 'getInventory',
-      companies: 'getCompanies',
+      companies: 'getInventoryCompanies',
       counts: 'getTotalCountsOrderModule',
     })
   },
