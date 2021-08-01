@@ -36,6 +36,7 @@
               v-model="product.quantity"
               @input="changeProductQuantity"
               ref="quantity"
+              @keydown="shiftfocusTo($event, 'discount')"
             />
             <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
           </div>
@@ -57,6 +58,8 @@
               :maxlength="ProductNameMaxLength"
               v-model="product.name"
               @input="searchByName"
+              @keydown="checkkey"
+              autocomplete="off"
             />
             <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
           </div>
@@ -82,6 +85,8 @@
               tabindex="7"
               @click="addOrderItem"
               :disabled="addProductButton"
+              ref="addproduct"
+              @keydown="shiftfocusTo('cashreceived')"
             >Add Product</button>
           </div>
 
@@ -113,6 +118,8 @@
               placeholder="discount percentage"
               name="discount"
               v-model="product.discount"
+              ref="discount"
+              @keydown="shiftfocusTo($event, 'addproduct')"
             />
             <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
           </div>
@@ -144,7 +151,7 @@
       <div class="table-container">
         <div class="box2 box1-tab">
           <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
-            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
+            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id" :class="item.id+'_'+itemVariant.id === focusedID?'focuschange':''">
               <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
                 <table class="pr-s-r-table">
                   <tr>
@@ -292,6 +299,8 @@
                   placeholder="Discount"
                   name="total_discount"
                   v-model="totalDiscount"
+                  ref="totaldiscount"
+                  @keydown="shiftfocusTo('submitandprint')"
                 />
                 <select
                   style="width: 40%; margin-left: 5px;"
@@ -315,6 +324,8 @@
                 placeholder="Enter Cash Received"
                 name="cash_received"
                 v-model="cashReceived"
+                ref="cashreceived"
+                @keydown="shiftfocusTo('totaldiscount')"
               />
               <div v-if="field_errors.amount_received" class="form-error">{{ field_errors.amount_received[0] }}</div>
               <span v-else class="form-error">{{ orderCashReceivedValidation }}</span>
@@ -438,6 +449,7 @@
             class="btn btn-orange"
             @click="submitOrder(true)"
             :disabled="submitOrderButton"
+            ref="submitandprint"
             >Submit and Print</button>
             <button
             class="btn btn-orange"
@@ -536,6 +548,8 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     return {
+      focusedTile: -1,
+      focusedID : '',
       cancelModal: false,
       addCustModal: false,
       product: {
@@ -818,6 +832,19 @@ export default defineComponent({
       return false;
     },
 
+    variantsflatList: function(){
+      const variants: {ProductId: any;VariantId: any}[] =[];
+      this.productResult.map((item: Product)=>{
+        if(item){
+          const listofvariants = item.product_variant as ProductVariant[];
+          listofvariants.map((variant: ProductVariant)=>{
+              variants.push({ProductId: item.id, VariantId: variant.id});
+          })
+        }
+      })
+      return variants;
+    },
+
     ...mapGetters({
       productResult: 'getProductResults',
       userdata: 'getUser',
@@ -1081,13 +1108,49 @@ export default defineComponent({
       });
     },
 
-    searchByName: function (event: Event) {
+    searchByName: async function (event: Event) {
       if (event) {
         event.preventDefault()
       }
-      this.searchProductByName(this.product.name);
+      await this.searchProductByName(this.product.name);
     },
 
+    checkkey: function (event: KeyboardEvent) {
+      const variantslist = this.variantsflatList
+      if (event.key ==='ArrowDown'){
+        this.focusedTile++;
+        if(variantslist.length<=this.focusedTile){
+          this.focusedTile=0;
+        }
+        if(variantslist.length > 0){
+          const focused = variantslist[this.focusedTile];
+          const refid = focused.ProductId+'_'+focused.VariantId;
+          this.focusedID = refid;
+          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+        }
+      }else if(event.key === 'Enter'){
+        if(this.focusedTile<variantslist.length){
+          const focused = variantslist[this.focusedTile];
+          this.selectProduct(focused.ProductId, focused.VariantId);
+        }
+      }else if(event.key ==='ArrowUp'){
+        this.focusedTile--;
+        if(0>this.focusedTile){
+          this.focusedTile=0;
+        }
+        if(variantslist.length > 0){
+          const focused = variantslist[this.focusedTile];
+          const refid = focused.ProductId+'_'+focused.VariantId;
+          this.focusedID = refid;
+          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+        }
+      }
+    },
+    shiftfocusTo: function(event: KeyboardEvent, to: string, key='Enter'){
+      if(event.key === key){
+        (this.$refs[to] as HTMLSelectElement & { focus: () => void })?.focus();
+      }
+    },
     searchByBarcode: async function (event: Event) {
       await this.searchProductByBarcode(this.product.barCode);
       
@@ -1098,6 +1161,8 @@ export default defineComponent({
       }
       
     },
+
+
 
     sumQuantity: function (item: ProductVariant): number {
       let sum = 0;
@@ -1177,7 +1242,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
+  .focuschange {
+    outline: none !important;
+    border-left:5px solid red;
+    box-shadow: 0 0 10px #719ECE;
+  }
   .product-container {
     margin-top:20px;
     display: grid;

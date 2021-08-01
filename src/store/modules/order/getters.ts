@@ -27,6 +27,7 @@ export interface Getters {
   getInvoiceID(state: State): string;
   getRequest(state: State): Request;
   getFieldError(state: State): any;
+  getTotalCountsOrderModule(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -79,4 +80,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     return state.request;
   },
   getFieldError: (state: State) => state.error,
+  getTotalCountsOrderModule: (state: State) => state.totalCounts,
 };

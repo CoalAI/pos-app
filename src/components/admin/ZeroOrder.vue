@@ -160,7 +160,7 @@
           </tr>
         </table>
         <div id="orderTypes" class="mr-2">
-          <label class="custom-radio" style="margin-right: 10px">From Vendor or Department
+          <label class="custom-radio" style="margin-right: 10px">From Vendor or Department To Retail
             <input type="radio" name="order_type" value="from"
             :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
             <span class="checkmark"></span>
@@ -308,15 +308,14 @@
           </label>
 
           <div class="q-i">
-            <input
+            <!-- <input
               v-if="orderType === 'from'"
               type="text"
               name="BuyerID"
               :value="userdata.username"
               readonly
-            >
+            > -->
             <select
-              v-else
               name="BuyerID"
               class="custom-select"
               id="BuyerID"
@@ -522,10 +521,11 @@ import { User } from '@/store/models/user';
 import { OrderItem } from '@/store/models/orderItem';
 import { Product, ProductVariant } from '@/store/models/product';
 
+
 export default defineComponent({
   name: 'ZeroOrder',
   components: {
-    Modal
+    Modal,
   },
   data() {
     const today = new Date().toDateString();
@@ -825,7 +825,8 @@ export default defineComponent({
         this.seller = this.userdata.id;
       } else if (this.orderType === 'from') {
         this.seller = 0;
-        this.buyer = this.userdata.id;
+        // this.buyer = this.userdata.id;
+        this.buyer = 0;
       }
     },
 
@@ -1066,11 +1067,12 @@ export default defineComponent({
       this.totalDiscount = '';
       this.orderType = 'from';
       this.seller = 0;
-      this.buyer = this.userdata.id;
+      // this.buyer = this.userdata.id;
+      this.buyer = 0;
       const vendor: User = {};
       this.vendorUser = vendor;
       this.cancelModal = false;
-      await this.getUsers(['ADMIN']);
+      await this.getUsers('ADMIN');
       await this.getVendors('');
     },
 
@@ -1131,7 +1133,7 @@ export default defineComponent({
       searchProductByBarcode: OrderActionTypes.SEARCH_PRODUCT_BY_BARCODE,
       createOrder: OrderActionTypes.CREATE_ORDER,
       changeOrderStatus: OrderActionTypes.CHANGE_ORDER_STATUS,
-      getUsers: AuthActionTypes.GET_USERS_BY_TYPES,
+      getUsers: AuthActionTypes.GET_All_USERS,
       getVendors: AuthActionTypes.FETCH_VENDORS,
       createBatch: OrderActionTypes.CREATE_BATCH,
       registerUser: AuthActionTypes.REGISTER_USER,
@@ -1141,13 +1143,13 @@ export default defineComponent({
   },
   async beforeMount () {
     await this.fetchInvoiceID();
-    await this.getUsers(['ADMIN']);
+    await this.getUsers('ADMIN');
     await this.getVendors('');
     await this.fetchCompanies({
       company_type: 'VENDOR',
       search: ''
     });
-    this.buyer = this.userdata.id;
+    // this.buyer = this.userdata.id;
   }
 })
 </script>
