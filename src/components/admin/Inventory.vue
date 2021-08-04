@@ -9,6 +9,7 @@
           class="custom-select"
           v-model="company"
           @change="onChangeCompany"
+          size="3"
         >
           <option value="">All</option>
           <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
@@ -54,7 +55,7 @@
           <th>Batch Expiry</th>
           <th>Active</th>
           <th>Price</th>
-          <th>Quantity on Stock</th>
+          <th>Quantity in Stock</th>
         </tr>
         <tr v-for="(element, index) in inventory" v-bind:key="element.id">
           <td>{{ index + 1 }}</td>
@@ -68,6 +69,7 @@
           <td class="quantity-color">{{trimDecimalPlaces(element.quantity)}}</td>
         </tr>
       </table>
+      <Paginator :count="counts.inventory" @pageChange="changePage"/>
     </div>
 
   </div>
@@ -77,11 +79,15 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
+import Paginator from '@/components/common-components/Paginator.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
   name: 'Inventory',
+  components: {
+    Paginator
+  },
   data () {
     return {
       search: '',
@@ -91,7 +97,8 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       inventory: 'getInventory',
-      companies: 'getCompanies'
+      companies: 'getInventoryCompanies',
+      counts: 'getTotalCountsOrderModule',
     })
   },
   methods: {
@@ -113,13 +120,21 @@ export default defineComponent({
       });
     },
 
+    changePage: async function (pageNo: number) {
+      await this.fetchInventory({
+        company: this.company,
+        search: this.search,
+        page: pageNo,
+      })
+    },
+
     trimDecimalPlaces: function (value: string) {
       return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
     },
 
     ...mapActions({
       fetchInventory: ActionTypes.FETCH_INVENTORY,
-      fetchCompanies: AuthActionTypes.FETCH_COMPANIES
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES
     })
   },
   async beforeMount () {

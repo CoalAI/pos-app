@@ -59,6 +59,7 @@
           </tr>
         </template>
       </table>
+      <Paginator :count="counts.users" @pageChange="changePage"/>
     </div>
 
     <!-- The deletion Modal -->
@@ -88,12 +89,14 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/auth/actions';
 import Modal from '@/components/common-components/Modal.vue';
+import Paginator from '@/components/common-components/Paginator.vue';
 import { User } from '@/store/models/user';
 
 export default defineComponent( {
   name: 'User',
   components: {
     Modal,
+    Paginator
   },
   data() {
     return {
@@ -107,7 +110,8 @@ export default defineComponent( {
   },
   computed: {
     ...mapGetters({
-      users: 'getListOfUsers'
+      users: 'getListOfUsers',
+      counts: 'getTotalCounts',
     })
   },
   // define methods under the `methods` object
@@ -146,6 +150,13 @@ export default defineComponent( {
       await this.getUsers();
       this.clearUserActivation();
       this.deleteUserModal = false;
+    },
+
+    changePage: async function (pageNo: number) {
+      await this.getUsers({
+        search: this.search,
+        page: pageNo
+      });
     },
 
     ...mapActions({

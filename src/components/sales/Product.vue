@@ -73,6 +73,7 @@
           </tr>
         </template>
       </table>
+      <Paginator :count="productsCount" @pageChange="changePage"/>
     </div>
 
     <!-- The deletion Modal -->
@@ -111,6 +112,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Modal from '@/components/common-components/Modal.vue';
+import Paginator from '@/components/common-components/Paginator.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { Product } from '@/store/models/product';
@@ -119,6 +121,7 @@ export default defineComponent({
   name: 'Product',
   components: {
     Modal,
+    Paginator
   },
   data() {
     return {
@@ -134,7 +137,8 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       productsList: 'getListOfProducts',
-      userdata: 'getUser'
+      userdata: 'getUser',
+      productsCount: 'getProductsCount'
     }),
     allowedAddProduct(){
       const allowedRoles = ['ADMIN','SUPER_ADMIN'];
@@ -178,9 +182,14 @@ export default defineComponent({
       }
     },
 
+    changePage(pageNo: number) {
+      this.getProductsByPage(pageNo);
+    },
+
     ...mapActions({
         getProducts: ActionTypes.GET_PRODUCTS,
         deleteProductAction: ActionTypes.DELETE_PRODUCT,
+        getProductsByPage: ActionTypes.GET_PRODUCTS_BY_PAGE,
     })
   },
   async beforeMount () {

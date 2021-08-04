@@ -80,6 +80,7 @@
             </template>
           </table>
         </div>
+        <Paginator :count="counts.requests" @pageChange="onRequestChangePage"/>
       </div>
     </div>
     <div v-else-if="tab === 'Order'">
@@ -146,6 +147,7 @@
             </template>
           </table>
         </div>
+        <Paginator :count="counts.orders" @pageChange="onOrderChangePage"/>
       </div>
     </div>
     <div class="container">
@@ -163,10 +165,14 @@ import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Order } from '@/store/models/order';
 import { OrderItem } from '@/store/models/orderItem';
+import Paginator from '@/components/common-components/Paginator.vue';
 
 
 export default defineComponent({
   name:'Response',
+  components: {
+    Paginator
+  },
   data(){
     return {
       request_detail:'request detail here!',
@@ -183,6 +189,7 @@ export default defineComponent({
       user: 'getUser',
       orders: 'getListOfOrders',
       statuses: 'getOrderStatuses',
+      counts: 'getTotalCountsOrderModule',
     })
   },
   methods:{
@@ -219,11 +226,11 @@ export default defineComponent({
       });
     },
 
-    onChangeStatusFilter: async function () {
+    onChangeStatusFilter: async function (Event?: Event, pageNo?: number) {
       if (this.user) {
         let filter = {};
-        if (this.user.company.company_type == 'RETIAL') filter = {sender__company: this.user.company.id, status: this.searchStatus};
-        else if (this.user.company.company_type == 'STORE') filter = {receiver__company: this.user.company.id, status: this.searchStatus};
+        if (this.user.company.company_type == 'RETIAL') filter = {sender__company: this.user.company.id, status: this.searchStatus, page:pageNo?pageNo:1};
+        else if (this.user.company.company_type == 'STORE') filter = {receiver__company: this.user.company.id, status: this.searchStatus, page:pageNo?pageNo:1};
         await this.fetchRequests(filter);
       }
     },
@@ -237,11 +244,11 @@ export default defineComponent({
       return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
     },
 
-    onOrderStatusChangeFilter: async function () {
+    onOrderStatusChangeFilter: async function (Event?: Event, pageNo?: number) {
       if (this.user) {
         let filter = {};
-        if (this.user.company.company_type == 'RETIAL') filter = {buyer__company: this.user.company.id, status: this.orderStatus};
-        else if (this.user.company.company_type == 'STORE') filter = {seller__company: this.user.company.id, status: this.orderStatus};
+        if (this.user.company.company_type == 'RETIAL') filter = {buyer__company: this.user.company.id, status: this.orderStatus, page: pageNo?pageNo:1};
+        else if (this.user.company.company_type == 'STORE') filter = {seller__company: this.user.company.id, status: this.orderStatus, page: pageNo?pageNo:1};
         await this.fetchOrders(filter);
       }
     },
@@ -294,6 +301,15 @@ export default defineComponent({
         }
         await this.updateOrderStatus(order);
       }
+    },
+
+    onRequestChangePage: async function (pageNo: number) {
+        await this.onChangeStatusFilter(undefined, pageNo);
+
+    },
+
+    onOrderChangePage: async function (pageNo: number) {
+        await this.onOrderStatusChangeFilter(undefined, pageNo);
     },
 
     ...mapActions({

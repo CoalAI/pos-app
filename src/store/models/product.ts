@@ -7,6 +7,7 @@ export interface ProductVariant extends DatesInterface {
   size?: string;
   description?: string;
   price?: string;
+  sale_price?: string;
   batch?: number | Batch[];
   total_quantity?: number;
 }

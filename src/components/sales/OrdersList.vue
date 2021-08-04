@@ -116,6 +116,7 @@
           </td>
         </tr>
       </table>
+      <Paginator :count="counts.orders" @pageChange="changePage"/>
     </div>
 
   </div>
@@ -125,10 +126,14 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
+import Paginator from '@/components/common-components/Paginator.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'OrdersList',
+  components: {
+    Paginator
+  },
   data () {
     return {
       search: '',
@@ -140,7 +145,8 @@ export default defineComponent({
   computed: {
     ...mapGetters({
       orders: 'getListOfOrders',
-      statuses: 'getOrderStatuses'
+      statuses: 'getOrderStatuses',
+      counts: 'getTotalCountsOrderModule',
     })
   },
   methods: {
@@ -171,6 +177,16 @@ export default defineComponent({
         status: this.orderStatus,
         cash: this.paymentMethod,
         created__date: this.orderDate
+      })
+    },
+
+    changePage: async function (pageNo: number) {
+      await this.fetchOrders({
+        id__contains: this.search,
+        status: this.orderStatus,
+        cash: this.paymentMethod,
+        created__date: this.orderDate,
+        page: pageNo,
       })
     },
 

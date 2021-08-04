@@ -240,6 +240,11 @@ export default defineComponent({
       let errorMessage = null;
       if (this.user.contactNumber.length <= 0) {
         errorMessage = "Number is required"
+      } else {
+        const regex = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{3,5}-{0,1}\d{7}$/;
+        if (!regex.test(this.user.contactNumber)) {
+          errorMessage = "Phone number is not valid"
+        }
       }
       return errorMessage;
     },

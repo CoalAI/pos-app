@@ -12,8 +12,14 @@ export type State = {
     companies: Company[];
     transactions: Transaction[];
     expense: Transaction;
+    notifications: Notification[];
     error: any;
-
+    totalCounts: {
+      users: number;
+      vendors: number;
+      companies: number;
+      transactions: number;
+    };
 };
 
 export const state: State = {
@@ -25,5 +31,12 @@ export const state: State = {
   companies: [],
   transactions: [],
   expense: {},
+  notifications: [],
   error: {},
+  totalCounts: {
+    users: 0,
+    vendors: 0,
+    companies: 0,
+    transactions: 0,
+  }
 };

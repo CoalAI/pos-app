@@ -6,21 +6,29 @@ import { Inventory } from '@/store/models/company';
 import { Request } from '@/store/models/request';
 
 export type State = {
-    currentOrderStatus: string;
-    order: Order;
-    productResults: Product[];
-    recentProducts: Product[];
-    listOfOrders: Order[];
-    OrderStatuses: {status: string}[];
-    listOfProducts: Product[];
-    listOfBatches: Batch[];
-    inventory: Inventory[];
-    listofRequests: Request[];
-    units: Unit[];
-    batch: Batch;
-    invoice_id: string;
-    request: Request;
-    error: any;
+  currentOrderStatus: string;
+  order: Order;
+  productResults: Product[];
+  recentProducts: Product[];
+  listOfOrders: Order[];
+  OrderStatuses: {status: string}[];
+  listOfProducts: Product[];
+  listOfBatches: Batch[];
+  inventory: Inventory[];
+  listofRequests: Request[];
+  units: Unit[];
+  batch: Batch;
+  invoice_id: string;
+  request: Request;
+  error: any;
+  productsCount: number;
+  totalCounts: {
+    orders: number;
+    products: number;
+    batches: number;
+    inventory: number;
+    requests: number;
+  };
 };
 
 
@@ -39,5 +47,13 @@ export const state: State = {
   batch: {},
   invoice_id: '',
   request: {},
-  error: {}
+  error: {},
+  productsCount: 0,
+  totalCounts: {
+    orders: 0,
+    products: 0,
+    batches: 0,
+    inventory: 0,
+    requests: 0,
+  }
 };

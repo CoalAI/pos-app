@@ -23,6 +23,11 @@ export enum MutationTypes {
   SetInvoiceID = "SET_INVOICEID",
   SetRequest = "SET_REQUEST",
   SetError = "SET_ERROR",
+  SetOrdersCount = "SET_ORDERS_COUNT",
+  SetProductsCount = "SET_PRODUCTS_COUNT",
+  SetBatchesCount = "SET_BATCHES_COUNT",
+  SetInventoryCount = "SET_INVENTORY_COUNT",
+  SetRequestsCount = "SET_REQUESTS_COUNT",
 }
 
 export type Mutations = {
@@ -33,6 +38,7 @@ export type Mutations = {
   [MutationTypes.SetListOfOrders](state: State, orders: Order[]): void;
   [MutationTypes.SetOrderStatuses](state: State, statuses: {status: string}[]): void;
   [MutationTypes.SetListOfProducts](state: State, products: Product[]): void;
+  [MutationTypes.SetProductsCount](state: State, productCount: number): void;
   [MutationTypes.SetInventory](state: State, inventory: Inventory[]): void;
   [MutationTypes.SetListOfRequests](state: State, requests: Request[]): void;
   [MutationTypes.SetUnit](state: State, units: Unit[]): void;
@@ -40,6 +46,10 @@ export type Mutations = {
   [MutationTypes.SetInvoiceID](state: State, id: string): void;
   [MutationTypes.SetRequest](state: State, request: Request): void;
   [MutationTypes.SetError](state: State, error: any): void;
+  [MutationTypes.SetOrdersCount](state: State, count: number): void;
+  [MutationTypes.SetBatchesCount](state: State, count: number): void;
+  [MutationTypes.SetRequestsCount](state: State, count: number): void;
+  [MutationTypes.SetInventoryCount](state: State, count: number): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -64,6 +74,9 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetListOfProducts](state, products) {
     state.listOfProducts = products;
   },
+  [MutationTypes.SetProductsCount](state: State, productCount: number) {
+    state.productsCount = productCount;
+  },
   [MutationTypes.SetInventory](state, inventory) {
     state.inventory = inventory;
   },
@@ -84,5 +97,17 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetError](state: State, error: any) {
     state.error = error;
-  }
+  },
+  [MutationTypes.SetOrdersCount](state: State, count: number) {
+    state.totalCounts.orders = count;
+  },
+  [MutationTypes.SetBatchesCount](state: State, count: number) {
+    state.totalCounts.batches = count;
+  },
+  [MutationTypes.SetInventoryCount](state: State, count: number) {
+    state.totalCounts.inventory = count;
+  },
+  [MutationTypes.SetRequestsCount](state: State, count: number) {
+    state.totalCounts.requests = count;
+  },
 }
