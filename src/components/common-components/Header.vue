@@ -241,7 +241,7 @@ export default defineComponent({
   },
   beforeMount: async function() {
     await this.getuserdate();
-    this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
+    //this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
   },
 });
 </script>
