@@ -45,7 +45,7 @@ export default defineComponent({
   },
   beforeMount: async function(){
     await this.userdata();
-    this.$socket.emit('client_info', {id: this.user.id, company: this.user.company.id});
+    //this.$socket.emit('client_info', {id: this.user.id, company: this.user.company.id});
   }
 })
 </script>
