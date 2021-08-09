@@ -33,8 +33,10 @@
               name="quantity" 
               :max="24"
               :min="0"
+              ref="quantity"
               v-model="product.quantity"
               @input="changeProductQuantity"
+              @keydown="shiftfocusTo($event, 'expirydate')"
             />
             <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
           </div>
@@ -56,6 +58,8 @@
               :maxlength="ProductNameMaxLength"
               v-model="product.name"
               @input="searchByName"
+              @keydown="checkkey"
+              autocomplete="off"
             />
             <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
           </div>
@@ -82,6 +86,7 @@
               tabindex="7"
               @click="addOrderItem"
               :disabled="addProductButton"
+              ref="addproduct"
             >Add Product</button>
           </div>
 
@@ -106,6 +111,8 @@
                 tabindex="6"
                 type="date"
                 v-model="product.expiryDate"
+                ref="expirydate"
+                @keydown="shiftfocusTo($event, 'addproduct')"
               >
               <span v-if="productExpiryValidation" class="form-error">{{ productExpiryValidation }}</span>
             </div>
@@ -184,7 +191,7 @@
       <div class="table-container">
         <div class="box2 box1-tab">
           <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
-            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
+            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id" :class="item.id+'_'+itemVariant.id === focusedID?'focuschange':''">
               <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
                 <table class="pr-s-r-table">
                   <tr>
@@ -534,6 +541,8 @@ export default defineComponent({
     const vendor: User = {};
 
     return {
+      focusedTile: -1,
+      focusedID : '',
       cancelModal: false,
       product: {
         name: '',
@@ -785,6 +794,19 @@ export default defineComponent({
       return errorMessage;
     },
 
+    variantsflatList: function(){
+      const variants: {ProductId: any;VariantId: any}[] =[];
+      this.productResult.map((item: Product)=>{
+        if(item){
+          const listofvariants = item.product_variant as ProductVariant[];
+          listofvariants.map((variant: ProductVariant)=>{
+              variants.push({ProductId: item.id, VariantId: variant.id});
+          })
+        }
+      })
+      return variants;
+    },
+
     ...mapGetters({
       productResult: 'getProductResults',
       userdata: 'getUser',
@@ -858,6 +880,8 @@ export default defineComponent({
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
       if (this.orderType == 'to') {
         (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
+      }else{
+        (this.$refs.quantity as HTMLSelectElement & { focus: () => void }).focus();
       }
     },
 
@@ -1129,6 +1153,43 @@ export default defineComponent({
       }
     },
 
+    checkkey: function (event: KeyboardEvent) {
+      const variantslist = this.variantsflatList
+      if (event.key ==='ArrowDown'){
+        this.focusedTile++;
+        if(variantslist.length<=this.focusedTile){
+          this.focusedTile=0;
+        }
+        if(variantslist.length > 0){
+          const focused = variantslist[this.focusedTile];
+          const refid = focused.ProductId+'_'+focused.VariantId;
+          this.focusedID = refid;
+          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+        }
+      }else if(event.key === 'Enter'){
+        if(this.focusedTile<variantslist.length){
+          const focused = variantslist[this.focusedTile];
+          this.selectProduct(focused.ProductId, focused.VariantId);
+        }
+      }else if(event.key ==='ArrowUp'){
+        this.focusedTile--;
+        if(0>this.focusedTile){
+          this.focusedTile=0;
+        }
+        if(variantslist.length > 0){
+          const focused = variantslist[this.focusedTile];
+          const refid = focused.ProductId+'_'+focused.VariantId;
+          this.focusedID = refid;
+          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+        }
+      }
+    },
+    shiftfocusTo: function(event: KeyboardEvent, to: string, key='Enter'){
+      if(event.key === key){
+        (this.$refs[to] as HTMLSelectElement & { focus: () => void })?.focus();
+      }
+    },
+
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: OrderActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1156,6 +1217,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+  .focuschange {
+    outline: none !important;
+    border-left:5px solid red;
+    box-shadow: 0 0 10px #719ECE;
+  }
   #container-zero-order {
     display: grid;
     grid-template-columns: 3fr 1fr;
