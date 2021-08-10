@@ -166,6 +166,7 @@ import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Order } from '@/store/models/order';
 import { OrderItem } from '@/store/models/orderItem';
 import Paginator from '@/components/common-components/Paginator.vue';
+import { Transaction } from '@/store/models/transaction';
 
 
 export default defineComponent({
@@ -224,6 +225,18 @@ export default defineComponent({
         id: request.id,
         status: request.status,
       });
+      const acceptedStatuses = ['APPROVED', 'COMPLETE'];
+      if (request.request_type && acceptedStatuses.includes(request.status) &&
+      request.sender.company.company_type == 'RETIAL' &&
+      request.receiver.company.company_type == 'STORE') {
+        const transaction: Transaction = {
+          payor: request.sender.id,
+          payee: request.receiver.id,
+          amount: request.description.split(',')[1].split(': ')[1],
+          description: `Amount credited from ${request.sender.company.company_name}`
+        };
+        await this.createTransaction(transaction);
+      }
     },
 
     onChangeStatusFilter: async function (Event?: Event, pageNo?: number) {
@@ -319,6 +332,7 @@ export default defineComponent({
       fetchOrders: OrderActionTypes.FETCH_ORDERS,
       fetchOrderStatuses: OrderActionTypes.FETCH_ORDER_STATUSES,
       updateOrderStatus: OrderActionTypes.UPDATE_ORDER,
+      createTransaction: AuthActionTypes.CREATE_EXPENSE,
     })
   },
   async beforeMount () {
