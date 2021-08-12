@@ -1074,10 +1074,6 @@ export default defineComponent({
       if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
           await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
       }
-      // if (event) {
-      //   event.preventDefault()
-      // }
-      // this.searchProductByBarcode(this.product.barCode);
     },
 
     sumQuantity: function (item: ProductVariant): number {
