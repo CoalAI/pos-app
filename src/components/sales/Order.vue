@@ -14,10 +14,11 @@
               name="barcode"
               :maxlength="BarCodeMaxLength"
               v-model="product.barCode"
+              autocomplete="off"
               v-debounce:250="searchByBarcode"
+              @keydown="checkkey"
               ref="barcode"
               v-focus
-              autocomplete="off"
             />
             <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
           </div>
@@ -1161,8 +1162,6 @@ export default defineComponent({
       }
       
     },
-
-
 
     sumQuantity: function (item: ProductVariant): number {
       let sum = 0;

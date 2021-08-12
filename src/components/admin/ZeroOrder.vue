@@ -14,8 +14,10 @@
               placeholder="Bar code"
               name="barcode"
               :maxlength="BarCodeMaxLength"
+              autocomplete="off"
               v-model="product.barCode"
-              @input="searchByBarcode"
+              v-debounce:250="searchByBarcode"
+              @keydown="checkkey"
               ref="barcode"
               v-focus
             />
@@ -1064,11 +1066,18 @@ export default defineComponent({
       this.searchProductByName(this.product.name);
     },
 
-    searchByBarcode: function (event: Event) {
-      if (event) {
-        event.preventDefault()
+    searchByBarcode: async function (event: Event) {
+      await this.searchProductByBarcode(this.product.barCode);
+      
+      if(this.productResult.length === 1){
+      const searchedProduct: Product = this.productResult[0];
+      if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
+          await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
       }
-      this.searchProductByBarcode(this.product.barCode);
+      // if (event) {
+      //   event.preventDefault()
+      // }
+      // this.searchProductByBarcode(this.product.barCode);
     },
 
     sumQuantity: function (item: ProductVariant): number {
