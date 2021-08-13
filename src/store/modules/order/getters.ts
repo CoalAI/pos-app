@@ -17,6 +17,7 @@ export interface Getters {
   // eslint-disable-next-line
   getSignleOrder(state: State, id: number): any;
   getListOfProducts(state: State): Product[];
+  getSingleProduct(state: State): Product;
   getProductsCount(state: State): number;
   // eslint-disable-next-line
   getSignleProduct(state: State, id: number): any;
@@ -56,6 +57,7 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getListOfProducts: (state: State) => {
     return state.listOfProducts;
   },
+  getSingleProduct: (state: State) => state.singleProduct,
   getProductsCount: (state: State) => state.productsCount,
   getSignleProduct: (state: State) => (id: number) => {
     const product = state.listOfProducts.find((item: Product) => item.id && item.id === id);

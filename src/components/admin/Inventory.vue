@@ -4,6 +4,7 @@
     <div class="search-grid-list-pages">
       <div id="filter-box">
         <select
+          v-if="admin"
           id="company-type"
           name="company-type"
           class="custom-select"
@@ -95,10 +96,22 @@ export default defineComponent({
     }
   },
   computed: {
+    admin(){
+      const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+      const allowedCompanies = ['PARENT', 'STORE'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)
+        && allowedCompanies.includes(this.userdata.company.company_type) 
+      ){
+        return true;
+      }
+      return false;
+    },
+
     ...mapGetters({
       inventory: 'getInventory',
       companies: 'getInventoryCompanies',
       counts: 'getTotalCountsOrderModule',
+      userdata: 'getUser'
     })
   },
   methods: {
@@ -134,12 +147,14 @@ export default defineComponent({
 
     ...mapActions({
       fetchInventory: ActionTypes.FETCH_INVENTORY,
-      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
+      fetchUser: AuthActionTypes.USER_DATA,
     })
   },
   async beforeMount () {
     await this.fetchInventory();
     await this.fetchCompanies();
+    await this.fetchUser();
   }
 });
 </script>

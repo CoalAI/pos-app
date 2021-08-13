@@ -534,6 +534,7 @@ import { Product, ProductVariant } from '@/store/models/product';
 import { User, UserExtra } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
 import OrderBill from '@/components/sales/OrderBill.vue';
+import { Inventory } from '@/store/models/company';
 
 export default defineComponent({
   name: 'Order',
@@ -854,6 +855,7 @@ export default defineComponent({
       field_errors: 'getFieldError',
       authFieldErrors: 'getAuthFieldError',
       order_response: 'getOrder',
+      inventory: 'getInventory',
     })
   },
   methods: {
@@ -909,7 +911,22 @@ export default defineComponent({
       this.product.name = currentProduct.name;
       this.product.actualPrice = parseFloat(currentVariant.price);
       this.product.quantityUpperLimit = this.sumQuantity(currentVariant);
-      this.productBatchSelect = currentVariant.batch
+      // search inventory and change quantity
+      let batch_ids = '';
+      await currentVariant.batch.forEach((batch: Batch) => batch_ids += batch.id + ',')
+      batch_ids = batch_ids.slice(0, batch_ids.length-1);
+      await this.fetchInventory({batch_ids});
+      const availableBatches: Batch[] = [];
+      this.inventory.forEach((element: Inventory) => {
+        if (element && element.batch && element.batch.id) {
+          const currBatch = currentVariant.batch.find((batch: Batch) => element.batch && element.batch.id && batch.id == element.batch.id);
+          if (currBatch) {
+            currBatch.quantity = element.quantity;
+            availableBatches.push(currBatch);
+          }
+        }
+      });
+      this.productBatchSelect = availableBatches
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
@@ -1196,7 +1213,7 @@ export default defineComponent({
           quantity = price / this.product.actualPrice;
         }
       }
-      this.product.quantity = quantity.toString();
+      this.product.quantity = quantity.toFixed(2).toString();
     },
 
     changeProductQuantity: function () {
@@ -1208,7 +1225,7 @@ export default defineComponent({
           buyPrice = quantity * this.product.actualPrice;
         }
       }
-      this.product.buyPrice = buyPrice.toString();
+      this.product.buyPrice = buyPrice.toFixed(2).toString();
     },
 
     trimQuantity: function(quan: string): string{
@@ -1225,7 +1242,8 @@ export default defineComponent({
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
       setFieldError: ActionTypes.SET_FIELD_ERROR,
-      fetchOrder: ActionTypes.FETCH_ORDER
+      fetchOrder: ActionTypes.FETCH_ORDER,
+      fetchInventory: ActionTypes.FETCH_INVENTORY,
     })
   },
   async beforeMount () {
