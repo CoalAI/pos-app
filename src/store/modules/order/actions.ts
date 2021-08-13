@@ -18,6 +18,7 @@ export enum ActionTypes {
   CREATE_ORDER = "CREATE_ORDER",
   CHANGE_ORDER_STATUS = "CHANGE_ORDER_STATUS",
   GET_PRODUCTS = "GET_PRODUCTS",
+  GET_SINGLE_PRODUCT = "GET_SINGLE_PRODUCT",
   GET_PRODUCTS_BY_PAGE = "GET_PRODUCTS_BY_PAGE",
   GET_UNITS = "GET_UNITS",
   CREATE_PRODUCT = "CREATE_PRODUCT",
@@ -67,6 +68,7 @@ export interface Actions {
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
   [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.GET_SINGLE_PRODUCT]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.GET_PRODUCTS_BY_PAGE]({ commit }: AugmentedActionContext, page?: number): void;
   [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product): void;
@@ -194,6 +196,16 @@ Actions = {
       commit('setError', response.message, {root: true});
     }
   },
+  async [ActionTypes.GET_SINGLE_PRODUCT]({ commit }: AugmentedActionContext, id: string) {
+    const response = await serverRequest('get', `product/${id}`, true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetSingleProduct, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+
   async [ActionTypes.GET_PRODUCTS_BY_PAGE]({ commit }: AugmentedActionContext, page?: number) {
     let response;
     if (page) {

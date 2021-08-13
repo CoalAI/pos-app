@@ -280,7 +280,7 @@ export default defineComponent({
 
     ...mapGetters({
       units: 'getUnits',
-      getSignleProduct: 'getSignleProduct',
+      singleProduct: 'getSingleProduct',
       fieldErrors: 'getFieldError',
     })
   },
@@ -421,7 +421,7 @@ export default defineComponent({
 
     ...mapActions({
       getUnits: ActionTypes.GET_UNITS,
-      getProducts: ActionTypes.GET_PRODUCTS,
+      getProduct: ActionTypes.GET_SINGLE_PRODUCT,
       createProduct: ActionTypes.CREATE_PRODUCT,
       updateProduct: ActionTypes.UPDATE_PRODUCT,
       deleteProductVariant: ActionTypes.DELETE_PRODUCT_Variant,
@@ -430,18 +430,9 @@ export default defineComponent({
   },
   async created () {
     await this.getUnits();
-    await this.getProducts();
     if (this.productId) {
-      await this.getProducts();
-      const product_id = parseInt(this.productId);
-      const product = isNaN(product_id) ? undefined : this.$store.getters.getSignleProduct(product_id);
-      if (product) {
-        this.loadData(product);
-      }
-      else {
-        // Show 404 page on screen
-        this.$router.push({name: 'notFound'});
-      }
+      await this.getProduct(this.productId);
+      this.loadData(this.singleProduct);
     }
   },
   async unmounted () {
