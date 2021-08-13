@@ -164,14 +164,17 @@ export default defineComponent({
         buyer__company: '',
         seller__company: '',
       }
-      if(isManager()){
-        unproxied_options.buyer__company = this.user.company.id;
-        unproxied_options.seller__company = this.user.company.id;
-      }
 
-      await this.fetchOrders(unproxied_options);
+      await this.fetchOrders(this.getOptions(unproxied_options));
     },
 
+    getOptions: function(options: any){
+        if(isManager()){
+          options.buyer__company=this.user.company.id;
+          options.seller__company=this.user.company.id;
+        }
+        return options;
+    },
     onChangeFilters: async function () {
       const unproxied_options = {
         buyer__company: '',
@@ -182,11 +185,7 @@ export default defineComponent({
         created__date: this.orderDate
       }
 
-      if(isManager()){
-        unproxied_options.buyer__company = this.user.company.id;
-        unproxied_options.seller__company = this.user.company.id;
-      }
-      await this.fetchOrders(unproxied_options);
+      await this.fetchOrders(this.getOptions(unproxied_options));
     },
 
     searchOrders: function (event: Event) {
@@ -202,11 +201,7 @@ export default defineComponent({
         created__date: this.orderDate
       }
 
-      if(isManager()){
-        unproxied_options.buyer__company=this.user.company.id;
-        unproxied_options.seller__company=this.user.company.id;
-      }
-      this.fetchOrders(unproxied_options)
+      this.fetchOrders(this.getOptions(unproxied_options))
     },
 
     changePage: async function (pageNo: number) {
@@ -219,12 +214,8 @@ export default defineComponent({
         buyer__company:'',
         seller__company:''
       }
-      if(isManager()){
-        unproxied_options.buyer__company = this.user.company.id
-        unproxied_options.seller__company = this.user.company.id
-      }
 
-      await this.fetchOrders(unproxied_options);
+      await this.fetchOrders(this.getOptions(unproxied_options));
     },
 
     trimDecimalPlaces: function (value: string) {
@@ -240,16 +231,9 @@ export default defineComponent({
     if (this.$route.query.invoiceId || this.$route.query.date) {
       this.orderDate = this.$route.query.date ? this.$route.query.date as string : '';
       this.search = this.$route.query.invoiceId ? this.$route.query.invoiceId as string : '';
-      await this.onChangeFilters();
+        await this.onChangeFilters();
     } else {
-      const unproxied_options ={ 
-        buyer__company: this.user.company.id,
-        seller__company: this.user.company.id,
-      }
-      if(isManager())
-        await this.fetchOrders(unproxied_options);
-      else
-        await this.fetchOrders();
+        await this.fetchOrders(this.getOptions({}));
     }
     await this.fetchOrderStatuses();
   }
