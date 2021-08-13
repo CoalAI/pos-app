@@ -120,6 +120,7 @@ Actions = {
       buyer__company?: number;
       seller_company?: number;
       id__contains?: string;
+      invoice_id__contains?: string;
       cash?: boolean;
       status?: string;
       created__date?: Date;
