@@ -76,7 +76,7 @@ export interface Actions {
   [ActionTypes.CREATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
   [ActionTypes.UPDATE_BATCH]({ commit }: AugmentedActionContext, batch: Batch): void;
   [ActionTypes.DELETE_BATCH]({ commit }: AugmentedActionContext, batchID: string): void;
-  [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; page?: number}): void;
+  [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; batch_ids?: string; page?: number}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
@@ -275,12 +275,12 @@ Actions = {
       commit('setError', response.message, {root: true});
     }
   },
-  async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; page?: number}) {
+  async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; batch_ids?: string; page?: number}) {
     let response;
     if (data && data.search && data.search) {
       response = await serverRequest('get', 'inventory/', true, undefined, data);
     } else {
-      response = await serverRequest('get', `inventory/`, true, data);
+      response = await serverRequest('get', `inventory/`, true, undefined, data);
     }
     if(isAxiosResponse(response)) {
       commit(MutationTypes.SetInventoryCount, response.data.count)
