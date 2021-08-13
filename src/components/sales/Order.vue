@@ -299,8 +299,8 @@
                   placeholder="Discount"
                   name="total_discount"
                   v-model="totalDiscount"
-                  ref="totaldiscount"
-                  @keydown="shiftfocusTo('submitandprint')"
+                  ref="totaldisc"
+                  @keydown="shiftfocusTo($event,'submitandprint')"
                 />
                 <select
                   style="width: 40%; margin-left: 5px;"
@@ -325,7 +325,7 @@
                 name="cash_received"
                 v-model="cashReceived"
                 ref="cashreceived"
-                @keydown="shiftfocusTo('totaldiscount')"
+                @keydown="shiftfocusTo($event, 'totaldisc')"
               />
               <div v-if="field_errors.amount_received" class="form-error">{{ field_errors.amount_received[0] }}</div>
               <span v-else class="form-error">{{ orderCashReceivedValidation }}</span>
