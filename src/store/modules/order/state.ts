@@ -13,6 +13,7 @@ export type State = {
   listOfOrders: Order[];
   OrderStatuses: {status: string}[];
   listOfProducts: Product[];
+  singleProduct: Product;
   listOfBatches: Batch[];
   inventory: Inventory[];
   listofRequests: Request[];
@@ -40,6 +41,7 @@ export const state: State = {
   listOfOrders: [],
   OrderStatuses: [],
   listOfProducts: [],
+  singleProduct: {},
   listOfBatches: [],
   inventory: [],
   listofRequests: [],

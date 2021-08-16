@@ -89,6 +89,7 @@
 
         <tr>
           <th>Sr No.</th>
+          <th>Invoice ID</th>
           <th>Order ID</th>
           <th>Total</th>
           <th>Amount Received</th>
@@ -100,6 +101,7 @@
         </tr>
         <tr v-for="(order, index) in orders" v-bind:key="order.id">
           <td>{{ index + 1 }}</td>
+          <td>{{order.invoice_id}}</td>
           <td>{{order.id}}</td>
           <td>{{trimDecimalPlaces(order.total)}}</td>
           <td>{{trimDecimalPlaces(order.amount_received)}}</td>
@@ -128,6 +130,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 import Paginator from '@/components/common-components/Paginator.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
+import { isManager } from '@/utils/permission_utils';
 
 export default defineComponent({
   name: 'OrdersList',
@@ -147,6 +150,7 @@ export default defineComponent({
       orders: 'getListOfOrders',
       statuses: 'getOrderStatuses',
       counts: 'getTotalCountsOrderModule',
+      user: 'getUser'
     })
   },
   methods: {
@@ -154,40 +158,64 @@ export default defineComponent({
       this.paymentMethod = '';
       this.orderStatus = '';
       this.orderDate = '';
-      await this.fetchOrders({
-        id__contains: this.search
-      })
+
+      const unproxied_options = {
+        invoice_id__contains: this.search,
+        buyer__company: '',
+        seller__company: '',
+      }
+
+      await this.fetchOrders(this.getOptions(unproxied_options));
     },
 
+    getOptions: function(options: any){
+        if(isManager()){
+          options.buyer__company=this.user.company.id;
+          options.seller__company=this.user.company.id;
+        }
+        return options;
+    },
     onChangeFilters: async function () {
-      await this.fetchOrders({
-        id__contains: this.search,
+      const unproxied_options = {
+        buyer__company: '',
+        seller__company: '',
+        invoice_id__contains: this.search,
         status: this.orderStatus,
         cash: this.paymentMethod,
         created__date: this.orderDate
-      });
+      }
+
+      await this.fetchOrders(this.getOptions(unproxied_options));
     },
 
     searchOrders: function (event: Event) {
       if (event) {
         event.preventDefault()
       }
-      this.fetchOrders({
-        id__contains: this.search,
+      const unproxied_options = {
+        buyer__company: '',
+        seller__company: '',
+        invoice_id__contains: this.search,
         status: this.orderStatus,
         cash: this.paymentMethod,
         created__date: this.orderDate
-      })
+      }
+
+      this.fetchOrders(this.getOptions(unproxied_options))
     },
 
     changePage: async function (pageNo: number) {
-      await this.fetchOrders({
-        id__contains: this.search,
+      const unproxied_options = {
+        invoice_id__contains: this.search,
         status: this.orderStatus,
         cash: this.paymentMethod,
         created__date: this.orderDate,
         page: pageNo,
-      })
+        buyer__company:'',
+        seller__company:''
+      }
+
+      await this.fetchOrders(this.getOptions(unproxied_options));
     },
 
     trimDecimalPlaces: function (value: string) {
@@ -203,9 +231,9 @@ export default defineComponent({
     if (this.$route.query.invoiceId || this.$route.query.date) {
       this.orderDate = this.$route.query.date ? this.$route.query.date as string : '';
       this.search = this.$route.query.invoiceId ? this.$route.query.invoiceId as string : '';
-      await this.onChangeFilters();
+        await this.onChangeFilters();
     } else {
-      await this.fetchOrders();
+        await this.fetchOrders(this.getOptions({}));
     }
     await this.fetchOrderStatuses();
   }

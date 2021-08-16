@@ -107,6 +107,9 @@ import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Transaction } from '@/store/models/transaction';
 import Alert from '@/components/common-components/Alert.vue'
 import Loader from '@/components/common-components/Loader.vue'
+import { User } from '@/store/models/user';
+import { Request } from '@/store/models/request';
+import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'Expense',
@@ -173,15 +176,31 @@ export default defineComponent({
       fetchUserData: AuthActionTypes.USER_DATA,
       createExpense: AuthActionTypes.CREATE_EXPENSE,
       getVendors: AuthActionTypes.FETCH_VENDORS,
+      createRequest: OrderActionTypes.CREATE_REQUEST,
     }),
     addExpense: async function(){
       if(this.amountValidation==null && this.descriptionValidation == null) {
         this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
         this.transaction.amount = this.expenseMethod === 'Credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
         this.transaction.payor = this.userdata.id;
-        this.loader = true
+        this.loader = true;
         await this.createExpense(this.transaction as Transaction).finally(() => this.loader = false);
         this.create_expense = this.expense && this.expense.id;
+        const payee = this.users.find((item: User) => item.id == this.transaction.payee) 
+        if (this.create_expense &&
+          this.expenseMethod == 'Debit' &&
+          this.userdata.company.company_type == 'RETIAL' &&
+          payee && payee.company.company_type == 'STORE') {
+          const request: Request = {
+            sender: this.transaction.payor,
+            receiver: this.transaction.payee,
+            request_type: 'TRANSACTION',
+            status: 'PENDING',
+            description: `transaction id:${this.expense.id}, Amount: ${parseFloat(this.expense.amount)*-1}`,
+            expected_delivery_date: new Date().toISOString().split('T')[0]
+          };
+          await this.createRequest(request);
+        }
         this.transaction.clear();
         await this.fetchUserData();
       }

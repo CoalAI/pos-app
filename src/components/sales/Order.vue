@@ -14,10 +14,11 @@
               name="barcode"
               :maxlength="BarCodeMaxLength"
               v-model="product.barCode"
+              autocomplete="off"
               v-debounce:250="searchByBarcode"
+              @keydown="checkkey"
               ref="barcode"
               v-focus
-              autocomplete="off"
             />
             <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
           </div>
@@ -72,7 +73,7 @@
             <input
               type="number"
               tabindex="5"
-              placeholder="discount percentage"
+              placeholder="Price"
               name="discount"
               v-model="product.buyPrice"
               @input="changeProductPrice"
@@ -216,7 +217,15 @@
                   @input="changeDiscount(index)"
                 />
               </td>
-              <td>{{orderItem.totalPrice}}</td>
+              <td>
+                <input
+                  class="order_item_input"
+                  type="number"
+                  placeholder="total price"
+                  v-model="orderItem.totalPrice"
+                  @input="changePrice(index)"
+                />
+              </td>
               <td style="cursor: pointer;" @click="removeItem(index)">
                 <hr style="border: 1px solid red">
               </td>
@@ -299,8 +308,8 @@
                   placeholder="Discount"
                   name="total_discount"
                   v-model="totalDiscount"
-                  ref="totaldiscount"
-                  @keydown="shiftfocusTo('submitandprint')"
+                  ref="totaldisc"
+                  @keydown="shiftfocusTo($event,'submitandprint')"
                 />
                 <select
                   style="width: 40%; margin-left: 5px;"
@@ -325,7 +334,7 @@
                 name="cash_received"
                 v-model="cashReceived"
                 ref="cashreceived"
-                @keydown="shiftfocusTo('totaldiscount')"
+                @keydown="shiftfocusTo($event, 'totaldisc')"
               />
               <div v-if="field_errors.amount_received" class="form-error">{{ field_errors.amount_received[0] }}</div>
               <span v-else class="form-error">{{ orderCashReceivedValidation }}</span>
@@ -534,6 +543,7 @@ import { Product, ProductVariant } from '@/store/models/product';
 import { User, UserExtra } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
 import OrderBill from '@/components/sales/OrderBill.vue';
+import { Inventory } from '@/store/models/company';
 
 export default defineComponent({
   name: 'Order',
@@ -602,7 +612,12 @@ export default defineComponent({
     totalAmount: function (): number {
       let total = this.orderItems
         // eslint-disable-next-line
-        .map((item: any) =>  item.totalPrice)
+        .map((item: any) =>  {
+          if (typeof item.totalPrice === 'string'){
+            return parseFloat(item.totalPrice)
+          }
+          return item.totalPrice;
+        })
         .reduce((a: number, b: number) => a + b, 0);
       
       const totalDiscount = parseFloat(this.totalDiscount);
@@ -854,6 +869,7 @@ export default defineComponent({
       field_errors: 'getFieldError',
       authFieldErrors: 'getAuthFieldError',
       order_response: 'getOrder',
+      inventory: 'getInventory',
     })
   },
   methods: {
@@ -909,7 +925,22 @@ export default defineComponent({
       this.product.name = currentProduct.name;
       this.product.actualPrice = parseFloat(currentVariant.price);
       this.product.quantityUpperLimit = this.sumQuantity(currentVariant);
-      this.productBatchSelect = currentVariant.batch
+      // search inventory and change quantity
+      let batch_ids = '';
+      await currentVariant.batch.forEach((batch: Batch) => batch_ids += batch.id + ',')
+      batch_ids = batch_ids.slice(0, batch_ids.length-1);
+      await this.fetchInventory({batch_ids});
+      const availableBatches: Batch[] = [];
+      this.inventory.forEach((element: Inventory) => {
+        if (element && element.batch && element.batch.id) {
+          const currBatch = currentVariant.batch.find((batch: Batch) => element.batch && element.batch.id && batch.id == element.batch.id);
+          if (currBatch) {
+            currBatch.quantity = element.quantity;
+            availableBatches.push(currBatch);
+          }
+        }
+      });
+      this.productBatchSelect = availableBatches
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
@@ -1094,6 +1125,21 @@ export default defineComponent({
       }
     },
 
+    changePrice: function (index: number) {
+      const currentOrderItemPrice = this.orderItems[index].price;
+      const totalPrice = this.orderItems[index].totalPrice;
+      if (totalPrice !== undefined && currentOrderItemPrice !== undefined) {
+
+        const price = parseFloat(currentOrderItemPrice);
+
+        if (isNaN(price)) return;
+        if (totalPrice < 0) return;
+
+        this.orderItems[index].quantity = (totalPrice / price).toFixed(2).toString();
+        this.orderItems[index].discount = (0.00).toString();
+      }
+    },
+
     removeItem: function (index: number) {
       this.orderItems.splice(index, 1)
     },
@@ -1162,8 +1208,6 @@ export default defineComponent({
       
     },
 
-
-
     sumQuantity: function (item: ProductVariant): number {
       let sum = 0;
       if (item.batch !== undefined && typeof item.batch !== 'number') {
@@ -1196,7 +1240,7 @@ export default defineComponent({
           quantity = price / this.product.actualPrice;
         }
       }
-      this.product.quantity = quantity.toString();
+      this.product.quantity = quantity.toFixed(2).toString();
     },
 
     changeProductQuantity: function () {
@@ -1208,7 +1252,7 @@ export default defineComponent({
           buyPrice = quantity * this.product.actualPrice;
         }
       }
-      this.product.buyPrice = buyPrice.toString();
+      this.product.buyPrice = buyPrice.toFixed(2).toString();
     },
 
     trimQuantity: function(quan: string): string{
@@ -1225,7 +1269,8 @@ export default defineComponent({
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
       setFieldError: ActionTypes.SET_FIELD_ERROR,
-      fetchOrder: ActionTypes.FETCH_ORDER
+      fetchOrder: ActionTypes.FETCH_ORDER,
+      fetchInventory: ActionTypes.FETCH_INVENTORY,
     })
   },
   async beforeMount () {
