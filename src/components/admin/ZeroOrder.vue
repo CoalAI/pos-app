@@ -14,8 +14,10 @@
               placeholder="Bar code"
               name="barcode"
               :maxlength="BarCodeMaxLength"
+              autocomplete="off"
               v-model="product.barCode"
-              @input="searchByBarcode"
+              v-debounce:250="searchByBarcode"
+              @keydown="checkkey"
               ref="barcode"
               v-focus
             />
@@ -33,8 +35,10 @@
               name="quantity" 
               :max="24"
               :min="0"
+              ref="quantity"
               v-model="product.quantity"
               @input="changeProductQuantity"
+              @keydown="shiftfocusTo($event, 'expirydate')"
             />
             <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
           </div>
@@ -56,6 +60,8 @@
               :maxlength="ProductNameMaxLength"
               v-model="product.name"
               @input="searchByName"
+              @keydown="checkkey"
+              autocomplete="off"
             />
             <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
           </div>
@@ -68,7 +74,7 @@
             <input
               type="number"
               tabindex="5"
-              placeholder="discount percentage"
+              placeholder="Price"
               name="discount"
               v-model="product.buyPrice"
               @input="changeProductPrice"
@@ -82,6 +88,7 @@
               tabindex="7"
               @click="addOrderItem"
               :disabled="addProductButton"
+              ref="addproduct"
             >Add Product</button>
           </div>
 
@@ -106,6 +113,8 @@
                 tabindex="6"
                 type="date"
                 v-model="product.expiryDate"
+                ref="expirydate"
+                @keydown="shiftfocusTo($event, 'addproduct')"
               >
               <span v-if="productExpiryValidation" class="form-error">{{ productExpiryValidation }}</span>
             </div>
@@ -184,7 +193,7 @@
       <div class="table-container">
         <div class="box2 box1-tab">
           <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
-            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id">
+            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id" :class="item.id+'_'+itemVariant.id === focusedID?'focuschange':''">
               <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
                 <table class="pr-s-r-table">
                   <tr>
@@ -255,7 +264,15 @@
               <td>{{ orderItem.batch.manufacturing_date }}</td>
               <td>{{ orderItem.batch.expiry_date }}</td>
               <td>{{ trimNumber(orderItem.batch.quantity) }}</td>
-              <td>{{ orderItem.totalPrice }}</td>
+              <td>
+                <input
+                  class="order_item_input"
+                  type="number"
+                  placeholder="total price"
+                  v-model="orderItem.totalPrice"
+                  @input="changePrice(index)"
+                />
+              </td>
               <td style="cursor: pointer;" @click="removeItem(index)">
                 <hr style="border: 1px solid red">
               </td>
@@ -534,6 +551,8 @@ export default defineComponent({
     const vendor: User = {};
 
     return {
+      focusedTile: -1,
+      focusedID : '',
       cancelModal: false,
       product: {
         name: '',
@@ -579,7 +598,12 @@ export default defineComponent({
     totalAmount: function (): number {
       let total = this.orderItems
         // eslint-disable-next-line
-        .map((item: any) =>  item.totalPrice)
+        .map((item: any) =>  {
+          if (typeof item.totalPrice === 'string'){
+            return parseFloat(item.totalPrice)
+          }
+          return item.totalPrice;
+        })
         .reduce((a: number, b: number) => a + b, 0);
       
       const totalDiscount = parseFloat(this.totalDiscount);
@@ -785,6 +809,19 @@ export default defineComponent({
       return errorMessage;
     },
 
+    variantsflatList: function(){
+      const variants: {ProductId: any;VariantId: any}[] =[];
+      this.productResult.map((item: Product)=>{
+        if(item){
+          const listofvariants = item.product_variant as ProductVariant[];
+          listofvariants.map((variant: ProductVariant)=>{
+              variants.push({ProductId: item.id, VariantId: variant.id});
+          })
+        }
+      })
+      return variants;
+    },
+
     ...mapGetters({
       productResult: 'getProductResults',
       userdata: 'getUser',
@@ -858,6 +895,8 @@ export default defineComponent({
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
       if (this.orderType == 'to') {
         (this.$refs.batches as HTMLSelectElement & { focus: () => void }).focus();
+      }else{
+        (this.$refs.quantity as HTMLSelectElement & { focus: () => void }).focus();
       }
     },
 
@@ -1028,6 +1067,21 @@ export default defineComponent({
       }
     },
 
+    changePrice: function (index: number) {
+      const currentOrderItemPrice = this.orderItems[index].price;
+      const totalPrice = this.orderItems[index].totalPrice;
+      if (totalPrice !== undefined && currentOrderItemPrice !== undefined) {
+
+        const price = parseFloat(currentOrderItemPrice);
+
+        if (isNaN(price)) return;
+        if (totalPrice < 0) return;
+
+        this.orderItems[index].quantity = (totalPrice / price).toFixed(2).toString();
+        this.orderItems[index].discount = (0.00).toString();
+      }
+    },
+
     removeItem: function (index: number) {
       this.orderItems.splice(index, 1)
     },
@@ -1039,11 +1093,14 @@ export default defineComponent({
       this.searchProductByName(this.product.name);
     },
 
-    searchByBarcode: function (event: Event) {
-      if (event) {
-        event.preventDefault()
+    searchByBarcode: async function (event: Event) {
+      await this.searchProductByBarcode(this.product.barCode);
+      
+      if(this.productResult.length === 1){
+      const searchedProduct: Product = this.productResult[0];
+      if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
+          await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
       }
-      this.searchProductByBarcode(this.product.barCode);
     },
 
     sumQuantity: function (item: ProductVariant): number {
@@ -1128,6 +1185,43 @@ export default defineComponent({
       }
     },
 
+    checkkey: function (event: KeyboardEvent) {
+      const variantslist = this.variantsflatList
+      if (event.key ==='ArrowDown'){
+        this.focusedTile++;
+        if(variantslist.length<=this.focusedTile){
+          this.focusedTile=0;
+        }
+        if(variantslist.length > 0){
+          const focused = variantslist[this.focusedTile];
+          const refid = focused.ProductId+'_'+focused.VariantId;
+          this.focusedID = refid;
+          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+        }
+      }else if(event.key === 'Enter'){
+        if(this.focusedTile<variantslist.length){
+          const focused = variantslist[this.focusedTile];
+          this.selectProduct(focused.ProductId, focused.VariantId);
+        }
+      }else if(event.key ==='ArrowUp'){
+        this.focusedTile--;
+        if(0>this.focusedTile){
+          this.focusedTile=0;
+        }
+        if(variantslist.length > 0){
+          const focused = variantslist[this.focusedTile];
+          const refid = focused.ProductId+'_'+focused.VariantId;
+          this.focusedID = refid;
+          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+        }
+      }
+    },
+    shiftfocusTo: function(event: KeyboardEvent, to: string, key='Enter'){
+      if(event.key === key){
+        (this.$refs[to] as HTMLSelectElement & { focus: () => void })?.focus();
+      }
+    },
+
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: OrderActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1155,6 +1249,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+  .focuschange {
+    outline: none !important;
+    border-left:5px solid red;
+    box-shadow: 0 0 10px #719ECE;
+  }
   #container-zero-order {
     display: grid;
     grid-template-columns: 3fr 1fr;
