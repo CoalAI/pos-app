@@ -7,7 +7,6 @@ export function isManager(): boolean{
       const allowedRoles = ['SALES_STAFF', 'ADMIN'];
       const allowedCompanies = ['RETIAL']
       const role = store.getters.getUser ? store.getters.getUser.user_type : '';
-      console.log(`manager role: ${role}`)
       const company_type = store.getters.getUser && store.getters.getUser.company ? store.getters.getUser.company.company_type : '';
       if (role != null &&
         company_type != null &&
@@ -28,7 +27,6 @@ export function isAdmin(): boolean{
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
       const allowedCompanies = ['PARENT', 'STORE']
       const role = store.getters.getUser ? store.getters.getUser.user_type : '';
-      console.log(`admin role: ${role}`)
       const company_type = store.getters.getUser && store.getters.getUser.company ? store.getters.getUser.company.company_type : '';
       if (role != null &&
         company_type != null &&
