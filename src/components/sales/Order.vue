@@ -73,7 +73,7 @@
             <input
               type="number"
               tabindex="5"
-              placeholder="discount percentage"
+              placeholder="Price"
               name="discount"
               v-model="product.buyPrice"
               @input="changeProductPrice"
@@ -217,7 +217,15 @@
                   @input="changeDiscount(index)"
                 />
               </td>
-              <td>{{orderItem.totalPrice}}</td>
+              <td>
+                <input
+                  class="order_item_input"
+                  type="number"
+                  placeholder="total price"
+                  v-model="orderItem.totalPrice"
+                  @input="changePrice(index)"
+                />
+              </td>
               <td style="cursor: pointer;" @click="removeItem(index)">
                 <hr style="border: 1px solid red">
               </td>
@@ -604,7 +612,12 @@ export default defineComponent({
     totalAmount: function (): number {
       let total = this.orderItems
         // eslint-disable-next-line
-        .map((item: any) =>  item.totalPrice)
+        .map((item: any) =>  {
+          if (typeof item.totalPrice === 'string'){
+            return parseFloat(item.totalPrice)
+          }
+          return item.totalPrice;
+        })
         .reduce((a: number, b: number) => a + b, 0);
       
       const totalDiscount = parseFloat(this.totalDiscount);
@@ -1109,6 +1122,21 @@ export default defineComponent({
         if (isNaN(discount) && discount <= 0 || discount > 100) return;
         this.orderItems[index].totalPrice = price * quantity
           * ((100 - discount) / 100);
+      }
+    },
+
+    changePrice: function (index: number) {
+      const currentOrderItemPrice = this.orderItems[index].price;
+      const totalPrice = this.orderItems[index].totalPrice;
+      if (totalPrice !== undefined && currentOrderItemPrice !== undefined) {
+
+        const price = parseFloat(currentOrderItemPrice);
+
+        if (isNaN(price)) return;
+        if (totalPrice < 0) return;
+
+        this.orderItems[index].quantity = (totalPrice / price).toFixed(2).toString();
+        this.orderItems[index].discount = (0.00).toString();
       }
     },
 
