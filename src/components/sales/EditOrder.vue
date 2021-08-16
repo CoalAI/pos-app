@@ -1,10 +1,12 @@
 <template>
     <div class="diff-shadow">
       <div class="pad-1">
-        <p>
+          <div>
           <strong>Order Number: </strong><span>#{{order.id}}</span>
+          <strong style="margin-left: 20px;">Invoice ID: </strong><span>#{{order.invoice_id}}</span>
           <strong style="margin-left: 20px;">Order Date: </strong><span>{{onlyDate(order.created)}}</span>
-        </p>
+          </div>
+        
         <div class="table-box">
            <table>
             <tr>
@@ -79,19 +81,19 @@
           </div>
         </div>
         <div class="box2">
-          <h3>Following functionalities to be Implemented</h3>
+          <!-- <h3>Following functionalities to be Implemented</h3>
           <div class="flex-box">
             <a class="btn btn-orange btn-mr">Edit Order</a>
             <a class="btn btn-orange btn-mr">Cancel</a>
             <a id="delete-btn" class="btn btn-orange btn-mr">Delete Order</a>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
 </template>
 
 <script lang="ts">
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { defineComponent } from 'vue';
 
 import { Order } from '@/store/models/order';
@@ -100,12 +102,6 @@ import { ActionTypes } from '@/store/modules/order/actions';
 export default defineComponent({
   name: 'EditOrder',
   props: ['orderId'],
-  data () {
-    const orderObject: Order = {};
-    return {
-      order: orderObject
-    }
-  },
   computed: {
     cashRetured: function(): number {
       let cash = 0;
@@ -121,7 +117,11 @@ export default defineComponent({
       } else {
         return false;
       }
-    }
+    },
+
+    ...mapGetters({
+      order: 'getOrder'
+    })
   },
   methods: {
     orderItemTotal: function (quantity: string, price: string) {
@@ -134,21 +134,13 @@ export default defineComponent({
     },
 
     ...mapActions({
-      fetchOrders: ActionTypes.FETCH_ORDERS,
+      fetchOrder: ActionTypes.FETCH_ORDER,
     })
   },
   async created () {
     if (this.orderId) {
-      await this.fetchOrders();
       const order_id = parseInt(this.orderId);
-      const order = isNaN(order_id) ? undefined : this.$store.getters.getSignleOrder(order_id);
-      if (order) {
-        this.order = order;
-      }
-      else {
-        // Show 404 page on screen
-        this.$router.push({name: 'notFound'});
-      }
+      await this.fetchOrder(order_id);
     }
   }
 });

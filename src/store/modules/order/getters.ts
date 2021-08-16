@@ -7,6 +7,7 @@ import { Batch } from "@/store/models/batch";
 import { Inventory } from "@/store/models/company";
 import { Request } from "@/store/models/request";
 
+
 export interface Getters {
   getOrderStatus(state: State): string;
   getOrder(state: State): Order;
@@ -45,7 +46,7 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     return state.recentProducts;
   },
   getListOfOrders: (state: State) => {
-    return state.listOfOrders
+      return state.listOfOrders;
   },
   getOrderStatuses: (state: State) => {
     return state.OrderStatuses
