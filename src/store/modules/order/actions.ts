@@ -94,7 +94,7 @@ Actions = {
     if (name === '') {
       commit(MutationTypes.SetProductResults, []);
     } else {
-      const response = await serverRequest('get', 'product/', true, undefined, {name__contains: name});
+      const response = await serverRequest('get', 'product/', true, undefined, {name__icontains: name});
       if (isAxiosResponse(response)) {
         commit(MutationTypes.SetProductResults, response.data.results);
       }
@@ -107,7 +107,7 @@ Actions = {
     if (barcode === '') {
       commit(MutationTypes.SetProductResults, []);
     } else {
-      const response = await serverRequest('get', 'product/', true, undefined, {bar_code__iendswith: barcode});
+      const response = await serverRequest('get', 'product/', true, undefined, {bar_code: barcode});
       if (isAxiosResponse(response)) {
         commit(MutationTypes.SetProductResults, response.data.results);
       }

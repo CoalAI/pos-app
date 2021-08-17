@@ -150,8 +150,8 @@
 
       <!-- Order Items table -->
       <div class="table-container">
-        <div class="box2 box1-tab">
-          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
+        <div class="box2 box1-tab" ref="scrollContainer">
+          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id" ref="options">
             <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id" :class="item.id+'_'+itemVariant.id === focusedID?'focuschange':''">
               <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
                 <table class="pr-s-r-table">
@@ -161,7 +161,7 @@
                     <td>{{ itemVariant.color }}</td>
                   </tr>
                   <tr>
-                    <td>{{ itemVariant.price }}</td>
+                    <td>{{ itemVariant.sale_price }}</td>
                     <td v-if="sumQuantity(itemVariant) > 0">{{ sumQuantity(itemVariant) }}</td>
                     <td v-else class="out-of-stock">Out of Stock</td>
                     <td>{{ itemVariant.size }}</td>
@@ -923,7 +923,7 @@ export default defineComponent({
       this.productVariantId = VariantId;
       this.product.barCode = currentProduct.bar_code;
       this.product.name = currentProduct.name;
-      this.product.actualPrice = parseFloat(currentVariant.price);
+      this.product.actualPrice = parseFloat(currentVariant.sale_price);
       this.product.quantityUpperLimit = this.sumQuantity(currentVariant);
       // search inventory and change quantity
       let batch_ids = '';
@@ -1012,7 +1012,7 @@ export default defineComponent({
       const currentVariant = await currentProduct.product_variant
         .find((item: ProductVariant) => item.id === this.productVariantId);
 
-      price = currentVariant.price;
+      price = currentVariant.sale_price;
       let totalPrice = price * quantity;
       if (this.product.discount
         && discount > 0
@@ -1035,7 +1035,7 @@ export default defineComponent({
         price: price.toString(),
         quantity: quantity.toString(),
         discount: discount.toString(),
-        totalPrice
+        totalPrice: parseInt(totalPrice.toFixed(0))
       }
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
@@ -1102,7 +1102,7 @@ export default defineComponent({
           if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
             total = total * ((100 - discount) / 100);
           }
-          this.orderItems[index].totalPrice = total;
+          this.orderItems[index].totalPrice = parseInt(total.toFixed(0));
         }
       }
     },
@@ -1120,8 +1120,8 @@ export default defineComponent({
         const discount = parseFloat(currentOrderItemDiscount);
 
         if (isNaN(discount) && discount <= 0 || discount > 100) return;
-        this.orderItems[index].totalPrice = price * quantity
-          * ((100 - discount) / 100);
+        this.orderItems[index].totalPrice = parseInt((price * quantity
+          * ((100 - discount) / 100)).toFixed(0));
       }
     },
 
@@ -1135,7 +1135,7 @@ export default defineComponent({
         if (isNaN(price)) return;
         if (totalPrice < 0) return;
 
-        this.orderItems[index].quantity = (totalPrice / price).toFixed(2).toString();
+        this.orderItems[index].quantity = (totalPrice / price).toFixed(4).toString();
         this.orderItems[index].discount = (0.00).toString();
       }
     },
@@ -1172,6 +1172,7 @@ export default defineComponent({
           const focused = variantslist[this.focusedTile];
           const refid = focused.ProductId+'_'+focused.VariantId;
           this.focusedID = refid;
+          this.fixScrolling();
           (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
         }
       }else if(event.key === 'Enter'){
@@ -1188,6 +1189,7 @@ export default defineComponent({
           const focused = variantslist[this.focusedTile];
           const refid = focused.ProductId+'_'+focused.VariantId;
           this.focusedID = refid;
+          this.fixScrolling();
           (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
         }
       }
@@ -1197,14 +1199,19 @@ export default defineComponent({
         (this.$refs[to] as HTMLSelectElement & { focus: () => void })?.focus();
       }
     },
+    fixScrolling(){
+      const liH = (this.$refs.options as HTMLElement).clientHeight;
+      console.log(liH);
+      (this.$refs.scrollContainer as any).scrollTop = liH * this.focusedTile;
+    },
     searchByBarcode: async function (event: Event) {
       await this.searchProductByBarcode(this.product.barCode);
       
-      if(this.productResult.length === 1){
-      const searchedProduct: Product = this.productResult[0];
-      if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
-          await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
-      }
+      // if(this.productResult.length === 1){
+      // const searchedProduct: Product = this.productResult[0];
+      // if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
+      //     await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
+      // }
       
     },
 
@@ -1229,6 +1236,7 @@ export default defineComponent({
       this.totalDiscount = '';
       this.paymentMethod = 'cash';
       this.cancelModal = false;
+      await this.fetchInvoiceID();
     },
 
     changeProductPrice: function () {
@@ -1240,7 +1248,7 @@ export default defineComponent({
           quantity = price / this.product.actualPrice;
         }
       }
-      this.product.quantity = quantity.toFixed(2).toString();
+      this.product.quantity = quantity.toFixed(4).toString();
     },
 
     changeProductQuantity: function () {
