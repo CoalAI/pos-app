@@ -191,8 +191,8 @@
 
       <!-- Order Items table -->
       <div class="table-container">
-        <div class="box2 box1-tab">
-          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id">
+        <div class="box2 box1-tab" ref="scrollContainer">
+          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id" ref="options">
             <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id" :class="item.id+'_'+itemVariant.id === focusedID?'focuschange':''">
               <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
                 <table class="pr-s-r-table">
@@ -1197,6 +1197,7 @@ export default defineComponent({
           const focused = variantslist[this.focusedTile];
           const refid = focused.ProductId+'_'+focused.VariantId;
           this.focusedID = refid;
+          this.fixScrolling();
           (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
         }
       }else if(event.key === 'Enter'){
@@ -1213,6 +1214,7 @@ export default defineComponent({
           const focused = variantslist[this.focusedTile];
           const refid = focused.ProductId+'_'+focused.VariantId;
           this.focusedID = refid;
+          this.fixScrolling();
           (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
         }
       }
@@ -1221,6 +1223,11 @@ export default defineComponent({
       if(event.key === key){
         (this.$refs[to] as HTMLSelectElement & { focus: () => void })?.focus();
       }
+    },
+
+    fixScrolling(){
+      const liH = (this.$refs.options as HTMLElement).clientHeight;
+      (this.$refs.scrollContainer as any).scrollTop = liH * this.focusedTile;
     },
 
     ...mapActions({
