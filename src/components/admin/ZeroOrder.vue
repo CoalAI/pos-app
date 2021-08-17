@@ -201,7 +201,7 @@
                     <td>{{ item.bar_code }}</td>
                   </tr>
                   <tr>
-                    <td>{{ itemVariant.price }}</td>
+                    <td>{{ itemVariant.sale_price }}</td>
                     <td>{{ itemVariant.size }}</td>
                   </tr>
                 </table>
@@ -886,7 +886,7 @@ export default defineComponent({
       this.productVariantId = VariantId;
       this.product.barCode = currentProduct.bar_code;
       this.product.name = currentProduct.name;
-      this.product.actualPrice = parseFloat(currentVariant.price);
+      this.product.actualPrice = parseFloat(currentVariant.sale_price);
       this.productBatchSelect = currentVariant.batch
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
@@ -929,7 +929,7 @@ export default defineComponent({
       const currentVariant = await currentProduct.product_variant
         .find((item: ProductVariant) => item.id === this.productVariantId);
 
-      price = currentVariant.price;
+      price = currentVariant.sale_price;
       let totalPrice = price * quantity;
       if (this.product.discount
         && discount > 0
@@ -1044,7 +1044,7 @@ export default defineComponent({
           if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
             total = total * ((100 - discount) / 100);
           }
-          this.orderItems[index].totalPrice = total;
+          this.orderItems[index].totalPrice = parseInt(total.toFixed(0));
         }
       }
     },
@@ -1062,8 +1062,8 @@ export default defineComponent({
         const discount = parseFloat(currentOrderItemDiscount);
 
         if (isNaN(discount) && discount <= 0 || discount > 100) return;
-        this.orderItems[index].totalPrice = price * quantity
-          * ((100 - discount) / 100);
+        this.orderItems[index].totalPrice = parseInt((price * quantity
+          * ((100 - discount) / 100)).toFixed(0));
       }
     },
 
@@ -1077,7 +1077,7 @@ export default defineComponent({
         if (isNaN(price)) return;
         if (totalPrice < 0) return;
 
-        this.orderItems[index].quantity = (totalPrice / price).toFixed(2).toString();
+        this.orderItems[index].quantity = (totalPrice / price).toFixed(4).toString();
         this.orderItems[index].discount = (0.00).toString();
       }
     },
@@ -1129,6 +1129,7 @@ export default defineComponent({
       const vendor: User = {};
       this.vendorUser = vendor;
       this.cancelModal = false;
+      await this.fetchInvoiceID();
       await this.getUsers('ADMIN');
       await this.getVendors('');
     },
