@@ -102,7 +102,7 @@
               v-model="product.batch"
               ref="batches"
             >
-              <option class="batches-op" v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
+              <option class="batches-op" v-for="batch in filteredBatches" v-bind:key="batch.id" v-bind:value="batch.id">
                 #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimQuantity(batch.quantity)}}
               </option>
             </select>
@@ -139,9 +139,15 @@
             <td>{{ invoiceID }}</td>
           </tr>
         </table>
-      </div>
+        <div class="mr-2">
+          <span><label style="margin-right: 10px; margin-left: 8px; font-size: large;"><strong>Return Order</strong></label></span>
+          <input class="q-i" type="checkbox" id="return_order" name="return_order" v-bind:checked="return_order" @change="return_order=!return_order">
+        </div>
+      <span v-if="validateReturnOrder" class="form-error">{{validateReturnOrder}}</span>
     </div>
 
+      </div>
+      
     <div class="diff-shadow">
       <div class="table-container" style="margin-top: 0;">
         <p><strong>Product Results</strong></p>
@@ -605,6 +611,7 @@ export default defineComponent({
       regularCustomer:{},
       customer:{},
       deduct_balance:false,
+      return_order:false,
       print: true,
     }
   },
@@ -694,6 +701,14 @@ export default defineComponent({
       }
       return errorMessage;
     },
+    filteredBatches: function(){
+      let batches: Batch[] = this.productBatchSelect;
+      if(!this.return_order){
+        batches = batches.filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
+      }
+      return batches;
+    },
+
     validateDeductBalance: function() {
       let error_message = null;
       if(this.paymentMethod === 'credit') {
@@ -713,11 +728,23 @@ export default defineComponent({
       }
       return error_message;
     },
+     validateReturnOrder: function() {
+      let error_message = null;
+      if(this.return_order && parseFloat(this.product.quantity)>=0) {
+          error_message = 'quantity should be in negative for return order!'
+      }
+
+      return error_message;
+    },
+    returnOrderDisable: function(): boolean{
+      // disables the return_order radio after any order item is added.
+      return this.orderItems.length>0
+    },
     selectedBatchQuantity: function(): number {
       let selectedBatchQuantity = 0.0;
       const batchID = parseInt(this.product.batch);
-      if(!isNaN(batchID) && batchID > 0 && this.productBatchSelect.length > 0){
-        const selectedBatch = this.productBatchSelect.find((item: Batch) => item.id === batchID);
+      if(!isNaN(batchID) && batchID > 0 && this.filteredBatches.length > 0){
+        const selectedBatch = this.filteredBatches.find((item: Batch) => item.id === batchID);
         const selectedBatchQuantityStr = selectedBatch && selectedBatch.quantity ? selectedBatch.quantity : '0';
         selectedBatchQuantity = parseFloat(selectedBatchQuantityStr);
       }
@@ -730,7 +757,9 @@ export default defineComponent({
       this.productBarCodeValidation === null &&
       this.productBatchValidation === null &&
       this.productQuantityValidation === null &&
-      this.productDiscountValidation === null) {
+      this.productDiscountValidation === null &&
+      this.validateReturnOrder === null
+      ) {
         disable = false
       }
       return disable
@@ -941,10 +970,10 @@ export default defineComponent({
         }
       });
       this.productBatchSelect = availableBatches
-        .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
-      const batchId = this.productBatchSelect.length > 0 ? (this.productBatchSelect[0] as Batch).id : undefined;
+
+      const batchId = this.filteredBatches.length > 0 ? (this.filteredBatches[0] as Batch).id : undefined;
       this.product.batch = batchId !== undefined ? batchId.toString() : '';
       (this.$refs.quantity as HTMLSelectElement & { focus: () => void }).focus();
     },
@@ -1072,8 +1101,13 @@ export default defineComponent({
         payment_service: this.paymentMethod === 'cash'? 'BANK' : this.paymentService,
         transaction_id: this.transactionId,
         invoice_id: this.invoiceID,
-        deduct_balance: this.deduct_balance
+        deduct_balance: this.deduct_balance,
       }
+
+      if(this.return_order){
+        singleOrder.status = 'RETURNED';
+      }
+
       await this.createOrder(singleOrder);
       await this.getUsersByType({user_type: 'REGULAR_CUSTOMER'});
   },
