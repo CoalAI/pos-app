@@ -817,7 +817,10 @@ export default defineComponent({
     orderCashReceivedValidation: function () {
       
       let errorMessage = null;
-      if(this.paymentMethod!=='credit'){
+      if(this.return_order && this.cashReceived && parseFloat(this.cashReceived)!==0){
+          errorMessage = 'Cash Received must be 0 for Return Order.'
+      }
+      else if(this.paymentMethod!=='credit'){
         if (this.cashReceived !== undefined && this.cashReceived === '') {
           errorMessage = "Cash is required"
         }
