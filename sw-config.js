@@ -7,7 +7,7 @@ module.exports = {
   root: rootDir,
   navigateFallback: '/index.html',
   runtimeCaching: [{
-    urlPattern: /^http:\/\/localhost:8080\//,
+    urlPattern: new RegExp(process.env.VUE_APP_FRONTEND_URL_PATTERN) || /^http:\/\/localhost:8080\//,
     handler: 'networkFirst'
   }]
 }
