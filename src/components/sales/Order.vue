@@ -296,7 +296,7 @@
               <input
                 type="text"
                 name="total_amount"
-                v-bind:value="totalAmount.toFixed(2)"
+                v-bind:value="totalAmount.toFixed(4)"
                 readonly
               />
             <span v-if="field_errors.total" class="form-error">{{ field_errors.total[0] }}</span>
@@ -1016,7 +1016,6 @@ export default defineComponent({
     },
 
     addOrderItem: async function () {
-      
       this.errorIndication = false;
       let quantity = parseFloat(this.product.quantity);
       quantity = isNaN(quantity) ? 0 : quantity;
@@ -1067,7 +1066,7 @@ export default defineComponent({
         price: price.toString(),
         quantity: quantity.toString(),
         discount: discount.toString(),
-        totalPrice: parseInt(totalPrice.toFixed(0))
+        totalPrice: parseFloat(totalPrice.toFixed(4))
       }
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
@@ -1139,7 +1138,7 @@ export default defineComponent({
           if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
             total = total * ((100 - discount) / 100);
           }
-          this.orderItems[index].totalPrice = parseInt(total.toFixed(0));
+          this.orderItems[index].totalPrice = parseInt(total.toFixed(4));
         }
       }
     },
@@ -1158,7 +1157,7 @@ export default defineComponent({
 
         if (isNaN(discount) && discount <= 0 || discount > 100) return;
         this.orderItems[index].totalPrice = parseInt((price * quantity
-          * ((100 - discount) / 100)).toFixed(0));
+          * ((100 - discount) / 100)).toFixed(4));
       }
     },
 
@@ -1238,7 +1237,6 @@ export default defineComponent({
     },
     fixScrolling(){
       const liH = (this.$refs.options as HTMLElement).clientHeight;
-      console.log(liH);
       (this.$refs.scrollContainer as any).scrollTop = liH * this.focusedTile;
     },
     searchByBarcode: async function (event: Event) {
@@ -1297,11 +1295,11 @@ export default defineComponent({
           buyPrice = quantity * this.product.actualPrice;
         }
       }
-      this.product.buyPrice = buyPrice.toFixed(2).toString();
+      this.product.buyPrice = buyPrice.toFixed(4).toString();
     },
 
     trimQuantity: function(quan: string): string{
-        return parseFloat(quan!==undefined?quan:'0.0').toFixed(2);
+        return parseFloat(quan!==undefined?quan:'0.0').toFixed(4);
     },
 
     ...mapActions({
