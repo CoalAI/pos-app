@@ -1066,7 +1066,7 @@ export default defineComponent({
         price: price.toString(),
         quantity: quantity.toString(),
         discount: discount.toString(),
-        totalPrice: parseFloat(totalPrice.toFixed(4))
+        totalPrice: parseFloat(totalPrice.toFixed(0))
       }
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
