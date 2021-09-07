@@ -16,4 +16,5 @@ export interface Order extends DatesInterface {
   deduct_balance?:boolean;
   invoice_id?: string;
   internal_order?: boolean;
+  status?:string;
 }
