@@ -1138,7 +1138,7 @@ export default defineComponent({
           if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
             total = total * ((100 - discount) / 100);
           }
-          this.orderItems[index].totalPrice = parseInt(total.toFixed(4));
+          this.orderItems[index].totalPrice = parseInt(total.toFixed(0));
         }
       }
     },
