@@ -21,7 +21,7 @@ export default defineComponent({
     },
     data(){
         return {
-            records_per_page : 10,
+            records_per_page : 30,
             selected: 1,
             // total_pages: 5,
             list_max: 5,
