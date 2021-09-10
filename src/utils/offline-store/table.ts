@@ -4,7 +4,8 @@ import serverRequest, { isAxiosError, isAxiosResponse } from '@/utils/request';
 // class StoreInstance<Type>
 export default class StoreInstance<Type> {
 
-    private instance;
+    // eslint-disable-next-line
+    private instance: any;
     private apiUrl: string;
     private authenticated: boolean;
     private pageSize: number;
