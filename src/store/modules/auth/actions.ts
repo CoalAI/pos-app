@@ -1,7 +1,7 @@
 import { ActionContext, ActionTree, CommitOptions} from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User, Credentials } from '@/store/models/user';
-import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
+import serverRequest, { isAxiosError, isAxiosResponse } from '@/utils/request';
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Company } from '@/store/models/company';

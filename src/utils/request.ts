@@ -39,7 +39,7 @@ const serverRequest = async (
   try {
     const response = await axios(config);
     return response;
-  } catch (error) {
+  } catch (error: any) {
     return error;
   }
 };

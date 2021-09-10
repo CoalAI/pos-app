@@ -1,12 +1,13 @@
 import { ActionContext, ActionTree, CommitOptions } from "vuex";
 import { IRootState } from '@/store/models/root';
-import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
+import serverRequest, { isAxiosError, isAxiosResponse } from '@/utils/request'
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
 import { Batch } from '@/store/models/batch';
 import { Request } from "@/store/models/request";
+import offlineStoreService from '@/utils/offline-store';
 
 
 export enum ActionTypes {
@@ -107,13 +108,17 @@ Actions = {
     if (barcode === '') {
       commit(MutationTypes.SetProductResults, []);
     } else {
-      const response = await serverRequest('get', 'product/', true, undefined, {bar_code: barcode});
-      if (isAxiosResponse(response)) {
-        commit(MutationTypes.SetProductResults, response.data.results);
+      const product = await offlineStoreService.getProductByBarCode(barcode);
+      if (product) {
+        commit(MutationTypes.SetProductResults, [product]);
       }
-      if(isAxiosError(response)) {
-        commit('setError', response.message, {root: true});
-      }
+      // const response = await serverRequest('get', 'product/', true, undefined, {bar_code: barcode});
+      // if (isAxiosResponse(response)) {
+      //   commit(MutationTypes.SetProductResults, response.data.results);
+      // }
+      // if(isAxiosError(response)) {
+      //   commit('setError', response.message, {root: true});
+      // }
     }
   },
   async [ActionTypes.FETCH_ORDERS](
