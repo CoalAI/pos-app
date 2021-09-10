@@ -1066,7 +1066,7 @@ export default defineComponent({
         price: price.toString(),
         quantity: quantity.toString(),
         discount: discount.toString(),
-        totalPrice: parseFloat(totalPrice.toFixed(4))
+        totalPrice: parseFloat(totalPrice.toFixed(0))
       }
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
@@ -1138,7 +1138,7 @@ export default defineComponent({
           if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
             total = total * ((100 - discount) / 100);
           }
-          this.orderItems[index].totalPrice = parseInt(total.toFixed(4));
+          this.orderItems[index].totalPrice = parseInt(total.toFixed(0));
         }
       }
     },
