@@ -3,7 +3,7 @@ import { store } from "./store";
 import { ActionTypes } from "./store/modules/auth/actions";
 
 
-export async function salesStaff(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+export async function salesStaff(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN'];
   if ('token' in localStorage) {
     await store.dispatch(ActionTypes.USER_DATA);
@@ -18,7 +18,7 @@ export async function salesStaff(from: RouteLocationNormalized,to: RouteLocation
   }
 }
   
-export async function admin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext){
+export async function admin(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext){
   if ('token' in localStorage) {
     const allowedRoles = ['ADMIN','SUPER_ADMIN'];
     await store.dispatch(ActionTypes.USER_DATA);
@@ -33,7 +33,7 @@ export async function admin(from: RouteLocationNormalized,to: RouteLocationNorma
   }
 }
 
-export async function superAdmin(from: RouteLocationNormalized,to: RouteLocationNormalized,next: NavigationGuardNext) {
+export async function superAdmin(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext) {
   if ('token' in localStorage) {
     const allowedRoles = ['SUPER_ADMIN'];
     await store.dispatch(ActionTypes.USER_DATA);
@@ -48,7 +48,7 @@ export async function superAdmin(from: RouteLocationNormalized,to: RouteLocation
   }
 }
 
-export async function redirectToAdmin(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext) {
+export async function redirectToAdmin(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
   if ('token' in localStorage) {
     const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
     const allowedCompanies = ['PARENT', 'STORE']
@@ -70,7 +70,7 @@ export async function redirectToAdmin(from: RouteLocationNormalized, to: RouteLo
   } 
 }
 
-export async function storeAdmin(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext){
+export async function storeAdmin(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext){
   if ('token' in localStorage) {
     const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
     const allowedCompanies = ['PARENT', 'STORE']
@@ -92,7 +92,7 @@ export async function storeAdmin(from: RouteLocationNormalized, to: RouteLocatio
   }
 }
 
-export async function manager(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext){
+export async function manager(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext){
   if ('token' in localStorage) {
     const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
     const allowedCompanies = ['PARENT', 'STORE', 'RETIAL']
@@ -111,5 +111,19 @@ export async function manager(from: RouteLocationNormalized, to: RouteLocationNo
     }
   } else {
     next('/login')
+  }
+}
+
+export async function checkConnection(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext) {
+  if (to.name === 'Order' || to.name === 'Connection') {
+    next();
+  } else {
+    const online = navigator.onLine;
+    console.log(online);
+    if (!online) {
+      next('/connection');
+    } else {
+      next();
+    }
   }
 }
