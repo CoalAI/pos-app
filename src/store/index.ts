@@ -19,6 +19,7 @@ export const store = createStore<IRootState>({
     error: null,
     sync: false,
     offlineMode: process.env.VUE_APP_OFFLINE_SAVE_DATA as boolean || true,
+    online: navigator.onLine,
   },
   getters: {
     getError (state) {
@@ -29,7 +30,10 @@ export const store = createStore<IRootState>({
     },
     getOfflineMode (state) {
       return state.offlineMode;
-    }
+    },
+    getNetworkStatus (state) {
+      return state.online
+    },
   },
   mutations: {
     setError (state, error) {
@@ -38,6 +42,9 @@ export const store = createStore<IRootState>({
     changeSync (state, val) {
       state.sync = val;
     },
+    setOnline (state, status) {
+      state.online = status;
+    },
   },
   actions: {
     setError (context, error) {
@@ -45,7 +52,10 @@ export const store = createStore<IRootState>({
     },
     setSync (context, flag) {
       context.commit('changeSync', flag);
-    }
+    },
+    setNetworkStatus (context, status) {
+      context.commit('setOnline', status);
+    },
   },
   modules
 });

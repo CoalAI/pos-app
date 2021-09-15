@@ -22,9 +22,10 @@ import Response from "./components/sales/Response.vue";
 import ZeroOrder from "./components/admin/ZeroOrder.vue";
 import Inventory from "./components/admin/Inventory.vue";
 import ExpenseSummary from "./components/admin/ExpenseSummary.vue";
+import ConnectionError from "./components/common-components/ConnectionError.vue"
 import Expense from "./components/admin/Expense.vue";
 import Login from './components/auth/Login.vue';
-import { redirectToAdmin, superAdmin, storeAdmin, manager } from  '@/permissions';
+import { redirectToAdmin, superAdmin, storeAdmin, manager, checkConnection } from  '@/permissions';
 import { store } from '@/store';
 import { ActionTypes } from '@/store/modules/auth/actions'
 
@@ -230,6 +231,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/notification',
     name: "Notificaiton",
     component: Notifications
+  },
+  {
+    path: '/connection',
+    name: "Connection",
+    component: ConnectionError
   }
 ];
 
@@ -237,5 +243,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 });
+
+router.beforeEach(checkConnection);
 
 export default router;

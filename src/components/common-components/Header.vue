@@ -73,9 +73,17 @@
         <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
         <strong v-else >{{ userdata.username }}</strong>
       </span>
-      <div class="notification" @click="notificationPanel = !notificationPanel">
-        <span><img src="../../assets/bell.png" height="30"></span>
-        <span v-if="messages.length > 0" class="badge">{{messages.length}}</span>
+      <div class="flex-box">
+        <div class="notification" @click="notificationPanel = !notificationPanel">
+          <span><img src="../../assets/bell.png" height="30"></span>
+          <span v-if="messages.length > 0" class="badge">{{messages.length}}</span>
+        </div>
+        <div class="notification">
+          <span>
+            <img v-if="online" src="../../assets/wifi.png" height="30">
+            <img v-else src="../../assets/no-signal.png" height="30">
+          </span>
+        </div>
       </div>
       <div v-show="notificationPanel" class="search-result-upper notification-panel">
         <ul class="search-result">
@@ -129,6 +137,7 @@ export default defineComponent({
       userdata: 'getUser',
       orders: 'getListOfOrders',
       messages: 'getNotifications',
+      online: 'getNetworkStatus',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];

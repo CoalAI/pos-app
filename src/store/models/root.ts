@@ -4,6 +4,7 @@ export interface IRootState {
   error: any;
   sync: boolean;
   offlineMode: boolean;
+  online: Boolean;
 }
 
 export interface DatesInterface {

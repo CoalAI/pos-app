@@ -30,6 +30,14 @@ app.directive('focus', {
   },
 });
 
+// set network status
+function updateConnectionStatus() {
+  store.dispatch('setNetworkStatus', navigator.onLine);
+}
+
+window.addEventListener('online', updateConnectionStatus);
+window.addEventListener('offline', updateConnectionStatus);
+
 // app.use(new VueSocketIO(process.env.VUE_APP_NOTIFICATION_SERVER_IP, ['notification']));
 app.use(vueDebounce);
 app.use(store);
