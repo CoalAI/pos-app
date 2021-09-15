@@ -20,15 +20,15 @@ import { defineComponent } from 'vue'
 import Modal from '../common-components/Modal.vue'
 
 export default defineComponent({
-    props:{
-      message:{
-            type:String,
-            default:'Please Wait...'
-          }
+  props: {
+    message: {
+      type:String,
+      default:'Please Wait...',
     },
-    components:{
-        Modal
-    }
+  },
+  components: {
+      Modal,
+  },
 })
 </script>
 

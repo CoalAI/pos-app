@@ -2,16 +2,16 @@ import localForage from 'localforage';
 import serverRequest, { isAxiosError, isAxiosResponse } from '@/utils/request';
 
 // class StoreInstance<Type>
-export default class StoreInstance<Type> {
+export default class StoreInstance {
 
     // eslint-disable-next-line
     private instance: any;
     private apiUrl: string;
     private authenticated: boolean;
     private pageSize: number;
-    private indexKey: keyof Type;
+    private indexKey: string;
   
-  constructor(instanceName: string, apiUrl: string, authenticated: boolean, pageSize: number, indexKey: keyof Type){
+  constructor(instanceName: string, apiUrl: string, authenticated: boolean, pageSize: number, indexKey: string){
     this.config();
     this.instance = localForage.createInstance({name: instanceName});
     this.apiUrl = apiUrl;
@@ -34,12 +34,13 @@ export default class StoreInstance<Type> {
 
   async fetchData() {
     let data = await this.fetchRecordsPerPage();
-    if (data.count > this.pageSize) {
+    if (data.count > 0) {
       this.insertRecords(data.results);
       this.instance
       let num = 2;
       while (num <= Math.ceil(data.count/this.pageSize)) {
-        data = await this.fetchRecordsPerPage();
+        this.apiUrl = this.apiUrl + '?page'
+        data = await this.fetchRecordsPerPage({page: num});
         if (data.count > 0) {
           this.insertRecords(data.results);
         }
@@ -48,8 +49,8 @@ export default class StoreInstance<Type> {
     }
   }
 
-  private async fetchRecordsPerPage() {
-    const response = await serverRequest('get', this.apiUrl, this.authenticated, undefined, undefined);
+  async fetchRecordsPerPage(params: any = {}) {
+    const response = await serverRequest('get', this.apiUrl, this.authenticated, undefined, params);
     if (isAxiosResponse(response)) {
       return response.data;
     }
@@ -62,9 +63,9 @@ export default class StoreInstance<Type> {
     }
   }
 
-  private async insertRecords(data: Type[]) {
+  private async insertRecords(data: any[]) {
     for(const item of data) {
-      const key: string = String(item[this.indexKey]);
+      const key: string = item[this.indexKey] as string;
       await this.instance.setItem(key, item);
     }
   }

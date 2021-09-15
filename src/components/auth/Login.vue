@@ -48,9 +48,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import Loader from '../common-components/Loader.vue';
+import offlineStoreService from '@/utils/offline-store';
 
 
 export default defineComponent({
@@ -68,23 +69,30 @@ export default defineComponent({
         return 'Both fields are required!';
       }
       return false;
-      
-    }
+    },
+    ...mapGetters({
+      offlineMode: 'getOfflineMode',
+    })
   },
   methods: {
     ...mapActions({
-      loginUser: ActionTypes.LOGIN_USER
+      loginUser: ActionTypes.LOGIN_USER,
+      syncOfflineData: 'setSync',
     }),
-    submitLogin() {
+    async submitLogin() {
       if(!this.loginValidation){
         this.showLoader=true;
-        this.loginUser({
+        await this.loginUser({
           username: this.username,
           password: this.password
-        }).finally(()=> {
-          this.showLoader=false;
-          this.$router.push({name: 'Order'});
         });
+        this.showLoader=false;
+        if (this.offlineMode) {
+          this.syncOfflineData(true);
+          await offlineStoreService.initialize();
+          this.syncOfflineData(false);
+        }
+        this.$router.push({name: 'Order'});
       }
     },
   },

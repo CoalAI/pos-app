@@ -1308,7 +1308,7 @@ export default defineComponent({
       createOrder: ActionTypes.CREATE_ORDER,
       changeOrderStatus: ActionTypes.CHANGE_ORDER_STATUS,
       getUsers: AuthActionTypes.GET_USERS,
-      getUsersByType: AuthActionTypes.GET_USERS_BY_TYPE,
+      getUsersByType: AuthActionTypes.GET_CUSTOMER_USERS,
       registerUser: AuthActionTypes.REGISTER_USER,
       fetchInvoiceID: ActionTypes.FETCH_INVOICE_ID,
       setFieldError: ActionTypes.SET_FIELD_ERROR,

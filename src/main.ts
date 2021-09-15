@@ -3,7 +3,6 @@ import App from './App.vue';
 import { store } from './store/index';
 import router from './router';
 import vueDebounce from 'vue-debounce';
-import offlineStoreService from "./utils/offline-store";
 // Vue.config.productionTip = false;
 import VueSocketIO from '@/plugins/socket-io/index'
 
@@ -20,8 +19,6 @@ if (shouldSW) {
   })
 }
 
-// Offline Store
-offlineStoreService.initialize();
 
 const app = createApp(App)
 

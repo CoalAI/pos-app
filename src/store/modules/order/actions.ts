@@ -104,21 +104,22 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, barcode: string) {
-    if (barcode === '') {
-      commit(MutationTypes.SetProductResults, []);
-    } else {
+  async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit, rootGetters }: AugmentedActionContext, barcode: string) {
+    if (rootGetters.getOfflineMode) {
+      const productsArr: Product[] = [];
       const product = await offlineStoreService.getProductByBarCode(barcode);
       if (product) {
-        commit(MutationTypes.SetProductResults, [product]);
+        productsArr.push(product)
       }
-      // const response = await serverRequest('get', 'product/', true, undefined, {bar_code: barcode});
-      // if (isAxiosResponse(response)) {
-      //   commit(MutationTypes.SetProductResults, response.data.results);
-      // }
-      // if(isAxiosError(response)) {
-      //   commit('setError', response.message, {root: true});
-      // }
+      commit(MutationTypes.SetProductResults, productsArr);
+    } else {
+      const response = await serverRequest('get', 'product/', true, undefined, {bar_code: barcode});
+      if (isAxiosResponse(response)) {
+        commit(MutationTypes.SetProductResults, response.data.results);
+      }
+      if(isAxiosError(response)) {
+        commit('setError', response.message, {root: true});
+      }
     }
   },
   async [ActionTypes.FETCH_ORDERS](
@@ -322,11 +323,18 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext) {
-    const response = await serverRequest('get', 'invoice-id/', true, undefined, undefined);
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
-        commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
+  async [ActionTypes.FETCH_INVOICE_ID]({ commit, rootGetters }: AugmentedActionContext) {
+    if (rootGetters.getOfflineMode) {
+      const invoiceId = await offlineStoreService.getInvoiceId();
+      if (invoiceId) {
+        commit(MutationTypes.SetInvoiceID, invoiceId);
+      }
+    } else {
+      const response = await serverRequest('get', 'invoice-id/', true, undefined, undefined);
+      if (isAxiosResponse(response)) {
+        if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
+          commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
+        }
       }
     }
   },
