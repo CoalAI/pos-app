@@ -331,9 +331,13 @@ export default defineComponent({
         if (this.product.productVariants.length > 1) {
           const deleteProductVariantID = this.product.productVariants[index].id;
           // Delete Variant
-          this.deleteProductVariant(deleteProductVariantID);
-          this.updateDeleteLastVarient = '';
-          this.product.productVariants.splice(index, 1);
+          if (deleteProductVariantID) {
+            this.deleteProductVariant(deleteProductVariantID);
+            this.updateDeleteLastVarient = '';
+            this.product.productVariants.splice(index, 1);
+          } else {
+            this.product.productVariants.splice(index, 1);
+          }
         }
         else if (this.product.productVariants.length == 1) {
           this.updateDeleteLastVarient = 'You cannot delete last product variant.';

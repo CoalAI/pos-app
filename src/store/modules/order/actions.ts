@@ -36,6 +36,7 @@ export enum ActionTypes {
   UPDATE_REQUEST = "UPDATE_REQUEST",
   UPDATE_ORDER = "UPDATE_ORDER",
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
+  EMPTY_ORDER = "EMPTY_ORDER",
 }
 
 
@@ -86,6 +87,7 @@ export interface Actions {
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
+  [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any): void;  
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -362,5 +364,8 @@ Actions = {
   async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
     commit(MutationTypes.SetError, error);
   },
+  async [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any) {
+    commit(MutationTypes.SetOrder, {});
+  }
 };
 

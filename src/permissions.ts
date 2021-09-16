@@ -119,7 +119,6 @@ export async function checkConnection(to: RouteLocationNormalized, from: RouteLo
     next();
   } else {
     const online = navigator.onLine;
-    console.log(online);
     if (!online) {
       next('/connection');
     } else {

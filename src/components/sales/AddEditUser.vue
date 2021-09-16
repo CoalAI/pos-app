@@ -272,7 +272,7 @@ export default defineComponent({
 
     ...mapGetters({
       roles: 'getRoles',
-      companies: 'getCompanies',
+      companies: 'getCompaniesFilterVendor',
       fieldErrors: 'getAuthFieldError',
     })
   },
