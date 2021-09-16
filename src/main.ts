@@ -37,7 +37,7 @@ function updateConnectionStatus() {
 window.addEventListener('online', updateConnectionStatus);
 window.addEventListener('offline', updateConnectionStatus);
 
-// app.use(new VueSocketIO(process.env.VUE_APP_NOTIFICATION_SERVER_IP, ['notification']));
+app.use(new VueSocketIO(process.env.VUE_APP_NOTIFICATION_SERVER_IP, ['notification']));
 app.use(vueDebounce);
 app.use(store);
 app.use(router);
