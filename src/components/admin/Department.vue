@@ -35,11 +35,12 @@
         <colgroup>
           <col span="1" style="width: 5%;">
           <col span="1" style="width: 20%;">
-          <col span="1" style="width: 20%;">
-          <col span="1" style="width: 10%;">
-          <col span="1" style="width: 10%;">
           <col span="1" style="width: 15%;">
-          <col span="1" style="width: 30%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 20%;">
         </colgroup>
 
         <tr>
@@ -49,6 +50,7 @@
           <th>Phone Number</th>
           <th>Type</th>
           <th>credit</th>
+          <th>Balance</th>
           <th></th>
         </tr>
         <tr v-for="(company, index) in companies" v-bind:key="company.id">
@@ -59,6 +61,7 @@
           <td>{{company.company_type}}</td>
           <td v-if="company.credit">{{company.credit}}</td>
           <td v-else class="text-center">-</td>
+          <td>{{company.balance}}</td>
           <td style="width: 150px">
             <div class="flex-box">
               <a class="btn btn-orange btn-mr-inner" @click="openDeleteCompanyModal(company)">delete</a>

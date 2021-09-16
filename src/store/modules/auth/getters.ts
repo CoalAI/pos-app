@@ -14,6 +14,7 @@ export interface Getters {
   getCompanyTypes(state: State): string[];
   getRequestTypes(state: State): string[];
   getCompanies(state: State): Company[];
+  getCompaniesFilterVendor(state: State): Company[];
   // eslint-disable-next-line
   getSignleUser(state: State, id: number): any;
   // eslint-disable-next-line
@@ -68,6 +69,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getCompanies: (state: State) => {
     return state.companies;
+  },
+  getCompaniesFilterVendor: (state: State) => {
+    return state.companies.filter((company: Company) => company.company_type != 'VENDOR');
   },
   getSignleUser: (state: State) => (id: number) => {
     const user = state.listOfUsers.find((item: User) => item.id && item.id === id);
