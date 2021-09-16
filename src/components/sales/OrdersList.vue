@@ -106,7 +106,7 @@
           <td>{{trimDecimalPlaces(order.total)}}</td>
           <td>{{trimDecimalPlaces(order.amount_received)}}</td>
           <td>{{order.status}}</td>
-          <td v-if="order.cash">Cash</td><td v-else>Card</td>
+          <td v-if="order.cash_payment">Cash</td><td v-else>Card</td>
           <td v-if="order.amount_discount">Amount</td><td v-else>Percentage</td>
           <td>{{trimDecimalPlaces(order.total_discount)}}</td>
           <td style="width: 150px">
