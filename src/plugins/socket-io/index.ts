@@ -28,12 +28,14 @@ export default class VueSocketIO {
     }
 
     connect(connection: string){
-        if(typeof connection === 'string'){
-            Logger.info(`Received connection string${connection}`);
-            return this.io = io(connection);
-        } else {
-            throw new Error('Unsupported connection type');
-        }
+        // if(typeof connection === 'string'){
+        Logger.info(`Received connection string${connection}`);
+        return this.io = io(connection);
+
+        // } else {
+        //     console.log('Failed to create connection!');
+        //     // throw new Error('Unsupported connection type');
+        // }
 
     }
 
@@ -45,7 +47,8 @@ export default class VueSocketIO {
                 })
             })
         }else{
-            throw new Error('connection issue or no event listener passed');
+            console.log('connection issue or no event listener passed');
+            // throw new Error('connection issue or no event listener passed');
         }
     }
 
