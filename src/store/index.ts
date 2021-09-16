@@ -18,7 +18,7 @@ export const store = createStore<IRootState>({
     version: '1.0.0',
     error: null,
     sync: false,
-    offlineMode: process.env.VUE_APP_OFFLINE_SAVE_DATA as boolean || true,
+    offlineMode: process.env.VUE_APP_OFFLINE_SAVE_DATA == 'true',
     online: navigator.onLine,
   },
   getters: {

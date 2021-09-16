@@ -90,9 +90,11 @@ export default defineComponent({
         if (this.offlineMode) {
           this.syncOfflineData(true);
           await offlineStoreService.initialize();
+          await setTimeout(() => console.log('waiting'), 60000)
           this.syncOfflineData(false);
         }
         this.$router.push({name: 'Order'});
+        return null;
       }
     },
   },

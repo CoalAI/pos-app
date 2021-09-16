@@ -116,7 +116,7 @@ Actions = {
   },
   async [ActionTypes.USER_DATA]({ commit, rootGetters }: AugmentedActionContext) {
     if (rootGetters.getOfflineMode) {
-      const userData = offlineStoreService.getUserData();
+      const userData = await offlineStoreService.getUserData();
       if (userData) {
         commit(MutationTypes.SetUser, userData);
       }
@@ -174,14 +174,32 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_CUSTOMER_USERS]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
-    const response = await serverRequest('get', 'user/', true, undefined, options);
-    commit(MutationTypes.SetListOfUsers, {});
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
-        commit(MutationTypes.SetUsersCount, response.data.count)
-        const usersData = response.data.results;
-        commit(MutationTypes.SetListOfUsers, usersData)
+  async [ActionTypes.GET_CUSTOMER_USERS]({ commit, rootGetters }: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
+    if (rootGetters.getOfflineMode) {
+      let customers: User[] = [];
+      if (options && options.user_type) {
+        if (options.user_type === 'REGULAR_CUSTOMER') {
+          customers = await offlineStoreService.getAllRegularCustomers();
+        } else if (options.user_type === 'WALK_IN_CUSTOMER') {
+          console.log("AYAYYA");
+          customers = await offlineStoreService.getWalkInCustomers();
+          console.log(customers);
+        }
+      } else if (options && options.search) {
+        const singleCustomer = await offlineStoreService.getRegularCustomerByUsername(options.search);
+        if (singleCustomer) customers.push(singleCustomer);
+      }
+      commit(MutationTypes.SetUsersCount, customers.length);
+      commit(MutationTypes.SetListOfUsers, customers);
+    } else {
+      const response = await serverRequest('get', 'user/', true, undefined, options);
+      commit(MutationTypes.SetListOfUsers, {});
+      if (isAxiosResponse(response)) {
+        if (response.data.results.length > 0) {
+          commit(MutationTypes.SetUsersCount, response.data.count)
+          const usersData = response.data.results;
+          commit(MutationTypes.SetListOfUsers, usersData)
+        }
       }
     }
   },
