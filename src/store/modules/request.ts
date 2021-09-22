@@ -40,7 +40,7 @@ const serverRequest = async (
     const response = await axios(config);
     return response;
   } catch (error) {
-    return error;
+    return error as any;
   }
 };
 

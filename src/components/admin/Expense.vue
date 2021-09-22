@@ -20,27 +20,64 @@
         </li> -->
       </ul>
       <h2>{{expenseMethod}}</h2>
-      <div class="flex-box">
-        <label class="pad-label w100" for="products">
-          <strong>Payee:</strong>
-        </label>
-        <select
-          id="user-dropdown"
-          name="user-dropdown"
-          class="custom-select"
-          v-model="transaction.payee"
-        >
-          <option :value="-1">SELF</option>
-          <option disabled>--- username - company ---</option>
-          <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
-            <span>{{item.username}} - {{item.company.company_name}}</span>
-          </option>
-          <option disabled>--- vendor - phone - company ---</option>
-          <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
-            <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
-          </option>
-        </select>
-      </div>
+      <template v-if="expenseMethod === 'Credit'">
+        <div class="flex-box">
+          <label class="pad-label w100" for="products">
+            <strong>Payor:</strong>
+          </label>
+          <select
+            id="user-dropdown"
+            name="user-dropdown"
+            class="custom-select"
+            v-model="transaction.payor"
+          >
+            <option :value="-1">SELF</option>
+            <template v-if="userdata.company.company_type == 'RETIAL'">
+              <option disabled>--- Regular Customers---</option>
+              <option class="batches-op" v-for="item in users.filter(usr => usr.user_type == 'REGULAR_CUSTOMER')"
+                v-bind:key="item.id" v-bind:value="item.id">
+                <span>{{item.username}} - {{item.company.company_name}}</span>
+              </option>
+            </template>
+            <template v-if="userdata.company.company_type == 'STORE'">
+              <option disabled>--- username - company ---</option>
+              <option class="batches-op" v-for="item in users.filter(usr => usr.company.company_type == 'STORE')"
+                v-bind:key="item.id" v-bind:value="item.id">
+                <span>{{item.username}} - {{item.company.company_name}}</span>
+              </option>
+              <option disabled>--- vendor - phone - company ---</option>
+              <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+                <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
+              </option>
+            </template>
+          </select>
+        </div>
+      </template>
+      <template v-else-if="expenseMethod === 'Debit'">
+        <div class="flex-box">
+          <label class="pad-label w100" for="products">
+            <strong>Payee:</strong>
+          </label>
+          <select
+            id="user-dropdown"
+            name="user-dropdown"
+            class="custom-select"
+            v-model="transaction.payee"
+          >
+            <option :value="-1">SELF</option>
+            <option disabled>--- username - company ---</option>
+            <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+              <span>{{item.username}} - {{item.company.company_name}}</span>
+            </option>
+            <template v-if="userdata.company.company_type == 'STORE'">
+              <option disabled>--- vendor - phone - company ---</option>
+              <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+                <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
+              </option>
+            </template>
+          </select>
+        </div>
+      </template>
       <div class="flex-box">
         <label class="pad-label w100" for="balance">
           <strong>Balance:</strong>
@@ -180,34 +217,26 @@ export default defineComponent({
     }),
     addExpense: async function(){
       if(this.amountValidation==null && this.descriptionValidation == null) {
-        this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
-        this.transaction.amount = this.expenseMethod === 'Credit' ? this.transaction.amount: (-parseFloat(this.transaction.amount)).toString();
-        this.transaction.payor = this.userdata.id;
+
+        if (this.expenseMethod === 'Credit') {
+          this.transaction.payee = this.userdata.id;
+          this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
+        } else if (this.expenseMethod === 'Debit') {
+          this.transaction.payor = this.userdata.id;
+          this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+          this.transaction.amount = (-parseFloat(this.transaction.amount)).toString();
+        }
         this.loader = true;
         await this.createExpense(this.transaction as Transaction).finally(() => this.loader = false);
         this.create_expense = this.expense && this.expense.id;
-        const payee = this.users.find((item: User) => item.id == this.transaction.payee) 
-        if (this.create_expense &&
-          this.expenseMethod == 'Debit' &&
-          this.userdata.company.company_type == 'RETIAL' &&
-          payee && payee.company.company_type == 'STORE') {
-          const request: Request = {
-            sender: this.transaction.payor,
-            receiver: this.transaction.payee,
-            request_type: 'TRANSACTION',
-            status: 'PENDING',
-            description: `transaction id:${this.expense.id}, Amount: ${parseFloat(this.expense.amount)*-1}`,
-            expected_delivery_date: new Date().toISOString().split('T')[0]
-          };
-          await this.createRequest(request);
-        }
+
         this.transaction.clear();
         await this.fetchUserData();
       }
     },
   },
   async beforeMount () {
-    await this.fetchUsers('ADMIN');
+    await this.fetchUsers();
     await this.getVendors();
     await this.fetchUserData();
   }

@@ -27,7 +27,8 @@
           <col span="1" style="width: 12%;">
           <col span="1" style="width: 12%;">
           <col span="1" style="width: 12%;">
-          <col span="1" style="width: 22%;">
+          <col span="1" style="width: 7%;">
+          <col span="1" style="width: 15%;">
         </colgroup>
 
         <tr>
@@ -37,6 +38,7 @@
           <th>Role</th>
           <th>Company</th>
           <th>Contact</th>
+          <th>Credit</th>
           <th></th>
         </tr>
         <template v-for="(user, index) in users" v-bind:key="user.id">
@@ -47,6 +49,7 @@
             <td>{{user.user_type}}</td>
             <td><span v-if="user.company" >{{user.company.company_name}}</span></td>
             <td>{{user.contact_number}}</td>
+            <td>{{user.credit}}</td>
             <td style="width: 150px">
               <div class="flex-box">
                 <button class="btn btn-orange btn-mr-inner"  @click="setUserActivation(user.id, user.is_active)">

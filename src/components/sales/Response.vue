@@ -70,10 +70,13 @@
                   v-model="request.status"
                   @change="sendResponse(request.id)"
                   :disabled="diableRequestStatus(request.id)">
-                    <option value="PENDING">PENDING</option>
+                    <option v-for="stat in requestStatuses(request)" v-bind:key="stat" v-bind:value="stat">
+                      {{stat}}
+                    </option>
+                    <!-- <option value="PENDING">PENDING</option>
                     <option v-if="request.status === 'APPROVED' || user.company.company_type == 'STORE'" value="APPROVED">APPROVED</option>
                     <option v-if="request.status === 'COMPLETE' || user.company.company_type == 'STORE'" value="COMPLETE">COMPLETE</option>
-                    <option value="CANCEL">CANCEL</option>
+                    <option value="CANCEL">CANCEL</option> -->
                   </select>
                 </td>
               </tr>      
@@ -191,9 +194,25 @@ export default defineComponent({
       orders: 'getListOfOrders',
       statuses: 'getOrderStatuses',
       counts: 'getTotalCountsOrderModule',
-    })
+    }),
   },
   methods:{
+    requestStatuses(request: Request) {
+      if (request.request_type && request.sender && request.receiver && request.status) {
+        const readOnlyStatuses = ['APPROVED', 'COMPLETE']
+        const isSender = typeof request.sender != 'number' && this.user.id == request.sender.id;
+        const isReceiver = typeof request.receiver != 'number' && this.user.id == request.receiver.id;
+        if (isSender)  {
+          const currentStatuses = ['PENDING', 'CANCEL']
+          if (readOnlyStatuses.includes(request.status)) return [...currentStatuses, ...readOnlyStatuses]
+          return currentStatuses
+        }
+        if (request.request_type == 'TRANSACTION' && isReceiver) return ['PENDING', 'COMPLETE', 'CANCEL']
+        else if (isReceiver) return ['PENDING', 'APPROVED', 'COMPLETE', 'CANCEL']
+      }
+      return []
+    },
+
     selectRequest: function (requestId: number) {
       const request = this.requests.find((item: Request) => item.id && item.id == requestId);
       let buffer = '';
@@ -225,18 +244,6 @@ export default defineComponent({
         id: request.id,
         status: request.status,
       });
-      const acceptedStatuses = ['APPROVED', 'COMPLETE'];
-      if (request.request_type && acceptedStatuses.includes(request.status) &&
-      request.sender.company.company_type == 'RETIAL' &&
-      request.receiver.company.company_type == 'STORE') {
-        const transaction: Transaction = {
-          payor: request.sender.id,
-          payee: request.receiver.id,
-          amount: request.description.split(',')[1].split(': ')[1],
-          description: `Amount credited from ${request.sender.company.company_name}`
-        };
-        await this.createTransaction(transaction);
-      }
     },
 
     onChangeStatusFilter: async function (Event?: Event, pageNo?: number) {

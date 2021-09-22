@@ -37,7 +37,7 @@
         <button class="btn btn-orange" @click="fetchTrans">Search Summary</button>
       </div>
     </div>
-    <div class="mr-2 box1-tab">
+    <div class="mr-2">
       <table>
         <colgroup>
           <col span="1" style="width: auto;">
@@ -49,20 +49,19 @@
         <tr>
           <th>Sr No.</th>
           <th>Transaction ID</th>
-          <th>Order ID</th>
-          <th>Received From</th>
-          <th>To</th>           
+          <th>Payor</th>
+          <th>Payee</th>           
           <th>Payment Service</th>
           <th>Description</th>
           <th>Credit</th>
           <th>Debit</th>
           <th>Amount</th>
+          <th>Date</th>
         </tr>
         <template v-for="(transaction,index) in transactions" :key="transaction.id">
           <tr>
             <td>{{index+1}}</td>
             <td>{{transaction.transaction_id}}</td>
-            <td>{{transaction.order}}</td>
             <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
             <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
             <td>{{transaction.payment_service}}</td>
@@ -76,6 +75,7 @@
               <td>{{trimNumber(transaction.amount * -1)}}</td>
             </template>
             <td>{{trimNumber(transaction.amount)}}</td>
+            <td>{{transaction.created.split('T')[0]}}</td>
           </tr>
         </template>
       </table>
