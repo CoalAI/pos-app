@@ -5,15 +5,19 @@
 				<img class="img-responsive" src="../../assets/rohi_logo.jpg" alt="Rohi">
 			</div>
 			<div class="company-info">
-				<p class="mb-5 pb-5" style="font-size: 30px;"><strong>Rohi Sweets &amp; Bakers</strong></p>
+				<p class="mb-5 pb-5" style="font-size: 16px;"><strong>Rohi Sweets &amp; Bakers</strong></p>
 				<p class="text-center">Zahirpir Road Khanpur</p>
 				<p class="text-center">068-5572999</p>
+				<!-- <p class="text-center">Sales Invoice</p>
+				<span class="text-center" style="border: 1px solid black; padding: 2px;">{{order.invoice_id}}</span> -->
+			</div>
+			<div class="company-info">
 				<p class="text-center">Sales Invoice</p>
 				<span class="text-center" style="border: 1px solid black; padding: 2px;">{{order.invoice_id}}</span>
 			</div>
 		</div>
 
-		<div id="date-section" class="mb-5">
+		<div id="date-section" class="mb-5 pt-5">
 			<p class="text-center">{{getCurrentTime(order.created)}}</p>
 			<p class="text-center">{{getCurrentDate(order.created)}}</p>
 		</div>
@@ -44,7 +48,7 @@
 				</tr>
 				<tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
 					<td>{{ index+1 }}</td>
-					<td>{{ getProductName(orderItem) }}</td>
+					<td style="font-size: x-small;">{{ getProductName(orderItem) }}</td>
 					<td>{{ trimNumber(orderItem.quantity) }}</td>
 					<td>{{ trimNumber(orderItem.price) }}</td>
 					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
@@ -64,7 +68,7 @@
 						<td>{{order.order_item.length}}</td>
 					</tr>
 					<tr>
-						<td><strong>Total Discount: </strong></td>
+						<td><strong>Discount: </strong></td>
 						<td>{{ trimNumber(order.total_discount) }}</td>
 					</tr>
 				</table>
@@ -100,7 +104,8 @@
 				<span>Operator: </span>
 				<span>{{getOperatorFullName()}}</span>
 			</p>
-			<p class="text-center" style="font-size: 20px;"><strong>Thanks for Visiting</strong></p>
+			<p class="text-center" style="font-size: 14px;"><strong>Thanks for Visiting</strong></p>
+			<p class="text-center" style="font-size: 14px;"><strong>Powered by CoalDev</strong></p>
 		</div>
 	</div>
 </template>
@@ -420,6 +425,7 @@ export default defineComponent({
 		align-content: center;
 		justify-content: center;
 		align-items: center;
+		font-size: 12px
 	}
 
 	.maindiv-print {
@@ -462,10 +468,8 @@ export default defineComponent({
 	}
 
 	#totals-section {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		grid-template-rows: 1fr;
-		gap: 0.1em 0.1em;
+	display: flex;
+    justify-content: space-between;
 	}
 
 	#totals-section p {
@@ -485,5 +489,9 @@ export default defineComponent({
 	.mb-5 {
 		border-bottom: 2px solid black;
 		padding-bottom: 5px;
+	}
+
+	.pt-5 {
+		padding-top: 5px;
 	}
 </style>
