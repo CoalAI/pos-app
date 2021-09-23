@@ -37,6 +37,7 @@ export enum ActionTypes {
   UPDATE_ORDER = "UPDATE_ORDER",
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
   EMPTY_ORDER = "EMPTY_ORDER",
+  FETCH_ANALYTICS = "FETCH_ANALYTICS",
 }
 
 
@@ -87,7 +88,8 @@ export interface Actions {
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
-  [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any): void;  
+  [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any): void;
+  [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date}): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -366,6 +368,12 @@ Actions = {
   },
   async [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any) {
     commit(MutationTypes.SetOrder, {});
+  },
+  async [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: {start_end: Date; end_date: Date}) {
+    const response = await serverRequest('get', 'analytics/', true, undefined, options);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetAnalytics, response.data);
+    }
   }
 };
 

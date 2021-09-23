@@ -83,7 +83,8 @@
           <col span="1" style="width: 12%;">
           <col span="1" style="width: 12%;">
           <col span="1" style="width: 12%;">
-          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 6%;">
+          <col span="1" style="width: 6%;">
           <col span="1" style="width: 20%;">
         </colgroup>
 
@@ -97,6 +98,7 @@
           <th>Payment Method</th>
           <th>Discount Type</th>
           <th>Discount</th>
+          <th>Date</th>
           <th></th>
         </tr>
         <tr v-for="(order, index) in orders" v-bind:key="order.id">
@@ -109,6 +111,7 @@
           <td v-if="order.cash_payment">Cash</td><td v-else>Card</td>
           <td v-if="order.amount_discount">Amount</td><td v-else>Percentage</td>
           <td>{{trimDecimalPlaces(order.total_discount)}}</td>
+          <td>{{order.created.split('T')[0]}}</td>
           <td style="width: 150px">
             <div class="flex-box">
               <router-link 

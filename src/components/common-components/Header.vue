@@ -17,7 +17,7 @@
         <router-link v-show="manager" to="/inventory" class="btn btn-grid btn-orange btn-mr">Inventory</router-link>
         <router-link v-show="superadmin" to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
         <router-link v-show="admin" to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
-      
+        <router-link v-show="manager" :to="{name: 'order-analytics'}" class="btn btn-grid btn-orange btn-mr">Analytics</router-link>
       </div>
       <div class="flex-box">
         <router-link v-show="admin" to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
