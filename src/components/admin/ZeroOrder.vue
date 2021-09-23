@@ -1020,7 +1020,7 @@ export default defineComponent({
         internal_order: true,
       }
 
-      this.createOrder(singleOrder);
+      await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
     },
 
