@@ -58,10 +58,10 @@
 
 		<div id="totals-section" class="mb-5">
 			<div id="col-1">
-				<table>
+				<table style="font-size: 12px;">
 					<colgroup>
-						<col span="1" style="width: 60%;">
-						<col span="1" style="width: 40%;">
+						<col span="1" style="width: 75%;">
+						<col span="1" style="width: 25%;">
 					</colgroup>
 					<tr>
 						<td><strong>Total Units: </strong></td>
@@ -74,10 +74,10 @@
 				</table>
 			</div>
 			<div id="col-2">
-				<table>
+				<table style="font-size: 12px;">
 					<colgroup>
-						<col span="1" style="width: 60%;">
-						<col span="1" style="width: 40%;">
+						<col span="1" style="width: 70%;">
+						<col span="1" style="width: 30%;">
 					</colgroup>
 					<tr>
 						<td><strong>Total: </strong></td>
