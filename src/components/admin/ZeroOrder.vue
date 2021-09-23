@@ -551,6 +551,7 @@ export default defineComponent({
     const vendor: User = {};
 
     return {
+      submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID : '',
       cancelModal: false,
@@ -766,7 +767,8 @@ export default defineComponent({
       let disable = true;
       if ( this.orderItems.length > 0 &&
       this.orderTotalDiscountValidation === null &&
-      this.orderCashReceivedValidation === null) {
+      this.orderCashReceivedValidation === null &&
+      this.submitOrderBtnDisable === false) {
         disable = false;
       }
       return disable
@@ -978,6 +980,7 @@ export default defineComponent({
     },
 
     submitOrder: async function () {
+      this.submitOrderBtnDisable = true;
       if (this.orderItems.length < 0) return;
       if (this.buyer === 0 || this.seller === 0) return;
 
@@ -1018,6 +1021,7 @@ export default defineComponent({
       }
 
       this.createOrder(singleOrder);
+      this.submitOrderBtnDisable = false;
     },
 
     changeQuantity: function (index: number) {

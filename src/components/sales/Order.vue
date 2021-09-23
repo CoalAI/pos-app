@@ -564,6 +564,7 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     return {
+      submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID : '',
       cancelModal: false,
@@ -859,7 +860,8 @@ export default defineComponent({
       this.orderTotalDiscountValidation === null &&
       this.orderCashReceivedValidation === null && 
       this.validateDeductBalance === null &&
-      this.validateRegularCustomer === null
+      this.validateRegularCustomer === null &&
+      this.submitOrderBtnDisable == false
       )  {
         disable = false;
       }
@@ -1074,6 +1076,7 @@ export default defineComponent({
     },
 
     submitOrder: async function (print: boolean) {
+      this.submitOrderBtnDisable = true;
       if (this.orderItems.length < 0) return;
       if (this.cashReceived === '') return;
       this.print = print;
@@ -1111,6 +1114,7 @@ export default defineComponent({
       }
 
       await this.createOrder(singleOrder);
+      this.submitOrderBtnDisable = false;
       await this.getUsersByType({user_type: 'REGULAR_CUSTOMER'});
   },
 
