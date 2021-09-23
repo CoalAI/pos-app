@@ -34,14 +34,14 @@
             <option :value="-1">SELF</option>
             <template v-if="userdata.company.company_type == 'RETIAL'">
               <option disabled>--- Regular Customers---</option>
-              <option class="batches-op" v-for="item in users.filter(usr => usr.user_type == 'REGULAR_CUSTOMER')"
+              <option class="batches-op" v-for="item in regularCustomers"
                 v-bind:key="item.id" v-bind:value="item.id">
                 <span>{{item.username}} - {{item.company.company_name}}</span>
               </option>
             </template>
             <template v-if="userdata.company.company_type == 'STORE'">
               <option disabled>--- username - company ---</option>
-              <option class="batches-op" v-for="item in users.filter(usr => usr.company.company_type == 'STORE')"
+              <option class="batches-op" v-for="item in storeUsers"
                 v-bind:key="item.id" v-bind:value="item.id">
                 <span>{{item.username}} - {{item.company.company_name}}</span>
               </option>
@@ -204,6 +204,8 @@ export default defineComponent({
       userdata: 'getUser',
       expense: 'getExpense',
       vendors: 'getListOfVendors',
+      storeUsers: 'getStoreUser',
+      regularCustomers: 'getRegularCustomers',
     })
   },
   methods: {

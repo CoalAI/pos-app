@@ -73,10 +73,6 @@
                     <option v-for="stat in requestStatuses(request)" v-bind:key="stat" v-bind:value="stat">
                       {{stat}}
                     </option>
-                    <!-- <option value="PENDING">PENDING</option>
-                    <option v-if="request.status === 'APPROVED' || user.company.company_type == 'STORE'" value="APPROVED">APPROVED</option>
-                    <option v-if="request.status === 'COMPLETE' || user.company.company_type == 'STORE'" value="COMPLETE">COMPLETE</option>
-                    <option value="CANCEL">CANCEL</option> -->
                   </select>
                 </td>
               </tr>      
