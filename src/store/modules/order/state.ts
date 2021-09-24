@@ -30,6 +30,7 @@ export type State = {
     inventory: number;
     requests: number;
   };
+  analytics: any;
 };
 
 
@@ -57,5 +58,6 @@ export const state: State = {
     batches: 0,
     inventory: 0,
     requests: 0,
-  }
+  },
+  analytics: {},
 };
