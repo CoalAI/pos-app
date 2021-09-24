@@ -66,10 +66,12 @@ export default defineComponent({
   name: 'Expense',
   data() {
     const path = window.location.pathname;
+    const date = new Date();
+    const dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
     return {
       tab: path.split('/')[2],
-      startDate: '',
-      endDate: '',
+      startDate: dateStr,
+      endDate: dateStr,
     }
   },
   computed: {
