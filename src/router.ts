@@ -28,6 +28,10 @@ import Login from './components/auth/Login.vue';
 import { redirectToAdmin, superAdmin, storeAdmin, manager, checkConnection } from  '@/permissions';
 import { store } from '@/store';
 import { ActionTypes } from '@/store/modules/auth/actions'
+import Basic from '@/components/analytics/Basic.vue';
+import OrderAnaltyics from '@/components/analytics/Order.vue';
+import FinanceAnaltyics from '@/components/analytics/Finance.vue';
+import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -188,7 +192,7 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: superAdmin,
   },
   { path: '/404', name: 'notFound', component: NotFound },  
-  { path: '/:catchAll(.*)', redirect: '/404' },
+  { path: '/:pathMatch(.*)*', redirect: '/404' },
   {
     path: '/request',
     name: "Request",
@@ -236,6 +240,29 @@ const routes: Array<RouteRecordRaw> = [
     path: '/connection',
     name: "Connection",
     component: ConnectionError
+  },
+  {
+    path: '/analytics',
+    name: "analytics",
+    component: Basic,
+    beforeEnter: manager,
+    children: [
+      {
+        path: 'order',
+        name: 'order-analytics',
+        component: OrderAnaltyics,
+      },
+      {
+        path: 'finance',
+        name: 'finance-analytics',
+        component: FinanceAnaltyics,
+      },
+      {
+        path: 'inventory',
+        name: 'inventory-analytics',
+        component: InventoryAnaltyics,
+      },
+    ]
   }
 ];
 

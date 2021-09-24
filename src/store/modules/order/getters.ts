@@ -30,6 +30,7 @@ export interface Getters {
   getRequest(state: State): Request;
   getFieldError(state: State): any;
   getTotalCountsOrderModule(state: State): any;
+  getAnalytics(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -84,4 +85,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getFieldError: (state: State) => state.error,
   getTotalCountsOrderModule: (state: State) => state.totalCounts,
+  getAnalytics: (state: State) => state.analytics,
 };

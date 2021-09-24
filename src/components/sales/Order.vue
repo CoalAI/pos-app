@@ -564,6 +564,7 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     return {
+      submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID : '',
       cancelModal: false,
@@ -693,7 +694,7 @@ export default defineComponent({
           if (isNaN(value)) {
             errorMessage = 'Only numbers are allowed';
           } else {            
-            if ( value > this.selectedBatchQuantity) {
+            if ( value > this.cummBatchQuantity) {
               errorMessage = 'Stock is less than this quantity.';
             }
           }
@@ -707,6 +708,9 @@ export default defineComponent({
         batches = batches.filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
       }
       return batches;
+    },
+    cummBatchQuantity: function(): number{
+      return this.filteredBatches.map((batch: Batch) => batch && batch.quantity?parseFloat(batch.quantity):0).reduce((a: number, b: number) => a+b, 0);
     },
 
     validateDeductBalance: function() {
@@ -859,7 +863,8 @@ export default defineComponent({
       this.orderTotalDiscountValidation === null &&
       this.orderCashReceivedValidation === null && 
       this.validateDeductBalance === null &&
-      this.validateRegularCustomer === null
+      this.validateRegularCustomer === null &&
+      this.submitOrderBtnDisable == false
       )  {
         disable = false;
       }
@@ -1027,7 +1032,7 @@ export default defineComponent({
       if (this.product.quantity === '') return;
       if (this.product.batch === '') return;
       if (this.product.buyPrice === '') return;
-      if (quantity > this.selectedBatchQuantity) return;
+      if (quantity > this.cummBatchQuantity) return;
 
       const discount = isNaN(parseFloat(this.product.discount)) ? 0 : parseFloat(this.product.discount);
       const batch = parseFloat(this.product.batch);
@@ -1052,28 +1057,58 @@ export default defineComponent({
         totalPrice = totalPrice * ((100 - discount) / 100)
       }
 
-      const SingleOrderItem: OrderItem = {
-        batch: isNaN(batch) ? 0 : currentVariant.batch
-        .map((item: Batch) => {
-          return {
-            id: item.id,
-            quantity: item.quantity,
-          } as Batch;
-        })
-        .find((item: Batch) => item && item.id && item.id.toString() == this.product.batch),
-        product: currentProduct,
-        productVariant: currentVariant,
-        price: price.toString(),
-        quantity: quantity.toString(),
-        discount: discount.toString(),
-        totalPrice: parseFloat(totalPrice.toFixed(0))
+      const listOfBatches: {}[] = [];
+      if(this.selectedBatchQuantity < quantity && this.cummBatchQuantity >= quantity){
+        let totalQuant = quantity;
+        let i=0;
+        while(totalQuant>0 && i<this.filteredBatches.length)
+        {
+              const b: Batch = this.filteredBatches[i++];
+              const batchQuant = b.quantity?parseFloat(b.quantity):0;
+              const unproxiedBatchItem={
+                batchid: b.id?b.id:0,
+                quantity: 0,
+              }
+              unproxiedBatchItem.quantity=batchQuant<totalQuant?batchQuant:totalQuant;
+              totalQuant-=unproxiedBatchItem.quantity;
+              listOfBatches.push(unproxiedBatchItem);
+        }
+
+      }else{
+        listOfBatches.push(
+          {
+            batchid: this.product.batch,
+            quantity: quantity
+          }
+        );
       }
-      this.orderItems.push(SingleOrderItem);
+
+      listOfBatches.map((unproxiedBatchItem: any) => {
+        const SingleOrderItem: OrderItem = {
+          batch: isNaN(batch) ? 0 : currentVariant.batch
+          .map((item: Batch) => {
+            return {
+              id: item.id,
+              quantity: item.quantity,
+            } as Batch;
+          })
+          .find((item: Batch) => item && item.id && item.id.toString() == unproxiedBatchItem.batchid),
+          product: currentProduct,
+          productVariant: currentVariant,
+          price: price.toString(),
+          quantity: unproxiedBatchItem.quantity.toString(),
+          discount: discount.toString(),
+          totalPrice: parseFloat((unproxiedBatchItem.quantity * price * ((100 - discount) / 100)).toFixed(0))
+        }
+        this.orderItems.push(SingleOrderItem);
+      });
+      
       this.clearProduct();
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
     },
 
     submitOrder: async function (print: boolean) {
+      this.submitOrderBtnDisable = true;
       if (this.orderItems.length < 0) return;
       if (this.cashReceived === '') return;
       this.print = print;
@@ -1111,6 +1146,7 @@ export default defineComponent({
       }
 
       await this.createOrder(singleOrder);
+      this.submitOrderBtnDisable = false;
       await this.getUsersByType({user_type: 'REGULAR_CUSTOMER'});
   },
 

@@ -4,6 +4,7 @@ import { User } from '@/store/models/user';
 import { State } from './state';
 import { Company } from "@/store/models/company";
 import { Transaction } from "@/store/models/transaction";
+import { useRoute } from "vue-router";
 
 export interface Getters {
   getUser(state: State): User;
@@ -90,5 +91,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getAuthFieldError: (state: State) => state.error,
   getNotifications: (state: State) => state.notifications.reverse(),
   getTotalCounts: (state: State) => state.totalCounts,
-  getInventoryCompanies: (state: State) => state.companies.filter((item: Company) => item.company_type && item.company_type !== 'VENDOR')
+  getInventoryCompanies: (state: State) => state.companies.filter((item: Company) => item.company_type && item.company_type !== 'VENDOR'),
 };
