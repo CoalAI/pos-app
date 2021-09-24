@@ -295,9 +295,9 @@ Actions = {
   async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; batch_ids?: string; page?: number}) {
     let response;
     if (data && data.search && data.search) {
-      response = await serverRequest('get', 'inventory/', true, undefined, data);
+      response = await serverRequest('get', 'inventory/', true, undefined, { ...data, quantity__gte: 1});
     } else {
-      response = await serverRequest('get', `inventory/`, true, undefined, data);
+      response = await serverRequest('get', `inventory/`, true, undefined, { ...data, quantity__gte: 1});
     }
     if(isAxiosResponse(response)) {
       commit(MutationTypes.SetInventoryCount, response.data.count)
