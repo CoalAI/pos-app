@@ -4,6 +4,7 @@ import { User } from '@/store/models/user';
 import { State } from './state';
 import { Company } from "@/store/models/company";
 import { Transaction } from "@/store/models/transaction";
+import { useRoute } from "vue-router";
 
 export interface Getters {
   getUser(state: State): User;
@@ -14,6 +15,7 @@ export interface Getters {
   getCompanyTypes(state: State): string[];
   getRequestTypes(state: State): string[];
   getCompanies(state: State): Company[];
+  getCompaniesFilterVendor(state: State): Company[];
   // eslint-disable-next-line
   getSignleUser(state: State, id: number): any;
   // eslint-disable-next-line
@@ -69,6 +71,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getCompanies: (state: State) => {
     return state.companies;
   },
+  getCompaniesFilterVendor: (state: State) => {
+    return state.companies.filter((company: Company) => company.company_type != 'VENDOR');
+  },
   getSignleUser: (state: State) => (id: number) => {
     const user = state.listOfUsers.find((item: User) => item.id && item.id === id);
     return user;
@@ -86,5 +91,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getAuthFieldError: (state: State) => state.error,
   getNotifications: (state: State) => state.notifications.reverse(),
   getTotalCounts: (state: State) => state.totalCounts,
-  getInventoryCompanies: (state: State) => state.companies.filter((item: Company) => item.company_type && item.company_type !== 'VENDOR')
+  getInventoryCompanies: (state: State) => state.companies.filter((item: Company) => item.company_type && item.company_type !== 'VENDOR'),
 };

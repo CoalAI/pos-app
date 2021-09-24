@@ -3,7 +3,9 @@
     <template v-if="getToken">
       <Header />
     </template>
-    <router-view class="page-mr" />
+    <div class="page-mr">
+      <router-view />
+    </div>
     <p class="coaldev-name">Created by CoalDev</p>
     <ErrorHandler v-if="getError"></ErrorHandler>
   </div>

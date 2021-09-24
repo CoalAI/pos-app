@@ -96,12 +96,16 @@
 import { mapActions, mapGetters } from 'vuex';
 import { defineComponent } from 'vue';
 
-import { Order } from '@/store/models/order';
 import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'EditOrder',
   props: ['orderId'],
+  watch: {
+    $route(to, from) {
+      this.emptyOrder();
+    },
+  },
   computed: {
     cashRetured: function(): number {
       let cash = 0;
@@ -135,6 +139,7 @@ export default defineComponent({
 
     ...mapActions({
       fetchOrder: ActionTypes.FETCH_ORDER,
+      emptyOrder: ActionTypes.EMPTY_ORDER,
     })
   },
   async created () {
@@ -142,7 +147,7 @@ export default defineComponent({
       const order_id = parseInt(this.orderId);
       await this.fetchOrder(order_id);
     }
-  }
+  },
 });
 </script>
 
