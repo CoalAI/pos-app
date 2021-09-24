@@ -67,7 +67,7 @@ export default defineComponent({
   data() {
     const path = window.location.pathname;
     const date = new Date();
-    const dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
       tab: path.split('/')[2],
       startDate: dateStr,
