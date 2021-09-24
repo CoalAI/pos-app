@@ -32,8 +32,6 @@ export interface Getters {
   // eslint-disable-next-line
   getTotalCounts(state: State): any;
   getInventoryCompanies(state: State): Company[];
-  getStoreUser(state: State): User[];
-  getRegularCustomers(state: State): User[];
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -94,7 +92,4 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getNotifications: (state: State) => state.notifications.reverse(),
   getTotalCounts: (state: State) => state.totalCounts,
   getInventoryCompanies: (state: State) => state.companies.filter((item: Company) => item.company_type && item.company_type !== 'VENDOR'),
-  getStoreUser: (state: State) => state.listOfUsers.filter(usr => usr && usr.company
-    && typeof usr.company !== 'number' && usr.company.company_type == 'STORE'),
-  getRegularCustomers: (state: State) => state.listOfUsers.filter(usr => usr && usr.user_type && usr.user_type == 'REGULAR_CUSTOMER'),
 };

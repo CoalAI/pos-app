@@ -32,24 +32,11 @@
             v-model="transaction.payor"
           >
             <option :value="-1">SELF</option>
-            <template v-if="userdata.company.company_type == 'RETIAL'">
-              <option disabled>--- Regular Customers---</option>
-              <option class="batches-op" v-for="item in regularCustomers"
-                v-bind:key="item.id" v-bind:value="item.id">
-                <span>{{item.username}} - {{item.company.company_name}}</span>
-              </option>
-            </template>
-            <template v-if="userdata.company.company_type == 'STORE'">
-              <option disabled>--- username - company ---</option>
-              <option class="batches-op" v-for="item in storeUsers"
-                v-bind:key="item.id" v-bind:value="item.id">
-                <span>{{item.username}} - {{item.company.company_name}}</span>
-              </option>
-              <option disabled>--- vendor - phone - company ---</option>
-              <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
-                <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
-              </option>
-            </template>
+            <option disabled>---User---</option>
+            <option class="batches-op" v-for="item in creditUsers"
+              v-bind:key="item.id" v-bind:value="item.id">
+              <span>{{item.username}} - {{item.company.company_name}}</span>
+            </option>
           </select>
         </div>
       </template>
@@ -90,7 +77,6 @@
             v-model="userdata.company.balance"
             readonly
           />
-          <!-- <span v-if="batchQuantityValidation" class="form-error">{{ batchQuantityValidation }}</span> -->
         </div>
       </div>
       <div class="flex-box">
@@ -199,13 +185,26 @@ export default defineComponent({
       return errorMessage;
     },
 
+    creditUsers: function (): User[] {
+      let users = []
+      if (this.userdata.company.company_type == 'RETIAL') {
+        users = this.users.filter((usr: User) => usr && usr.user_type && usr.user_type == 'REGULAR_CUSTOMER');
+      } else if (this.userdata.company.company_type == 'STORE') {
+        users = this.users.filter((usr: User) => usr && usr.company
+          && typeof usr.company !== 'number' && usr.company.company_type == 'STORE');
+        users = [
+          ...users,
+          ...this.vendors,
+        ];
+      }
+      return users;
+    },
+
     ...mapGetters({
       users: 'getListOfUsers',
       userdata: 'getUser',
       expense: 'getExpense',
       vendors: 'getListOfVendors',
-      storeUsers: 'getStoreUser',
-      regularCustomers: 'getRegularCustomers',
     })
   },
   methods: {
