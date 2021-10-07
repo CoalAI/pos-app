@@ -386,7 +386,7 @@ export default defineComponent({
 	},
 	props:{
 		orderId: {
-			default: 1,
+			default: 0,
 		},
 		customer: {
 			default: {
