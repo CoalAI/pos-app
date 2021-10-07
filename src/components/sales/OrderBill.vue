@@ -33,7 +33,8 @@
 			<table>
 				<colgroup>
 					<col span="1" style="width: 5%;">
-					<col span="1" style="width: 40%;">
+					<col span="1" style="width: 30%;">
+					<col span="1" style="width: 10%;">
 					<col span="1" style="width: 15%;">
 					<col span="1" style="width: 15%;">
 					<col span="1" style="width: 25%;">
@@ -42,6 +43,7 @@
 				<tr>
 					<th>Sr#</th>
 					<th>Item's Name</th>
+					<th>Size</th>
 					<th>Qty</th>
 					<th>Rate</th>
 					<th>Amount</th>
@@ -49,6 +51,7 @@
 				<tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
 					<td>{{ index+1 }}</td>
 					<td style="font-size: x-small;">{{ getProductName(orderItem) }}</td>
+					<td style="font-size: x-small;">{{getProductSize(orderItem)}}</td>
 					<td>{{ trimNumber(orderItem.quantity) }}</td>
 					<td>{{ trimNumber(orderItem.price) }}</td>
 					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
@@ -162,6 +165,10 @@ export default defineComponent({
 
 		getProductName: function(orderItem: any) {
 			return orderItem.batch.product_variant.product.name;
+		},
+
+		getProductSize: function(orderItem: any) {
+			return orderItem.batch.product_variant.size;
 		},
 
 		getOperatorFullName: function() {
