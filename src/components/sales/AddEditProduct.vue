@@ -39,12 +39,29 @@
           </div>
         </div>
         <div class="flex-box">
+          <label class="pad-label w100" for="category">
+            <strong>Category:</strong>
+          </label>
+          <select
+              tabindex="3"
+              name="category"
+              class="custom-select"
+              v-model="product.category"
+              ref="batches"
+            >
+              <option :value="0">No Category</option>
+              <option v-for="category in categories" :key="category.id" :value="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+        </div>
+        <div class="flex-box">
           <label class="pad-label w100" for="unit">
             <strong>Unit:</strong>
           </label>
 
           <select 
-            name="cars"
+            name="unit"
             class="custom-select"
             id="unit"
             v-model="product.unit"
@@ -226,6 +243,7 @@ export default defineComponent({
       product: {
         name: '',
         barcode: '',
+        category: 0,
         unit: '',
         token: false,
         productVariants: productVariants
@@ -282,6 +300,7 @@ export default defineComponent({
       units: 'getUnits',
       singleProduct: 'getSingleProduct',
       fieldErrors: 'getFieldError',
+      categories: 'getCategories',
     })
   },
   methods: {
@@ -383,6 +402,7 @@ export default defineComponent({
         name: this.product.name,
         bar_code: this.product.barcode,
         token: this.product.token,
+        category: this.product.category !== 0 ? this.product.category : undefined,
         product_variant: unproxiedProductVariants
       };
 
@@ -421,6 +441,7 @@ export default defineComponent({
       this.product.unit = product.unit && typeof product.unit !== 'number' && product.unit.id ? product.unit.id.toString() : '';
       this.product.token = product.token ? product.token : false;
       this.product.productVariants = product.product_variant ? product.product_variant : [];
+      this.product.category = product.category ? product.category : 0;
     },
 
     ...mapActions({
@@ -430,10 +451,12 @@ export default defineComponent({
       updateProduct: ActionTypes.UPDATE_PRODUCT,
       deleteProductVariant: ActionTypes.DELETE_PRODUCT_Variant,
       setFieldError: ActionTypes.SET_FIELD_ERROR,
+      fetchCategories: ActionTypes.FETCH_CATEGORIES,
     })
   },
   async created () {
     await this.getUnits();
+    await this.fetchCategories();
     if (this.productId) {
       await this.getProduct(this.productId);
       this.loadData(this.singleProduct);

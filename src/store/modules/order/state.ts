@@ -1,5 +1,5 @@
 import { Order } from '@/store/models/order';
-import { Product } from '@/store/models/product';
+import { Category, Product } from '@/store/models/product';
 import { Unit } from '@/store/models/product';
 import { Batch } from'@/store/models/batch';
 import { Inventory } from '@/store/models/company';
@@ -18,6 +18,7 @@ export type State = {
   inventory: Inventory[];
   listofRequests: Request[];
   units: Unit[];
+  categories: Category[];
   batch: Batch;
   invoice_id: string;
   request: Request;
@@ -47,6 +48,7 @@ export const state: State = {
   inventory: [],
   listofRequests: [],
   units: [],
+  categories: [],
   batch: {},
   invoice_id: '',
   request: {},

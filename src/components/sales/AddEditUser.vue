@@ -42,7 +42,7 @@
           <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
         </div>
       </div>
-      <div class="flex-box">
+      <div v-if="!userId" class="flex-box">
         <label class="pad-label w100" for="thisusername">
           <strong>Username:</strong>
         </label>
