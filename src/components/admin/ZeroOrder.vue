@@ -201,7 +201,7 @@
                     <td>{{ item.bar_code }}</td>
                   </tr>
                   <tr>
-                    <td>{{ itemVariant.sale_price }}</td>
+                    <td>{{ itemVariant.price }}</td>
                     <td>{{ itemVariant.size }}</td>
                   </tr>
                 </table>
@@ -888,7 +888,7 @@ export default defineComponent({
       this.productVariantId = VariantId;
       this.product.barCode = currentProduct.bar_code;
       this.product.name = currentProduct.name;
-      this.product.actualPrice = parseFloat(currentVariant.sale_price);
+      this.product.actualPrice = parseFloat(currentVariant.price);
       this.productBatchSelect = currentVariant.batch
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
@@ -931,7 +931,7 @@ export default defineComponent({
       const currentVariant = await currentProduct.product_variant
         .find((item: ProductVariant) => item.id === this.productVariantId);
 
-      price = currentVariant.sale_price;
+      price = currentVariant.price;
       let totalPrice = price * quantity;
       if (this.product.discount
         && discount > 0
