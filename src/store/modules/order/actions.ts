@@ -21,6 +21,7 @@ export enum ActionTypes {
   GET_SINGLE_PRODUCT = "GET_SINGLE_PRODUCT",
   GET_PRODUCTS_BY_PAGE = "GET_PRODUCTS_BY_PAGE",
   GET_UNITS = "GET_UNITS",
+  FETCH_CATEGORIES = "FETCH_CATEGORIES",
   CREATE_PRODUCT = "CREATE_PRODUCT",
   UPDATE_PRODUCT = "UPDATE_PRODUCT",
   DELETE_PRODUCT = "DELETE_PRODUCT",
@@ -73,6 +74,7 @@ export interface Actions {
   [ActionTypes.GET_SINGLE_PRODUCT]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.GET_PRODUCTS_BY_PAGE]({ commit }: AugmentedActionContext, page?: number): void;
   [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.FETCH_CATEGORIES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product): void;
   [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}): void;
   [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string): void;
@@ -229,6 +231,15 @@ Actions = {
     const response = await serverRequest('get', 'unit/', true, undefined, undefined);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetUnit, response.data.results);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.FETCH_CATEGORIES]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'category/', true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetCategories, response.data.results);
     }
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});

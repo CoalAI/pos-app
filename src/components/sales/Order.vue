@@ -182,7 +182,8 @@
             <colgroup>
               <col span="1" style="width: 5%;">
               <col span="1" style="width: 20%;">
-              <col span="1" style="width: 35%;">
+              <col span="1" style="width: 25%;">
+              <col span="1" style="width: 10%;">
               <col span="1" style="width: 10%;">
               <col span="1" style="width: 10%;">
               <col span="1" style="width: 6%;">
@@ -194,6 +195,7 @@
               <th>Sr No.</th>
               <th>Bar Code</th>
               <th>Name</th>
+              <th>Size</th>
               <th>Quantity</th>
               <th>Unit Price</th>
               <th>Disc</th>
@@ -204,6 +206,7 @@
               <td>{{ index+1 }}</td>
               <td>{{ orderItem.product.bar_code }}</td>
               <td>{{ orderItem.product.name }}</td>
+              <td>{{ orderItem.productVariant.size }}</td>
               <td>
                 <input
                   class="order_item_input"
@@ -1425,7 +1428,7 @@ export default defineComponent({
 
   .table-container {
     display: grid;
-    grid-template-columns: 2fr 4.1fr;
+    grid-template-columns: 1.5fr 4fr;
     gap: 0.1em 0.1em;
   }
 

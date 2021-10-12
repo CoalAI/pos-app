@@ -24,7 +24,8 @@
           <col span="1" style="width: 2%;">
           <col span="1" style="width: 20%;">
           <col span="1" style="width: 20%;">
-          <col span="1" style="width: 14%;">
+          <col span="1" style="width: 9%;">
+          <col span="1" style="width: 5%;">
           <col span="1" style="width: 24%;">
           <col span="1" style="width: 20%;">
         </colgroup>
@@ -33,6 +34,7 @@
           <th>Sr No.</th>
           <th>Product Name</th>
           <th>Bar code</th>
+          <th>Category</th>
           <th>Token</th>
           <th>Product Variants</th>
           <th></th>
@@ -42,25 +44,26 @@
             <td>{{ index + 1 }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.bar_code }}</td>
+            <td v-if="product.category">{{ getCategoryName(product.category) }}</td><td v-else class="text-center">-</td>
             <td v-if="product.token">Yes</td><td v-else>No</td>
             <td>
               <table class="nested-table">
                 <colgroup>
                   <col span="1" style="width: 40%;">
-                  <col span="1" style="width: 30%;">
-                  <col span="1" style="width: 30%;">
+                  <col span="1" style="width: 40%;">
+                  <col span="1" style="width: 20%;">
                 </colgroup>
 
                 <tr>
+                  <th>Cost Price</th>
                   <th>Price</th>
                   <th>Size</th>
-                  <th>Color</th>
                 </tr>
 
                 <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
                   <td>{{ productVariant.price }}</td>
+                  <td>{{ productVariant.sale_price }}</td>
                   <td v-if="productVariant.size">{{productVariant.size}}</td><td v-else class="text-center">-</td>
-                  <td v-if="productVariant.color">{{productVariant.color}}</td><td v-else class="text-center">-</td>
                 </tr>
               </table>
             </td>
@@ -115,7 +118,7 @@ import Modal from '@/components/common-components/Modal.vue';
 import Paginator from '@/components/common-components/Paginator.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
-import { Product } from '@/store/models/product';
+import { Category, Product } from '@/store/models/product';
 
 export default defineComponent({
   name: 'Product',
@@ -138,7 +141,8 @@ export default defineComponent({
     ...mapGetters({
       productsList: 'getListOfProducts',
       userdata: 'getUser',
-      productsCount: 'getProductsCount'
+      productsCount: 'getProductsCount',
+      categories: 'getCategories',
     }),
     allowedAddProduct(){
       const allowedRoles = ['ADMIN','SUPER_ADMIN'];
@@ -152,6 +156,12 @@ export default defineComponent({
       this.deleteProduct.id = '';
       this.deleteProduct.name = '';
       this.deleteProduct.barcode = '';
+    },
+
+    getCategoryName(id: number) {
+      const cate = this.categories.find((cate: Category) => cate && cate.id && 
+      typeof cate.id === 'number' && cate.id == id);
+      return cate ? cate.name : '-';
     },
 
     closeDeleteProductModal: function () {
@@ -190,10 +200,12 @@ export default defineComponent({
         getProducts: ActionTypes.GET_PRODUCTS,
         deleteProductAction: ActionTypes.DELETE_PRODUCT,
         getProductsByPage: ActionTypes.GET_PRODUCTS_BY_PAGE,
+        fetchCategories: ActionTypes.FETCH_CATEGORIES,
     })
   },
   async beforeMount () {
     await this.getProducts('');
+    await this.fetchCategories();
   }
 });
 </script>
