@@ -64,7 +64,7 @@
           <td>{{company.balance}}</td>
           <td style="width: 150px">
             <div class="flex-box">
-              <a class="btn btn-orange btn-mr-inner" @click="openDeleteCompanyModal(company)">delete</a>
+              <!-- <a class="btn btn-orange btn-mr-inner" @click="openDeleteCompanyModal(company)">delete</a> -->
               <router-link
                 :to="{name: 'EditDepartment', params: {companyId: company.id}}" 
                 class="btn btn-orange btn-mr-inner"

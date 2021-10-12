@@ -201,7 +201,7 @@
                     <td>{{ item.bar_code }}</td>
                   </tr>
                   <tr>
-                    <td>{{ itemVariant.sale_price }}</td>
+                    <td>{{ itemVariant.price }}</td>
                     <td>{{ itemVariant.size }}</td>
                   </tr>
                 </table>
@@ -521,6 +521,22 @@
         </div>
       </template>
     </Modal>
+    
+    <Modal v-if="order_response.id" type="scrollable">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <OrderBill :orderId="order_response.id" :customer="customer"/>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button @click="handleOrderStatus();" class="btn btn-orange btn-mr" v-focus>New Order</button>
+        </div>
+      </template>
+    </Modal>
 
   </div>
 </template>
@@ -528,7 +544,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-
+import OrderBill from '@/components/sales/OrderBill.vue';
 import Modal from '@/components/common-components/Modal.vue';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
@@ -543,6 +559,7 @@ export default defineComponent({
   name: 'ZeroOrder',
   components: {
     Modal,
+    OrderBill
   },
   data() {
     const today = new Date().toDateString();
@@ -833,6 +850,7 @@ export default defineComponent({
       newBatch: 'getBatch',
       companies: 'getCompanies',
       invoiceID: 'getInvoiceID',
+      order_response: 'getOrder',
     })
   },
   methods: {
@@ -888,7 +906,7 @@ export default defineComponent({
       this.productVariantId = VariantId;
       this.product.barCode = currentProduct.bar_code;
       this.product.name = currentProduct.name;
-      this.product.actualPrice = parseFloat(currentVariant.sale_price);
+      this.product.actualPrice = parseFloat(currentVariant.price);
       this.productBatchSelect = currentVariant.batch
         .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
         // eslint-disable-next-line
@@ -931,7 +949,7 @@ export default defineComponent({
       const currentVariant = await currentProduct.product_variant
         .find((item: ProductVariant) => item.id === this.productVariantId);
 
-      price = currentVariant.sale_price;
+      price = currentVariant.price;
       let totalPrice = price * quantity;
       if (this.product.discount
         && discount > 0
