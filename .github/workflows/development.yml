@@ -25,5 +25,5 @@ jobs:
           host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USERNAME }}
           password: ${{ secrets.DEV_PASSWORD }}
-          script: ${{ secrets.DEV_PASSWORD }}
+          script: ${{ secrets.SCRIPT }}
         
