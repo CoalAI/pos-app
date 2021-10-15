@@ -32,7 +32,7 @@ import Basic from '@/components/analytics/Basic.vue';
 import OrderAnaltyics from '@/components/analytics/Order.vue';
 import FinanceAnaltyics from '@/components/analytics/Finance.vue';
 import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
-
+import OperatorSalesDetail from '@/components/analytics/Detail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -242,6 +242,11 @@ const routes: Array<RouteRecordRaw> = [
     component: ConnectionError
   },
   {
+    path: '/detail',
+    name: 'operator-sales-detail',
+    component: OperatorSalesDetail,
+  },
+  {
     path: '/analytics',
     name: "analytics",
     component: Basic,
@@ -262,6 +267,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'inventory-analytics',
         component: InventoryAnaltyics,
       },
+     
     ]
   }
 ];
