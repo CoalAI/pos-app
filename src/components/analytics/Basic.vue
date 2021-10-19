@@ -49,6 +49,13 @@
             </router-link>
           </span>
         </li>
+         <li class="nav-item">
+          <span :class="tab === 'StockStatement' ? 'nav-link active' : 'nav-link'">
+            <router-link @click="tab = 'StockStatement'" :to="{name: 'StockStatement'}">
+              <strong>Stock Statement</strong>
+            </router-link>
+          </span>
+        </li>
       </ul>
       <div>
         <router-view />
@@ -95,6 +102,9 @@ export default defineComponent({
         start_date: this.startDate,
         end_date: this.endDate,
       });
+    },
+    redirectToStockStatement() {
+      this.$router.push({path: '/analytics/stock'});
     }
   },
   async mounted() {
