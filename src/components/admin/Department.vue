@@ -61,7 +61,10 @@
           <td>{{company.company_type}}</td>
           <td v-if="company.credit">{{company.credit}}</td>
           <td v-else class="text-center">-</td>
-          <td>{{company.balance}}</td>
+          <td>
+            <span v-if="company.company_type == 'VENDOR'">{{company.credit}}</span>
+            <span v-else>{{company.balance}}</span>
+          </td>
           <td style="width: 150px">
             <div class="flex-box">
               <!-- <a class="btn btn-orange btn-mr-inner" @click="openDeleteCompanyModal(company)">delete</a> -->
