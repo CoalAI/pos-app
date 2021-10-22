@@ -1,32 +1,6 @@
 <template>
   <div id="expense">
     <div class="diff-shadow">
-      <div v-show="dateFilter" class="flex-box">
-        <label class="pad-label ls" for="start_date">
-          <strong>Start:</strong>
-        </label>
-        <div class="s-i">
-          <input
-            name="start_date"
-            type="date"
-            v-model="startDate"
-          />
-        </div>
-        <label class="pad-label mr-l le" for="end_date">
-          <strong>End:</strong>
-        </label>
-        <div class="e-i">
-          <input
-            name="end_date"
-            type="date"
-            v-model="endDate"
-          />
-        <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
-        </div>
-        <div class="b" style="margin-left: 10px">
-          <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
-        </div>
-      </div>
       <ul class="nav nav-tabs">
         <li class="nav-item">
           <span :class="tab === 'order' ? 'nav-link active' : 'nav-link'">
@@ -42,13 +16,6 @@
             </router-link>
           </span>
         </li>
-        <!-- <li class="nav-item">
-          <span :class="tab === 'finance' ? 'nav-link active' : 'nav-link'">
-            <router-link @click="tab = 'finance'" :to="{name: 'finance-analytics'}">
-              <strong>Finance</strong>
-            </router-link>
-          </span>
-        </li> -->
       </ul>
       <div>
         <router-view />
@@ -59,53 +26,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
-import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'Expense',
   data() {
     const path = window.location.pathname;
-    const date = new Date();
-    const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
       tab: path.split('/')[2],
-      startDate: dateStr,
-      endDate: dateStr,
     }
   },
-  computed: {
-    dateValidation: function(): string | null {
-      if(this.startDate !== undefined && this.endDate !== undefined && 
-        this.startDate !=='' && this.endDate !== '' &&
-        Date.parse(this.startDate) <= Date.parse(this.endDate)
-      ){
-        return null;
-      }
-
-      return 'invalid date range';
-    },
-    dateFilter(): boolean {
-      return this.tab !== 'inventory' ? true : false;
-    },
-  },
-  methods: {
-    ...mapActions({
-      fetchAnalytics: ActionTypes.FETCH_ANALYTICS
-    }),
-    async fetchAnalyticsBtn() {
-      await this.fetchAnalytics({
-        start_date: this.startDate,
-        end_date: this.endDate,
-      });
-    }
-  },
-  async mounted() {
-    await this.fetchAnalytics({
-      start_date: this.startDate,
-      end_date: this.endDate,
-    });
-  }
 });
 </script>
 

@@ -1,5 +1,49 @@
 <template>
   <div>
+    <div class="flex-box">
+      <label class="pad-label ls" for="start_date">
+        <strong>Company:</strong>
+      </label>
+      <select
+        id="company-type"
+        name="company-type"
+        class="custom-select"
+        style="width: 30%"
+        v-model="company"
+        @change="fetchAnalyticsBtn"
+        :disabled="!admin"
+      >
+        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+          {{company.company_name}}
+        </option>
+      </select>
+    </div>
+    <div class="flex-box">
+      <label class="pad-label ls" for="start_date">
+        <strong>Start:</strong>
+      </label>
+      <div class="s-i">
+        <input
+          name="start_date"
+          type="date"
+          v-model="startDate"
+        />
+      </div>
+      <label class="pad-label mr-l le" for="end_date">
+        <strong>End:</strong>
+      </label>
+      <div class="e-i">
+        <input
+          name="end_date"
+          type="date"
+          v-model="endDate"
+        />
+      <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
+      </div>
+      <div class="b" style="margin-left: 10px">
+        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
+      </div>
+    </div>
     <table>
       <colgroup>
         <col span="1" style="width: 50%;">
@@ -23,15 +67,67 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+import { ActionTypes } from '@/store/modules/order/actions';
+import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
   name: 'OrderAnaltyics',
+  data() {
+    const date = new Date();
+    const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    return {
+      startDate: dateStr,
+      endDate: dateStr,
+      company: 0,
+    };
+  },
   computed: {
     ...mapGetters({
       analytics: 'getAnalytics',
-    })
-  }
+      companies: 'getInventoryCompanies',
+      userdata: 'getUser',
+    }),
+    admin(){
+      const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+      const allowedCompanies = ['PARENT', 'STORE'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)
+        && allowedCompanies.includes(this.userdata.company.company_type) 
+      ){
+        return true;
+      }
+      return false;
+    },
+    dateValidation: function(): string | null {
+      if(this.startDate !== undefined && this.endDate !== undefined && 
+        this.startDate !=='' && this.endDate !== '' &&
+        Date.parse(this.startDate) <= Date.parse(this.endDate)
+      ){
+        return null;
+      }
+      return 'invalid date range';
+    },
+  },
+  methods: {
+    ...mapActions({
+      fetchAnalytics: ActionTypes.FETCH_ANALYTICS,
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
+      fetchUser: AuthActionTypes.USER_DATA,
+    }),
+    async fetchAnalyticsBtn() {
+      await this.fetchAnalytics({
+        start_date: this.startDate,
+        end_date: this.endDate,
+        company: this.company,
+      });
+    }
+  },
+  async mounted() {
+    await this.fetchUser();
+    await this.fetchCompanies();
+    await this.fetchAnalyticsBtn();
+    this.company = this.userdata.company.id;
+  },
 })
 </script>
 
