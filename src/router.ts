@@ -263,13 +263,14 @@ const routes: Array<RouteRecordRaw> = [
         name: 'inventory-analytics',
         component: InventoryAnaltyics,
       },
+      {
+        path: 'detail',
+        name: 'operator-sales-detail',
+        component: OperatorSalesDetail,
+      },
     ]
   },
-  {
-    path: '/detail',
-    name: 'operator-sales-detail',
-    component: OperatorSalesDetail,
-  },
+  
 ];
 
 const router = createRouter({
