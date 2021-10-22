@@ -1,7 +1,7 @@
 <template>
   <div id="expense">
     <div class="diff-shadow">
-      <div class="flex-box">
+      <div v-show="dateFilter" class="flex-box">
         <label class="pad-label ls" for="start_date">
           <strong>Start:</strong>
         </label>
@@ -42,13 +42,13 @@
             </router-link>
           </span>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <span :class="tab === 'finance' ? 'nav-link active' : 'nav-link'">
             <router-link @click="tab = 'finance'" :to="{name: 'finance-analytics'}">
               <strong>Finance</strong>
             </router-link>
           </span>
-        </li>
+        </li> -->
       </ul>
       <div>
         <router-view />
@@ -84,6 +84,9 @@ export default defineComponent({
       }
 
       return 'invalid date range';
+    },
+    dateFilter(): boolean {
+      return this.tab !== 'inventory' ? true : false;
     },
   },
   methods: {

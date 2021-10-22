@@ -13,6 +13,10 @@
         <td><strong>Total Amount</strong></td>
         <td>PKR {{analytics.total_orders_amount}}</td>
       </tr>
+      <tr>
+        <td><strong>Expense</strong></td>
+        <td>PKR {{analytics.total_expense}}</td>
+      </tr>
     </table>
   </div>
 </template>
