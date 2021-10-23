@@ -103,9 +103,6 @@ export default defineComponent({
         end_date: this.endDate,
       });
     },
-    redirectToStockStatement() {
-      this.$router.push({path: '/analytics/stock'});
-    }
   },
   async mounted() {
     await this.fetchAnalytics({
