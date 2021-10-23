@@ -1,7 +1,8 @@
 <template>
   <div id="expense">
     <div class="diff-shadow">
-      <div class="flex-box">
+      <div class="grid-container">
+        <div class="grid-item">
         <label class="pad-label ls" for="start_date">
           <strong>Start:</strong>
         </label>
@@ -12,6 +13,8 @@
             v-model="startDate"
           />
         </div>
+        </div>
+         <div class="grid-item">
         <label class="pad-label mr-l le" for="end_date">
           <strong>End:</strong>
         </label>
@@ -23,7 +26,8 @@
           />
         <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
         </div>
-        <div class="b" style="margin-left: 10px">
+        </div>
+        <div class="grid-item">
           <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
         </div>
       </div>
@@ -183,4 +187,13 @@ export default defineComponent({
   .active a {
     color: $primary-color;
   }
+  .grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+}
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+}
 </style>
