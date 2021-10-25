@@ -16,9 +16,13 @@ jobs:
         run: |
           export VUE_APP_BACKEND_IP="$API_URL"
           export VUE_APP_NOTIFICATION_SERVER_IP="$NOTIFICATION_SERVER_IP"
+          npm install
+          npm run build
+          cp ./dist/index.html ./dist/404.html
         env:
           API_URL: ${{secrets.VUE_APP_BACKEND_IP_DEV}}
           NOTIFICATION_SERVER_IP:  ${{secrets.VUE_APP_NOTIFICATION_SERVER_IP}}
+          
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
