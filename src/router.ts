@@ -5,6 +5,7 @@ import OrdersList from "./components/sales/OrdersList.vue";
 import EditOrder from "./components/sales/EditOrder.vue";
 import Product from "./components/sales/Product.vue";
 import Batch from "./components/sales/Batch.vue";
+import ChangePassword from "./components/sales/ChangePassword.vue";
 import User from "./components/sales/User.vue";
 import AddEditProduct from "./components/sales/AddEditProduct.vue";
 import AddEditBatch from "./components/sales/AddEditBatch.vue";
@@ -148,6 +149,13 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: storeAdmin,
   },
   {
+    path: "/user/ChangePassword/:userId",
+    name: "ChangePassword",
+    component: ChangePassword,
+    props: true,
+    beforeEnter: storeAdmin,
+  },
+  {
     path: "/departments",
     name: "department",
     component: Department,
@@ -165,7 +173,7 @@ const routes: Array<RouteRecordRaw> = [
     component: DepartmentAddEdit,
     props: true,
     beforeEnter: storeAdmin,
-  },
+  }, 
   {
     path: "/vendors",
     name: "Vendor",

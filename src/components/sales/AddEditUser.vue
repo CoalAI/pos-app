@@ -138,7 +138,9 @@
         </div>
       </div>
 
-      <div class="mr-2" style="text-align: right; padding-bottom: 50px">
+      <div style=" text-align: right; padding-bottom: 50px">
+                <router-link :to="{name: 'ChangePassword', params: {userId: user.id}}" class="btn btn-orange btn-mr-inner" style="margin-right: 20px; width: 150px">Change Password</router-link>
+      
         <router-link
           to="/users"
           style="margin-right: 20px"
@@ -162,11 +164,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-
 import { ActionTypes } from '@/store/modules/auth/actions';
 import { User } from '@/store/models/user';
 import ErrorField from '@/components/common-components/ErrorField.vue';
-
 export default defineComponent({
   name: 'AddEditUser',
   props: ['userId'],
@@ -202,7 +202,6 @@ export default defineComponent({
       }
       return errorMessage;
     },
-
     passwordValidation: function () {
       let errorMessage = null;
       if (!this.userId) {
@@ -215,7 +214,6 @@ export default defineComponent({
       }
       return errorMessage;
     },
-
     ConfirmPasswordValidation: function () {
       let errorMessage = null;
       if (!this.userId) {
@@ -227,7 +225,6 @@ export default defineComponent({
       }
       return errorMessage;
     },
-
     emailValidation: function () {
       let errorMessage = null;
       if (this.user.email && !this.validEmail(this.user.email)) {
@@ -235,7 +232,6 @@ export default defineComponent({
       }
       return errorMessage;
     },
-
     contactNumberValidation: function () {
       let errorMessage = null;
       if (this.user.contactNumber.length <= 0) {
@@ -248,7 +244,6 @@ export default defineComponent({
       }
       return errorMessage;
     },
-
     companyValidation: function () {
       let errorMessage = null;
       if (this.companies.length <= 0) {
@@ -256,7 +251,6 @@ export default defineComponent({
       }
       return errorMessage;
     },
-
     addEditBtn: function () {
       let disable = true;
       if ( this.userNameValidation === null &&
@@ -269,7 +263,6 @@ export default defineComponent({
       }
       return disable
     },
-
     ...mapGetters({
       roles: 'getRoles',
       companies: 'getCompaniesFilterVendor',
@@ -283,7 +276,6 @@ export default defineComponent({
         userIdNumber = parseFloat(this.userId);
         if (isNaN(userIdNumber)) return;
       }
-
       const user: User = {
         username: this.user.userName,
         first_name: this.user.firstName,
@@ -294,7 +286,6 @@ export default defineComponent({
         user_type: this.user.user_type,
         contact_number: this.user.contactNumber
       }
-
       if (this.userId) {
         user.id = userIdNumber;
         await this.updateUser(user);
@@ -309,7 +300,6 @@ export default defineComponent({
         window.scrollTo(0,0);
       }
     },
-
     loadData: function (user: User) {
       this.user.firstName = user.first_name ? user.first_name : '';
       this.user.lastName = user.last_name ? user.last_name : '';
@@ -320,12 +310,10 @@ export default defineComponent({
       this.user.company = user.company && typeof user.company !== 'number' && user.company.id ? user.company.id : 0;
       this.user.contactNumber = user.contact_number ? user.contact_number : '';
     },
-
     validEmail: function (email: string): boolean {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
     },
-
     ...mapActions({
       registerUser: ActionTypes.REGISTER_USER,
       fetchTypes: ActionTypes.FETCH_TYPES,
@@ -338,11 +326,9 @@ export default defineComponent({
   async beforeMount () {
     await this.fetchTypes();
     await this.fetchCompanies();
-
     if (this.companies && this.companies.length > 0) {
       this.user.company = this.companies[0].id;
     }
-
     if (this.userId) {
       await this.getUsersList();
       const user_id = parseInt(this.userId);
@@ -368,19 +354,15 @@ export default defineComponent({
     padding-right: 15%;
     margin-top: 3%;
   }
-
   .pad-label {
     padding: 20px 20px 20px 0px;
   }
-
   .w100 {
     width: $w150;
   }
-
   label {
     text-align: left;
   }
-
   .full-width {
     width: 100%;
   }
