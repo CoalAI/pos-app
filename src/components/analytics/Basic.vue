@@ -27,29 +27,25 @@
           <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
         </div>
       </div>
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <span :class="tab === 'order' ? 'nav-link active' : 'nav-link'">
+    <div class="flex-box">
+          <button :class=" tab === 'order' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
             <router-link @click="tab = 'order'" :to="{name: 'order-analytics'}">
               <strong>Orders</strong>
             </router-link>
-          </span>
-        </li>
-        <li class="nav-item">
-          <span :class="tab === 'inventory' ? 'nav-link active' : 'nav-link'">
+        </button>
+          <button :class="tab === 'inventory' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
             <router-link @click="tab = 'inventory'" :to="{name: 'inventory-analytics'}">
               <strong>Inventory</strong>
             </router-link>
-          </span>
-        </li>
-        <li class="nav-item">
-          <span :class="tab === 'finance' ? 'nav-link active' : 'nav-link'">
+          </button>
+          <button :class="tab === 'finance' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
             <router-link @click="tab = 'finance'" :to="{name: 'finance-analytics'}">
               <strong>Finance</strong>
             </router-link>
-          </span>
-        </li>
-      </ul>
+          </button>
+        
+      </div>
+      <hr class="solid">
       <div>
         <router-view />
       </div>
@@ -133,33 +129,18 @@ export default defineComponent({
     font-size: $label-font-size;
   }
 
-  .nav {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    padding-left: 0;
-    margin-bottom: 0;
-    list-style: none;
-  }
-
-  .nav-tabs {
-    border-bottom: 1px solid #dee2e6;
-  }
-
   .nav-tabs .nav-item {
     margin-bottom: -1px;
     width: 25%;
   }
 
-  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+.nav-tabs .nav-link.active {
     color: $primary-color;
     background-color: #fff;
     border-color: #dee2e6 #dee2e6 #fff;
   }
 
-  .nav-tabs .nav-link {
+  .nav-link {
     border: 1px solid transparent;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
@@ -176,4 +157,11 @@ export default defineComponent({
   .active a {
     color: $primary-color;
   }
+    .btn-grid {
+    width: $w100;
+    margin: 2px;
+  }
+  hr.solid {
+  border-top: 3px solid #bbb;
+}
 </style>
