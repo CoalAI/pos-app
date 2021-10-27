@@ -28,15 +28,9 @@ export default class VueSocketIO {
     }
 
     connect(connection: string){
-        // if(typeof connection === 'string'){
         Logger.info(`Received connection string${connection}`);
-        return this.io = io(connection);
-
-        // } else {
-        //     console.log('Failed to create connection!');
-        //     // throw new Error('Unsupported connection type');
-        // }
-
+        const con = io(connection, {path: '/posnotify/socket.io'});
+        return this.io = con;
     }
 
     attach_listeners(listeners: string[]){
