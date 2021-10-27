@@ -19,27 +19,7 @@
       </select>
     </div>
     <div class="flex-box">
-      <label class="pad-label ls" for="start_date">
-        <strong>Start:</strong>
-      </label>
-      <div class="s-i">
-        <input
-          name="start_date"
-          type="date"
-          v-model="startDate"
-        />
-      </div>
-      <label class="pad-label mr-l le" for="end_date">
-        <strong>End:</strong>
-      </label>
-      <div class="e-i">
-        <input
-          name="end_date"
-          type="date"
-          v-model="endDate"
-        />
-      <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
-      </div>
+      <DateRange @dateRangeChange="setRange"  />
       <div class="b" style="margin-left: 10px">
         <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
       </div>
@@ -68,11 +48,16 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+
+import DateRange from '@/components/common-components/DateRange.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
   name: 'OrderAnaltyics',
+  components: {
+    DateRange,
+  },
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
@@ -114,6 +99,12 @@ export default defineComponent({
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       fetchUser: AuthActionTypes.USER_DATA,
     }),
+    setRange(range: null | {startDate: Date; endDate: Date}) {
+      if (range !== null) {
+        this.startDate = range.startDate.toString();
+        this.endDate = range.endDate.toString();
+      }
+    },
     async fetchAnalyticsBtn() {
       await this.fetchAnalytics({
         start_date: this.startDate,
