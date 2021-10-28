@@ -261,11 +261,6 @@ const routes: Array<RouteRecordRaw> = [
         component: OrderAnaltyics,
       },
       {
-        path: 'finance',
-        name: 'finance-analytics',
-        component: FinanceAnaltyics,
-      },
-      {
         path: 'inventory',
         name: 'inventory-analytics',
         component: InventoryAnaltyics,
