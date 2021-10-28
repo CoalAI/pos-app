@@ -29,7 +29,8 @@ export enum ActionTypes {
   FETCH_VENDORS = "FETCH_VENDORS",
   FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS",
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
-  SOCKET_notification = "SOCKET_notification"
+  SOCKET_notification = "SOCKET_notification",
+  CHANGE_PASSWORD = "CHANGE_PASSWORD"
 }
 
 export type AugmentedActionContext = {
@@ -45,6 +46,7 @@ export interface Actions {
   [ActionTypes.FETCH_TOEKN]({ commit }: AugmentedActionContext): void;
   [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials): void;
   [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User): void;
+  [ActionTypes.CHANGE_PASSWORD] ({ commit }: AugmentedActionContext, id?: number, password?: string): void;
   [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
@@ -105,6 +107,12 @@ Actions = {
   },
   async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
     const response = await serverRequest('patch', `user/${updUser.id}/`, true, updUser);
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.CHANGE_PASSWORD]({ commit }: AugmentedActionContext,id?: number, password?: string) {
+    const response = await serverRequest('put', `user/${id}/`, true, {'password':password});
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }

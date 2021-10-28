@@ -136,16 +136,17 @@
           />
           <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
         </div>
+        {{userId}}
       </div>
 
       <div style=" text-align: right; padding-bottom: 50px">
-                <router-link :to="{name: 'ChangePassword', params: {userId: user.id}}" class="btn btn-orange btn-mr-inner" style="margin-right: 20px; width: 150px">Change Password</router-link>
+                <router-link :to="{name: 'ChangePassword', params: {userId: userId}}" class="btn btn-orange btn-mr-inner" style="margin-right: 20px; width: 150px">Change Password</router-link>
       
         <router-link
           to="/users"
           style="margin-right: 20px"
           class="btn btn-orange btn-mr btn-link"
-        >Cancel</router-link>
+        >Cancel</router-link> 
         <button
           class="btn btn-orange btn-mr"
           style="width: 150px"

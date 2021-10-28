@@ -1,3 +1,4 @@
+
 <template>
   <div id="ChangePassword">
     <div class="diff-shadow">
@@ -10,7 +11,7 @@
             <label for="ConfirmPassword">Confirm Password</label>
             <input v-model = "confirmPassword" type="password" class="form-control" id="ConfirmPassword" placeholder="Confirm Password">
           </div>
-        <button class="btn btn-orange btn-mr" style="width: 150px">
+        <button class="btn btn-orange btn-mr" style="width: 150px" v-on:click="changePassword(inputPassword, userId)">
           Change Password
         </button>
         <div>
@@ -25,15 +26,35 @@
 </template>
 
 <script lang="ts">
+
 import { defineComponent } from 'vue';
+import axios from 'axios';
+import { mapActions } from 'vuex';
+import { ActionTypes } from '@/store/modules/auth/actions';
+import Loader from '../common-components/Loader.vue';
+
 export default defineComponent({
   name: 'ChangePassword',
   props: ['userId'],
   data () {
     return {
       inputPassword : "",
-      confirmPassword : ""
+      confirmPassword : "",
+      URL : ""
     }
+  },
+  methods: {
+    ...mapActions({
+      changePass: ActionTypes.CHANGE_PASSWORD
+    }),
+    changePassword: async function (password: string, id: any) {
+        this.changePass({
+          id:id,
+          password: password
+        }).finally(()=> {
+          this.$router.push({name: 'User'});
+        });
+    },
   },
   computed: {
      passwordValidation: function () {
@@ -51,7 +72,7 @@ export default defineComponent({
         if (this.confirmPassword.length <= 0) {
           errorMessage = "Confirm Password is required"
         } else if (this.inputPassword!== this.confirmPassword) {
-          errorMessage = "Passwords does not matches with password"
+          errorMessage = "Passwords does not match with password"
         }
       return errorMessage;
     }
