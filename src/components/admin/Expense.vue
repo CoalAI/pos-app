@@ -133,10 +133,11 @@
             id="user-dropdown"
             name="user-dropdown"
             class="custom-select"
+            v-model="company.name"
           >
-            <option disabled>--- vendor - phone - company ---</option>
-            <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
-              <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
+            <option disabled>--- department ---</option>
+            <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.company_name">
+              {{company.company_name}}
             </option>
           </select>
         </div>
@@ -157,7 +158,7 @@
         <div style="text-align: right; padding-bottom: 20px">
           <button
             class="btn btn-orange btn-mr"
-            style="width: 150px">Add</button>
+            style="width: 150px" @click="addDept">Add</button>
         </div>
         <table>
           <thead>
@@ -167,9 +168,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>example</td>
-              <td>example</td>
+            <tr v-for="a in table" :key="a.id">
+              <td>{{a.dept}}</td>
+              <td>{{a.amount}}</td>
             </tr>
           </tbody>
         </table>
@@ -221,7 +222,15 @@ export default defineComponent({
         }
       }, 
       create_expense : false,
-      loader: false
+      loader: false,
+      dept:'',
+      table:[{
+        amount:'',
+        dept:''
+      }],
+      company:{
+        name:''
+      }
     }
   },
   computed: {
@@ -268,16 +277,17 @@ export default defineComponent({
       userdata: 'getUser',
       expense: 'getExpense',
       vendors: 'getListOfVendors',
+      companies: 'getInventoryCompanies',
     })
   },
   methods: {
     ...mapActions({
-      fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
       fetchUsers: AuthActionTypes.GET_All_USERS,
       fetchUserData: AuthActionTypes.USER_DATA,
       createExpense: AuthActionTypes.CREATE_EXPENSE,
       getVendors: AuthActionTypes.FETCH_VENDORS,
       createRequest: OrderActionTypes.CREATE_REQUEST,
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
     }),
     addExpense: async function(){
       if(this.amountValidation==null && this.descriptionValidation == null) {
@@ -298,12 +308,17 @@ export default defineComponent({
         await this.fetchUserData();
       }
     },
+    addDept: async function(){
+     this.table.push({amount:this.transaction.amount,dept:this.company.name})
+    },
   },
   async beforeMount () {
     await this.fetchUsers();
     await this.getVendors();
     await this.fetchUserData();
-  }
+    await this.fetchCompanies();
+  },
+
 });
 </script>
 
