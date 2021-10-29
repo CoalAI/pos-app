@@ -42,6 +42,9 @@
       </tr>
     </tbody>
   </table>
+  <div class="flex-container marginTop">
+    <button class="btn btn-orange" style="width:80px">Print</button>
+  </div> 
   </div>
 </template>
 
@@ -140,5 +143,9 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) input {
   background-color: inherit;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>
