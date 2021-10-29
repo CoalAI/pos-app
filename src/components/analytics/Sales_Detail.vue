@@ -2,7 +2,7 @@
   <div>
     <div class="flex-box">
       <label class="pad-label ls" for="start_date">
-        <strong>Company:</strong>
+        <strong>Department:</strong>
       </label>
       <select
         id="company-type"
@@ -21,27 +21,30 @@
     <div class="flex-box">
       <DateRange @dateRangeChange="setRange"  />
       <div class="b" style="margin-left: 10px">
-        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
+        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
       </div>
     </div>
-    <table>
-      <colgroup>
-        <col span="1" style="width: 50%;">
-        <col span="1" style="width: 50%;">
-      </colgroup>
+    <table class="marginTop">
+    <thead>
       <tr>
-        <td><strong>Total Orders</strong></td>
-        <td>{{analytics.total_orders}}</td>
+        <th scope="col">User Name</th>
+        <th scope="col">User Type</th>
+        <th scope="col">Total Orders</th>
+        <th scope="col">Total Amount</th>
       </tr>
+    </thead>
+    <tbody>
       <tr>
-        <td><strong>Total Amount</strong></td>
-        <td>PKR {{analytics.total_orders_amount}}</td>
+        <td>example</td>
+        <td>example</td>
+        <td>example</td>
+        <td>example</td>
       </tr>
-      <tr>
-        <td><strong>Expense</strong></td>
-        <td>PKR {{analytics.total_expense}}</td>
-      </tr>
-    </table>
+    </tbody>
+  </table>
+  <div class="flex-container marginTop">
+    <button class="btn btn-orange" style="width:80px">Print</button>
+  </div> 
   </div>
 </template>
 
@@ -54,7 +57,7 @@ import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
-  name: 'OrderAnaltyics',
+  name: 'OperatorSalesDetail',
   components: {
     DateRange,
   },
@@ -140,5 +143,9 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) input {
   background-color: inherit;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

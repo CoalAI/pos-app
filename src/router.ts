@@ -32,6 +32,7 @@ import Basic from '@/components/analytics/Basic.vue';
 import OrderAnaltyics from '@/components/analytics/Order.vue';
 import FinanceAnaltyics from '@/components/analytics/Finance.vue';
 import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
+import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -253,17 +254,18 @@ const routes: Array<RouteRecordRaw> = [
         component: OrderAnaltyics,
       },
       {
-        path: 'finance',
-        name: 'finance-analytics',
-        component: FinanceAnaltyics,
-      },
-      {
         path: 'inventory',
         name: 'inventory-analytics',
         component: InventoryAnaltyics,
       },
+      {
+        path: 'detail',
+        name: 'operator-sales-detail',
+        component: OperatorSalesDetail,
+      },
     ]
-  }
+  },
+  
 ];
 
 const router = createRouter({
