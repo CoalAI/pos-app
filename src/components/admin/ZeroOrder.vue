@@ -169,7 +169,7 @@
           </tr>
         </table>
         <div id="orderTypes" class="mr-2">
-          <label class="custom-radio" style="margin-right: 10px">From Vendor or Department To Retail
+          <label class="custom-radio" style="margin-right: 10px">From Vendor or Department
             <input type="radio" name="order_type" value="from"
             :disabled="orderTypeValidation" v-model="orderType" @change="orderTypeChange">
             <span class="checkmark"></span>
@@ -325,14 +325,15 @@
           </label>
 
           <div class="q-i">
-            <!-- <input
+            <input
               v-if="orderType === 'from'"
               type="text"
               name="BuyerID"
               :value="userdata.username"
               readonly
-            > -->
+            >
             <select
+              v-else
               name="BuyerID"
               class="custom-select"
               id="BuyerID"
@@ -882,8 +883,7 @@ export default defineComponent({
         this.seller = this.userdata.id;
       } else if (this.orderType === 'from') {
         this.seller = 0;
-        // this.buyer = this.userdata.id;
-        this.buyer = 0;
+        this.buyer = this.userdata.id;
       }
     },
 
@@ -1146,7 +1146,7 @@ export default defineComponent({
       this.totalDiscount = '';
       this.orderType = 'from';
       this.seller = 0;
-      // this.buyer = this.userdata.id;
+      this.buyer = this.userdata.id;
       this.buyer = 0;
       const vendor: User = {};
       this.vendorUser = vendor;
@@ -1273,7 +1273,7 @@ export default defineComponent({
       company_type: 'VENDOR',
       search: ''
     });
-    // this.buyer = this.userdata.id;
+    this.buyer = this.userdata.id;
   }
 })
 </script>

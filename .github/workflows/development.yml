@@ -19,11 +19,15 @@ jobs:
         env:
           API_URL: ${{secrets.VUE_APP_BACKEND_IP_DEV}}
           NOTIFICATION_SERVER_IP:  ${{secrets.VUE_APP_NOTIFICATION_SERVER_IP}}
+          
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USERNAME }}
           password: ${{ secrets.DEV_PASSWORD }}
-          script: ${{ secrets.SCRIPT }}
+          script: |
+                  export VUE_APP_BACKEND_IP=${{secrets.VUE_APP_BACKEND_IP_DEV}}
+                  export VUE_APP_NOTIFICATION_SERVER_IP= ${{secrets.VUE_APP_NOTIFICATION_SERVER_IP}}
+                  ${{ secrets.SCRIPT }}
         

@@ -70,19 +70,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
-import { ActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
   name: 'Expense',
   data() {
     const path = window.location.pathname;
-    const date = new Date();
-    const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
       tab: path.split('/')[2],
-      startDate: dateStr,
-      endDate: dateStr,
     }
   },
   computed: {
