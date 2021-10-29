@@ -1,27 +1,30 @@
 <template>
-  <div class="flex-box marginTop">
-    <label class="pad-label ls" for="department">
-      <strong>Department:</strong>
-    </label>
-    <select
-      id="department"
-      name="department"
-      class="custom-select"
-    >
-      <option value="">Bakery</option>
-    </select>
-    <label class="pad-label ls" for="user" style="margin-left: 15px;">
-      <strong>User:</strong>
-    </label>
-    <select
-      id="user"
-      name="user"
-      class="custom-select"
-    >
-      <option value="">User (Sale/Admin)</option>
-    </select>
-  </div>
-  <table class="marginTop">
+  <div>
+    <div class="flex-box">
+      <label class="pad-label ls" for="start_date">
+        <strong>Department:</strong>
+      </label>
+      <select
+        id="company-type"
+        name="company-type"
+        class="custom-select"
+        style="width: 30%"
+        v-model="company"
+        @change="fetchAnalyticsBtn"
+        :disabled="!admin"
+      >
+        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+          {{company.company_name}}
+        </option>
+      </select>
+    </div>
+    <div class="flex-box">
+      <DateRange @dateRangeChange="setRange"  />
+      <div class="b" style="margin-left: 10px">
+        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
+      </div>
+    </div>
+    <table class="marginTop">
     <thead>
       <tr>
         <th scope="col">User Name</th>
@@ -39,27 +42,47 @@
       </tr>
     </tbody>
   </table>
-  <div class="flex-container marginTop">
-    <button class="btn btn-orange" style="width:80px">Print</button>
-  </div>  
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
+import { mapActions, mapGetters } from 'vuex';
+
+import DateRange from '@/components/common-components/DateRange.vue';
+import { ActionTypes } from '@/store/modules/order/actions';
+import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
   name: 'OperatorSalesDetail',
+  components: {
+    DateRange,
+  },
   data() {
-    const path = window.location.pathname;
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
-      tab: path.split('/')[2],
       startDate: dateStr,
       endDate: dateStr,
-    }
+      company: 0,
+    };
   },
   computed: {
+    ...mapGetters({
+      analytics: 'getAnalytics',
+      companies: 'getInventoryCompanies',
+      userdata: 'getUser',
+    }),
+    admin(){
+      const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+      const allowedCompanies = ['PARENT', 'STORE'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)
+        && allowedCompanies.includes(this.userdata.company.company_type) 
+      ){
+        return true;
+      }
+      return false;
+    },
     dateValidation: function(): string | null {
       if(this.startDate !== undefined && this.endDate !== undefined && 
         this.startDate !=='' && this.endDate !== '' &&
@@ -67,35 +90,55 @@ export default defineComponent({
       ){
         return null;
       }
-
       return 'invalid date range';
     },
   },
   methods: {
-  }
-});
+    ...mapActions({
+      fetchAnalytics: ActionTypes.FETCH_ANALYTICS,
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
+      fetchUser: AuthActionTypes.USER_DATA,
+    }),
+    setRange(range: null | {startDate: Date; endDate: Date}) {
+      if (range !== null) {
+        this.startDate = range.startDate.toString();
+        this.endDate = range.endDate.toString();
+      }
+    },
+    async fetchAnalyticsBtn() {
+      await this.fetchAnalytics({
+        start_date: this.startDate,
+        end_date: this.endDate,
+        company: this.company,
+      });
+    }
+  },
+  async mounted() {
+    await this.fetchUser();
+    await this.fetchCompanies();
+    await this.fetchAnalyticsBtn();
+    this.company = this.userdata.company.id;
+  },
+})
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
-  .flex-container {
-    display: flex;
-    flex-direction: row-reverse;
-  }
+td, th {
+  border: none;
+  text-align: left;
+  padding: 20px;
+}
 
-  .pad-label {
-    padding: 20px 20px 20px 0px;
-  }
+tr:nth-child(even) {
+  background-color: inherit;
+}
 
-  .w100 {
-    width: $w150;
-  }
-
-  label {
-    text-align: left;
-  }
-
- .marginTop {
-    margin-top: 20px;
-  }
+tr:nth-child(odd) input {
+  background-color: inherit;
+}
 </style>
