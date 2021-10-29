@@ -16,6 +16,13 @@
             </router-link>
           </span>
         </li>
+        <li class="nav-item">
+          <span :class="tab === 'detail' ? 'nav-link active' : 'nav-link'">
+            <router-link @click="tab = 'detail'" :to="{name: 'operator-sales-detail'}">
+              <strong>Operator Sales</strong>
+            </router-link>
+          </span>
+        </li>
       </ul>
       <div>
         <router-view />
