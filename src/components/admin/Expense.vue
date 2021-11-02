@@ -3,14 +3,19 @@
   <div id="expense">
     <div class="diff-shadow">
       <ul class="nav nav-tabs">
-        <li class="nav-item" @click="expenseMethod = 'Credit'">
-          <span :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'">
+        <li class="nav-item" @click="expenseMethod = 'Received'">
+          <span :class="expenseMethod === 'Received' ? 'nav-link active' : 'nav-link'">
             <strong>Cash Received</strong>
           </span>
         </li>
         <li class="nav-item" @click="expenseMethod = 'Debit'">
           <span :class="expenseMethod === 'Debit' ? 'nav-link active' : 'nav-link'">
             <strong>Debit</strong>
+          </span>
+        </li>
+         <li class="nav-item" @click="expenseMethod = 'Credit'">
+          <span :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'">
+            <strong>Credit</strong>
           </span>
         </li>
         <!-- <li class="nav-item" @click="expenseMethod = 'Expense'">
@@ -20,7 +25,7 @@
         </li> -->
       </ul>
       <h2>{{expenseMethod}}</h2>
-      <template v-if="expenseMethod === 'Credit'">
+      <template v-if="expenseMethod === 'Received'">
         <div class="flex-box">
           <label class="pad-label w100" for="products">
             <strong>Payor:</strong>
@@ -40,7 +45,7 @@
           </select>
         </div>
       </template>
-      <template v-else-if="expenseMethod === 'Debit'">
+      <template v-else-if="expenseMethod === 'Debit' || expenseMethod === 'Credit'">
         <div class="flex-box">
           <label class="pad-label w100" for="products">
             <strong>Payee:</strong>
@@ -142,7 +147,7 @@ export default defineComponent({
   },
   data() {
     return {
-      expenseMethod: 'Credit',
+      expenseMethod: 'Received',
       transaction: {
         payor:-1,
         payee:-1,
@@ -219,7 +224,7 @@ export default defineComponent({
     addExpense: async function(){
       if(this.amountValidation==null && this.descriptionValidation == null) {
 
-        if (this.expenseMethod === 'Credit') {
+        if (this.expenseMethod === 'Received') {
           this.transaction.payee = this.userdata.id;
           this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
         } else if (this.expenseMethod === 'Debit') {
