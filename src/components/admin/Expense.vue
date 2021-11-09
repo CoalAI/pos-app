@@ -13,6 +13,11 @@
             <strong>Debit</strong>
           </span>
         </li>
+          <li class="nav-item" @click="expenseMethod = 'Journal Entry'">
+          <span :class="expenseMethod === 'Journal Entry' ? 'nav-link active' : 'nav-link'">
+            <strong>Journal Entry</strong>
+          </span>
+        </li>
         <!-- <li class="nav-item" @click="expenseMethod = 'Expense'">
           <span :class="expenseMethod === 'Expense' ? 'nav-link active' : 'nav-link'">
             <strong>Expense</strong>
@@ -20,7 +25,7 @@
         </li> -->
       </ul>
       <h2>{{expenseMethod}}</h2>
-      <template v-if="expenseMethod === 'Credit'">
+      <template v-if="expenseMethod === 'Credit' || expenseMethod === 'Journal Entry'">
         <div class="flex-box">
           <label class="pad-label w100" for="products">
             <strong>Payor:</strong>
@@ -40,7 +45,7 @@
           </select>
         </div>
       </template>
-      <template v-else-if="expenseMethod === 'Debit'">
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Journal Entry'">
         <div class="flex-box">
           <label class="pad-label w100" for="products">
             <strong>Payee:</strong>
@@ -65,58 +70,117 @@
           </select>
         </div>
       </template>
-      <div class="flex-box">
-        <label class="pad-label w100" for="balance">
-          <strong>Balance:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="balance"
-            type="text"
-            placeholder="Balance of company"
-            v-model="userdata.company.balance"
-            readonly
-          />
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit'">
+        <div class="flex-box">
+          <label class="pad-label w100" for="balance">
+            <strong>Balance:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="balance"
+              type="text"
+              placeholder="Balance of company"
+              v-model="userdata.company.balance"
+              readonly
+            />
+          </div>
         </div>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="amount">
-          <strong>{{expenseMethod}} amount:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="amount"
-            type="number"
-            placeholder="Enter amount"
-            v-model="transaction.amount"
-          />
-          <span v-if="amountValidation" class="form-error">{{ amountValidation }}</span>
+        <div class="flex-box">
+          <label class="pad-label w100" for="amount">
+            <strong>{{expenseMethod}} amount:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="amount"
+              type="number"
+              placeholder="Enter amount"
+              v-model="transaction.amount"
+            />
+            <span v-if="amountValidation" class="form-error">{{ amountValidation }}</span>
+          </div>
         </div>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="amount">
-          <strong>Description:</strong>
-        </label>
-        <div class="full-width">
-          <textarea 
-            name="description"
-            rows="7"
-            placeholder="description"
-            v-model="transaction.description"
-          ></textarea>
-          <span v-if="descriptionValidation" class="form-error">{{ descriptionValidation }}</span>
+        <div class="flex-box">
+          <label class="pad-label w100" for="amount">
+            <strong>Description:</strong>
+          </label>
+          <div class="full-width">
+            <textarea 
+              name="description"
+              rows="7"
+              placeholder="description"
+              v-model="transaction.description"
+            ></textarea>
+            <span v-if="descriptionValidation" class="form-error">{{ descriptionValidation }}</span>
+          </div>
         </div>
-      </div>
-      <div style="text-align: right; padding-bottom: 50px">
-        <router-link
-          to="/"
-          style="margin-right: 20px"
-          class="btn btn-orange btn-mr btn-link"
-        >Cancel</router-link>
-        <button
-          class="btn btn-orange btn-mr"
-          style="width: 150px" @click="addExpense">Add Expense</button>
-      </div>
+        <div style="text-align: right; padding-bottom: 50px">
+          <router-link
+            to="/"
+            style="margin-right: 20px"
+            class="btn btn-orange btn-mr btn-link"
+          >Cancel</router-link>
+          <button
+            class="btn btn-orange btn-mr"
+            style="width: 150px" @click="addExpense">Add Expense</button>
+        </div>
+      </template>
+      <template v-if="expenseMethod === 'Journal Entry'">
+        <div class="flex-box">
+          <label class="pad-label w100" for="products">
+            <strong>Dept:</strong>
+          </label>
+          <select
+            id="user-dropdown"
+            name="user-dropdown"
+            class="custom-select"
+            v-model="company.name"
+          >
+            <option disabled>--- department ---</option>
+            <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.company_name">
+              {{company.company_name}}
+            </option>
+          </select>
+        </div>
+        <div class="flex-box">
+          <label class="pad-label w100" for="amount">
+            <strong>Amount:</strong>
+          </label>
+          <div class="full-width">
+            <input
+              name="amount"
+              type="number"
+              placeholder="Enter amount"
+              v-model="transaction.amount"
+            />
+            <span v-if="amountValidation" class="form-error">{{ amountValidation }}</span>
+          </div>
+        </div>
+        <div style="text-align: right; padding-bottom: 20px">
+          <button
+            class="btn btn-orange btn-mr"
+            style="width: 150px" @click="addDept">Add</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Dept Name</th>
+              <th scope="col">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="a in table" :key="a.id">
+              <td>{{a.dept}}</td>
+              <td>{{a.amount}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="text-align: center; padding-bottom: 50px; padding-top:20px">
+          <button
+            class="btn btn-orange btn-mr"
+            style="width: 150px">Submit</button>
+        </div>
+      </template>
+      
     </div>
   </div>
   <Loader v-show="loader"></Loader>
@@ -158,7 +222,15 @@ export default defineComponent({
         }
       }, 
       create_expense : false,
-      loader: false
+      loader: false,
+      dept:'',
+      table:[{
+        amount:'',
+        dept:''
+      }],
+      company:{
+        name:''
+      }
     }
   },
   computed: {
@@ -205,16 +277,17 @@ export default defineComponent({
       userdata: 'getUser',
       expense: 'getExpense',
       vendors: 'getListOfVendors',
+      companies: 'getInventoryCompanies',
     })
   },
   methods: {
     ...mapActions({
-      fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
       fetchUsers: AuthActionTypes.GET_All_USERS,
       fetchUserData: AuthActionTypes.USER_DATA,
       createExpense: AuthActionTypes.CREATE_EXPENSE,
       getVendors: AuthActionTypes.FETCH_VENDORS,
       createRequest: OrderActionTypes.CREATE_REQUEST,
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
     }),
     addExpense: async function(){
       if(this.amountValidation==null && this.descriptionValidation == null) {
@@ -235,12 +308,17 @@ export default defineComponent({
         await this.fetchUserData();
       }
     },
+    addDept: async function(){
+     this.table.push({amount:this.transaction.amount,dept:this.company.name})
+    },
   },
   async beforeMount () {
     await this.fetchUsers();
     await this.getVendors();
     await this.fetchUserData();
-  }
+    await this.fetchCompanies();
+  },
+
 });
 </script>
 
@@ -308,4 +386,11 @@ export default defineComponent({
     display: block;
     padding: .5rem 1rem;
   }
+  td {
+  text-align: center;
+  }
+  th {
+  text-align: center;
+  }
+
 </style>
