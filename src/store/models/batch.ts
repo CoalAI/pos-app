@@ -8,6 +8,7 @@ export interface Batch extends DatesInterface {
   product_variant?: number | ProductVariant;
   quantity?: string;
   in_stock?: boolean;
+  inventory_quantity?: number;
 }
 
 export const isBatch = (batch: Batch | number): batch is Batch => {
