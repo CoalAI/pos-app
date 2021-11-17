@@ -27,10 +27,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>example</td>
-        <td>example</td>
-        <td>example</td>
+      <tr v-for="(item, key) in analytics.category_stats" :key="key">
+        <td>{{key}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.total_amount}}</td>
       </tr>
     </tbody>
   </table>
@@ -41,7 +41,7 @@
       </b>
       {{analytics.unique_products_count}}
     </div>
-    <div>
+    <div style="margin-right:100px">
       <b>
         Total Amount:
       </b>
