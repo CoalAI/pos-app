@@ -17,20 +17,37 @@
       </option>
     </select>
   </div>
+
   <table>
-    <colgroup>
-      <col span="1" style="width: 50%;">
-      <col span="1" style="width: 50%;">
-    </colgroup>
-    <tr>
-      <td><strong>Total Products</strong></td>
-      <td>{{analytics.unique_products_count}}</td>
-    </tr>
-    <tr>
-      <td><strong>Total Inventory Amount</strong></td>
-      <td>PKR {{analytics.total_inventory_amount}}</td>
-    </tr>
+    <thead>
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">Total Products</th>
+        <th scope="col">Total Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(item, key) in analytics.category_stats" :key="key">
+        <td>{{key}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.total_amount}}</td>
+      </tr>
+    </tbody>
   </table>
+  <div class="analytics">
+    <div>
+      <b>
+        Total Products:
+      </b>
+      {{analytics.unique_products_count}}
+    </div>
+    <div style="margin-right:100px">
+      <b>
+        Total Amount:
+      </b>
+      {{analytics.total_inventory_amount}}
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -108,5 +125,10 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) input {
   background-color: inherit;
+}
+.analytics{
+  display: flex;
+  justify-content: space-between;
+  margin:15px
 }
 </style>
