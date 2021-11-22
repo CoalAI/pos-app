@@ -10,7 +10,7 @@
         class="custom-select"
         style="width: 30%"
         v-model="company"
-        @change="fetchAnalyticsBtn"
+        @change="fetchSalesanalyticsBtn"
         :disabled="!admin"
       >
         <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
@@ -21,7 +21,7 @@
     <div class="flex-box">
       <DateRange @dateRangeChange="setRange"  />
       <div class="b" style="margin-left: 10px">
-        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
+        <button class="btn btn-orange" @click="fetchSalesanalyticsBtn">Search</button>
       </div>
     </div>
     <table class="marginTop">
@@ -34,11 +34,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>example</td>
-        <td>example</td>
-        <td>example</td>
-        <td>example</td>
+      <tr v-for="data in salesanalytics.result" :key="data">
+        <td>{{data.username}}</td>
+        <td>{{data.user_type}}</td>
+        <td>{{data.order_count}}</td>
+        <td>{{data.total_amount}}</td>
       </tr>
     </tbody>
   </table>
@@ -72,7 +72,7 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      analytics: 'getAnalytics',
+      salesanalytics: 'getSalesanalytics',
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
     }),
@@ -98,7 +98,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions({
-      fetchAnalytics: ActionTypes.FETCH_ANALYTICS,
+      fetchSalesanalytics: ActionTypes.FETCH_SALESANALYTICS,
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       fetchUser: AuthActionTypes.USER_DATA,
     }),
@@ -108,8 +108,8 @@ export default defineComponent({
         this.endDate = range.endDate.toString();
       }
     },
-    async fetchAnalyticsBtn() {
-      await this.fetchAnalytics({
+    async fetchSalesanalyticsBtn() {
+      await this.fetchSalesanalytics({
         start_date: this.startDate,
         end_date: this.endDate,
         company: this.company,
@@ -119,7 +119,7 @@ export default defineComponent({
   async mounted() {
     await this.fetchUser();
     await this.fetchCompanies();
-    await this.fetchAnalyticsBtn();
+    await this.fetchSalesanalyticsBtn();
     this.company = this.userdata.company.id;
   },
 })
