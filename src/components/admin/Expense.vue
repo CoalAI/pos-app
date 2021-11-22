@@ -3,8 +3,8 @@
   <div id="expense">
     <div class="diff-shadow">
       <ul class="nav nav-tabs">
-        <li class="nav-item" @click="expenseMethod = 'Credit'">
-          <span :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'">
+        <li class="nav-item" @click="expenseMethod = 'Received'">
+          <span :class="expenseMethod === 'Received' ? 'nav-link active' : 'nav-link'">
             <strong>Cash Received</strong>
           </span>
         </li>
@@ -13,6 +13,11 @@
             <strong>Debit</strong>
           </span>
         </li>
+         <li class="nav-item" @click="expenseMethod = 'Credit'">
+          <span :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'">
+            <strong>Credit</strong>
+          </span>
+         </li>
           <li class="nav-item" @click="expenseMethod = 'Journal Entry'">
           <span :class="expenseMethod === 'Journal Entry' ? 'nav-link active' : 'nav-link'">
             <strong>Journal Entry</strong>
@@ -25,7 +30,7 @@
         </li> -->
       </ul>
       <h2>{{expenseMethod}}</h2>
-      <template v-if="expenseMethod === 'Credit' || expenseMethod === 'Journal Entry'">
+      <template v-if="expenseMethod === 'Received' || expenseMethod === 'Journal Entry'">
         <div class="flex-box">
           <label class="pad-label w100" for="products">
             <strong>Payor:</strong>
@@ -45,7 +50,7 @@
           </select>
         </div>
       </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Journal Entry'">
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Journal Entry' || expenseMethod === 'Credit'">
         <div class="flex-box">
           <label class="pad-label w100" for="products">
             <strong>Payee:</strong>
@@ -70,7 +75,7 @@
           </select>
         </div>
       </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit'">
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit' || expenseMethod === 'Received'">
         <div class="flex-box">
           <label class="pad-label w100" for="balance">
             <strong>Balance:</strong>
@@ -206,7 +211,7 @@ export default defineComponent({
   },
   data() {
     return {
-      expenseMethod: 'Credit',
+      expenseMethod: 'Received',
       transaction: {
         payor:-1,
         payee:-1,
@@ -292,7 +297,7 @@ export default defineComponent({
     addExpense: async function(){
       if(this.amountValidation==null && this.descriptionValidation == null) {
 
-        if (this.expenseMethod === 'Credit') {
+        if (this.expenseMethod === 'Received') {
           this.transaction.payee = this.userdata.id;
           this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
         } else if (this.expenseMethod === 'Debit') {

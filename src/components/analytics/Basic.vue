@@ -17,6 +17,11 @@
             <strong>Operator Sales</strong>
           </router-link>
         </button>
+        <button :class="tab === 'report' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
+          <router-link @click="tab = 'report'" :to="{name: 'profit-loss-report'}">
+            <strong>Profit/Loss Report</strong>
+          </router-link>
+        </button>
       </div>
       <hr class="solid">
       <div>
