@@ -1,66 +1,34 @@
 <template>
   <div id="expense">
     <div class="diff-shadow">
-      <div class="grid-container">
-        <div class="grid-item">
-        <label class="pad-label ls" for="start_date">
-          <strong>Start:</strong>
-        </label>
-        <div class="s-i">
-          <input
-            name="start_date"
-            type="date"
-            v-model="startDate"
-          />
-        </div>
-        </div>
-         <div class="grid-item">
-        <label class="pad-label mr-l le" for="end_date">
-          <strong>End:</strong>
-        </label>
-        <div class="e-i">
-          <input
-            name="end_date"
-            type="date"
-            v-model="endDate"
-          />
-        <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
-        </div>
-        </div>
-        <div class="grid-item">
-          <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
-        </div>
-      </div>
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <span :class="tab === 'order' ? 'nav-link active' : 'nav-link'">
-            <router-link @click="tab = 'order'" :to="{name: 'order-analytics'}">
-              <strong>Orders</strong>
-            </router-link>
-          </span>
-        </li>
-        <li class="nav-item">
-          <span :class="tab === 'inventory' ? 'nav-link active' : 'nav-link'">
-            <router-link @click="tab = 'inventory'" :to="{name: 'inventory-analytics'}">
-              <strong>Inventory</strong>
-            </router-link>
-          </span>
-        </li>
-        <li class="nav-item">
-          <span :class="tab === 'finance' ? 'nav-link active' : 'nav-link'">
-            <router-link @click="tab = 'finance'" :to="{name: 'finance-analytics'}">
-              <strong>Finance</strong>
-            </router-link>
-          </span>
-        </li>
-         <li class="nav-item">
-          <span :class="tab === 'StockStatement' ? 'nav-link active' : 'nav-link'">
+      <div class="flex-box">
+        <button :class="tab === 'order' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
+          <router-link @click="tab = 'order'" :to="{name: 'order-analytics'}">
+            <strong>Orders</strong>
+          </router-link>
+        </button>
+        <button :class="tab === 'inventory' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
+          <router-link @click="tab = 'inventory'" :to="{name: 'inventory-analytics'}">
+            <strong>Inventory</strong>
+          </router-link>
+        </button>
+        <button :class="tab === 'detail' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
+          <router-link @click="tab = 'detail'" :to="{name: 'operator-sales-detail'}">
+            <strong>Operator Sales</strong>
+          </router-link>
+        </button>
+        <button :class="tab === 'report' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
+          <router-link @click="tab = 'report'" :to="{name: 'profit-loss-report'}">
+            <strong>Profit/Loss Report</strong>
+          </router-link>
+        </button>
+        <button :class="tab === 'StockStatement' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
             <router-link @click="tab = 'StockStatement'" :to="{name: 'StockStatement'}">
               <strong>Stock Statement</strong>
             </router-link>
-          </span>
-        </li>
-      </ul>
+        </button>
+      </div>
+      <hr class="solid">
       <div>
         <router-view />
       </div>
@@ -70,7 +38,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 export default defineComponent({
   name: 'Expense',
   data() {
@@ -117,59 +84,31 @@ export default defineComponent({
     padding-right: 15%;
     margin-top: 3%;
   }
-
   .pad-label {
     padding: 20px 20px 20px 0px;
   }
-
   .w100 {
     width: $w150;
   }
-
   label {
     text-align: left;
   }
-
   .full-width {
     width: 100%;
   }
-
   .checkbox-label {
     font-size: $label-font-size;
   }
-
-  .nav {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    padding-left: 0;
-    margin-bottom: 0;
-    list-style: none;
-  }
-
-  .nav-tabs {
-    border-bottom: 1px solid #dee2e6;
-  }
-
-  .nav-tabs .nav-item {
-    margin-bottom: -1px;
-    width: 25%;
-  }
-
-  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  .nav-tabs .nav-link.active {
     color: $primary-color;
     background-color: #fff;
     border-color: #dee2e6 #dee2e6 #fff;
   }
-
-  .nav-tabs .nav-link {
+  .nav-link {
     border: 1px solid transparent;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
   }
-
   .nav-link {
     color: #495057;
     display: block;
@@ -190,4 +129,11 @@ export default defineComponent({
   background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
 }
+  hr.solid {
+    border-top: 3px solid #bbb;
+  }
+  .btn-grid {
+    width: $w100;
+    margin: 2px;
+  }
 </style>

@@ -103,7 +103,7 @@
               ref="batches"
             >
               <option class="batches-op" v-for="batch in filteredBatches" v-bind:key="batch.id" v-bind:value="batch.id">
-                #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimQuantity(batch.quantity)}}
+                #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{batch.inventory_quantity}}
               </option>
             </select>
             <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
@@ -708,12 +708,12 @@ export default defineComponent({
     filteredBatches: function(){
       let batches: Batch[] = this.productBatchSelect;
       if(!this.return_order){
-        batches = batches.filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
+        batches = batches.filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0)
       }
       return batches;
     },
     cummBatchQuantity: function(): number{
-      return this.filteredBatches.map((batch: Batch) => batch && batch.quantity?parseFloat(batch.quantity):0).reduce((a: number, b: number) => a+b, 0);
+      return this.filteredBatches.map((batch: Batch) => batch && batch.inventory_quantity?batch.inventory_quantity:0).reduce((a: number, b: number) => a+b, 0);
     },
 
     validateDeductBalance: function() {
@@ -752,8 +752,7 @@ export default defineComponent({
       const batchID = parseInt(this.product.batch);
       if(!isNaN(batchID) && batchID > 0 && this.filteredBatches.length > 0){
         const selectedBatch = this.filteredBatches.find((item: Batch) => item.id === batchID);
-        const selectedBatchQuantityStr = selectedBatch && selectedBatch.quantity ? selectedBatch.quantity : '0';
-        selectedBatchQuantity = parseFloat(selectedBatchQuantityStr);
+        selectedBatchQuantity = selectedBatch && selectedBatch.inventory_quantity ? selectedBatch.inventory_quantity : 0;
       }
       return selectedBatchQuantity;
     },
@@ -965,22 +964,8 @@ export default defineComponent({
       this.product.name = currentProduct.name;
       this.product.actualPrice = parseFloat(currentVariant.sale_price);
       this.product.quantityUpperLimit = this.sumQuantity(currentVariant);
-      // search inventory and change quantity
-      let batch_ids = '';
-      await currentVariant.batch.forEach((batch: Batch) => batch_ids += batch.id + ',')
-      batch_ids = batch_ids.slice(0, batch_ids.length-1);
-      await this.fetchInventory({batch_ids});
-      const availableBatches: Batch[] = [];
-      this.inventory.forEach((element: Inventory) => {
-        if (element && element.batch && element.batch.id) {
-          const currBatch = currentVariant.batch.find((batch: Batch) => element.batch && element.batch.id && batch.id == element.batch.id);
-          if (currBatch) {
-            currBatch.quantity = element.quantity;
-            availableBatches.push(currBatch);
-          }
-        }
-      });
-      this.productBatchSelect = availableBatches
+      this.productBatchSelect = currentVariant.batch
+        .filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0)
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
 
@@ -1168,7 +1153,7 @@ export default defineComponent({
           const quantity = parseFloat(currentOrderItemQuantity);
           const price = parseFloat(currentOrderItemPrice);
           const discount = currentDiscount ? parseFloat(currentDiscount) : 0;
-          const upperLimit = currentBatch.quantity ? parseFloat(currentBatch.quantity) : 0;
+          const upperLimit = currentBatch.inventory_quantity ? currentBatch.inventory_quantity : 0;
 
           if (isNaN(price)) return;
           if (isNaN(quantity)) return;
@@ -1292,9 +1277,9 @@ export default defineComponent({
     sumQuantity: function (item: ProductVariant): number {
       let sum = 0;
       if (item.batch !== undefined && typeof item.batch !== 'number') {
-        item.batch.filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0).forEach((batch: Batch) => {
-          if (batch.quantity !== undefined) {
-            sum = sum + +batch.quantity
+        item.batch.filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0).forEach((batch: Batch) => {
+          if (batch.inventory_quantity !== undefined) {
+            sum = sum + batch.inventory_quantity
           }
         });
       }

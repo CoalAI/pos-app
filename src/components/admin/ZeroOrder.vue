@@ -133,7 +133,7 @@
                 ref="batches"
               >
                 <option v-for="batch in productBatchSelect" v-bind:key="batch.id" v-bind:value="batch.id">
-                  #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{trimNumber(batch.quantity)}}
+                  #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{batch.inventory_quantity}}
                 </option>
               </select>
               <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
@@ -263,7 +263,7 @@
               </td>
               <td>{{ orderItem.batch.manufacturing_date }}</td>
               <td>{{ orderItem.batch.expiry_date }}</td>
-              <td>{{ trimNumber(orderItem.batch.quantity) }}</td>
+              <td>{{ orderItem.batch.inventory_quantity }}</td>
               <td>
                 <input
                   class="order_item_input"
@@ -798,8 +798,7 @@ export default defineComponent({
         const batchID = parseInt(this.product.batch);
         if(!isNaN(batchID) && batchID > 0 && this.productBatchSelect.length > 0){
           const selectedBatch = this.productBatchSelect.find((item: Batch) => item.id === batchID);
-          const selectedBatchQuantityStr = selectedBatch && selectedBatch.quantity ? selectedBatch.quantity : '0';
-          selectedBatchQuantity = parseFloat(selectedBatchQuantityStr);
+          selectedBatchQuantity = selectedBatch && selectedBatch.inventory_quantity ? selectedBatch.inventory_quantity : 0;
         }
       }
       return selectedBatchQuantity;
@@ -908,7 +907,7 @@ export default defineComponent({
       this.product.name = currentProduct.name;
       this.product.actualPrice = parseFloat(currentVariant.price);
       this.productBatchSelect = currentVariant.batch
-        .filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0)
+        .filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0)
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
       const batchId = this.productBatchSelect.length > 0 ? (this.productBatchSelect[0] as Batch).id : undefined;
@@ -1057,7 +1056,7 @@ export default defineComponent({
           const quantity = parseFloat(currentOrderItemQuantity);
           const price = parseFloat(currentOrderItemPrice);
           const discount = currentDiscount ? parseFloat(currentDiscount) : 0;
-          const upperLimit = currentBatch.quantity ? parseFloat(currentBatch.quantity) : 0;
+          const upperLimit = currentBatch.inventory_quantity ? currentBatch.inventory_quantity : 0;
 
           if (isNaN(price)) return;
           if (isNaN(quantity)) return;
@@ -1128,9 +1127,9 @@ export default defineComponent({
     sumQuantity: function (item: ProductVariant): number {
       let sum = 0;
       if (item.batch !== undefined && typeof item.batch !== 'number') {
-        item.batch.filter((batch: Batch) => batch.quantity && parseFloat(batch.quantity) > 0).forEach((batch: Batch) => {
-          if (batch.quantity !== undefined) {
-            sum = sum + +batch.quantity
+        item.batch.filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0).forEach((batch: Batch) => {
+          if (batch.inventory_quantity !== undefined) {
+            sum = sum + batch.inventory_quantity
           }
         });
       }

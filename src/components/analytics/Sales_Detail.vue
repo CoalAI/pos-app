@@ -1,63 +1,66 @@
 <template>
-  <div class="flex-box">
-    <label class="pad-label ls" for="start_date">
-      <strong>Company:</strong>
-    </label>
-    <select
-      id="company-type"
-      name="company-type"
-      class="custom-select"
-      style="width: 30%"
-      v-model="company"
-      @change="fetchAnalyticsBtn"
-      :disabled="!admin"
-    >
-      <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-        {{company.company_name}}
-      </option>
-    </select>
-  </div>
-
-  <table>
+  <div>
+    <div class="flex-box">
+      <label class="pad-label ls" for="start_date">
+        <strong>Department:</strong>
+      </label>
+      <select
+        id="company-type"
+        name="company-type"
+        class="custom-select"
+        style="width: 30%"
+        v-model="company"
+        @change="fetchAnalyticsBtn"
+        :disabled="!admin"
+      >
+        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+          {{company.company_name}}
+        </option>
+      </select>
+    </div>
+    <div class="flex-box">
+      <DateRange @dateRangeChange="setRange"  />
+      <div class="b" style="margin-left: 10px">
+        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
+      </div>
+    </div>
+    <table class="marginTop">
     <thead>
       <tr>
-        <th scope="col">Category</th>
-        <th scope="col">Total Products</th>
+        <th scope="col">User Name</th>
+        <th scope="col">User Type</th>
+        <th scope="col">Total Orders</th>
         <th scope="col">Total Amount</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, key) in analytics.category_stats" :key="key">
-        <td>{{key}}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.total_amount}}</td>
+      <tr>
+        <td>example</td>
+        <td>example</td>
+        <td>example</td>
+        <td>example</td>
       </tr>
     </tbody>
   </table>
-  <div class="analytics">
-    <div>
-      <b>
-        Total Products:
-      </b>
-      {{analytics.unique_products_count}}
-    </div>
-    <div style="margin-right:100px">
-      <b>
-        Total Amount:
-      </b>
-      {{analytics.total_inventory_amount}}
-    </div>
+  <div class="flex-container marginTop">
+    <button class="btn btn-orange" style="width:80px">Print</button>
+  </div> 
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+
+import DateRange from '@/components/common-components/DateRange.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 
 export default defineComponent({
-  name: 'InventoryAnaltyics',
+  name: 'OperatorSalesDetail',
+  components: {
+    DateRange,
+  },
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
@@ -83,6 +86,15 @@ export default defineComponent({
       }
       return false;
     },
+    dateValidation: function(): string | null {
+      if(this.startDate !== undefined && this.endDate !== undefined && 
+        this.startDate !=='' && this.endDate !== '' &&
+        Date.parse(this.startDate) <= Date.parse(this.endDate)
+      ){
+        return null;
+      }
+      return 'invalid date range';
+    },
   },
   methods: {
     ...mapActions({
@@ -90,6 +102,12 @@ export default defineComponent({
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       fetchUser: AuthActionTypes.USER_DATA,
     }),
+    setRange(range: null | {startDate: Date; endDate: Date}) {
+      if (range !== null) {
+        this.startDate = range.startDate.toString();
+        this.endDate = range.endDate.toString();
+      }
+    },
     async fetchAnalyticsBtn() {
       await this.fetchAnalytics({
         start_date: this.startDate,
@@ -103,7 +121,7 @@ export default defineComponent({
     await this.fetchCompanies();
     await this.fetchAnalyticsBtn();
     this.company = this.userdata.company.id;
-  }
+  },
 })
 </script>
 
@@ -126,9 +144,8 @@ tr:nth-child(even) {
 tr:nth-child(odd) input {
   background-color: inherit;
 }
-.analytics{
+.flex-container {
   display: flex;
-  justify-content: space-between;
-  margin:15px
+  flex-direction: row-reverse;
 }
 </style>
