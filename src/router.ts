@@ -32,6 +32,7 @@ import Basic from '@/components/analytics/Basic.vue';
 import OrderAnaltyics from '@/components/analytics/Order.vue';
 import FinanceAnaltyics from '@/components/analytics/Finance.vue';
 import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
+import StockStatement from '@/components/analytics/StockStatement.vue';
 import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 import ProfifLossReport from '@/components/analytics/Report.vue';
 
@@ -258,6 +259,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'inventory',
         name: 'inventory-analytics',
         component: InventoryAnaltyics,
+      },
+      {
+        path: 'Stock',
+        name: 'StockStatement',
+        component: StockStatement,
       },
       {
         path: 'detail',

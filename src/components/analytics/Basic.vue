@@ -22,6 +22,11 @@
             <strong>Profit/Loss Report</strong>
           </router-link>
         </button>
+        <button :class="tab === 'StockStatement' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
+            <router-link @click="tab = 'StockStatement'" :to="{name: 'StockStatement'}">
+              <strong>Stock Statement</strong>
+            </router-link>
+        </button>
       </div>
       <hr class="solid">
       <div>
@@ -41,6 +46,35 @@ export default defineComponent({
       tab: path.split('/')[2],
     }
   },
+  computed: {
+    dateValidation: function(): string | null {
+      if(this.startDate !== undefined && this.endDate !== undefined && 
+        this.startDate !=='' && this.endDate !== '' &&
+        Date.parse(this.startDate) <= Date.parse(this.endDate)
+      ){
+        return null;
+      }
+
+      return 'invalid date range';
+    },
+  },
+  methods: {
+    ...mapActions({
+      fetchAnalytics: ActionTypes.FETCH_ANALYTICS
+    }),
+    async fetchAnalyticsBtn() {
+      await this.fetchAnalytics({
+        start_date: this.startDate,
+        end_date: this.endDate,
+      });
+    },
+  },
+  async mounted() {
+    await this.fetchAnalytics({
+      start_date: this.startDate,
+      end_date: this.endDate,
+    });
+  }
 });
 </script>
 
@@ -86,6 +120,15 @@ export default defineComponent({
   .active a {
     color: $primary-color;
   }
+  .grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+}
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+}
   hr.solid {
     border-top: 3px solid #bbb;
   }
