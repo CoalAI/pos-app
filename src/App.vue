@@ -15,6 +15,32 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+  @font-face{
+    src:url(/Font/segoeui.ttf);
+    font-family: seg;
+    src:url(/Font/segoeuib.ttf);
+    font-family: segb;
+    src:url(/Font/segoeuii.ttf);
+    font-family:segi;
+    src:url(/Font/segoeuil.ttf);
+    font-family:segl;
+    src:url(/Font/segoeuisl.ttf);
+    font-family:segsl;
+    src:url(/Font/segoeuiz.ttf);
+    font-family:segz;
+    src:url(/Font/seguibl.ttf);
+    font-family:segbl;
+    src:url(/Font/seguibli.ttf);
+    font-family:segbli;
+    src:url(/Font/seguili.ttf);
+    font-family:segli;
+    src:url(/Font/seguisb.ttf);
+    font-family:segsb;
+    src:url(/Font/seguisbi.ttf);
+    font-family:segbi;
+    src:url(/Font/seguisli.ttf);
+    font-family:segsli;
+  }
 
   #app {
     font-family: $font-family;
@@ -148,10 +174,11 @@ export default defineComponent({
   .custom-radio {
     display: block;
     position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
+    padding-left: 18px; 
+    margin-bottom: 5px;
     cursor: pointer;
-    font-size: 20px;
+    font-size:2px;
+    font-family:seg;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -170,8 +197,8 @@ export default defineComponent({
     position: absolute;
     top: 0;
     left: 0;
-    height: 25px;
-    width: 25px;
+    height: 15px;
+    width: 15px;
     background-color: $custom-radio;
     border-radius: 50%;
   }
