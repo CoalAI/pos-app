@@ -15,3 +15,13 @@ The screen consists of three blocks:
     * Submit & Print
     * Add New Vendor
     * Cancel Order
+
+## ISSUE # 216
+**Upgrade Inventory Page**
+
+It displays a table which has the informaion about all the products. 
+
+The table can be filtered based on different stores. 
+
+It also allows the user to search via product name, or barcode. 
+

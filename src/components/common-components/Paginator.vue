@@ -1,12 +1,14 @@
 <template>
     <div class="pagination">
-        <a href="#" @click="moveLeft"><strong>&lt;&lt;</strong></a>
         <a href="#" @click="prev"><strong>&lt;</strong></a>
-        <span v-for="p in pageNo_list" :key="p">
+        <a>1</a>
+        <a>2</a>
+        <span class="asp" v-for="p in pageNo_list" :key="p">
             <a :class="p===selected?'active':''" href="#" @click="pageSelected(p)">{{p}}</a>
         </span>
+        <a>4</a>
+        <a>5</a>
         <a href="#" @click="next"><strong>&gt;</strong></a>
-        <a href="#" @click="moveRight"><strong>&gt;&gt;</strong></a>
     </div>
 </template>
 
@@ -97,14 +99,25 @@ export default defineComponent({
     .pagination {
         display: flex;
         justify-content: center;
+        background-color:#0f2634;
+        width:25%;
+        border-radius:35px;
+        margin-left:325px;
     }
 
     .pagination a {
-    color: black;
-    float: left;
-    padding: 8px 16px;
-    text-decoration: none;
-    border: 1px solid #ddd;
+        cursor:pointer;
+        color: #0f2634;
+        float: left;
+        padding: 6px 12px;
+        margin:2% 1%;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius:50%;
+        background-color:white;
+        width:35px;
+        height: 35px;
+        font-family:seg;
     }
 
     .pagination a.active {
@@ -113,16 +126,33 @@ export default defineComponent({
     border: 1px solid $primary-color;
     }
 
-    .pagination a:hover:not(.active) {background-color: #ddd;}
-
+    .pagination a:hover:not(.active) {background-color: none;}
+    .pagination span {
+        margin-top:5px;
+        margin-left:2px;
+    }
+    .asp a{
+        border:1px solid white !important;
+        background-color: #0f2634 !important;
+    }
     .pagination a:first-child {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+        border-radius:50%;
+        background-color: #e53d2a;
+        color:white;
+        border:none;
+        float:left;
     }
 
     .pagination a:last-child {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+        border-radius:50%;
+        background-color: #e53d2a;
+        color:white;
+        border:none;
+        float:right;
     }
-
+    .pagination strong{
+        font-size:18px;
+        font-family:seg;
+    }
+    
 </style>
