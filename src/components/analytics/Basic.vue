@@ -38,14 +38,47 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapGetters, mapActions } from 'vuex';
+import { ActionTypes } from '@/store/modules/order/actions';
+
 export default defineComponent({
   name: 'Expense',
   data() {
     const path = window.location.pathname;
     return {
       tab: path.split('/')[2],
+
     }
   },
+  computed: {
+    // dateValidation: function(): string | null {
+    //   if(this.startDate !== undefined && this.endDate !== undefined && 
+    //     this.startDate !=='' && this.endDate !== '' &&
+    //     Date.parse(this.startDate) <= Date.parse(this.endDate)
+    //   ){
+    //     return null;
+    //   }
+
+    //   return 'invalid date range';
+    // },
+  },
+  // methods: {
+  //   ...mapActions({
+  //     fetchAnalytics: ActionTypes.FETCH_ANALYTICS
+  //   }),
+  //   async fetchAnalyticsBtn() {
+  //     await this.fetchAnalytics({
+  //       start_date: this.startDate,
+  //       end_date: this.endDate,
+  //     });
+  //   },
+  // },
+  // async mounted() {
+  //   await this.fetchAnalytics({
+  //     start_date: this.startDate,
+  //     end_date: this.endDate,
+  //   });
+  // }
 });
 </script>
 
