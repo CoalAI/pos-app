@@ -1,185 +1,151 @@
 <template>
-     <div class="diff-shadow">
-         <div class="flex-box" style="height:60px; width:100%" >
-             <label class="pad-label ls" for="department">
-           <strong>Department:</strong>
-         </label>
-         <select
-             id="department"
-             name="department"
-             class="custom-select"
-           >
-             <option value="">Bakery</option>
-
-           </select>
-
-              <label class="pad-label ls" for="user">
-           <strong>Product Category:</strong>
-         </label>
-         <select
-             id="category"
-             name="category"
-             class="custom-select"
-           >
-             <option value="">Fresh Goods</option>
-
-           </select>
-          <div>
-           <button class="btn btn-orange" style="width:80px">Search</button>
-          </div>
-         </div>
-  <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Product Category</th>
-                    <th>Quantity</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="product in ProductInfo" :key="product.id">
-                    <td>{{product.Name}}</td>
-                    <td>{{product.Category}}</td>
-                    <td>{{product.Quantity}}</td>
-                    <td>{{product.Amount}}</td>
-                </tr>
-            </tbody>
-        </table>
-       <div>
-         <b> Total Quantity: </b> 
-         <p> {{totalQuantity}} </p>
-       </div>
-        <div>
-        <b> Total Amount:</b> 
-       <p> PKR {{totalAmount}} </p>
-       </div>
-       <button class="btn btn-orange" style="width:80px">Print</button>
+  <div>
+    <div class="flex-box">
+      <label class="pad-label ls">
+        <strong>Department:</strong>
+      </label>
+      <select
+        id="company-type"
+        name="company-type"
+        class="custom-select"
+        style="width: 25%"
+        v-model="company"
+        :disabled="!admin"
+      >
+        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+          {{company.company_name}}
+        </option>
+      </select>
+      <label class="pad-label ls">
+        <strong>Product Category:</strong>
+      </label>
+      <select
+        id="category-type"
+        name="category-type"
+        class="custom-select"
+        style="width: 25%"
+        v-model="category"
+        :disabled="!admin"
+      >
+        <option class="batches-op" v-for="category in categories" v-bind:key="category.id" v-bind:value="category.id">
+          {{category.name}}
+        </option>
+      </select>
+      <div class="b" style="margin-left: 10px">
+        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
       </div>
- </template>
+    </div>
+    <table class="marginTop">
+      <thead>
+        <tr>
+          <th scope="col">Product Name</th>
+          <th scope="col">Product Category</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+       <tr v-for="data in getProducts.result" :key="data">
+          <th scope="col">{{data.name}}</th>
+          <th scope="col">{{data.category.name}}</th>
+          <th scope="col">{{data.product_variant.batch.quantity}}</th>
+          <th scope="col">{{data.product_variant.price}}</th>
+        </tr>
+      </tbody>
+    </table>
+    <div class="flex-row">
+        <div><b>Total Quantity:</b> 11</div>
+        <div><b>Total Amount:</b> 1100</div>
+    </div>
+    <div class="flex-container marginTop">
+      <button class="btn btn-orange" style="width:80px">Print</button>
+    </div> 
+  </div>
+</template>
 
- <script lang="ts">
- import { defineComponent } from 'vue';
- export default defineComponent({
-   name: 'StockStatement',
-   data() {
-     const path = window.location.pathname;
-     const date = new Date();
-     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-     return {
-       tab: path.split('/')[2],
-       startDate: dateStr,
-       endDate: dateStr,
-       ProductInfo: [
-                { Name: 'Butter', Category: 'Food', Quantity: 12, Amount: 500 },
-                { Name: 'Eggs', Category: 'Food', Quantity: 1200, Amount: 1500 },
-                { Name: 'Flour Bag', Category: 'Food', Quantity: 100, Amount: 100 },
-                { Name: 'Yoghurt', Category: 'Food', Quantity: 130, Amount: 700 }
-    
-            ],
-     }
-   },
-   computed: {
-     dateValidation: function(): string | null {
-       if(this.startDate !== undefined && this.endDate !== undefined && 
-         this.startDate !=='' && this.endDate !== '' &&
-         Date.parse(this.startDate) <= Date.parse(this.endDate)
-       ){
-         return null;
-       }
-       return 'invalid date range';
-     },
-     totalQuantity: function() {
-      let total = 0;
-      for(let i =0; i < this.ProductInfo.length; i++) {
-          total = total + this.ProductInfo[i].Quantity
+<script lang="ts">
+import {defineComponent} from 'vue';
+import { mapActions, mapGetters } from 'vuex';
+
+import { ActionTypes } from '@/store/modules/order/actions';
+import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+
+export default defineComponent({
+  name: 'OperatorSalesDetail',
+  data() {
+    return {
+      company: 0,
+      category:0,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      products: 'getListOfProducts',
+      companies: 'getInventoryCompanies',
+      userdata: 'getUser',
+      categories: 'getCategories'
+    }),
+    admin(){
+      const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
+      const allowedCompanies = ['PARENT', 'STORE'];
+      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)
+        && allowedCompanies.includes(this.userdata.company.company_type) 
+      ){
+        return true;
       }
-      return total;
-     },
-     totalAmount: function() {
-      let total = 0;
-      for(let i =0; i < this.ProductInfo.length; i++) {
-          total = total + this.ProductInfo[i].Quantity*this.ProductInfo[i].Amount;
-      }
-      return total; 
-     }
+      return false;
+    },
+  },
+  methods: {
+    ...mapActions({
+      getProducts: ActionTypes.PODUCT_QUANTITY,
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
+      fetchUser: AuthActionTypes.USER_DATA,
+      fetchCategories: ActionTypes.FETCH_CATEGORIES,
+    }),
+    async fetchAnalyticsBtn() {
+      await this.getProducts({
+         company: this.company,
+         category: this.category,
+      });
+    }
+  },
+  async mounted() {
+    await this.fetchUser();
+    await this.fetchCompanies();
+    await this.fetchAnalyticsBtn();
+    await this.fetchCategories();
+    this.company = this.userdata.company.id;
+  },
+})
+</script>
 
-   },
-   methods: {
-   }
- });
- </script>
+<style scoped>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
- <style lang="scss" scoped>
- .flex-container {
+td, th {
+  border: none;
+  text-align: left;
+  padding: 20px;
+}
+
+tr:nth-child(even) {
+  background-color: inherit;
+}
+
+tr:nth-child(odd) input {
+  background-color: inherit;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.flex-row{
    display: flex;
-   flex-direction: row-reverse;
- }
-   #detail {
-     padding-left: 15%;
-     padding-right: 15%;
-     margin-top: 3%;
-   }
-   .pad-label {
-     padding: 20px 20px 20px 0px;
-   }
-   .w100 {
-     width: $w150;
-   }
-   label {
-     text-align: left;
-   }
-   .full-width {
-     width: 100%;
-   }
-   .checkbox-label {
-     font-size: $label-font-size;
-   }
-   .nav {
-     display: -webkit-box;
-     display: -ms-flexbox;
-     display: flex;
-     -ms-flex-wrap: wrap;
-     flex-wrap: wrap;
-     padding-left: 0;
-     margin-bottom: 0;
-     list-style: none;
-   }
-   .nav-tabs {
-     border-bottom: 1px solid #dee2e6;
-   }
-   .nav-tabs .nav-item {
-     margin-bottom: -1px;
-     width: 25%;
-   }
-   .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-     color: $primary-color;
-     background-color: #fff;
-     border-color: #dee2e6 #dee2e6 #fff;
-   }
-   .nav-tabs .nav-link {
-     border: 1px solid transparent;
-     border-top-left-radius: .25rem;
-     border-top-right-radius: .25rem;
-   }
-   .nav-link {
-     color: #495057;
-     display: block;
-     padding: .5rem 1rem;
-   }
-   a:visited {
-     color: #495057;
-   }
-   .active a {
-     color: $primary-color;
-   }
-    #department {
-     width: $w200;
-     margin-left: 1%;
-     margin-right: 2%
-   }
-    #user {
-     width: $w200;
-     margin-left: 1%;
-   }
- </style>
+   justify-content: space-between;
+   padding: 2%
+}
+</style>
