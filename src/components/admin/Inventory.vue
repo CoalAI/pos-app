@@ -1,5 +1,6 @@
 <template>
-  <div class="diff-shadow-box">
+  <!--<div class="diff-shadow-box">-->
+  <div class = "diff-shadow">
     <div class="inline">
       <div class="float-right">
         <div class="mr-1">
@@ -121,8 +122,8 @@
       :count="counts.inventory"
       @pageChange="changePage"
     />
-    
-  </div>
+  </div>  
+  <!--</div>-->
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";

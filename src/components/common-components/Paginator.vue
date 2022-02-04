@@ -1,14 +1,12 @@
 <template>
     <div class="pagination">
+        <a href="#" @click="moveLeft"><strong>&lt;&lt;</strong></a>
         <a href="#" @click="prev"><strong>&lt;</strong></a>
-        <a>1</a>
-        <a>2</a>
-        <span class="asp" v-for="p in pageNo_list" :key="p">
+        <span class="asp" v-for="p in pageNo_list" :key="p" >
             <a :class="p===selected?'active':''" href="#" @click="pageSelected(p)">{{p}}</a>
         </span>
-        <a>4</a>
-        <a>5</a>
         <a href="#" @click="next"><strong>&gt;</strong></a>
+        <a href="#" @click="moveRight"><strong>&gt;&gt;</strong></a>
     </div>
 </template>
 
@@ -100,6 +98,7 @@ export default defineComponent({
         display: flex;
         justify-content: center;
         background-color:#0f2634;
+        position:relative;
         width:25%;
         border-radius:35px;
         margin-left:325px;
@@ -118,6 +117,7 @@ export default defineComponent({
         width:35px;
         height: 35px;
         font-family:seg;
+        padding:4px 0px 0px 8px;
     }
 
     .pagination a.active {
@@ -128,12 +128,12 @@ export default defineComponent({
 
     .pagination a:hover:not(.active) {background-color: none;}
     .pagination span {
-        margin-top:5px;
-        margin-left:2px;
+        margin-top:7px;
     }
     .asp a{
         border:1px solid white !important;
         background-color: #0f2634 !important;
+        padding:5px 0px 0px 12px !important;
     }
     .pagination a:first-child {
         border-radius:50%;
@@ -141,14 +141,15 @@ export default defineComponent({
         color:white;
         border:none;
         float:left;
+        padding:4px 0px 0px 8px;
     }
-
     .pagination a:last-child {
         border-radius:50%;
         background-color: #e53d2a;
         color:white;
         border:none;
         float:right;
+        padding:4px 0px 0px 8px;
     }
     .pagination strong{
         font-size:18px;
