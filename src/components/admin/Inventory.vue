@@ -141,7 +141,6 @@ export default defineComponent({
   data() {
     return {
       checkedValue: -1,
-      filter: [1,0,0,0],
       search: "",
       company: "",
     };
@@ -170,26 +169,18 @@ export default defineComponent({
   methods: {
     onCheckChange: async function(e: any){
       this.checkedValue = parseInt(e.target.value)
-      
-      console.log(this.company)
-      console.log(this.search)
       await this.fetchInventory({
         company: this.company,
         search: this.search,
       });
-      
-      console.log(this.company)
-      console.log(this.search)
+    
     },
     onChangeCompany: async function () {
-      console.log(this.company)
-      console.log(this.search)
       await this.fetchInventory({
         company: this.company,
         search: this.search,
       });
-      console.log(this.company)
-      console.log(this.search)
+     
     },
 
     searchInventory: async function (event: Event) {
