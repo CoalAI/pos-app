@@ -1,16 +1,26 @@
 <template>
   <div id="order-page">
-    <div class="product-container diff-shadow">
+    <div class="product-container diff-shadow col-3">
+      <label class="td-head"
+        ><strong>Date:</strong>
+        <label class="td-cont"> {{ date }} </label>
+      </label>
+      <label class="td-head float-right"
+        ><strong>Invoice: </strong>
+        <label class="td-cont"> {{ invoiceID }} </label>
+      </label>
+
       <div class="box1">
         <div class="form-container">
-          <label class="bc pad-label" for="barcode">
+          <label class="bc pd-t" for="barcode">
             <strong>Bar Code:</strong>
           </label>
           <div class="bc-i">
             <input
+              class="text-box"
               type="text"
               tabindex="1"
-              placeholder="Bar code"
+              placeholder="Bar Code:"
               name="barcode"
               :maxlength="BarCodeMaxLength"
               v-model="product.barCode"
@@ -20,18 +30,21 @@
               ref="barcode"
               v-focus
             />
-            <span v-if="productBarCodeValidation" class="form-error">{{ productBarCodeValidation }}</span>
+            <span v-if="productBarCodeValidation" class="form-error">{{
+              productBarCodeValidation
+            }}</span>
           </div>
 
-          <label class="q pad-label mr-l" for="quantity">
+          <label class="q pd-t mr-l" for="quantity">
             <strong>Quantity:</strong>
           </label>
           <div class="q-i">
             <input
+              class="text-box"
               type="number"
               tabindex="4"
-              placeholder="quantity"
-              name="quantity" 
+              placeholder="Quantity:"
+              name="quantity"
               :max="24"
               :min="0"
               v-model="product.quantity"
@@ -39,22 +52,20 @@
               ref="quantity"
               @keydown="shiftfocusTo($event, 'discount')"
             />
-            <span v-if="productQuantityValidation" class="form-error">{{ productQuantityValidation }}</span>
-          </div>
-          
-
-          <div class="ap-e">
-            <button class="btn btn-orange ap" @click="clearProduct">Clear Product</button>
+            <span v-if="productQuantityValidation" class="form-error">{{
+              productQuantityValidation
+            }}</span>
           </div>
 
-          <label class="pn pad-label" for="productname">
+          <label class="pn pd-t" for="productname">
             <strong>Product Name:</strong>
           </label>
           <div class="pn-i">
             <input
+              class="text-box"
               type="text"
               tabindex="2"
-              placeholder="Product Name"
+              placeholder="Product Name:"
               name="productname"
               :maxlength="ProductNameMaxLength"
               v-model="product.name"
@@ -62,104 +73,138 @@
               @keydown="checkkey"
               autocomplete="off"
             />
-            <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
+            <span v-if="productNameValidation" class="form-error">{{
+              productNameValidation
+            }}</span>
           </div>
-          
 
-          <label class="d pad-label mr-l" for="discount">
+          <label class="d pd-t mr-l" for="discount">
             <strong>Price:</strong>
           </label>
           <div class="d-i">
             <input
+              class="text-box"
               type="number"
               tabindex="5"
-              placeholder="Price"
+              placeholder="Price:"
               name="discount"
               v-model="product.buyPrice"
               @input="changeProductPrice"
             />
           </div>
-          
-          
-          <div class="ap">
-            <button class="btn btn-orange ap"
-              tabindex="7"
-              @click="addOrderItem"
-              :disabled="addProductButton"
-              ref="addproduct"
-              @keydown="shiftfocusTo('cashreceived')"
-            >Add Product</button>
-          </div>
 
-          <label class="bt pad-label" for="barcode">
+          <label class="bt pd-t" for="barcode">
             <strong>Batches:</strong>
           </label>
           <div class="bt-i">
             <select
               tabindex="3"
               name="productBatch"
-              class="custom-select"
+              class="custom-select text-box-long"
               v-model="product.batch"
               ref="batches"
             >
-              <option class="batches-op" v-for="batch in filteredBatches" v-bind:key="batch.id" v-bind:value="batch.id">
-                #{{ batch.id }}   Exp: {{ batch.expiry_date }} Quan: {{batch.inventory_quantity}}
+              <option
+                class="batches-op"
+                v-for="batch in filteredBatches"
+                v-bind:key="batch.id"
+                v-bind:value="batch.id"
+              >
+                #{{ batch.id }} Exp: {{ batch.expiry_date }} Quan:
+                {{ batch.inventory_quantity }}
               </option>
             </select>
-            <span v-if="productBatchValidation" class="form-error">{{ productBatchValidation }}</span>
+            <span v-if="productBatchValidation" class="form-error">{{
+              productBatchValidation
+            }}</span>
           </div>
 
-          <label class="e pad-label mr-l" for="discount">
-            <strong>Discount (%):</strong>
+          <label class="e pd-t mr-l" for="discount">
+            <strong>Discount(%):</strong>
           </label>
           <div class="e-i">
             <input
+              class="text-box"
               type="number"
               tabindex="6"
-              placeholder="discount percentage"
+              placeholder="Discount"
               name="discount"
               v-model="product.discount"
               ref="discount"
               @keydown="shiftfocusTo($event, 'addproduct')"
             />
-            <span v-if="productDiscountValidation" class="form-error">{{ productDiscountValidation }}</span>
+            <span v-if="productDiscountValidation" class="form-error">{{
+              productDiscountValidation
+            }}</span>
           </div>
 
-          <div class="e-ap"><span class="form-error">{{ duplicateMessage }}</span></div>
+          <div class="e-ap">
+            <span class="form-error">{{ duplicateMessage }}</span>
+          </div>
         </div>
       </div>
-      <div class="box-22">
-        <table class="pr-s-r-table">
-          <tr>
-            <td><strong>Date:</strong></td>
-            <td>{{ date }}</td>
-          </tr>
-          <tr>
-            <td><strong>Invoice no:</strong></td>
-            <td>{{ invoiceID }}</td>
-          </tr>
-        </table>
-        <div class="mr-2">
-          <span><label style="margin-right: 10px; margin-left: 8px; font-size: large;"><strong>Return Order</strong></label></span>
-          <input class="q-i" type="checkbox" id="return_order" name="return_order" v-bind:checked="return_order" @change="return_order=!return_order">
+
+      <div>
+        <div class="mr-1">
+          <input
+            class="q-i"
+            type="checkbox"
+            id="return_order"
+            name="return_order"
+            v-bind:checked="return_order"
+            @change="return_order = !return_order"
+          />
+          <span
+            ><label class="pd-t-ex"><strong>Return Order</strong></label></span
+          >
         </div>
-      <span v-if="validateReturnOrder" class="form-error">{{validateReturnOrder}}</span>
+        <span v-if="validateReturnOrder" class="form-error">{{
+          validateReturnOrder
+        }}</span>
+      </div>
+
+      <button class="btn-blue ap" @click="clearProduct">Clear Product</button>
+      <button
+        class="btn-red float-right ap"
+        tabindex="7"
+        @click="addOrderItem"
+        :disabled="addProductButton"
+        ref="addproduct"
+        @keydown="shiftfocusTo('cashreceived')"
+      >
+        Add Product
+      </button>
     </div>
 
-      </div>
-      
-    <div class="diff-shadow">
-      <div class="table-container" style="margin-top: 0;">
+    <div class="split-container diff-shadow col-6">
+      <div class="table-container-left">
         <p><strong>Product Results</strong></p>
-        <p style="margin-left: 15px"><strong>Order Items</strong></p>
+        <p><strong>Order Items</strong></p>
       </div>
 
       <!-- Order Items table -->
       <div class="table-container">
         <div class="box2 box1-tab" ref="scrollContainer">
-          <ul class="pr-s-r-ul" v-for="item in productResult" v-bind:key="item.id" ref="options">
-            <li class="li-item" v-for="itemVariant in item.product_variant" v-bind:key="itemVariant.id" :class="item.id+'_'+itemVariant.id === focusedID?'focuschange':''">
-              <div class="shadow-box mr-all" @click="selectProduct(item.id, itemVariant.id)">
+          <ul
+            class="pr-s-r-ul"
+            v-for="item in productResult"
+            v-bind:key="item.id"
+            ref="options"
+          >
+            <li
+              class="li-item"
+              v-for="itemVariant in item.product_variant"
+              v-bind:key="itemVariant.id"
+              :class="
+                item.id + '_' + itemVariant.id === focusedID
+                  ? 'focuschange'
+                  : ''
+              "
+            >
+              <div
+                class="shadow-box mr-all"
+                @click="selectProduct(item.id, itemVariant.id)"
+              >
                 <table class="pr-s-r-table">
                   <tr>
                     <td>{{ item.name }}</td>
@@ -168,7 +213,9 @@
                   </tr>
                   <tr>
                     <td>{{ itemVariant.sale_price }}</td>
-                    <td v-if="sumQuantity(itemVariant) > 0">{{ sumQuantity(itemVariant) }}</td>
+                    <td v-if="sumQuantity(itemVariant) > 0">
+                      {{ sumQuantity(itemVariant) }}
+                    </td>
                     <td v-else class="out-of-stock">Out of Stock</td>
                     <td>{{ itemVariant.size }}</td>
                   </tr>
@@ -177,22 +224,29 @@
             </li>
           </ul>
         </div>
-        <div class="box1-tab" style="margin-left: 15px">
+        <div class="box1-tab">
           <table style="width: 100%">
             <colgroup>
-              <col span="1" style="width: 5%;">
-              <col span="1" style="width: 20%;">
-              <col span="1" style="width: 25%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 6%;">
-              <col span="1" style="width: 10%;">
-              <col span="1" style="width: 4%;">
+              <col span="1" style="width: 1%" />
+              <col span="1" style="width: 1%" />
+              <col span="1" style="width: 10%" />
+              <col span="1" style="width: 5%" />
+              <col span="1" style="width: 1%" />
+              <col span="1" style="width: 1%" />
+              <col span="1" style="width: 1%" />
+              <col span="1" style="width: 10%" />
+              <col span="1" style="width: 1%" />
             </colgroup>
 
-            <tr>
-              <th>Sr No.</th>
+            <tr
+              style="
+                background-color: #0f2636;
+                color: white;
+                font-size: 12px;
+                align-content: center;
+              "
+            >
+              <th style="border-radius: 8px 0px 0px 8px">Sr No.</th>
               <th>Bar Code</th>
               <th>Name</th>
               <th>Size</th>
@@ -200,10 +254,13 @@
               <th>Unit Price</th>
               <th>Disc</th>
               <th>Total Price</th>
-              <th></th>
+              <th style="border-radius: 0px 8px 8px 0px"></th>
             </tr>
-            <tr v-for="(orderItem, index) in orderItems" v-bind:key="orderItem.product.bar_code">
-              <td>{{ index+1 }}</td>
+            <tr
+              v-for="(orderItem, index) in orderItems"
+              v-bind:key="orderItem.product.bar_code"
+            >
+              <td>{{ index + 1 }}</td>
               <td>{{ orderItem.product.bar_code }}</td>
               <td>{{ orderItem.product.name }}</td>
               <td>{{ orderItem.productVariant.size }}</td>
@@ -235,126 +292,118 @@
                   @input="changePrice(index)"
                 />
               </td>
-              <td style="cursor: pointer;" @click="removeItem(index)">
-                <hr style="border: 1px solid red">
+              <td style="cursor: pointer" @click="removeItem(index)">
+                <hr style="border: 1px solid red" />
               </td>
             </tr>
           </table>
         </div>
       </div>
     </div>
-    
 
-    <div class="diff-shadow">
-
-      <div id="payment-selection" class="payment-method-container">
-        <div class="flex-box mr-2">
-          <p class="labl-txt"><strong>Payment method:</strong></p>
-          <label class="custom-radio" style="margin-right: 10px">Cash
-            <input type="radio" name="payment_method" value="cash" v-model="paymentMethod" @change="clearTransaction">
-            <span class="checkmark"></span>
-          </label>
-          <label class="custom-radio" style="margin-right: 10px">Card
-            <input type="radio" name="payment_method" value="card" v-model="paymentMethod" @change="clearTransaction">
-            <span class="checkmark"></span>
-          </label>
-          <label class="custom-radio">Credit
-            <input type="radio" name="payment_method" value="credit" v-model="paymentMethod" @change="clearTransaction">
-            <span class="checkmark"></span>
-          </label>
-        </div>
-        <div v-if="paymentMethod === 'credit'" @mouseout="showCustDropdown=false" @mouseover="showCustDropdown=true">
-          <input
+    <div class="split-container diff-shadow col-2">
+      <!-- Payment Process -->
+      <div class="payment-container">
+        <div id="pay-box1">
+          <div
+            v-if="paymentMethod === 'credit'"
+            @mouseout="showCustDropdown = false"
+            @mouseover="showCustDropdown = true"
+          >
+            <input
               type="text"
+              class="search-bar"
               tabindex="1"
               placeholder="Search Walk-In Customer"
               name="barcode"
               v-model="customersearch"
-              @mouseover="showCustDropdown=true"
+              @mouseover="showCustDropdown = true"
               @input="searchCustomer"
               autocomplete="off"
             />
-          <div v-show="showCustDropdown" class="search-result-upper">
-            <ul class="search-result">
-              <li
-                class="single-search-item"
-                v-for="customer in customers" v-bind:key="customer.id" @click="selectCustomer(customer)">
-                <span><strong>{{customer.contact_number?customer.contact_number:customer.username}}</strong></span>
-                <span>{{customer.first_name}}</span>
-              </li>
-            </ul>
+            <div v-show="showCustDropdown" class="search-result-upper">
+              <ul class="search-result">
+                <li
+                  class="single-search-item"
+                  v-for="customer in customers"
+                  v-bind:key="customer.id"
+                  @click="selectCustomer(customer)"
+                >
+                  <span
+                    ><strong>{{
+                      customer.contact_number
+                        ? customer.contact_number
+                        : customer.username
+                    }}</strong></span
+                  >
+                  <span>{{ customer.first_name }}</span>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Payment Process -->
-      <div class="payment-container">
-        <div id="pay-box1">
-          <div class="form-container">
-            
-            <label class="pad-label bc" for="barcode">
+          <div class="form-container-3">
+            <template v-if="paymentMethod === 'credit'">
+                <label class="pd-t-3 bs" for="return">
+                  <strong>Customer Name:</strong>
+                </label>
+                <div class="bs-i">
+                  <input
+                    class="text-box-full"
+                    type="text"
+                    name="customername"
+                    placeholder="Name"
+                    readonly
+                    v-bind:value="getFullName"
+                  />
+                  <span v-if="validateRegularCustomer" class="form-error-msg">{{
+                    validateRegularCustomer
+                  }}</span>
+                </div>
+            </template>
+            <label class="pd-t-3 bc" for="barcode">
               <strong>Total Amount:</strong>
             </label>
             <div class="bc-i">
               <input
+                class="text-box-full"
                 type="text"
+                placeholder="0"
                 name="total_amount"
                 v-bind:value="totalAmount.toFixed(4)"
                 readonly
               />
-            <span v-if="field_errors.total" class="form-error">{{ field_errors.total[0] }}</span>
-            </div>
-            
-
-            <label class="pad-label q mr-l" for="total_discount">
-              <strong>Total Discount:</strong>
-            </label>
-            <div class="q-i">
-              <div class="flex-box">
-                <input
-                  style="width: 60%"
-                  type="number"
-                  placeholder="Discount"
-                  name="total_discount"
-                  v-model="totalDiscount"
-                  ref="totaldisc"
-                  @keydown="shiftfocusTo($event,'submitandprint')"
-                />
-                <select
-                  style="width: 40%; margin-left: 5px;"
-                  name="discountMethod"
-                  v-model="discountMethod"
-                >
-                  <option value="amount">Amount</option>
-                  <option value="percentage">Perc (%)</option>
-                </select>
-              </div>
-              <span v-if="orderTotalDiscountValidation" class="form-error">{{ orderTotalDiscountValidation }}</span>
-              <div v-if="field_errors.total_discount" class="form-error">{{ field_errors.total_discount[0] }}</div>
+              <span v-if="field_errors.total" class="form-error">{{
+                field_errors.total[0]
+              }}</span>
             </div>
 
-            <label class="pad-label pn" for="barcode">
+            <label class="pd-t-3 pn" for="barcode">
               <strong>Cash Received:</strong>
             </label>
             <div class="pn-i">
               <input
+                class="text-box-full"
                 type="number"
-                placeholder="Enter Cash Received"
+                placeholder="0"
                 name="cash_received"
                 v-model="cashReceived"
                 ref="cashreceived"
                 @keydown="shiftfocusTo($event, 'totaldisc')"
               />
-              <div v-if="field_errors.amount_received" class="form-error">{{ field_errors.amount_received[0] }}</div>
-              <span v-else class="form-error">{{ orderCashReceivedValidation }}</span>
+              <div v-if="field_errors.amount_received" class="form-error">
+                {{ field_errors.amount_received[0] }}
+              </div>
+              <span v-else class="form-error">{{
+                orderCashReceivedValidation
+              }}</span>
             </div>
-            
 
-            <label class="pad-label mr-l d" for="return">
+            <label class="pd-t-3 d" for="return">
               <strong>Cash Returned:</strong>
             </label>
             <div class="d-i">
               <input
+                class="text-box-full"
                 type="text"
                 name="return"
                 v-bind:value="cashReturned"
@@ -362,85 +411,46 @@
               />
             </div>
 
-            <template v-if="paymentMethod === 'card'">
-              <label class="pad-label bt" for="return">
-                <strong>Payment Service:</strong>
-              </label>
-              <div class="bt-i">
-                <select name="return" v-model="paymentService">
-                  <option value="BANK">Bank</option>
-                  <option value="JAZZ_CASH">Jazzcash</option>
-                  <option value="EASY_PAISA">Easypaisa</option>
+            <label class="pd-t-3 q" for="total_discount">
+              <strong>Total Discount:</strong>
+            </label>
+            <div class="q-i">
+              <div class="flex-box">
+                <input
+                  class="text-box-med"
+                  type="number"
+                  placeholder="0"
+                  name="total_discount"
+                  v-model="totalDiscount"
+                  ref="totaldisc"
+                  @keydown="shiftfocusTo($event, 'submitandprint')"
+                />
+                <select
+                  required
+                  class="select-box-ex"
+                  name="discountMethod"
+                  v-model="discountMethod"
+                >
+                  <option value="amount">Amt</option>
+                  <option value="percentage">Perc (%)</option>
                 </select>
               </div>
-              <label class="pad-label mr-l e" for="return">
-                <strong>Reference Number:</strong>
-              </label>
-              <div class="e-i">
-                <input
-                  type="text"
-                  name="reference"
-                  placeholder="Transaction ID"
-                  v-model="transactionId"
-                />
+              <span v-if="orderTotalDiscountValidation" class="form-error">{{
+                orderTotalDiscountValidation
+              }}</span>
+              <div v-if="field_errors.total_discount" class="form-error">
+                {{ field_errors.total_discount[0] }}
               </div>
-            </template>
-
-            <template v-if="paymentMethod === 'credit'">
-              <label class="pad-label bt" for="return">
-                <strong>Customer Name:</strong>
-              </label>
-              <div class="bt-i">
-                <input
-                  type="text"
-                  name="customername"
-                  placeholder="Customer Name"
-                  readonly
-                  v-bind:value="getFullName"
-                />
-              <span v-if="validateRegularCustomer" class="form-error">{{validateRegularCustomer}}</span>
-              </div>
-              
-              <label class="pad-label mr-l e" for="return">
-                <strong>Balance:</strong>
-              </label>
-              <div class="e-i">
-                <input
-                  type="text"
-                  name="balance"
-                  placeholder="Balance"
-                  readonly
-                  v-bind:value="regularCustomer.credit"
-                />
-              </div>
-            </template>
-          </div>
-          <div v-if="paymentMethod === 'credit'" class="form-container">
-            <label class="pad-label bc" for="total_discount">
-              <strong>Payment Type:</strong>
-            </label>
-            <div class="bc-i">
-              <select
-                name="creditPaymentMethod"
-                v-model="creditPaymentMethod">
-                <option value="cash">Cash</option>
-                <option value="card">Card</option>
-              </select>
             </div>
 
-            <label class="pad-label w100 mr-l q" for="deduct">
-              <strong>Deduct Balance:</strong>
-            </label>
-            <div>
-            <input style="margin-top: 21px" class="q-i" type="checkbox" id="deduct" name="deduct" v-bind:checked="deduct_balance" @change="deduct_balance=!deduct_balance">
-            <div v-if="validateDeductBalance" class="form-error">{{validateDeductBalance}}</div>
-            </div>
-            <template v-if="creditPaymentMethod === 'card'">
+            
+
+              <!--<template v-if="creditPaymentMethod === 'card'">
               <label class="pad-label pn" for="return">
                 <strong>Payment Service:</strong>
               </label>
               <div class="pn-i">
-                <select type="text" name="return" v-model="paymentService">
+                <select type="text" name="return" v-model="paymentService" class="select-box">
                   <option value="BANK">Bank</option>
                   <option value="JAZZ_CASH">Jazzcash</option>
                   <option value="EASY_PAISA">Easypaisa</option>
@@ -458,26 +468,153 @@
                   v-model="transactionId"
                 />
               </div>
-            </template>
+            </template>-->
           </div>
-        </div>
-        <div id="pay-box2">
-            <button v-if="paymentMethod === 'credit'" class="btn btn-orange" @click="addCustModal=true">Add New Customer</button>
-            <button
-            class="btn btn-orange"
-            @click="submitOrder(true)"
-            :disabled="submitOrderButton"
-            ref="submitandprint"
-            >Submit and Print</button>
-            <button
-            class="btn btn-orange"
-            @click="submitOrder(false)"
-            :disabled="submitOrderButton"
-            >Submit</button>
-            <button class="btn btn-orange" @click="cancelModal = true">Cancel Order</button>
+          <div class="form-container-4">
+              <template v-if="paymentMethod === 'card'">
+                <label class="pd-t-3 bt" for="return">
+                  <strong>Payment Service:</strong>
+                </label>
+                <div class="bt-i">
+                  <select
+                    name="return"
+                    v-model="paymentService"
+                    class="select-box"
+                  >
+                    <option value="BANK">Bank</option>
+                    <option value="JAZZ_CASH">Jazzcash</option>
+                    <option value="EASY_PAISA">Easypaisa</option>
+                  </select>
+                </div>
+                <label class="pd-t-3 e" for="return">
+                  <strong>Reference Number:</strong>
+                </label>
+                <div class="e-i">
+                  <input
+                    class="text-box-sm"
+                    type="text"
+                    name="reference"
+                    placeholder="Id"
+                    v-model="transactionId"
+                  />
+                </div>
+              </template>
+          </div>
+          <div class="form-container-5">
+            <template v-if="paymentMethod === 'credit'">
+                <label class="pd-t-3 bt" for="return">
+                  <strong>Balance:</strong>
+                </label>
+                <div class="bt-i">
+                  <input
+                    class="text-box-sm"
+                    type="text"
+                    name="balance"
+                    placeholder="0"
+                    readonly
+                    v-bind:value="regularCustomer.credit"
+                  />
+                </div>
+                <label class="pd-t-3 w100 e" for="deduct">
+                <strong>Deduct Balance:</strong>
+              </label>
+              <div>
+                <input
+                  style="margin-top: 21px"
+                  class="e-i"
+                  type="checkbox"
+                  id="deduct"
+                  name="deduct"
+                  v-bind:checked="deduct_balance"
+                  @change="deduct_balance = !deduct_balance"
+                />
+                <div v-if="validateDeductBalance" class="form-error">
+                  {{ validateDeductBalance }}
+                </div>
+              </div>
+              <label class="pd-t-3 pn" for="total_discount">
+                <strong>Payment Type:</strong>
+              </label>
+              <div class="pn-i">
+                <select
+                  name="creditPaymentMethod"
+                  v-model="creditPaymentMethod"
+                  class="select-box"
+                >
+                  <option value="cash">Cash</option>
+                  <option value="card">Card</option>
+                </select>
+              </div>
+              </template>
+              
+            
+            </div>
+            </div>
+      </div>
+      <div id="payment-selection" class="payment-method-container">
+        <div class="flex-box mr-2">
+          <label class="td-cont-rad"
+            >Cash
+            <input
+              type="radio"
+              name="payment_method"
+              value="cash"
+              v-model="paymentMethod"
+              @change="clearTransaction"
+            />
+            <span class="checkmark"></span>
+          </label>
+          <label class="td-cont-rad"
+            >Card
+            <input
+              type="radio"
+              name="payment_method"
+              value="card"
+              v-model="paymentMethod"
+              @change="clearTransaction"
+            />
+            <span class="checkmark"></span>
+          </label>
+          <label class="td-cont-rad"
+            >Credit
+            <input
+              type="radio"
+              name="payment_method"
+              value="credit"
+              v-model="paymentMethod"
+              @change="clearTransaction"
+            />
+            <span class="checkmark"></span>
+          </label>
         </div>
       </div>
-
+      <div class="boxbtn mr-2 mr-l8">
+        <button
+          v-if="paymentMethod === 'credit'"
+          class="btn-red block"
+          @click="addCustModal = true"
+        >
+          Add New Customer</button
+        ><br />
+        <button
+          class="btn-red block"
+          @click="submitOrder(true)"
+          :disabled="submitOrderButton"
+          ref="submitandprint"
+        >
+          Submit and Print</button
+        ><br />
+        <button
+          class="btn-red block"
+          @click="submitOrder(false)"
+          :disabled="submitOrderButton"
+        >
+          Submit</button
+        ><br />
+        <button class="btn-blue-3" @click="cancelModal = true">
+          Cancel Order
+        </button>
+      </div>
     </div>
 
     <Modal v-if="cancelModal">
@@ -491,8 +628,12 @@
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="cancelModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr" @click="handleOrderStatus()">Yes</button>
+          <button class="btn btn-orange btn-mr" @click="cancelModal = false">
+            Cancel
+          </button>
+          <button class="btn btn-orange btn-mr" @click="handleOrderStatus()">
+            Yes
+          </button>
         </div>
       </template>
     </Modal>
@@ -503,19 +644,49 @@
       </template>
 
       <template v-slot:body>
-        <input type="text" placeholder="First Name" required v-model="user.firstName"/>
-        <input type="text" placeholder="Last Name" v-model="user.lastName"/>
-        <span v-if="nameValidation" class="form-error">{{nameValidation}}</span>
-        <input type="text" placeholder="Contact Number" required v-model="user.userName"/>
-        <span v-if="contactnoValidation" class="form-error">{{contactnoValidation}}</span>        
-        <ErrorField v-if="authFieldErrors.contact_number" :errorField="authFieldErrors.contact_number"></ErrorField>
-        <input type="text" placeholder="Description" required v-model="user.description"/>
+        <input
+          type="text"
+          placeholder="First Name"
+          required
+          v-model="user.firstName"
+        />
+        <input type="text" placeholder="Last Name" v-model="user.lastName" />
+        <span v-if="nameValidation" class="form-error">{{
+          nameValidation
+        }}</span>
+        <input
+          type="text"
+          placeholder="Contact Number"
+          required
+          v-model="user.userName"
+        />
+        <span v-if="contactnoValidation" class="form-error">{{
+          contactnoValidation
+        }}</span>
+        <ErrorField
+          v-if="authFieldErrors.contact_number"
+          :errorField="authFieldErrors.contact_number"
+        ></ErrorField>
+        <input
+          type="text"
+          placeholder="Description"
+          required
+          v-model="user.description"
+        />
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="addCustModal = false">Cancel</button>
-          <button class="btn btn-orange btn-mr" :disabled="addCustButton" @click="addNewCustomer">Submit</button>
+          <button class="btn btn-orange btn-mr" @click="addCustModal = false">
+            Cancel
+          </button>
+          <button
+            class="btn btn-orange btn-mr"
+            :disabled="addCustButton"
+            @click="addNewCustomer"
+          >
+            Submit
+          </button>
         </div>
       </template>
     </Modal>
@@ -526,36 +697,45 @@
       </template>
 
       <template v-slot:body>
-        <OrderBill :orderId="order_response.id" :customer="customer" :print="print" />
+        <OrderBill
+          :orderId="order_response.id"
+          :customer="customer"
+          :print="print"
+        />
       </template>
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button @click="handleOrderStatus();" class="btn btn-orange btn-mr" v-focus>New Order</button>
+          <button
+            @click="handleOrderStatus()"
+            class="btn btn-orange btn-mr"
+            v-focus
+          >
+            New Order
+          </button>
         </div>
       </template>
     </Modal>
-
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Modal from '@/components/common-components/Modal.vue';
-import { mapActions, mapGetters } from 'vuex';
-import { ActionTypes } from '@/store/modules/order/actions';
-import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
-import { Order } from '@/store/models/order';
-import { Batch } from '@/store/models/batch';
-import { OrderItem } from '@/store/models/orderItem';
-import { Product, ProductVariant } from '@/store/models/product';
-import { User, UserExtra } from '@/store/models/user';
-import ErrorField from '@/components/common-components/ErrorField.vue';
-import OrderBill from '@/components/sales/OrderBill.vue';
-import { Inventory } from '@/store/models/company';
+import { defineComponent } from "vue";
+import Modal from "@/components/common-components/Modal.vue";
+import { mapActions, mapGetters } from "vuex";
+import { ActionTypes } from "@/store/modules/order/actions";
+import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
+import { Order } from "@/store/models/order";
+import { Batch } from "@/store/models/batch";
+import { OrderItem } from "@/store/models/orderItem";
+import { Product, ProductVariant } from "@/store/models/product";
+import { User, UserExtra } from "@/store/models/user";
+import ErrorField from "@/components/common-components/ErrorField.vue";
+import OrderBill from "@/components/sales/OrderBill.vue";
+import { Inventory } from "@/store/models/company";
 
 export default defineComponent({
-  name: 'Order',
+  name: "Order",
   components: {
     Modal,
     ErrorField,
@@ -569,75 +749,79 @@ export default defineComponent({
     return {
       submitOrderBtnDisable: false,
       focusedTile: -1,
-      focusedID : '',
+      focusedID: "",
       cancelModal: false,
       addCustModal: false,
       product: {
-        name: '',
-        barCode: '',
-        quantity: '',
+        name: "",
+        barCode: "",
+        quantity: "",
         quantityUpperLimit: 0,
-        discount: '',
-        batch: '',
-        buyPrice: '',
-        actualPrice: 0
+        discount: "",
+        batch: "",
+        buyPrice: "",
+        actualPrice: 0,
       },
       user: {
-        userName: '',
-        firstName: '',
-        lastName: '',
-        company:'',
-        description: ''
+        userName: "",
+        firstName: "",
+        lastName: "",
+        company: "",
+        description: "",
       },
       date: today,
       orderItems: orderItems,
       productId: 0,
       productVariantId: 0,
       productBatchSelect: batches,
-      cashReceived: '0',
-      totalDiscount: '',
-      paymentMethod: 'cash',
+      cashReceived: "0",
+      totalDiscount: "",
+      paymentMethod: "cash",
       errorIndication: true,
       buyer: 2,
-      balance:0,
-      customerName:'',
+      balance: 0,
+      customerName: "",
       BarCodeMaxLength: 48,
       ProductNameMaxLength: 60,
-      duplicateMessage: '',
-      creditPaymentMethod: 'cash',
-      discountMethod: 'amount',
-      customersearch:'',
-      paymentService:'',
-      transactionId:'',
-      selectedCutomer:'',
-      showCustDropdown:false,
-      walkinCustomer:{},
-      regularCustomer:{},
-      customer:{},
-      deduct_balance:false,
-      return_order:false,
+      duplicateMessage: "",
+      creditPaymentMethod: "cash",
+      discountMethod: "amount",
+      customersearch: "",
+      paymentService: "",
+      transactionId: "",
+      selectedCutomer: "",
+      showCustDropdown: false,
+      walkinCustomer: {},
+      regularCustomer: {},
+      customer: {},
+      deduct_balance: false,
+      return_order: false,
       print: true,
-    }
+    };
   },
   computed: {
     totalAmount: function (): number {
       let total = this.orderItems
         // eslint-disable-next-line
-        .map((item: any) =>  {
-          if (typeof item.totalPrice === 'string'){
-            return parseFloat(item.totalPrice)
+        .map((item: any) => {
+          if (typeof item.totalPrice === "string") {
+            return parseFloat(item.totalPrice);
           }
           return item.totalPrice;
         })
         .reduce((a: number, b: number) => a + b, 0);
-      
+
       const totalDiscount = parseFloat(this.totalDiscount);
-      if (this.discountMethod === 'amount') {
+      if (this.discountMethod === "amount") {
         if (!isNaN(totalDiscount) && totalDiscount > 0) {
           total = total - totalDiscount;
         }
-      } else if (this.discountMethod === 'percentage') {
-        if (!isNaN(totalDiscount) && totalDiscount > 0 && totalDiscount <= 100) {
+      } else if (this.discountMethod === "percentage") {
+        if (
+          !isNaN(totalDiscount) &&
+          totalDiscount > 0 &&
+          totalDiscount <= 100
+        ) {
           total = total * ((100 - totalDiscount) / 100);
         }
       }
@@ -653,9 +837,8 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.errorIndication) {
         // CheckIF product exist on the backend
-        if (this.product.name === undefined || this.product.name === '')
-        {
-          errorMessage = 'Name is required';
+        if (this.product.name === undefined || this.product.name === "") {
+          errorMessage = "Name is required";
         }
       }
       return errorMessage;
@@ -665,9 +848,8 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.errorIndication) {
         // CheckIF product exist on the backend
-        if (this.product.barCode === undefined || this.product.barCode === '')
-        {
-          errorMessage = 'Barcode is required';
+        if (this.product.barCode === undefined || this.product.barCode === "") {
+          errorMessage = "Barcode is required";
         }
       }
       return errorMessage;
@@ -677,9 +859,8 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.errorIndication) {
         // CheckIF product exist on the backend
-        if (this.product.batch === undefined || this.product.batch === '')
-        {
-          errorMessage = 'Batch is required';
+        if (this.product.batch === undefined || this.product.batch === "") {
+          errorMessage = "Batch is required";
         }
       }
       return errorMessage;
@@ -689,94 +870,109 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.errorIndication) {
         // CheckIF product exist on the backend
-        if (this.product.quantity === undefined || this.product.quantity === '')
-        {
-          errorMessage = 'Quantity is required';
+        if (
+          this.product.quantity === undefined ||
+          this.product.quantity === ""
+        ) {
+          errorMessage = "Quantity is required";
         } else {
           const value = parseFloat(this.product.quantity);
           if (isNaN(value)) {
-            errorMessage = 'Only numbers are allowed';
-          } else {            
-            if ( value > this.cummBatchQuantity) {
-              errorMessage = 'Stock is less than this quantity.';
+            errorMessage = "Only numbers are allowed";
+          } else {
+            if (value > this.cummBatchQuantity) {
+              errorMessage = "Stock is less than this quantity.";
             }
           }
         }
       }
       return errorMessage;
     },
-    filteredBatches: function(){
+    filteredBatches: function () {
       let batches: Batch[] = this.productBatchSelect;
-      if(!this.return_order){
-        batches = batches.filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0)
+      if (!this.return_order) {
+        batches = batches.filter(
+          (batch: Batch) =>
+            batch.inventory_quantity && batch.inventory_quantity > 0
+        );
       }
       return batches;
     },
-    cummBatchQuantity: function(): number{
-      return this.filteredBatches.map((batch: Batch) => batch && batch.inventory_quantity?batch.inventory_quantity:0).reduce((a: number, b: number) => a+b, 0);
+    cummBatchQuantity: function (): number {
+      return this.filteredBatches
+        .map((batch: Batch) =>
+          batch && batch.inventory_quantity ? batch.inventory_quantity : 0
+        )
+        .reduce((a: number, b: number) => a + b, 0);
     },
 
-    validateDeductBalance: function() {
+    validateDeductBalance: function () {
       let error_message = null;
-      if(this.paymentMethod === 'credit') {
-        if(parseFloat(this.cashReceived) < this.totalAmount && this.deduct_balance === false){
-          error_message = 'Cash Received is less than total so check Deduct Balance!'
+      if (this.paymentMethod === "credit") {
+        if (
+          parseFloat(this.cashReceived) < this.totalAmount &&
+          this.deduct_balance === false
+        ) {
+          error_message =
+            "Cash Received is less than total so check Deduct Balance!";
         }
       }
       return error_message;
     },
-    validateRegularCustomer: function() {
+    validateRegularCustomer: function () {
       let error_message = null;
-      if(this.paymentMethod === 'credit') {
+      if (this.paymentMethod === "credit") {
         const regular_cust = this.regularCustomer as User;
-        if(regular_cust === undefined || regular_cust.id === undefined){
-          error_message = 'select regular customer!'
+        if (regular_cust === undefined || regular_cust.id === undefined) {
+          error_message = "select regular customer!";
         }
       }
       return error_message;
     },
-     validateReturnOrder: function() {
+    validateReturnOrder: function () {
       let error_message = null;
-      if(this.return_order && parseFloat(this.product.quantity)>=0) {
-          error_message = 'quantity should be in negative for return order!'
+      if (this.return_order && parseFloat(this.product.quantity) >= 0) {
+        error_message = "quantity should be in negative for return order!";
       }
 
       return error_message;
     },
-    returnOrderDisable: function(): boolean{
+    returnOrderDisable: function (): boolean {
       // disables the return_order radio after any order item is added.
-      return this.orderItems.length>0
+      return this.orderItems.length > 0;
     },
-    selectedBatchQuantity: function(): number {
+    selectedBatchQuantity: function (): number {
       let selectedBatchQuantity = 0.0;
       const batchID = parseInt(this.product.batch);
-      if(!isNaN(batchID) && batchID > 0 && this.filteredBatches.length > 0){
-        const selectedBatch = this.filteredBatches.find((item: Batch) => item.id === batchID);
-        selectedBatchQuantity = selectedBatch && selectedBatch.inventory_quantity ? selectedBatch.inventory_quantity : 0;
+      if (!isNaN(batchID) && batchID > 0 && this.filteredBatches.length > 0) {
+        const selectedBatch = this.filteredBatches.find(
+          (item: Batch) => item.id === batchID
+        );
+        selectedBatchQuantity =
+          selectedBatch && selectedBatch.inventory_quantity
+            ? selectedBatch.inventory_quantity
+            : 0;
       }
       return selectedBatchQuantity;
     },
 
     addProductButton: function (): boolean {
       let disable = true;
-      if (this.productNameValidation === null &&
-      this.productBarCodeValidation === null &&
-      this.productBatchValidation === null &&
-      this.productQuantityValidation === null &&
-      this.productDiscountValidation === null &&
-      this.validateReturnOrder === null
+      if (
+        this.productNameValidation === null &&
+        this.productBarCodeValidation === null &&
+        this.productBatchValidation === null &&
+        this.productQuantityValidation === null &&
+        this.productDiscountValidation === null &&
+        this.validateReturnOrder === null
       ) {
-        disable = false
+        disable = false;
       }
-      return disable
-
+      return disable;
     },
 
-    addCustButton: function(){
-      if(this.nameValidation===null &&
-        this.contactnoValidation===null
-      )
-      {
+    addCustButton: function () {
+      if (this.nameValidation === null && this.contactnoValidation === null) {
         return false;
       }
       return true;
@@ -786,13 +982,16 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.errorIndication) {
         // CheckIF product exist on the backend
-        if (this.product.discount !== undefined && this.product.discount !== '') {
+        if (
+          this.product.discount !== undefined &&
+          this.product.discount !== ""
+        ) {
           const value = parseFloat(this.product.discount);
           if (isNaN(value)) {
-            errorMessage = 'Only numbers are allowed';
+            errorMessage = "Only numbers are allowed";
           } else {
             if (value < 0 || value > 100) {
-              errorMessage = 'Discount value should be b/w 0 to 100'
+              errorMessage = "Discount value should be b/w 0 to 100";
             }
           }
         }
@@ -802,162 +1001,174 @@ export default defineComponent({
 
     orderTotalDiscountValidation: function () {
       let errorMessage = null;
-      if (this.totalDiscount !== undefined && this.totalDiscount !== '') {
+      if (this.totalDiscount !== undefined && this.totalDiscount !== "") {
         const value = parseFloat(this.totalDiscount);
-        if (isNaN(value)) 
-        {
-          errorMessage = 'Only numbers are allowed';
-        }
-        else 
-        {
-          if (this.discountMethod === 'amount' && value < 0) {
+        if (isNaN(value)) {
+          errorMessage = "Only numbers are allowed";
+        } else {
+          if (this.discountMethod === "amount" && value < 0) {
             errorMessage = "Discount should be greater than zero";
-          } else if (this.discountMethod === 'percentage' && (value < 0 || value > 100)) {
-            errorMessage = 'Discount value should be b/w 0 to 100';
+          } else if (
+            this.discountMethod === "percentage" &&
+            (value < 0 || value > 100)
+          ) {
+            errorMessage = "Discount value should be b/w 0 to 100";
           }
         }
       }
-      return errorMessage
+      return errorMessage;
     },
 
     orderCashReceivedValidation: function () {
-      
       let errorMessage = null;
-      if(this.return_order && this.cashReceived && parseFloat(this.cashReceived)!==0){
-          errorMessage = 'Cash Received must be 0 for Return Order.'
-      }
-      else if(this.paymentMethod!=='credit'){
-        if (this.cashReceived !== undefined && this.cashReceived === '') {
-          errorMessage = "Cash is required"
+      if (
+        this.return_order &&
+        this.cashReceived &&
+        parseFloat(this.cashReceived) !== 0
+      ) {
+        errorMessage = "Cash Received must be 0 for Return Order.";
+      } else if (this.paymentMethod !== "credit") {
+        if (this.cashReceived !== undefined && this.cashReceived === "") {
+          errorMessage = "Cash is required";
         }
-        if (this.cashReceived !== undefined && this.cashReceived !== '') {
+        if (this.cashReceived !== undefined && this.cashReceived !== "") {
           const value = parseFloat(this.cashReceived);
           if (isNaN(value)) {
-            errorMessage = 'Only numbers are allowed';
+            errorMessage = "Only numbers are allowed";
           } else {
-
             if (value < this.totalAmount) {
-              errorMessage = 'Cash is less than total amount';
+              errorMessage = "Cash is less than total amount";
             }
           }
         }
       }
-      return errorMessage
+      return errorMessage;
     },
 
-    contactnoValidation: function(){
-      if(this.user.userName===''){
-        return 'contact number is required!';
+    contactnoValidation: function () {
+      if (this.user.userName === "") {
+        return "contact number is required!";
       }
       return null;
     },
 
-    nameValidation: function(){
-        if(this.user.firstName==='' && this.user.lastName===''){
-          return 'name can not be empty!'
-        }
-        return null;
+    nameValidation: function () {
+      if (this.user.firstName === "" && this.user.lastName === "") {
+        return "name can not be empty!";
+      }
+      return null;
     },
 
     submitOrderButton: function () {
       let disable = true;
-      if ( this.orderItems.length > 0 &&
-      this.orderTotalDiscountValidation === null &&
-      this.orderCashReceivedValidation === null && 
-      this.validateDeductBalance === null &&
-      this.validateRegularCustomer === null &&
-      this.submitOrderBtnDisable == false
-      )  {
+      if (
+        this.orderItems.length > 0 &&
+        this.orderTotalDiscountValidation === null &&
+        this.orderCashReceivedValidation === null &&
+        this.validateDeductBalance === null &&
+        this.validateRegularCustomer === null &&
+        this.submitOrderBtnDisable == false
+      ) {
         disable = false;
       }
-      return disable
+      return disable;
     },
 
-    getFullName: function(): string{
+    getFullName: function (): string {
       const cust: User = this.regularCustomer as User;
-      const firstname: string =  cust.first_name!==undefined?cust.first_name:''
-      const lastname: string = cust.last_name!==undefined?cust.last_name:''
-      const fullname: string = firstname+' '+lastname
-      
-      return fullname
+      const firstname: string =
+        cust.first_name !== undefined ? cust.first_name : "";
+      const lastname: string =
+        cust.last_name !== undefined ? cust.last_name : "";
+      const fullname: string = firstname + " " + lastname;
+
+      return fullname;
     },
 
-    showDeductBalance: function(): boolean{
+    showDeductBalance: function (): boolean {
       return false;
     },
 
-    variantsflatList: function(){
-      const variants: {ProductId: any;VariantId: any}[] =[];
-      this.productResult.map((item: Product)=>{
-        if(item){
+    variantsflatList: function () {
+      const variants: { ProductId: any; VariantId: any }[] = [];
+      this.productResult.map((item: Product) => {
+        if (item) {
           const listofvariants = item.product_variant as ProductVariant[];
-          listofvariants.map((variant: ProductVariant)=>{
-              variants.push({ProductId: item.id, VariantId: variant.id});
-          })
+          listofvariants.map((variant: ProductVariant) => {
+            variants.push({ ProductId: item.id, VariantId: variant.id });
+          });
         }
-      })
+      });
       return variants;
     },
 
     ...mapGetters({
-      productResult: 'getProductResults',
-      userdata: 'getUser',
-      orderStatus: 'getOrderStatus',
-      customers: 'getListOfUsers',
-      invoiceID: 'getInvoiceID',
-      field_errors: 'getFieldError',
-      authFieldErrors: 'getAuthFieldError',
-      order_response: 'getOrder',
-      inventory: 'getInventory',
-    })
+      productResult: "getProductResults",
+      userdata: "getUser",
+      orderStatus: "getOrderStatus",
+      customers: "getListOfUsers",
+      invoiceID: "getInvoiceID",
+      field_errors: "getFieldError",
+      authFieldErrors: "getAuthFieldError",
+      order_response: "getOrder",
+      inventory: "getInventory",
+    }),
   },
   methods: {
     clearProduct: function () {
       this.productId = 0;
       this.productVariantId = 0;
-      this.product.barCode = '';
-      this.product.name = '';
-      this.product.quantity = '';
-      this.product.discount = '';
-      this.product.batch = '';
+      this.product.barCode = "";
+      this.product.name = "";
+      this.product.quantity = "";
+      this.product.discount = "";
+      this.product.batch = "";
       this.product.quantityUpperLimit = 0;
       const batches: Batch[] = [];
       this.productBatchSelect = batches;
       this.errorIndication = true;
-      this.duplicateMessage = '';
-      this.product.buyPrice = '';
+      this.duplicateMessage = "";
+      this.product.buyPrice = "";
       this.product.actualPrice = 0;
       (this.$refs.barcode as any)?.focus();
     },
 
-    clearTransaction: function(){
-      this.transactionId=''
-      this.paymentService='BANK'
-      this.user.userName=''
-      this.user.firstName=''
-      this.user.lastName=''
-      this.user.company=''
-      this.regularCustomer = {}
+    clearTransaction: function () {
+      this.transactionId = "";
+      this.paymentService = "BANK";
+      this.user.userName = "";
+      this.user.firstName = "";
+      this.user.lastName = "";
+      this.user.company = "";
+      this.regularCustomer = {};
     },
 
     selectProduct: async function (productId: number, VariantId: number) {
-      this.duplicateMessage = '';
-      const currentProduct = await this.productResult.find((item: Product) => item.id === productId);
-      const currentVariant = await currentProduct.product_variant.find((item: ProductVariant) => item.id === VariantId);
+      this.duplicateMessage = "";
+      const currentProduct = await this.productResult.find(
+        (item: Product) => item.id === productId
+      );
+      const currentVariant = await currentProduct.product_variant.find(
+        (item: ProductVariant) => item.id === VariantId
+      );
       if (this.sumQuantity(currentVariant) <= 0) return;
 
       // Check If the product is already in Order Items
-      const duplicate = await this.orderItems
-        .find((item: OrderItem) => item.product && item.product === currentProduct
-        && item.productVariant && item.productVariant === currentVariant
-        );
-      
+      const duplicate = await this.orderItems.find(
+        (item: OrderItem) =>
+          item.product &&
+          item.product === currentProduct &&
+          item.productVariant &&
+          item.productVariant === currentVariant
+      );
+
       if (duplicate) {
-        this.duplicateMessage = 'The product is already added to the order items.';
+        this.duplicateMessage =
+          "The product is already added to the order items.";
         return;
       }
 
-      this.duplicateMessage = '';
+      this.duplicateMessage = "";
       this.productId = productId;
       this.productVariantId = VariantId;
       this.product.barCode = currentProduct.bar_code;
@@ -965,46 +1176,55 @@ export default defineComponent({
       this.product.actualPrice = parseFloat(currentVariant.sale_price);
       this.product.quantityUpperLimit = this.sumQuantity(currentVariant);
       this.productBatchSelect = currentVariant.batch
-        .filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0)
+        .filter(
+          (batch: Batch) =>
+            batch.inventory_quantity && batch.inventory_quantity > 0
+        )
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
 
-      const batchId = this.filteredBatches.length > 0 ? (this.filteredBatches[0] as Batch).id : undefined;
-      this.product.batch = batchId !== undefined ? batchId.toString() : '';
-      (this.$refs.quantity as HTMLSelectElement & { focus: () => void }).focus();
+      const batchId =
+        this.filteredBatches.length > 0
+          ? (this.filteredBatches[0] as Batch).id
+          : undefined;
+      this.product.batch = batchId !== undefined ? batchId.toString() : "";
+      (
+        this.$refs.quantity as HTMLSelectElement & { focus: () => void }
+      ).focus();
     },
 
-    selectCustomer: function(customer: User){
-      if(customer.credit===undefined){
-        customer.credit=0;
+    selectCustomer: function (customer: User) {
+      if (customer.credit === undefined) {
+        customer.credit = 0;
       }
 
-      this.regularCustomer=customer;
-      this.showCustDropdown=false;
-      this.customersearch=customer.contact_number===undefined?'':customer.contact_number;
+      this.regularCustomer = customer;
+      this.showCustDropdown = false;
+      this.customersearch =
+        customer.contact_number === undefined ? "" : customer.contact_number;
     },
 
-    addNewCustomer:async function(){
-      const companyId = this.userdata.company.id;  
+    addNewCustomer: async function () {
+      const companyId = this.userdata.company.id;
 
       const user_extra: UserExtra = {
-        description: this.user.description
-      }
+        description: this.user.description,
+      };
 
       const user: User = {
         username: this.user.userName,
         contact_number: this.user.userName,
         first_name: this.user.firstName,
         last_name: this.user.lastName,
-        company:companyId,
-        user_extra: user_extra
-      }
+        company: companyId,
+        user_extra: user_extra,
+      };
 
       await this.registerUser(user);
 
       if (Object.keys(this.authFieldErrors).length === 0) {
-        this.addCustModal=false;
-        this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
+        this.addCustModal = false;
+        this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
       }
     },
 
@@ -1015,82 +1235,100 @@ export default defineComponent({
       let price = parseFloat(this.product.buyPrice);
       price = isNaN(price) ? 0 : price;
 
-      if (this.product.name === '') return;
-      if (this.product.barCode === '') return;
-      if (this.product.quantity === '') return;
-      if (this.product.batch === '') return;
-      if (this.product.buyPrice === '') return;
+      if (this.product.name === "") return;
+      if (this.product.barCode === "") return;
+      if (this.product.quantity === "") return;
+      if (this.product.batch === "") return;
+      if (this.product.buyPrice === "") return;
       if (quantity > this.cummBatchQuantity) return;
 
-      const discount = isNaN(parseFloat(this.product.discount)) ? 0 : parseFloat(this.product.discount);
+      const discount = isNaN(parseFloat(this.product.discount))
+        ? 0
+        : parseFloat(this.product.discount);
       const batch = parseFloat(this.product.batch);
 
-      if ( (!this.productId || this.productId === 0) && (!this.productVariantId || this.productVariantId === 0) ) {
-        this.duplicateMessage = 'Please select product from product results or add desired product to system';
+      if (
+        (!this.productId || this.productId === 0) &&
+        (!this.productVariantId || this.productVariantId === 0)
+      ) {
+        this.duplicateMessage =
+          "Please select product from product results or add desired product to system";
         return;
       }
 
-      this.duplicateMessage = '';
-      const currentProduct = await this.productResult
-        .find((item: Product) => item.id === this.productId);
-      const currentVariant = await currentProduct.product_variant
-        .find((item: ProductVariant) => item.id === this.productVariantId);
+      this.duplicateMessage = "";
+      const currentProduct = await this.productResult.find(
+        (item: Product) => item.id === this.productId
+      );
+      const currentVariant = await currentProduct.product_variant.find(
+        (item: ProductVariant) => item.id === this.productVariantId
+      );
 
       price = currentVariant.sale_price;
       let totalPrice = price * quantity;
-      if (this.product.discount
-        && discount > 0
-        && discount < 100
-      ) {
-        totalPrice = totalPrice * ((100 - discount) / 100)
+      if (this.product.discount && discount > 0 && discount < 100) {
+        totalPrice = totalPrice * ((100 - discount) / 100);
       }
 
       const listOfBatches: {}[] = [];
-      if(this.selectedBatchQuantity < quantity && this.cummBatchQuantity >= quantity){
+      if (
+        this.selectedBatchQuantity < quantity &&
+        this.cummBatchQuantity >= quantity
+      ) {
         let totalQuant = quantity;
-        let i=0;
-        while(totalQuant>0 && i<this.filteredBatches.length)
-        {
-              const b: Batch = this.filteredBatches[i++];
-              const batchQuant = b.quantity?parseFloat(b.quantity):0;
-              const unproxiedBatchItem={
-                batchid: b.id?b.id:0,
-                quantity: 0,
-              }
-              unproxiedBatchItem.quantity=batchQuant<totalQuant?batchQuant:totalQuant;
-              totalQuant-=unproxiedBatchItem.quantity;
-              listOfBatches.push(unproxiedBatchItem);
+        let i = 0;
+        while (totalQuant > 0 && i < this.filteredBatches.length) {
+          const b: Batch = this.filteredBatches[i++];
+          const batchQuant = b.quantity ? parseFloat(b.quantity) : 0;
+          const unproxiedBatchItem = {
+            batchid: b.id ? b.id : 0,
+            quantity: 0,
+          };
+          unproxiedBatchItem.quantity =
+            batchQuant < totalQuant ? batchQuant : totalQuant;
+          totalQuant -= unproxiedBatchItem.quantity;
+          listOfBatches.push(unproxiedBatchItem);
         }
-
-      }else{
-        listOfBatches.push(
-          {
-            batchid: this.product.batch,
-            quantity: quantity
-          }
-        );
+      } else {
+        listOfBatches.push({
+          batchid: this.product.batch,
+          quantity: quantity,
+        });
       }
 
       listOfBatches.map((unproxiedBatchItem: any) => {
         const SingleOrderItem: OrderItem = {
-          batch: isNaN(batch) ? 0 : currentVariant.batch
-          .map((item: Batch) => {
-            return {
-              id: item.id,
-              quantity: item.quantity,
-            } as Batch;
-          })
-          .find((item: Batch) => item && item.id && item.id.toString() == unproxiedBatchItem.batchid),
+          batch: isNaN(batch)
+            ? 0
+            : currentVariant.batch
+                .map((item: Batch) => {
+                  return {
+                    id: item.id,
+                    quantity: item.quantity,
+                  } as Batch;
+                })
+                .find(
+                  (item: Batch) =>
+                    item &&
+                    item.id &&
+                    item.id.toString() == unproxiedBatchItem.batchid
+                ),
           product: currentProduct,
           productVariant: currentVariant,
           price: price.toString(),
           quantity: unproxiedBatchItem.quantity.toString(),
           discount: discount.toString(),
-          totalPrice: parseFloat((unproxiedBatchItem.quantity * price * ((100 - discount) / 100)).toFixed(0))
-        }
+          totalPrice: parseFloat(
+            (
+              unproxiedBatchItem.quantity *
+              price *
+              ((100 - discount) / 100)
+            ).toFixed(0)
+          ),
+        };
         this.orderItems.push(SingleOrderItem);
       });
-      
+
       this.clearProduct();
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
     },
@@ -1098,68 +1336,86 @@ export default defineComponent({
     submitOrder: async function (print: boolean) {
       this.submitOrderBtnDisable = true;
       if (this.orderItems.length < 0) return;
-      if (this.cashReceived === '') return;
+      if (this.cashReceived === "") return;
       this.print = print;
 
-      const unproxiedOrderItem = await this.orderItems.map((singleOrderItem: OrderItem) =>  {
-        return {
-          batch: singleOrderItem.batch && typeof singleOrderItem.batch !== 'number' && singleOrderItem.batch.id? singleOrderItem.batch.id : 0,
-          price: singleOrderItem.price?.toString(),
-          discount: singleOrderItem.discount?.toString(),
-          quantity: singleOrderItem.quantity?.toString()
-        } as OrderItem
-      });
+      const unproxiedOrderItem = await this.orderItems.map(
+        (singleOrderItem: OrderItem) => {
+          return {
+            batch:
+              singleOrderItem.batch &&
+              typeof singleOrderItem.batch !== "number" &&
+              singleOrderItem.batch.id
+                ? singleOrderItem.batch.id
+                : 0,
+            price: singleOrderItem.price?.toString(),
+            discount: singleOrderItem.discount?.toString(),
+            quantity: singleOrderItem.quantity?.toString(),
+          } as OrderItem;
+        }
+      );
 
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
-      const buyer: User = this.paymentMethod==='credit'?this.regularCustomer:this.walkinCustomer;
+      const buyer: User =
+        this.paymentMethod === "credit"
+          ? this.regularCustomer
+          : this.walkinCustomer;
       this.customer = buyer;
       const singleOrder: Order = {
         order_item: unproxiedOrderItem,
-        buyer: buyer && buyer.id ? buyer.id:this.userdata.id,
+        buyer: buyer && buyer.id ? buyer.id : this.userdata.id,
         seller: this.userdata.id,
-        total_discount: isNaN(discount) ? '0' : discount.toString(),
+        total_discount: isNaN(discount) ? "0" : discount.toString(),
         total: this.totalAmount.toString(),
-        cash_payment: this.paymentMethod === 'cash' ? true : this.creditPaymentMethod === 'cash',
-        amount_received: isNaN(cash) ? '0' : cash.toString(),
-        amount_discount: this.discountMethod === 'amount' ? true : false,
-        payment_service: this.paymentMethod === 'cash'? 'BANK' : this.paymentService,
+        cash_payment:
+          this.paymentMethod === "cash"
+            ? true
+            : this.creditPaymentMethod === "cash",
+        amount_received: isNaN(cash) ? "0" : cash.toString(),
+        amount_discount: this.discountMethod === "amount" ? true : false,
+        payment_service:
+          this.paymentMethod === "cash" ? "BANK" : this.paymentService,
         transaction_id: this.transactionId,
         invoice_id: this.invoiceID,
         deduct_balance: this.deduct_balance,
-      }
+      };
 
-      if(this.return_order){
-        singleOrder.status = 'RETURNED';
+      if (this.return_order) {
+        singleOrder.status = "RETURNED";
       }
 
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
-      await this.getUsersByType({user_type: 'REGULAR_CUSTOMER'});
-  },
+      await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
+    },
 
     changeQuantity: function (index: number) {
       const currentVariant = this.orderItems[index].productVariant;
       if (currentVariant !== undefined) {
-
         const currentOrderItemQuantity = this.orderItems[index].quantity;
         const currentOrderItemPrice = this.orderItems[index].price;
         const currentDiscount = this.orderItems[index].discount;
         const currentBatch = this.orderItems[index].batch;
 
-        if (currentOrderItemQuantity !== undefined && currentOrderItemPrice !== undefined
-        && currentBatch !== undefined && typeof currentBatch !== 'number') {
-
+        if (
+          currentOrderItemQuantity !== undefined &&
+          currentOrderItemPrice !== undefined &&
+          currentBatch !== undefined &&
+          typeof currentBatch !== "number"
+        ) {
           const quantity = parseFloat(currentOrderItemQuantity);
           const price = parseFloat(currentOrderItemPrice);
           const discount = currentDiscount ? parseFloat(currentDiscount) : 0;
-          const upperLimit = currentBatch.inventory_quantity ? currentBatch.inventory_quantity : 0;
+          const upperLimit = currentBatch.inventory_quantity
+            ? currentBatch.inventory_quantity
+            : 0;
 
           if (isNaN(price)) return;
           if (isNaN(quantity)) return;
           if (quantity > upperLimit) return;
           let total = quantity * price;
-          if (!(isNaN(discount) && discount <= 0 || discount > 100)) {
+          if (!((isNaN(discount) && discount <= 0) || discount > 100)) {
             total = total * ((100 - discount) / 100);
           }
           this.orderItems[index].totalPrice = parseInt(total.toFixed(0));
@@ -1171,17 +1427,19 @@ export default defineComponent({
       const currentOrderItemDiscount = this.orderItems[index].discount;
       const currentOrderItemPrice = this.orderItems[index].price;
       const currentOrderItemQuantity = this.orderItems[index].quantity;
-      if (currentOrderItemDiscount !== undefined &&
-      currentOrderItemPrice !== undefined &&
-      currentOrderItemQuantity !== undefined) {
-
+      if (
+        currentOrderItemDiscount !== undefined &&
+        currentOrderItemPrice !== undefined &&
+        currentOrderItemQuantity !== undefined
+      ) {
         const quantity = parseFloat(currentOrderItemQuantity);
         const price = parseFloat(currentOrderItemPrice);
         const discount = parseFloat(currentOrderItemDiscount);
 
-        if (isNaN(discount) && discount <= 0 || discount > 100) return;
-        this.orderItems[index].totalPrice = parseInt((price * quantity
-          * ((100 - discount) / 100)).toFixed(4));
+        if ((isNaN(discount) && discount <= 0) || discount > 100) return;
+        this.orderItems[index].totalPrice = parseInt(
+          (price * quantity * ((100 - discount) / 100)).toFixed(4)
+        );
       }
     },
 
@@ -1189,111 +1447,119 @@ export default defineComponent({
       const currentOrderItemPrice = this.orderItems[index].price;
       const totalPrice = this.orderItems[index].totalPrice;
       if (totalPrice !== undefined && currentOrderItemPrice !== undefined) {
-
         const price = parseFloat(currentOrderItemPrice);
 
         if (isNaN(price)) return;
         if (totalPrice < 0) return;
 
-        this.orderItems[index].quantity = (totalPrice / price).toFixed(4).toString();
-        this.orderItems[index].discount = (0.00).toString();
+        this.orderItems[index].quantity = (totalPrice / price)
+          .toFixed(4)
+          .toString();
+        this.orderItems[index].discount = (0.0).toString();
       }
     },
 
     removeItem: function (index: number) {
-      this.orderItems.splice(index, 1)
+      this.orderItems.splice(index, 1);
     },
 
-    searchCustomer: function (event: Event){
-      if(event)
-        event.preventDefault()
+    searchCustomer: function (event: Event) {
+      if (event) event.preventDefault();
 
       this.getUsersByType({
         search: this.customersearch,
-        user_type: 'REGULAR_CUSTOMER'
+        user_type: "REGULAR_CUSTOMER",
       });
     },
 
     searchByName: async function (event: Event) {
       if (event) {
-        event.preventDefault()
+        event.preventDefault();
       }
       await this.searchProductByName(this.product.name);
     },
 
     checkkey: function (event: KeyboardEvent) {
-      const variantslist = this.variantsflatList
-      if (event.key ==='ArrowDown'){
+      const variantslist = this.variantsflatList;
+      if (event.key === "ArrowDown") {
         this.focusedTile++;
-        if(variantslist.length<=this.focusedTile){
-          this.focusedTile=0;
+        if (variantslist.length <= this.focusedTile) {
+          this.focusedTile = 0;
         }
-        if(variantslist.length > 0){
+        if (variantslist.length > 0) {
           const focused = variantslist[this.focusedTile];
-          const refid = focused.ProductId+'_'+focused.VariantId;
+          const refid = focused.ProductId + "_" + focused.VariantId;
           this.focusedID = refid;
           this.fixScrolling();
-          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+          (
+            this.$refs[refid] as HTMLSelectElement & { focus: () => void }
+          )?.focus();
         }
-      }else if(event.key === 'Enter'){
-        if(this.focusedTile<variantslist.length){
+      } else if (event.key === "Enter") {
+        if (this.focusedTile < variantslist.length) {
           const focused = variantslist[this.focusedTile];
           this.selectProduct(focused.ProductId, focused.VariantId);
         }
-      }else if(event.key ==='ArrowUp'){
+      } else if (event.key === "ArrowUp") {
         this.focusedTile--;
-        if(0>this.focusedTile){
-          this.focusedTile=0;
+        if (0 > this.focusedTile) {
+          this.focusedTile = 0;
         }
-        if(variantslist.length > 0){
+        if (variantslist.length > 0) {
           const focused = variantslist[this.focusedTile];
-          const refid = focused.ProductId+'_'+focused.VariantId;
+          const refid = focused.ProductId + "_" + focused.VariantId;
           this.focusedID = refid;
           this.fixScrolling();
-          (this.$refs[refid] as HTMLSelectElement & { focus: () => void })?.focus();
+          (
+            this.$refs[refid] as HTMLSelectElement & { focus: () => void }
+          )?.focus();
         }
       }
     },
-    shiftfocusTo: function(event: KeyboardEvent, to: string, key='Enter'){
-      if(event.key === key){
+    shiftfocusTo: function (event: KeyboardEvent, to: string, key = "Enter") {
+      if (event.key === key) {
         (this.$refs[to] as HTMLSelectElement & { focus: () => void })?.focus();
       }
     },
-    fixScrolling(){
+    fixScrolling() {
       const liH = (this.$refs.options as HTMLElement).clientHeight;
       (this.$refs.scrollContainer as any).scrollTop = liH * this.focusedTile;
     },
     searchByBarcode: async function (event: Event) {
       await this.searchProductByBarcode(this.product.barCode);
-      
+
       // if(this.productResult.length === 1){
       // const searchedProduct: Product = this.productResult[0];
       // if(searchedProduct.id && searchedProduct.product_variant && searchedProduct.product_variant.length>0 && searchedProduct.product_variant[0].id)
       //     await this.selectProduct(searchedProduct.id, searchedProduct.product_variant[0].id);
       // }
-      
     },
 
     sumQuantity: function (item: ProductVariant): number {
       let sum = 0;
-      if (item.batch !== undefined && typeof item.batch !== 'number') {
-        item.batch.filter((batch: Batch) => batch.inventory_quantity && batch.inventory_quantity > 0).forEach((batch: Batch) => {
-          if (batch.inventory_quantity !== undefined) {
-            sum = sum + batch.inventory_quantity
-          }
-        });
+      if (item.batch !== undefined && typeof item.batch !== "number") {
+        item.batch
+          .filter(
+            (batch: Batch) =>
+              batch.inventory_quantity && batch.inventory_quantity > 0
+          )
+          .forEach((batch: Batch) => {
+            if (batch.inventory_quantity !== undefined) {
+              sum = sum + batch.inventory_quantity;
+            }
+          });
       }
-      return sum
+      return sum;
     },
 
     handleOrderStatus: async function () {
-      this.changeOrderStatus('');
+      this.changeOrderStatus("");
       this.clearProduct();
-      await this.searchProductByBarcode('');  //this statement will clear the search results from action
+      await this.searchProductByBarcode(""); //this statement will clear the search results from action
       this.orderItems = [];
-      this.cashReceived = '';
-      this.totalDiscount = '';
-      this.paymentMethod = 'cash';
+      this.cashReceived = "";
+      this.totalDiscount = "";
+      this.paymentMethod = "cash";
       this.cancelModal = false;
       await this.fetchInvoiceID();
     },
@@ -1322,8 +1588,8 @@ export default defineComponent({
       this.product.buyPrice = buyPrice.toFixed(4).toString();
     },
 
-    trimQuantity: function(quan: string): string{
-        return parseFloat(quan!==undefined?quan:'0.0').toFixed(4);
+    trimQuantity: function (quan: string): string {
+      return parseFloat(quan !== undefined ? quan : "0.0").toFixed(4);
     },
 
     ...mapActions({
@@ -1338,15 +1604,19 @@ export default defineComponent({
       setFieldError: ActionTypes.SET_FIELD_ERROR,
       fetchOrder: ActionTypes.FETCH_ORDER,
       fetchInventory: ActionTypes.FETCH_INVENTORY,
-    })
+    }),
   },
-  async beforeMount () {
+  async beforeMount() {
     await this.fetchInvoiceID();
-    await this.getUsersByType({user_type:'WALK_IN_CUSTOMER'});
-    this.walkinCustomer = this.customers.find((item: User) => item.username && item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`);
-    await this.getUsersByType({user_type:'REGULAR_CUSTOMER'});
+    await this.getUsersByType({ user_type: "WALK_IN_CUSTOMER" });
+    this.walkinCustomer = this.customers.find(
+      (item: User) =>
+        item.username &&
+        item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`
+    );
+    await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
   },
-  async unmounted () {
+  async unmounted() {
     await this.setFieldError({});
     this.handleOrderStatus();
   },
@@ -1354,183 +1624,512 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  .focuschange {
-    outline: none !important;
-    border-left:5px solid red;
-    box-shadow: 0 0 10px #719ECE;
-  }
-  .product-container {
+.focuschange {
+  outline: none !important;
+  border-left: 5px solid red;
+  box-shadow: 0 0 10px #719ece;
+}
+#order-page {
+  grid-template-columns: 2fr;
+  gap: 0.1em 0.1em;
+}
+/*.product-container {
     margin-top:20px;
     display: grid;
     grid-template-columns: 3fr 1fr;
     gap: 0.1em 0.1em;
-  }
-
-  .form-container {
-    display: grid;
-    grid-template-columns: 0.7fr 2.3fr 0.7fr 2.3fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 0.1em 0.1em;
-    grid-template-areas:
+  }*/
+.product-container {
+  margin: 20px 8px 8px 0px;
+  display: inline-block;
+  grid-template-columns: 2fr;
+}
+.form-container {
+  display: grid;
+  grid-template-columns: 0.3fr 0.3fr 0.5fr;
+  grid-gap: 1.2rem 0.4rem;
+  grid-template-areas:
     "bc bc-i q q-i ap-e"
     "pn pn-i d d-i ap"
-    "bt bt-i e e-i e-ap"
-  }
-  .bc { grid-area: bc;}
-  .bc-i {grid-area: bc-i;}
-  .q {grid-area: q;}
-  .q-i {grid-area: q-i;}
-  .pn {grid-area: pn;}
-  .pn-i {grid-area: pn-i;}
-  .d {grid-area: d;}
-  .d-i {grid-area: d-i;}
-  .ap-e {
-    grid-area: ap-e;
-    padding: 8px 10px;
-  }
-  .ap {
-    grid-area: ap;
-    padding: 8px 10px;
-  }
-  .bt { grid-area: bt; }
-  .bt-i { grid-area: bt-i; }
-  .e-ap { grid-area: e-ap; }
-  .e { grid-area: e; }
-  .e-i { grid-area: e-i; }
+    "bt bt-i e e-i e-ap";
+}
+.form-container-3 {
+  display: grid;
+  grid-template-columns: 0.4fr 1fr 0.4 1fr;
+  grid-template-areas:
+    "bs bs-i"
+    "bc bc-i"
+    "pn pn-i"
+    "d d-i"
+    "q q-i";
+}
 
-  .payment-method-container {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-  }
+.form-container-4 {
+  display: grid;
+  grid-template-columns: 0.4fr 1fr 0.4fr 1fr;
+  grid-template-areas: "bt bt-i e e-i";
+}
+.form-container-5 {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 0.5fr 0.3fr 0.5fr 1fr;
+  grid-template-areas: "bt bt-i e e-i pn pn-i";
+}
+.bc {
+  grid-area: bc;
+}
+.bc-i {
+  grid-area: bc-i;
+  display: inline-block;
+}
+.q {
+  grid-area: q;
+}
+.q-i {
+  grid-area: q-i;
+  display: inline-block;
+}
+.pn {
+  grid-area: pn;
+}
+.pn-i {
+  grid-area: pn-i;
+  display: inline-block;
+}
+.d {
+  grid-area: d;
+}
+.d-i {
+  grid-area: d-i;
+  display: inline-block;
+}
+.ap-e {
+  display: inline-block;
+}
+.ap {
+  display: inline-block;
+}
+.bt {
+  grid-area: bt;
+}
+.bt-i {
+  grid-area: bt-i;
+}
+.e-ap {
+  grid-area: e-ap;
+}
+.e {
+  grid-area: e;
+}
+.e-i {
+  grid-area: e-i;
+}
 
-  .pad-label {
-    padding: 15px 5px 15px 0px;
-  }
+.payment-method-container {
+  display: inline-block;
+  margin-left: 50px;
+}
 
-  .box2{
-    padding: 0px 12px 0px 2px;
-  }
+.pad-label {
+  padding: 15px 5px 15px 0px;
+}
+.pd-t {
+  padding: 22px 0px 0px 0px;
+  font-size: 11px;
+  font-family: seg;
+  color: #0f2636;
+}
+.pd-t-3 {
+  padding: 15px 0px 0px 0px;
+  font-size: 11px;
+  font-family: seg;
+  color: #0f2636;
+}
+.pd-t-ex {
+  padding: 0px 0px 0px 5px;
+  font-size: 11px;
+  font-family: seg;
+  color: #0f2636;
+}
 
-  .table-container {
-    display: grid;
-    grid-template-columns: 1.5fr 4fr;
-    gap: 0.1em 0.1em;
-  }
+.box2 {
+  display: block;
+}
+.split-container:hover {
+  border: 2px solid #e43d2a;
+}
 
-  .labl-txt{
-    text-align: left;
-    margin-top: 0px;
-    margin-right: 25px;
-    font-size: 20px;
-  }
+.split-container:active {
+  border: 2px solid #e43d2a;
+}
+.product-container:hover {
+  border: 2px solid #e43d2a;
+}
 
-  .box-inner-right{
-    float: right;
-    padding: 20px 20px 0px 20px;
-  }
+.product-container:active {
+  border: 2px solid #e43d2a;
+}
+.table-container {
+  display: grid;
+  grid-template-columns: 1.2fr 5fr;
+  gap: 0.1em 0.1em;
+  font-family: seg;
+}
+.table-container-left {
+  display: grid;
+  grid-template-columns: 1.2fr 5fr;
+  gap: 0.1em 0.1em;
+  font-family: seg;
+  margin-top: 0;
+  background-color: #e43d2a;
+  border-radius: 5px;
+  color: white;
+  font-size: 12px;
+  padding: 4px;
+}
 
-  .btn-mr{
-    margin: 10px;
-  }
+.labl-txt {
+  text-align: left;
+  margin-top: 0px;
+  margin-right: 25px;
+  font-size: 20px;
+}
 
-  .box1-tab {
-    overflow-y: auto;
-    height: $order-item-table-height;
-  }
+.box1,
+.box2 {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.box-inner-right {
+  float: right;
+  padding: 20px 20px 0px 20px;
+}
 
-  .pad-label-side {
-    padding: 15px 5px;
-    text-align: right;
-    width: 40%;
-  }
+.btn-mr {
+  margin: 10px;
+}
 
-  .payment-container {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    gap: 0.1em 0.1em;
-  }
+.box1-tab {
+  overflow-y: auto;
+  height: $order-item-table-height;
+}
 
-  .pr-s-r-table {
-    border: none;
-  }
+.pad-label-side {
+  padding: 15px 5px;
+  text-align: right;
+  width: 40%;
+}
 
-  .pr-s-r-table td {
-    border: none;
-  }
+.payment-container {
+  display: grid;
+  grid-template-columns: 3fr;
+}
 
-  .pr-s-r-table tr:nth-child(even) {
-    background-color: $white-color;
-  }
+.pr-s-r-table {
+  border: none;
+  display: inline-block;
+}
 
-  .pr-s-r-ul {
-    list-style-type: none;
-    margin-block-start: 0px;
-    margin-block-end: 0px;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 0px;
-  }
+.pr-s-r-table td {
+  border: none;
+}
 
-  .out-of-stock {
-    color: $red-color;
-  }
+.pr-s-r-table tr:nth-child(even) {
+  background-color: $white-color;
+}
 
-  .mr-all {
-    margin: 2px 0px 13px 0px;
-  }
+.pr-s-r-ul {
+  list-style-type: none;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0px;
+}
 
-  .mr-l {
-    margin-left: 10px;
-  }
+.out-of-stock {
+  color: $red-color;
+}
 
-  .box-22 {
-    margin-left: 70px;
-  }
+.mr-all {
+  margin: 2px 0px 13px 0px;
+}
 
-  li > div:hover {
-    border: 2px solid $primary-color;
-  }
+.mr-l {
+  margin-left: 10px;
+}
 
-  .order_item_input {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
+/*.box-22 {
+  margin-left: 70px;
+}*/
 
-  option.batches-op{
-    font-weight: 600;
-  }
+/*li > div:hover {
+  border: 2px solid $primary-color;
+}*/
 
-  .search-result-upper {
-    position: absolute;
-    width: 24%;
-    text-align: left;
-    margin-top: -1px;
-    z-index: 3;
-    cursor: default;
-    user-select: none;
-    -webkit-user-select: none;
-  }
+.order_item_input {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
-  .search-result {
-    background-color: $input-background-color;
-    box-shadow: 0 4px 6px rgb(32 33 36 / 28%);
-    display: flex;
-    flex-direction: column;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    padding-bottom: 4px;
-    overflow: hidden;
-  }
+option.batches-op {
+  font-weight: 600;
+}
 
-  .single-search-item {
-    display: flex;
-    padding: 15px;
-    justify-content: space-between;
-  }
+.search-result-upper {
+  position: absolute;
+  width: 24%;
+  text-align: left;
+  margin-top: -1px;
+  z-index: 3;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
 
-  .single-search-item:hover {
-    background-color: $search-hover-color;
-  }
+.search-result {
+  background-color: $input-background-color;
+  box-shadow: 0 4px 6px rgb(32 33 36 / 28%);
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  padding-bottom: 4px;
+  overflow: hidden;
+}
+
+.single-search-item {
+  display: flex;
+  padding: 15px;
+  justify-content: space-between;
+}
+
+.single-search-item:hover {
+  background-color: $search-hover-color;
+}
+.split-container {
+  display: inline-block;
+  margin: 8px;
+}
+.td-head {
+  font-family: seg;
+  font-size: 12px;
+  padding-top: 5px;
+  color: #e43d2a;
+}
+.td-cont {
+  color: #0f2634;
+  font-size: 11px;
+  font-family: seg;
+  font-weight: normal;
+  padding-left: 2px;
+}
+.td-cont-rad {
+  color: #0f2634;
+  font-size: 11px;
+  font-family: seg;
+  font-weight: normal;
+  padding-left: 2px;
+  margin-left: 20px;
+}
+
+float-right {
+  float: right;
+}
+.text-box {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 100px;
+  height: 30px;
+  margin-top: 15px;
+  margin-left:5px;
+  padding: 0px 0px 0px 5px;
+}
+.text-box-med {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 200px;
+  height: 30px;
+  padding: 0px 0px 0px 5px;
+  margin-left:5px;
+}
+.text-box-long {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 125px;
+  height: 30px;
+  margin-top: 15px;
+  padding: 0px 0px 0px 5px;
+  margin-left:5px;
+}
+.text-box-full {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 100%;
+  height: 30px;
+  margin-top: 15px;
+  padding: 0px 0px 0px 5px;
+  margin-bottom: 0px !important;
+  margin-left:5px;
+}
+
+.text-box-sm {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 56px;
+  height: 30px;
+  margin-top: 15px;
+  padding: 0px 0px 0px 5px;
+  display: inline-block;
+  margin-left:5px;
+}
+.select-box {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 56px;
+  height: 30px;
+  margin-top: 15px;
+  margin-left:5px;
+  padding: 0px 0px 0px 5px;
+  display: inline-block;
+}
+.select-box-full {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 100%;
+  height: 30px;
+  margin-top: 15px;
+  padding: 0px 0px 0px 5px;
+  display: inline-block;
+}
+.select-box-ex {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 48px;
+  height: 30px;
+  margin: 8px 0px 0px 5px;
+  padding: 0px 0px 0px 5px;
+  display: inline-block;
+}
+.custom-select:active {
+  border: 3px solid #e43d2a;
+}
+
+.custom-select:hover {
+  border: 3px solid #e43d2a;
+}
+.mr-l {
+  margin-left: 10px !important;
+}
+.mr-l8 {
+  margin-left: 80px !important;
+}
+.mr-l50 {
+  margin-left: 50% !important;
+}
+
+.col-2 {
+  -webkit-box-flex: 0;
+  flex: 0 0 23% !important;
+  max-width: 23% !important;
+}
+.col-3 {
+  -webkit-box-flex: 0;
+  flex: 0 0 27% !important;
+  max-width: 27% !important;
+}
+.col-6 {
+  -webkit-box-flex: 0;
+  flex: 0 0 47%;
+  max-width: 47%;
+}
+.btn-blue {
+  display: inline-block;
+  background-color: #0f2636;
+  font-family: seg;
+  font-size: 12px;
+  margin: 0px 70px 2px 8px;
+  padding: 4px 2px 4px 2px;
+  border-radius: 20px;
+  width: 135px;
+  padding: 5px;
+  cursor: pointer;
+  color: $white-color;
+  border: none;
+  font-weight: bold;
+}
+.btn-blue-3 {
+  background-color: #0f2636;
+  font-family: seg;
+  font-size: 12px;
+  margin: 0px 0px 2px 0px;
+  padding: 4px 2px 4px 2px;
+  border-radius: 20px;
+  width: 135px;
+  padding: 5px;
+  cursor: pointer;
+  color: $white-color;
+  border: none;
+  font-weight: bold;
+}
+.horizontal {
+  left: 50%;
+}
+.block {
+  display: block;
+}
+.btn-red {
+  background-color: #e43d2a;
+  font-family: seg;
+  font-size: 12px;
+  margin: 0px 8px 2px 0px;
+  border-radius: 20px;
+  width: 135px;
+  cursor: pointer;
+  color: $white-color;
+  border: none;
+  padding: 5px;
+  font-weight: bold;
+}
+.btn-red:focus {
+  outline: none;
+}
+btn-blue:focus {
+  outline: none;
+}
+td {
+  font-family: seg;
+  font-size: 10px;
+  text-align: center;
+}
+.checkmark1 {
+  position: absolute;
+  top: 151px;
+  left: 65px;
+  height: 7px;
+  width: 7px;
+  background-color: #e43d2a;
+  border-radius: 50%;
+}
+.search-bar {
+  font-size: 11px;
+  font-family: seg;
+  border-radius: 20px;
+  padding: 7px 0px 7px 30px;
+}
+.form-error-msg {
+  font-size: 9px;
+  font-family: seg;
+  padding: 0 !important;
+  margin: 0px 0px 0px 5px !important;
+}
 </style>
