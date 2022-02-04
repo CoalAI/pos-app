@@ -89,12 +89,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-
 import { ActionTypes } from '@/store/modules/auth/actions';
 import Modal from '@/components/common-components/Modal.vue';
 import Paginator from '@/components/common-components/Paginator.vue';
 import { User } from '@/store/models/user';
-
 export default defineComponent( {
   name: 'User',
   components: {
@@ -123,18 +121,15 @@ export default defineComponent( {
       this.userActivation.id = 0;
       this.userActivation.activate = true;
     },
-
     setUserActivation: function (id: number, activation: boolean) {
       this.userActivation.id = id;
       this.userActivation.activate = activation;
       this.deleteUserModal = true;
     },
-
     closedeleteUserModal: function() {
       this.deleteUserModal = false;
       this.clearUserActivation();
     },
-
     searchUsers: function (event: Event) {
       if (event) {
         event.preventDefault()
@@ -143,7 +138,6 @@ export default defineComponent( {
         search: this.search
       });
     },
-
     toggleActivation: async function () {
       const user: User = {
         id: this.userActivation.id,
@@ -154,14 +148,12 @@ export default defineComponent( {
       this.clearUserActivation();
       this.deleteUserModal = false;
     },
-
     changePage: async function (pageNo: number) {
       await this.getUsers({
         search: this.search,
         page: pageNo
       });
     },
-
     ...mapActions({
       getUsers: ActionTypes.GET_USERS,
       updateUser: ActionTypes.UPDATE_USER
@@ -177,11 +169,9 @@ export default defineComponent( {
   .btn-mr{
     margin: 10px;
   }
-
   .btn-mr-inner{
     margin: 1px 1px 1px 5px;
   }
-
   .pr-var-mr {
     margin: 10px;
   }
