@@ -552,8 +552,8 @@
             </div>
       </div>
       <div id="payment-selection" class="payment-method-container">
-        <div class="flex-box mr-2">
-          <label class="td-cont-rad"
+        <!--<div class="flex-box mr-2">-->
+          <label class="custom-radio inline" style="font-size: 12px; padding-top: 2px"
             >Cash
             <input
               type="radio"
@@ -564,7 +564,7 @@
             />
             <span class="checkmark"></span>
           </label>
-          <label class="td-cont-rad"
+          <label class="custom-radio inline" style="font-size: 12px; padding-top: 2px"
             >Card
             <input
               type="radio"
@@ -575,7 +575,7 @@
             />
             <span class="checkmark"></span>
           </label>
-          <label class="td-cont-rad"
+          <label class="custom-radio inline" style="font-size: 12px; padding-top: 2px"
             >Credit
             <input
               type="radio"
@@ -586,7 +586,7 @@
             />
             <span class="checkmark"></span>
           </label>
-        </div>
+        <!--</div>-->
       </div>
       <div class="boxbtn mr-2 mr-l8">
         <button
@@ -1725,8 +1725,8 @@ export default defineComponent({
 }
 
 .payment-method-container {
-  display: inline-block;
-  margin-left: 50px;
+  display: inline;
+  margin-left:78px;
 }
 
 .pad-label {
@@ -2087,6 +2087,9 @@ float-right {
 .block {
   display: block;
 }
+.inline{
+  display:inline;
+}
 .btn-red {
   background-color: #e43d2a;
   font-family: seg;
@@ -2131,5 +2134,11 @@ td {
   font-family: seg;
   padding: 0 !important;
   margin: 0px 0px 0px 5px !important;
+}
+.custom-radio .checkmark::after{
+  top:4px !important;
+  left:4px !important;
+  width:7px !important;
+  height:7px !important;
 }
 </style>
