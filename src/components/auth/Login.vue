@@ -1,7 +1,8 @@
-<template>
+<template >  
   <div>
-    <h1 class="text-center">CoalDev POS</h1>
-    <!-- <img src="../../assets/logo.png" alt="coaldev"> -->
+    <div class="header">
+    <h1 class="text-center"><img src="../../assets/logo.png" alt="coaldev" class="img-center"></h1>  
+    </div>
     <div class="wrapper mr-6">
       <div class="col">
         <form method="POST" @submit="(e) => e.preventDefault()">
@@ -95,6 +96,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
   .wrapper {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -103,7 +105,7 @@ export default defineComponent({
   }
 
   .col {
-    grid-column: 4/10;
+    grid-column: 5/10;
     border: 1px solid $white-color;
     border-radius: 10px;
     padding: 4em;
@@ -115,5 +117,22 @@ export default defineComponent({
 
   .pad-label {
     padding:20px;
+  }
+  .header{
+    background-color: #e43d2a;
+    width:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    height:150px;
+    border-radius:0px 0px 50px 50px;
+  }
+  .img-center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 15%;
+    height:100%;
+    margin-top:1%;
   }
 </style>
