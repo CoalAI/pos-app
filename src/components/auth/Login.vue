@@ -1,15 +1,15 @@
 <template >  
   <div>
     <div class="header">
-    <h1 class="text-center"><img src="../../assets/logo.png" alt="coaldev" class="img-center"></h1>  
+      <h1 class="text-center"><img src="../../assets/logo.png" alt="coaldev" class="img-center"></h1>  
     </div>
     <div class="wrapper mr-6">
       <div class="col">
         <form method="POST" @submit="(e) => e.preventDefault()">
           <div class="flex-box">
-            <label class="pad-label" for="username">
+            <!--<label class="pad-label" for="username">
               <strong>Username:</strong>
-            </label>
+            </label>-->
             <input
               v-model="username"
               label="Username"
@@ -20,9 +20,9 @@
             />
           </div>
           <div class="flex-box">
-            <label class="pad-label" for="password">
+            <!--<label class="pad-label" for="password">
               <strong>Password:</strong>
-            </label>
+            </label>-->
             <input
               v-model="password"
               id="password"
@@ -109,7 +109,6 @@ export default defineComponent({
     border: 1px solid $white-color;
     border-radius: 10px;
     padding: 4em;
-
     -webkit-box-shadow: 1px 1px 10px -1px $login-shodow-color;
     -moz-box-shadow: 1px 1px 10px -1px $login-shodow-color;
     box-shadow: 1px 1px 10px -1px $login-shodow-color;
