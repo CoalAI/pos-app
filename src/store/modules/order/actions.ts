@@ -39,7 +39,7 @@ export enum ActionTypes {
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
   EMPTY_ORDER = "EMPTY_ORDER",
   FETCH_ANALYTICS = "FETCH_ANALYTICS",
-  PODUCT_QUANTITY = "PODUCT_QUANTITY"
+  PRODUCT_QUANTITY = "PRODUCT_QUANTITY"
 }
 
 
@@ -93,7 +93,7 @@ export interface Actions {
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
   [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any): void;
   [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
-  [ActionTypes.PODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number}): void;
+  [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number}): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -388,11 +388,10 @@ Actions = {
       commit(MutationTypes.SetAnalytics, response.data);
     }
   },
-  async [ActionTypes.PODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company?: number; category?: number}) {
-    const response = await serverRequest('get', `product/?company=${data.company}&category=${data.category}`, true, data);
+  async [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company?: number; category?: number}) {
+    const response = await serverRequest('get', `inventory/?company=${data.company}&batch__product_variant__product__category=${data.category}`, true, data);
     if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetListOfProducts, response.data.results);
+      commit(MutationTypes.SetInventory, response.data.results);
     }
   },
 };
-

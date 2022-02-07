@@ -45,17 +45,17 @@
         </tr>
       </thead>
       <tbody>
-       <tr v-for="data in getProducts.result" :key="data">
-          <th scope="col">{{data.name}}</th>
-          <th scope="col">{{data.category.name}}</th>
-          <th scope="col">{{data.product_variant.batch.quantity}}</th>
-          <th scope="col">{{data.product_variant.price}}</th>
+       <tr v-for="data in inventory" :key="data.id">
+          <td scope="col">{{data.batch.product_variant.product.name}}</td>
+          <td scope="col">{{data.batch.product_variant.product.category}}</td>
+          <td scope="col">{{parseInt(data.quantity)}}</td>
+          <td scope="col">{{data.quantity * data.batch.product_variant.price}}</td>
         </tr>
       </tbody>
     </table>
     <div class="flex-row">
-        <div><b>Total Quantity:</b> 11</div>
-        <div><b>Total Amount:</b> 1100</div>
+        <div><b>Total Quantity:</b> {{inventory.map((item) => parseInt(item.quantity)).reduce((a, b) => a + b, 0)}}</div>
+        <div><b>Total Amount:</b> {{inventory.map((item) => parseInt(item.quantity * item.batch.product_variant.price)).reduce((a, b) => a + b, 0)}}</div>
     </div>
     <div class="flex-container marginTop">
       <button class="btn btn-orange" style="width:80px">Print</button>
@@ -80,7 +80,7 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      products: 'getListOfProducts',
+      inventory: 'getInventory',
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
       categories: 'getCategories'
@@ -98,7 +98,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions({
-      getProducts: ActionTypes.PODUCT_QUANTITY,
+      getProducts: ActionTypes.PRODUCT_QUANTITY,
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       fetchUser: AuthActionTypes.USER_DATA,
       fetchCategories: ActionTypes.FETCH_CATEGORIES,
@@ -108,7 +108,7 @@ export default defineComponent({
          company: this.company,
          category: this.category,
       });
-    }
+    },
   },
   async mounted() {
     await this.fetchUser();
