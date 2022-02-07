@@ -227,10 +227,10 @@ export default defineComponent({
 
   /* Style the indicator (dot/circle) */
   .custom-radio .checkmark:after {
-    top: 9px;
-    left: 9px;
-    width: 8px;
-    height: 8px;
+    top: 4px;
+    left: 4px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: $white-color;
   }
