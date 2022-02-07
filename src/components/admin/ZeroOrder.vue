@@ -2,12 +2,12 @@
   <div id="zero-order">
     <div class="row">
 
-    <div class="split-container diff-shadow col-4" style="margin:10px">
-        <label class="td-head" style="margin-right:132px"
+    <div class="split-container diff-shadow col-3">
+        <label class="td-head"
           ><strong>Date:</strong>
           <label class="td-cont"> {{ date }} </label>
         </label>
-        <label class="td-head"
+        <label class="td-head float-right"
           ><strong>Invoice: </strong>
           <label class="td-cont"> {{ invoiceID }} </label>
         </label>
@@ -140,7 +140,7 @@
                 tabindex="3"
                 name="productBatch"
                 placeholder="Batches:"
-                class="custom-select text-box"
+                class="custom-select text-box-long"
                 v-model="product.batch"
                 ref="batches"
               >
@@ -179,7 +179,7 @@
       </div>
 
       <div id="orderTypes" class="mr-2">
-        <label class="custom-radio" style="margin-right:120px;font-size: 12px; padding-top: 2px"
+        <label class="custom-radio"
           >From Vendor or Department
           <input
             type="radio"
@@ -192,8 +192,7 @@
           <span class="checkmark"></span>
         </label>
         <label
-          class="custom-radio"
-          style="font-size: 12px; padding-top: 2px"
+          class="custom-radio float-right"
           >To Department
           <input
             type="radio"
@@ -206,16 +205,12 @@
           <span class="checkmark"></span>
         </label>
       </div>
-
-      
         <div class="ap-e mr-2">
-          <button class="btn-blue btn-orange ap" @click="clearProduct">
+          <button class="btn-blue ap" @click="clearProduct">
             Clear Product
           </button>
-        </div>
-        <div class="ap mr-2">
           <button
-            class="btn-red btn-orange ap"
+            class="btn-red float-right ap"
             tabindex="7"
             @click="addOrderItem"
             :disabled="addProductButton"
@@ -227,10 +222,10 @@
       
     </div>
 
-    <div class="diff-shadow split-container col-6" style="padding:0.5em; margin:10px">
-      <div class="table-container" style="margin-top: 0; background-color:#e43d2a; border-radius:5px ;color:white; font-size:12px; padding:4px">
+    <div class="diff-shadow split-container col-6">
+      <div class="table-container-left">
         <p><strong>Product Results</strong></p>
-        <p><strong>Order Items</strong></p>
+        <p style="margin-left:2%"><strong>Order Items</strong></p>
       </div>
 
       <!-- Order Items table -->
@@ -271,19 +266,19 @@
           </ul>
         </div>
         <div class="box1-tab">
-          <table style="width: 100%; border-collapse:collapse">
+          <table style="width: 98%; float:right; border-collapse:collapse">
             <colgroup>
               <col span="1" style="width: 1%" />
               <col span="1" style="width: 1%" />
               <col span="1" style="width: 10%" />
-              <col span="1" style="width: 1%" />
+              <col span="1" style="width: 5%" />
               <col span="1" style="width: 1%" />
               <col span="1" style="width: 1%" />
               <col span="1" style="width: 7%" />
               <col span="1" style="width: 7%" />
               <col span="1" style="width: 1%" />
+              <col span="1" style="width: 5%" />
               <col span="1" style="width: 1%" />
-              <col span="1" style="width: 6%" />
             </colgroup>
 
             <tr style= "background-color:#0f2636; color:white; font-size:12px; align-content:centre">
@@ -345,7 +340,7 @@
       </div>
     </div>
 
-    <div class="diff-shadow split-container col-2" style="margin:10px">
+    <div class="diff-shadow split-container col-2">
       <div id="container-zero-order">
         <div id="box1">
           <div>  
@@ -354,7 +349,7 @@
             </label>
             <div class="bc-i">
             <input
-            class="text-box"
+            class="text-box-long"
               v-if="orderType === 'to'"
               type="text"
               name="sellerID"
@@ -364,7 +359,7 @@
             <select
               v-else
               name="sellerID"
-              class="text-box custom-select"
+              class="text-box-long custom-select"
               id="sellerID"
               v-model="seller"
               @change="sellerVendorCheck"
@@ -407,7 +402,7 @@
           </label>
           <div class="q-i">
             <input
-            class="text-box"
+            class="text-box-long"
               v-if="orderType === 'from'"
               type="text"
               name="BuyerID"
@@ -418,7 +413,7 @@
             
               v-else
               name="BuyerID"
-              class="custom-select text-box"
+              class="custom-select text-box-long"
               id="BuyerID"
               v-model="buyer"
             >
@@ -441,7 +436,7 @@
           </div>
 
           <div style="display:inline-block">
-          <label class="pad-label pn" for="totalAmount">
+          <label class="pad-label-ex pn" for="totalAmount">
             <strong>Total Amount:</strong>
           </label>
 
@@ -463,9 +458,8 @@
           </label>
           <div class="d-i">
             <div class="flex-box">
-              <select
+              <input
                 class="text-box-sm"
-                
                 type="number"
                 placeholder="Discount"
                 name="total_discount"
@@ -483,10 +477,10 @@
             <strong>Amount/Per(%):</strong>
             </label>
             <select
-                style="width: 40%; margin-left: 5px"
+                
                 name="discountMethod"
                 v-model="discountMethod"
-                class="text-box"
+                class="text-box-med"
               >
                 <option value="amount">Amount</option>
                 <option value="percentage">Perc (%)</option>
@@ -534,18 +528,17 @@
 
         
       </div>
-      <div id="box2">
+      <div id="box2" class="mr-2">
           <button
-            class="btn-red"
+            class="btn-red mr-l2"
             @click="submitOrder"
-            style="margin-left:10px"
           >
             Submit and Print
           </button>
-          <button class="btn-red" @click="openAddVendorModal" style="margin-left:10px">
+          <button class="btn-red mr-l2" @click="openAddVendorModal">
             Add New Vendor
           </button>
-          <button class="btn-blue" style="margin: 15px 0px 2px 10px" @click="cancelModal = true">
+          <button class="btn-blue-3" @click="cancelModal = true">
             Cancel Order
           </button>
         </div>
@@ -1531,7 +1524,7 @@ export default defineComponent({
 .form-container {
   display: grid;
   grid-template-columns: 0.3fr 0.3fr 0.5fr;
-  grid-gap: 1.2rem 0.5rem;
+  grid-gap: 1.2rem 0.4rem;
   grid-template-areas:
     "bc bc-i q q-i ap-e"
     "pn pn-i d d-i ap"
@@ -1600,6 +1593,7 @@ export default defineComponent({
 .split-container {
   display: inline-block;
   grid-template-columns: 2fr 1fr;
+  margin:10px;
 
 }
 .split-container:hover{
@@ -1615,6 +1609,18 @@ export default defineComponent({
   gap: 0.1em 0.1em;
   font-family:seg;
 }
+.table-container-left {
+  display: grid;
+  grid-template-columns: 1.2fr 5fr;
+  gap: 0.1em 0.1em;
+  font-family:seg;
+  margin-top: 0; 
+  background-color:#e43d2a; 
+  border-radius:5px ;
+  color:white; 
+  font-size:12px; 
+  padding:4px
+}
 
 .box1, .box2{
   margin: 0 !important;;
@@ -1629,7 +1635,24 @@ export default defineComponent({
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 110px;
+  width: 118px;
+  height: 30px;
+  margin-top: 15px;
+  padding: 0px 0px 0px 5px;
+}
+.text-box-med{
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 86px;
+  height: 30px;
+  padding: 0px 0px 0px 5px;
+}
+.text-box-long {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 135px;
   height: 30px;
   margin-top: 15px;
   padding: 0px 0px 0px 5px;
@@ -1639,7 +1662,7 @@ export default defineComponent({
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 40px;
+  width: 95px;
   height: 30px;
   margin-top: 15px;
   padding: 0px 0px 0px 5px;
@@ -1651,11 +1674,14 @@ export default defineComponent({
 }
 
 .mr-l {
-  margin-left: 10px;
+  margin-left: 10px !important;
+}
+.mr-l2{
+  margin-left:20px !important;
 }
 
 .pd-t {
-  padding: 22px 5px 0px 0px;
+  padding: 22px 0px 0px 0px;
   font-size: 11px;
   font-family: seg;
   color: #0f2636;
@@ -1665,6 +1691,12 @@ export default defineComponent({
   font-family: seg;
   font-size: 11px;
   padding: 16px 5px 0px 0px;
+  color: #0f2636;
+}
+.pad-label-ex {
+  font-family: seg;
+  font-size: 11px;
+  padding: 16px 9px 0px 0px;
   color: #0f2636;
 }
 
@@ -1684,7 +1716,21 @@ export default defineComponent({
   background-color:#0f2636;
   font-family:seg;
   font-size: 12px;
-  margin:0px 68px 2px 2px;
+  margin:0px 76px 2px 8px;
+  padding:4px 2px 4px 2px;
+  border-radius: 20px;
+  width: 135px;
+  padding:5px;
+  cursor: pointer;
+  color:$white-color;
+  border:none;
+  font-weight:bold;
+}
+.btn-blue-3{
+  background-color:#0f2636;
+  font-family:seg;
+  font-size: 12px;
+  margin:0px 0px 2px 20px;
   padding:4px 2px 4px 2px;
   border-radius: 20px;
   width: 135px;
@@ -1699,8 +1745,7 @@ export default defineComponent({
   background-color:#e43d2a;
   font-family:seg;
   font-size: 12px;
-  margin:15px 0px 2px 0px;
-  padding:4px 2px 4px 2px;
+  margin:0px 0px 2px 0px;
   border-radius: 20px;
   width: 135px;
   cursor: pointer;
@@ -1708,7 +1753,12 @@ export default defineComponent({
   border:none;
   padding:5px;
   font-weight:bold;
-  //float:right;
+}
+.btn-red:focus{
+  outline: none;
+}
+btn-blue:focus{
+  outline:none;
 }
 
 .btn-mr {
@@ -1805,8 +1855,8 @@ li > div:hover {
 }
 
 #orderTypes .custom-radio {
-  font-size: 11px;
-  display: inline;
+  font-size: 12px; 
+  display:inline-block;
 }
 
 .custom-select:active{
@@ -1815,5 +1865,23 @@ li > div:hover {
 
 .custom-select:hover{
    border:3px solid #e43d2a;
+}
+float-right{
+  float:right;
+}
+.col-2{
+    -webkit-box-flex: 0;
+    flex: 0 0 14% !important;
+    max-width: 14% !important;
+}
+.col-3{
+  -webkit-box-flex: 0;
+  flex: 0 0 27% !important;
+  max-width: 27% !important;
+}
+.col-6{
+  -webkit-box-flex: 0;
+  flex: 0 0 54%;
+  max-width: 54%;
 }
 </style>
