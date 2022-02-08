@@ -1,12 +1,13 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="logo">
-      <router-link v-if="salesStaff" to="/">
+      <!--<router-link v-if="salesStaff" to="/">
         <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
       </router-link>
       <router-link v-else-if="admin" to="/admin/order">
         <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
-      </router-link>
+      </router-link>-->
+      <img class="logo_img" src="../../assets/logo.png" alt="coaldev">
     </div>
     <div class="b">
       <div class="flex-box">
@@ -69,11 +70,12 @@
       </div>
     </div>
     <div class="name user-name">
-      <span class="white-color">
+      <img src="" alt="user" class="user">
+      <div class="white-color">
         <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
         <strong v-else >{{ userdata.username }}</strong>
-      </span>
-      <div class="flex-box">
+      </div>
+      <!--<div class="flex-box">
         <div class="notification" @click="notificationPanel = !notificationPanel">
           <span><img src="../../assets/bell.png" height="30"></span>
           <span v-if="messages.length > 0" class="badge">{{messages.length}}</span>
@@ -84,7 +86,7 @@
             <img v-else src="../../assets/no-signal.png" height="30">
           </span>
         </div>
-      </div>
+      </div>-->
       <div v-show="notificationPanel" class="search-result-upper notification-panel">
         <ul class="search-result">
           <li
@@ -108,10 +110,11 @@
           </li>
         </ul>
       </div>
+      
     </div>
-    <div class="logout">
-        <button class="btn btn-orange" @click="logout">Logout</button>
-    </div>
+  </div>
+  <div class="logout">
+        <button class="btn-lo" @click="logout"><img src="../../assets/wifi.png" alt="logout"></button>
   </div>
 </template>
 
@@ -257,15 +260,15 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  .container {
-    background-color: $header-color;
+  .container-fluid {
+    background-color: #e73b2a;
     padding-bottom: $header-padding-bottom;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.2fr;
     grid-template-rows: 0.4fr;
     gap: 1em 1em;
     grid-template-areas:
-    "logo b b b b b s s s s name logout"
+    "logo b b b b b s s s s name"
   }
   .logo {
     grid-area: logo;
@@ -279,7 +282,8 @@ export default defineComponent({
   }
 
   .logout {
-    grid-area: logout;
+    margin:0 !important;
+    padding:0 !important;
   }
 
   .btn-grid {
@@ -295,7 +299,8 @@ export default defineComponent({
 
   .user-name {
     margin-top: 12px;
-    text-align: right;
+    font-family:seg;
+    //text-align: right;
   }
 
   .search-result-upper {
@@ -393,5 +398,25 @@ export default defineComponent({
     background-color: $primary-color;
     border-radius: 50%;
     display: inline-block;
+  }
+  .user{
+    float:none;
+    display:block;
+    border-radius: 50%;
+    background: white;
+    border:none;
+    width:50px;
+    height:50px;
+  }
+  .btn-lo {
+    //color: $white-color;
+    padding: 0;
+    margin: 0;
+    border: none;
+    cursor: pointer;
+    background-color: #e73b2a;
+    width:50px;
+    left:100%;
+    top:-50px;
   }
 </style>
