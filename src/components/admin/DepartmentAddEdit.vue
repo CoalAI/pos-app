@@ -6,80 +6,88 @@
           <span v-else>Add New</span>
           <span> Department</span>
         </h2>
-        <div class="flex-box">
-          <label class="pad-label w100" for="company-name">
-            <strong>Name:</strong>
-          </label>
-          <div class="full-width">
-            <input
-              name="company-name"
-              type="text"
-              placeholder="Enter Name"
-              v-model="company.name"
-            />
-            <span v-if="comapanyNameValidation" class="form-error">{{comapanyNameValidation}}</span>
+        <div class="upper">
+          <div class="left">
+            <label class="" for="company-name">
+              <strong>Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="company-name"
+                type="text"
+                placeholder="Enter Name"
+                v-model="company.name"
+              />
+              <span v-if="comapanyNameValidation" class="form-error">{{comapanyNameValidation}}</span>
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="products">
+              <strong>Type:</strong>
+            </label>
+            <div class="ab-select-container">
+              <select
+                id="company-type"
+                name="company-type"
+                class=""
+                v-model="company.type"
+              >
+                <option v-for="role in companyTypes" v-bind:key="role" v-bind:value="role">
+                  {{ role }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="products">
-            <strong>Type:</strong>
-          </label>
+        <div class="lower">
+          <div class="left">
+            <label class="" for="company-address">
+              <strong>Address:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="company-address"
+                type="text"
+                placeholder="Enter address"
+                v-model="company.address"
+              />
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="company-number">
+              <strong>Contact:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="company-number"
+                type="text"
+                placeholder="Enter phone number"
+                v-model="company.contactNumber"
+              />
+              <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+            </div>
+          </div>
+        </div>
 
-          <select
-            id="company-type"
-            name="company-type"
-            class="custom-select"
-            v-model="company.type"
-          >
-            <option v-for="role in companyTypes" v-bind:key="role" v-bind:value="role">
-              {{ role }}
-            </option>
-          </select>
-        </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="company-address">
-            <strong>Address:</strong>
-          </label>
-          <div class="full-width">
-            <input
-              name="company-address"
-              type="text"
-              placeholder="Enter address"
-              v-model="company.address"
-            />
+        <div class="ab_btn_container">
+          <div>
+            <button 
+              class="btn btn-orange"
+              :disabled="addEditBtn"
+              @click="addUpdateDepartment"
+            >
+              <span v-if="companyId">Update</span>
+              <span v-else>Add</span>
+              <span> department</span>
+            </button>
           </div>
-        </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="company-number">
-            <strong>Phone Number:</strong>
-          </label>
-          <div class="full-width">
-            <input
-              name="company-number"
-              type="text"
-              placeholder="Enter phone number"
-              v-model="company.contactNumber"
-            />
-            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+          <div>
+            <router-link 
+              to="/departments"
+              style="margin-left: 20px"
+              class="btn btn-blue"
+            >Cancel</router-link>
           </div>
-        </div>
-
-        <div style="text-align: right; padding-bottom: 50px">
-          <router-link 
-            to="/departments"
-            style="margin-right: 20px"
-            class="btn btn-orange btn-mr btn-link"
-          >Cancel</router-link>
-          <button 
-            class="btn btn-orange btn-mr"
-            style="width: 150px"
-            :disabled="addEditBtn"
-            @click="addUpdateDepartment"
-          >
-            <span v-if="companyId">Update</span>
-            <span v-else>Add</span>
-            <span> department</span>
-          </button>
         </div>
       </div>
     </div>
@@ -214,21 +222,56 @@ export default defineComponent({
     padding-right: 15%;
     margin-top: 3%;
   }
-
-  .pad-label {
-    padding: 20px 20px 20px 0px;
+  .diff-shadow > h2{
+    text-align: center;
+    color: $primary-color;
+    margin-bottom: 50px;
   }
-
-  .w100 {
-    width: $w150;
+  .upper{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
   }
-
-  label {
-    text-align: left;
+  .lower{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
   }
-
-  
-  .full-width {
-    width: 100%;
+  .left{
+    width: 40%;
+    display: flex;
+    align-items: baseline;
+  }
+  .right{
+    width: 40%;
+    display: flex;
+    align-items: baseline;
+  }
+  .ab-input-container{
+    flex-grow: 1
+  }
+  .ab-select-container{
+    flex-grow: 1
+  }
+  .upper label{
+    margin-right: 50px;
+    // font-size: 1em;
+  }
+  .lower label{
+    margin-right: 27px;
+  }
+  .ab_btn_container{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+  }
+  .ab_btn_container > div:first-child button:first-child{
+    border-radius: 20px;
+    padding: 8px 50px;
+  }
+  .btn-blue{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 8px 50px;
   }
 </style>
