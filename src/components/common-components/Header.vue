@@ -147,9 +147,7 @@
         <img src="../../assets/summary.png" class="block-align">SUMMARY</router-link>
         <router-link v-show="manager" to="/expense" class="f btn-grid btn-mr">
         <img src="../../assets/finance.png" class="block-align">FINANCE</router-link>
-        <div class="logout">
           <button class="btn-lo" @click="logout"><img src=""></button>
-        </div>
     </div>
     
   </div>
@@ -371,7 +369,7 @@ export default defineComponent({
   }
   .menu-cont{
     display:grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1.2fr  1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr;
     grid-template-areas: 
     "no i s u a p b v d r rs su f";
     background-color: #0b2532;
@@ -379,6 +377,7 @@ export default defineComponent({
     margin: 0 auto;
     border-radius: 0px 0px 15px 15px;
     text-align:center;
+    top:-10px;
   }
 
   .logout {
@@ -402,11 +401,6 @@ export default defineComponent({
     text-align: center;
     border-radius: 0px 0px 20px 20px;
   }
-  .menu-cont :first-child{
-    text-align: left;
-    padding-right:15px;
-  }
-
   .logo_img {
     height: $logo_img_height;
     width: $logo_img_width;
