@@ -119,7 +119,7 @@
   </div>
   <div>
   <div class="b menu-cont">
-        <a class="no btn-grid btn-mr" href="/" v-if="salesStaff" target="_blank">
+        <a class="no btn-grid btn-mr brdr-left" href="/" v-if="salesStaff" target="_blank">
         <img src="../../assets/new-order.png" class="block-align">NEW ORDER</a>
         <a class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
         <img src="../../assets/new-order.png" class="block-align">NEW ORDER</a>
@@ -145,7 +145,7 @@
         <img src="../../assets/responses.png" class="block-align">RESPONSES</router-link>
         <router-link v-show="manager" to="/expense-summary" class="su btn-grid btn-mr">
         <img src="../../assets/summary.png" class="block-align">SUMMARY</router-link>
-        <router-link v-show="manager" to="/expense" class="f btn-grid btn-mr">
+        <router-link v-show="manager" to="/expense" class="f btn-grid btn-mr brdr-right">
         <img src="../../assets/finance.png" class="block-align">FINANCE</router-link>
           <button class="btn-lo" @click="logout"><img src=""></button>
     </div>
@@ -375,11 +375,17 @@ export default defineComponent({
     background-color: #0b2532;
     width:60%;
     margin: 0 auto;
-    border-radius: 0px 0px 15px 15px;
+    border-radius:0px 0px 20px 20px;
     text-align:center;
-    top:-10px;
+    top:-80px;
+    padding: 0px 18px 0px 15px;
   }
-
+  /*.brdr-left{
+    border-radius: 0px 0px 0px 20px;
+  }
+  .brdr-right{
+    border-radius: 0px 0px 20px 0px;
+  }*/
   .logout {
     //grid-area:logout;
     display:inline-block;
@@ -399,7 +405,19 @@ export default defineComponent({
     border: none;
     cursor: pointer;
     text-align: center;
-    border-radius: 0px 0px 20px 20px;
+    padding-bottom: 2px !important;
+  }
+  .btn-grid:hover{
+    outline:none;
+    text-decoration: none;
+  }
+  .btn-grid:active{
+    outline:none;
+    border-bottom: 5px solid #e73b2a;
+  }
+  .btn-grid:focus{
+    outline:none;
+    border-bottom: 5px solid #e73b2a;
   }
   .logo_img {
     height: $logo_img_height;
@@ -576,5 +594,7 @@ export default defineComponent({
   .block-align{
     display: block;
     margin:auto; 
+    width:30px;
+    height: 30px;
   }
 </style>
