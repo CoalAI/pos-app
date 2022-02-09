@@ -226,7 +226,7 @@ export default defineComponent({
   height:70px;
   position:absolute;
   top:-40px;
-  left:calc(50% - 50px);
+  left:calc(50% - 40px);
 }
 form{
   margin-left:18%;
