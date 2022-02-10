@@ -39,7 +39,7 @@
             </form>
           </div>
       </div>
-      <div class="mr-2">
+      <div class="ab-mb-7 mr-2">
         <table>
           <colgroup>
             <col span="1" style="width: 5%;">
@@ -86,8 +86,8 @@
             </td>
           </tr>
         </table>
-        <Paginator :count="counts.companies" @pageChange="changePage"/>
       </div>
+      <Paginator :count="counts.companies" @pageChange="changePage"/>
 
       <!-- The deletion Modal -->
       <Modal v-if="deleteCompanyModal">
@@ -298,6 +298,9 @@ export default defineComponent({
     font-weight:bold;
   }
   // ar custom styles
+  .ab-mb-7{
+    margin-bottom: 70px;
+  }
   .ab_btn{
     color: $white-color;
     text-decoration: none;
