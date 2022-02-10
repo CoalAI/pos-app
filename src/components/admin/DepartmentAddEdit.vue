@@ -78,7 +78,7 @@
             >
               <span v-if="companyId">Update</span>
               <span v-else>Add</span>
-              <span> department</span>
+              <span>New</span>
             </button>
           </div>
           <div>
@@ -218,9 +218,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditdepartment {
-    padding-left: 15%;
-    padding-right: 15%;
+    padding: 2.65% 30%;
+    // padding-left: 15%;
+    // padding-right: 15%;
     margin-top: 3%;
+  }
+  .diff-shadow{
+    padding: 1.65% 7.56%;
   }
   .diff-shadow > h2{
     text-align: center;
@@ -229,23 +233,33 @@ export default defineComponent({
   }
   .upper{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-start;
   }
   .lower{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-start;
   }
   .left{
-    width: 40%;
+    width: 48%;
     display: flex;
     align-items: baseline;
   }
   .right{
-    width: 40%;
+    width: 48%;
     display: flex;
     align-items: baseline;
+  }
+  .ab-select-container > select{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .ab-input-container > input[type=text]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
   }
   .ab-input-container{
     flex-grow: 1
@@ -255,7 +269,10 @@ export default defineComponent({
   }
   .upper label{
     margin-right: 50px;
-    // font-size: 1em;
+    font-size: 0.875em;
+  }
+  .form-error{
+    font-size: 0.65em; 
   }
   .lower label{
     margin-right: 27px;
