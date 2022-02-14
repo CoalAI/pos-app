@@ -7,7 +7,7 @@
       <router-link v-else-if="admin" to="/admin/order">
         <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
       </router-link>-->
-      <img class="logo_img" src="../../assets/logo.png" alt="coaldev">
+      <img class="logo-img-head" src="../../assets/logo.png" alt="coaldev">
     </div>
     <!--<div class="b">
       <div class="flex-box">
@@ -33,7 +33,36 @@
         <router-link v-show="manager" to="/expense" class="btn btn-grid btn-orange btn-mr">Finance</router-link>
       </div>
     </div>-->
-    
+    <div class="b menu-cont">
+        <a class="no btn-grid btn-mr brdr-left active" href="/" v-if="salesStaff" target="_blank">
+        <img :src="order" class="block-align">NEW ORDER</a>
+        <a class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
+        <img :src="order" class="block-align">NEW ORDER</a>
+        <router-link v-show="manager" to="/inventory" class="i btn-grid btn-mr">
+        <img :src="inventory" class="block-align">INVENTORY</router-link>
+        <router-link v-show="superadmin" to="/settings" class="s btn-grid btn-mr">
+        <img :src="settings" class="block-align">SETTINGS</router-link>
+        <router-link v-show="admin" to="/users" class="u btn-grid btn-mr">
+        <img :src="users" class="block-align">USERS</router-link>
+        <router-link v-show="manager" :to="{name: 'order-analytics'}" class="a btn-grid btn-mr">
+        <img :src="analytics" class="block-align">ANALYTICS</router-link>
+        <router-link v-show="admin" to="/products" class="p btn-grid btn-mr">
+        <img :src="products" class="block-align">PRODUCTS</router-link>
+        <router-link v-show="admin" to="/batchs" class="b btn-grid btn-mr">
+        <img :src="batches" class="block-align">BATCHES</router-link>
+        <router-link v-show='admin' to="/vendors" class="v btn-grid btn-mr">
+        <img :src="vendor" class="block-align">VENDORS</router-link>
+        <router-link v-show='admin' to="/departments" class="d btn-grid btn-mr">
+        <img :src="department" class="block-align">DEPARTMENTS</router-link>
+        <router-link v-show="manager" to="/request" class="r btn-grid btn-mr">
+        <img :src="request" class="block-align">REQUEST</router-link>
+        <router-link v-show="manager" to="/response" class="rs btn-grid btn-mr">
+        <img :src="responses" class="block-align">RESPONSES</router-link>
+        <router-link v-show="manager" to="/expense-summary" class="su btn-grid btn-mr">
+        <img :src="summary" class="block-align">SUMMARY</router-link>
+        <router-link v-show="manager" to="/expense" class="f btn-grid btn-mr brdr-right">
+        <img :src="finance" class="block-align">FINANCE</router-link>
+    </div>
     <!--<div class="s">
       <div class="flex-box search-bar">
         <button
@@ -74,7 +103,7 @@
       </div>
     </div>-->
     <div class="name user-name">
-      <img src="" alt="user" class="user">
+      <img src="../../assets/login-user.png" width="50" height="50" alt="user" class="user" >
       <div class="white-color">
         <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
         <strong v-else >{{ userdata.username }}</strong>
@@ -118,39 +147,12 @@
     </div>
   </div>
   <div>
-  <div class="b menu-cont">
-        <a class="no btn-grid btn-mr brdr-left" href="/" v-if="salesStaff" target="_blank">
-        <img src="../../assets/new-order.png" class="block-align">NEW ORDER</a>
-        <a class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
-        <img src="../../assets/new-order.png" class="block-align">NEW ORDER</a>
-        <router-link v-show="manager" to="/inventory" class="i btn-grid btn-mr">
-        <img src="../../assets/inventory.png" class="block-align">INVENTORY</router-link>
-        <router-link v-show="superadmin" to="/settings" class="s btn-grid btn-mr">
-        <img src="../../assets/settings.png" class="block-align">SETTINGS</router-link>
-        <router-link v-show="admin" to="/users" class="u btn-grid btn-mr">
-        <img src="../../assets/users.png" class="block-align">USERS</router-link>
-        <router-link v-show="manager" :to="{name: 'order-analytics'}" class="a btn-grid btn-mr">
-        <img src="../../assets/analystics.png" class="block-align">ANALYTICS</router-link>
-        <router-link v-show="admin" to="/products" class="p btn-grid btn-mr">
-        <img src="../../assets/products.png" class="block-align">PRODUCTS</router-link>
-        <router-link v-show="admin" to="/batchs" class="b btn-grid btn-mr">
-        <img src="../../assets/batches.png" class="block-align">BATCHES</router-link>
-        <router-link v-show='admin' to="/vendors" class="v btn-grid btn-mr">
-        <img src="../../assets/vendors.png" class="block-align">VENDORS</router-link>
-        <router-link v-show='admin' to="/departments" class="d btn-grid btn-mr">
-        <img src="../../assets/department.png" class="block-align">DEPARTMENTS</router-link>
-        <router-link v-show="manager" to="/request" class="r btn-grid btn-mr">
-        <img src="../../assets/requests.png" class="block-align">REQUEST</router-link>
-        <router-link v-show="manager" to="/response" class="rs btn-grid btn-mr">
-        <img src="../../assets/responses.png" class="block-align">RESPONSES</router-link>
-        <router-link v-show="manager" to="/expense-summary" class="su btn-grid btn-mr">
-        <img src="../../assets/summary.png" class="block-align">SUMMARY</router-link>
-        <router-link v-show="manager" to="/expense" class="f btn-grid btn-mr brdr-right">
-        <img src="../../assets/finance.png" class="block-align">FINANCE</router-link>
-          <button class="btn-lo" @click="logout"><img src=""></button>
-    </div>
-    
   </div>
+  <div class="logout">
+    <button class="lg-btn" v-show="toggle" :class="{'fadeInRight animated': animated}" @click="logout" @animationend="animated = false">Logout</button>
+    <button class="btn-lo" @click="animate"><img :src="log"></button>
+  </div>
+
   <div class="s">
       <div class="flex-box search-bar">
         <button
@@ -203,6 +205,22 @@ export default defineComponent({
   name: 'Header',
   data () {
     return{
+      toggle:false,
+      animated:false,
+      order: require('../../assets/new-order.svg'),
+      inventory: require('../../assets/inventory.svg'),
+      users: require('../../assets/users.svg'),
+      request:require('../../assets/request.svg'),
+      analytics: require('../../assets/analytics.svg'),
+      products: require('../../assets/products.svg'),
+      vendor: require('../../assets/Vendors.svg'),
+      batches: require('../../assets/batches.svg'),
+      department: require('../../assets/department.svg'),
+      settings:require('../../assets/request.svg'),
+      responses:require('../../assets/response.svg'),
+      summary:require('../../assets/summary.svg'),
+      finance:require('../../assets/finance.svg'),
+      log:require('../../assets/logout-arrow.svg'),
       orderSearch: '',
       showResult: false,
       notificationPanel: false,
@@ -254,6 +272,10 @@ export default defineComponent({
     },
   },
   methods: {
+    animate(){
+      this.animated = true
+      this.toggle = !this.toggle
+    },
     clear: function () {
       this.orderSearch = '';
       this.showResult = false;
@@ -348,7 +370,7 @@ export default defineComponent({
     background-color: #e73b2a;
     padding-bottom: $header-padding-bottom;
     display: grid;
-    grid-template-columns: 1fr 10fr 0.2fr;
+    grid-template-columns: 1fr 10fr 1fr;
     grid-template-rows: 0.4fr;
     gap: 1em 1em;
     grid-template-areas:
@@ -362,7 +384,7 @@ export default defineComponent({
     //grid-area: s;
     width:30%;
     margin: 0 auto;
-    margin-top:20px !important;
+    margin-top:30px !important;
   }
   .name {
     grid-area: name;
@@ -373,12 +395,15 @@ export default defineComponent({
     grid-template-areas: 
     "no i s u a p b v d r rs su f";
     background-color: #0b2532;
-    width:60%;
+    width:95%;
+    height:78%;
     margin: 0 auto;
     border-radius:0px 0px 20px 20px;
     text-align:center;
-    top:-80px;
+    //top:-80px;
     padding: 0px 18px 0px 15px;
+    margin-top: 59px;
+    margin-bottom: -40px;
   }
   /*.brdr-left{
     border-radius: 0px 0px 0px 20px;
@@ -400,7 +425,7 @@ export default defineComponent({
     font-size: 10px;
     background: #0b2532;
     color: $white-color;
-    padding: 8px;
+    padding: 11px;
     margin: 0;
     border: none;
     cursor: pointer;
@@ -410,25 +435,35 @@ export default defineComponent({
   .btn-grid:hover{
     outline:none;
     text-decoration: none;
-  }
-  .btn-grid:active{
-    outline:none;
     border-bottom: 5px solid #e73b2a;
+  }
+  .btn-grid.router-link-active, .btn-grid.btn-grid.router-link-exact-active{
+    outline:none;
+    border-bottom: 5px solid #e73b2a !important;
+  }
+  .btn-grid:active::after{
+    outline:none;
+    border-bottom: 5px solid #e73b2a !important;
   }
   .btn-grid:focus{
     outline:none;
     border-bottom: 5px solid #e73b2a;
   }
-  .logo_img {
-    height: $logo_img_height;
-    width: $logo_img_width;
-    object-fit: contain;
+  .btn-grid:target{
+    outline:none;
+    border-bottom: 5px solid #e73b2a;
+  }
+  .logo-img-head {
+    height:80px;
+    width:160px;
+    object-fit:cover;
   }
 
   .user-name {
     margin-top: 12px;
     font-family:seg;
-    //text-align: right;
+    text-align: center;
+    padding-right: 14px;
   }
 
   .search-result-upper {
@@ -546,10 +581,34 @@ export default defineComponent({
     float:none;
     display:block;
     border-radius: 50%;
-    background: white;
+    background:white;
     border:none;
     width:50px;
     height:50px;
+    margin-right:auto;
+    margin-left: auto;
+  }
+  .lg-btn{
+    color: white;
+    background-color: #0b2532;
+    font-family: seg;
+    font-size: 12px;
+    display: inline-block;
+    padding: 5px;
+    margin: 0;
+    cursor: pointer;
+    height: 30px;
+    left: calc(100% - 81px);
+    position: absolute;
+    top: 90px;
+    font-weight: bold;
+  }
+  .lg-btn:focus{
+    outline:none;
+  }
+  
+  .btn-lo:focus{
+    outline:none;
   }
   .btn-lo {
     //color: $white-color;
@@ -562,6 +621,7 @@ export default defineComponent({
     width:30px;
     height:30px;
     position:absolute;
+    top:90px;
     left:calc(100% - 30px);
   }
   .search-bar{
@@ -572,7 +632,7 @@ export default defineComponent({
   .btn-search{
     padding:0 !important;
     margin:0 !important;
-    width:20%;
+    width:25%;
     color:white;
     cursor:pointer;
     border:none;
@@ -584,6 +644,8 @@ export default defineComponent({
     border-radius: 40px 0px 0px 40px;
     background-color: #0b2532;
     border: 1px solid #0b2532;
+    padding: 4px !important;
+  
   }
   .btn-right{
     border-radius: 0px 40px 40px 0px;
@@ -596,5 +658,6 @@ export default defineComponent({
     margin:auto; 
     width:30px;
     height: 30px;
+    margin-bottom:5px;
   }
 </style>
