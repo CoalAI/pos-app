@@ -7,7 +7,7 @@
     <div style="background:url(../../assets/login-back.png)">
       <h1 class="head">POS</h1>    
       <div class="col">
-        <img :src="user" class="user"/>
+        <img :src="user" class="user login" width="20" height="20" />
         <form method="POST" @submit="(e) => e.preventDefault()">
           <div class="flex-box">
             <!--<label class="pad-label" for="username">
@@ -181,6 +181,10 @@ export default defineComponent({
     
     
   }
+  .login{
+    width:20px;
+    height:20px;
+  }
   .btn-search {
     border-radius:20px 0px 0px 20px;
     color: $white-color;
@@ -194,6 +198,9 @@ export default defineComponent({
     text-align: center;
     width:20%; 
   }
+  .btn-search:focus{
+    outline:none;
+  }
   .search-box{
     border-radius:0px 20px 20px 0px;
     padding:0px 0px 0px 10px;
@@ -204,6 +211,10 @@ export default defineComponent({
     border: 1px solid #dfe0e1;
     border-right-style:none !important;
 }
+.search-box:focus{
+  outline:none;
+}
+
 .btn-red{
   background-color:#e43d2a;
   font-family:seg;
