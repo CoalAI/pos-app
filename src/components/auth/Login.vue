@@ -7,14 +7,14 @@
     <div style="background:url(../../assets/login-back.png)">
       <h1 class="head">POS</h1>    
       <div class="col">
-        <img src="" class="user"/>
+        <img :src="user" class="user"/>
         <form method="POST" @submit="(e) => e.preventDefault()">
           <div class="flex-box">
             <!--<label class="pad-label" for="username">
               <strong>Username:</strong>
             </label>-->
             <button class="btn-search btn-orange">
-              <img src="" alt="Search">
+              <img :src="luser" alt="Search">
             </button>
             <input
               class="search-input search-box"
@@ -32,7 +32,7 @@
               <strong>Password:</strong>
             </label>-->
             <button class="btn-search btn-orange">
-              <img src="" alt="Search">
+              <img :src="pass" alt="Search">
             </button>
             <input
               class="search-input search-box"
@@ -71,6 +71,9 @@ export default defineComponent({
   name: 'Login',
   data() {
     return {
+      user:require('../../assets/user-login.svg'),
+      pass: require('../../assets/login-password.svg'),
+      luser: require('../../assets/login-user.svg'),
       username: '',
       password: '',
       showLoader:false
