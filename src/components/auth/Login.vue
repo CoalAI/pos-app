@@ -1,15 +1,16 @@
-<template>  
-  <div class="header">
-      <h1 class="text-center"><img src="../../assets/logo.png" alt="coaldev" class="img-center"></h1>  
-  </div>
+<template>
   <div>
-    <div class="wrapper">
-    <div style="background:url(../../assets/login-back.png)">
-      <h1 class="head">POS</h1>    
+    <!--<h1 class="text-center">CoalDev POS</h1>-->
+    <!-- <img src="../../assets/logo.png" alt="coaldev"> -->
+    <div class="header">
+      <img :src="logo" alt="coaldev" class="img-center">  
+    </div>
+    <h2 class="head ">POS</h2>
+    <div class="wrapper mr-top">
       <div class="col">
-        <img :src="user" class="user login" width="20" height="20" />
         <form method="POST" @submit="(e) => e.preventDefault()">
           <div class="flex-box">
+            <img :src="user" class="user login" width="20" height="20" align="center" />
             <!--<label class="pad-label" for="username">
               <strong>Username:</strong>
             </label>-->
@@ -24,8 +25,7 @@
               type="text"
               placeholder="Username"
               required="True"
-            />            
-            
+            />
           </div>
           <div class="flex-box">
             <!--<label class="pad-label" for="password">
@@ -44,7 +44,6 @@
               placeholder="Password"
               required="True"
             />
-            
           </div>
           <span v-if="loginValidation" class="form-error">{{ loginValidation }}</span>
 
@@ -57,7 +56,6 @@
         <Loader v-show="showLoader"/>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -72,9 +70,10 @@ export default defineComponent({
   name: 'Login',
   data() {
     return {
-      user:require('../../assets/user-login.svg'),
+      logo: require('../../assets/login-top-logo.svg'),
       pass: require('../../assets/login-password.svg'),
       luser: require('../../assets/login-user.svg'),
+      user:require('../../assets/user-login.svg'),
       username: '',
       password: '',
       showLoader:false
@@ -113,33 +112,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  body{
-    margin:0;
-    padding:0;
-    background: url(../../assets/login-back.png);
-    background-size: cover;
-    background-position: center;
-  }
   .wrapper {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-auto-rows: minmax(100px, auto);
     gap: 1em;
-    top:50%;
-    left:50%;
-    position:absolute;
   }
 
   .col {
-    box-sizing: border-box;
-    top:84%;
-    left:89%;
-    //position:absolute;
-    width:500px;
-    background-color:#ffffff;
+    grid-column: 6/10;
     border: 1px solid $white-color;
     border-radius: 10px;
-    padding: 2em;
+    padding: 2em 4em;
+    left:-25%;
+
     -webkit-box-shadow: 1px 1px 10px -1px $login-shodow-color;
     -moz-box-shadow: 1px 1px 10px -1px $login-shodow-color;
     box-shadow: 1px 1px 10px -1px $login-shodow-color;
@@ -159,6 +145,7 @@ export default defineComponent({
   .pad-label {
     padding:20px;
   }
+
   .header{
     background-color: #e43d2a;
     width:100%;
@@ -168,25 +155,37 @@ export default defineComponent({
     height:150px;
     border-radius:0px 0px 50px 50px;
   }
+
   .img-center{
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: 15%;
-    height:100%;
-    margin-top:1%;
+    height:95%;
   }
-  .flex-box{
-    width: 250px;
-    height:50px;
-    
-    
+  .mr-top{
+    margin-top:65px;
   }
-  .login{
-    width:20px;
-    height:20px;
-  }
-  .btn-search {
+  .head{
+  color:black;
+  font-size:100px;
+  font-weight:bold;
+  font-family:seg;
+  margin-top:150px;
+  text-align: center;
+}
+.user{
+  outline:none;
+  border:none;
+  background-color:#0f2634;
+  border-radius:50%;
+  width:70px;
+  height:70px;
+  position:absolute;
+  top:-40px;
+  left:calc(50% - 40px);
+}
+.btn-search {
     border-radius:20px 0px 0px 20px;
     color: $white-color;
     //padding: $normal-btn-pad;
@@ -207,7 +206,7 @@ export default defineComponent({
     padding:0px 0px 0px 10px;
     margin:8px 0px 8px 0px;
     font-size:14px;
-    color:#9ea3a6;
+    color: black;
     font-family:seg;
     border: 1px solid #dfe0e1;
     border-right-style:none !important;
@@ -215,12 +214,22 @@ export default defineComponent({
 .search-box:focus{
   outline:none;
 }
-
+.flex-box{
+  width: 250px;
+  height:50px; 
+  margin-left:20px;
+}
+.form-error{
+  font-family:seg;
+  font-size:11px;
+  display:block;
+  margin-left:25px;
+}
 .btn-red{
   background-color:#e43d2a;
   font-family:seg;
   font-size: 12px;
-  margin:8px 0px 2px 60px;
+  margin:31px 0px 2px 82px;
   border-radius: 20px;
   width: 135px;
   cursor: pointer;
@@ -232,28 +241,5 @@ export default defineComponent({
 .btn-red:focus{
   outline: none;
 }
-.user{
-  outline:none;
-  border:none;
-  background-color:#0f2634;
-  border-radius:50%;
-  width:70px;
-  height:70px;
-  position:absolute;
-  top:-40px;
-  left:calc(50% - 40px);
-}
-form{
-  margin-left:18%;
-}
-.form-error{
-  font-family:seg;
-  font-size:11px;
-  display:block;
-}
-.head{
-  color:black;
-  font-size:max;
-  font-family:seg;
-}
+
 </style>
