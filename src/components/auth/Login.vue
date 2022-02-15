@@ -3,7 +3,7 @@
       <h1 class="text-center"><img src="../../assets/logo.png" alt="coaldev" class="img-center"></h1>  
   </div>
   <div>
-    <!--<div class="wrapper"-->
+    <div class="wrapper">
     <div style="background:url(../../assets/login-back.png)">
       <h1 class="head">POS</h1>    
       <div class="col">
@@ -57,6 +57,7 @@
         <Loader v-show="showLoader"/>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
@@ -131,9 +132,9 @@ export default defineComponent({
 
   .col {
     box-sizing: border-box;
-    top:50%;
-    left:34%;
-    position:absolute;
+    top:84%;
+    left:89%;
+    //position:absolute;
     width:500px;
     background-color:#ffffff;
     border: 1px solid $white-color;
