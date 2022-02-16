@@ -338,9 +338,4 @@ export default defineComponent( {
     display: flex;
     justify-content: center;
   }
-
-  // blur content
-  .blur-content{
-    filter: blur(2px); 
-  }
 </style>

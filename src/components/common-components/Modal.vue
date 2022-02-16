@@ -54,7 +54,7 @@ export default defineComponent({
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: $modal-backgorund-color;
+    backdrop-filter: blur(3px);
     display: table;
     
     transition: opacity 0.3s ease;
