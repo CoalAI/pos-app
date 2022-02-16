@@ -218,13 +218,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditdepartment {
-    padding: 2.65% 30%;
+    padding: 2.65% 26%;
     // padding-left: 15%;
     // padding-right: 15%;
     margin-top: 3%;
   }
   .diff-shadow{
-    padding: 1.65% 7.56%;
+    padding: 1.65% 6.56%;
   }
   .diff-shadow > h2{
     text-align: center;
@@ -268,14 +268,14 @@ export default defineComponent({
     flex-grow: 1
   }
   .upper label{
-    margin-right: 50px;
+    margin-right: 30px;
     font-size: 0.875em;
   }
   .form-error{
     font-size: 0.65em; 
   }
   .lower label{
-    margin-right: 27px;
+    margin-right: 8px;
   }
   .ab_btn_container{
     margin-top: 50px;
@@ -290,5 +290,10 @@ export default defineComponent({
     background-color:#0f2636;
     border-radius: 20px;
     padding: 8px 50px;
+  }
+
+  .ab_btn_container a:hover{
+    text-decoration: none;
+    
   }
 </style>

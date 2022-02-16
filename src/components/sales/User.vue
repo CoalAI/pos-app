@@ -2,9 +2,10 @@
   <div class="user-container">
     <div class="diff-shadow">
       <div class="page-upper">
-        <router-link to="/user/create" class="user-btn ab_btn btn-orange">Add New User</router-link>
+        <div>
+          <router-link to="/user/create" class="btn user-btn ab_btn btn-orange">Add New User</router-link>
+        </div>
         <div id="search-container">
-            <span>Search by: User Name, Contact, Company Name</span>
             <form class="ab-form-pos">
                 <input
                   label="Username"
@@ -15,7 +16,7 @@
                   v-model="search"
                   @input="searchUsers"
                 />
-                <button class="ab-pos btn-orange" @click="searchUsers">
+                <button class="btn ab-pos btn-orange" @click="searchUsers">
                   <svg id="White_search_icon" data-name="White search icon" xmlns="http://www.w3.org/2000/svg" width="13.049" height="13.048" viewBox="0 0 13.049 13.048">
                     <path id="Path_99" data-name="Path 99" d="M23.076,23.074a.816.816,0,0,1,1.154,0l3.14,3.14a.816.816,0,0,1-1.153,1.154l-3.14-3.14a.816.816,0,0,1,0-1.154Z" transform="translate(-14.56 -14.558)" fill="#fff" fill-rule="evenodd"/>
                     <path id="Path_100" data-name="Path 100" d="M5.3,9.786A4.485,4.485,0,1,0,.816,5.3,4.485,4.485,0,0,0,5.3,9.786ZM10.6,5.3A5.3,5.3,0,1,1,5.3,0a5.3,5.3,0,0,1,5.3,5.3Z" fill="#fff" fill-rule="evenodd"/>
@@ -59,11 +60,15 @@
               <td>{{user.credit}}</td>
               <td>
                 <div class="flex-box">
-                  <button class="ab_btn btn-orange"  @click="setUserActivation(user.id, user.is_active)">
-                    <span v-if="user.is_active">Deactivate</span>
-                    <span v-else>Activate</span>
-                  </button>
-                  <router-link :to="{name: 'EditUser', params: {userId: user.id}}" class="btn-blue">Edit</router-link>
+                  <div>
+                    <button class="btn ab_btn btn-orange"  @click="setUserActivation(user.id, user.is_active)">
+                      <span v-if="user.is_active">Deactivate</span>
+                      <span v-else>Activate</span>
+                    </button>
+                  </div>
+                  <div>
+                    <router-link :to="{name: 'EditUser', params: {userId: user.id}}" class="btn btn-blue">Edit</router-link>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -73,25 +78,29 @@
       <Paginator :count="counts.users" @pageChange="changePage"/>
 
       <!-- The deletion Modal -->
-      <Modal v-if="deleteUserModal">
-        <template v-slot:header>
-          <h2>Confirm <span v-if="userActivation.activate">deactivation</span><span v-else>Activation</span></h2>
-        </template>
-
-        <template v-slot:body>
-          <p style="text-align: center;">Are you sure you want to <span v-if="userActivation.activate">deactivate</span><span v-else>activate</span> this user?</p>
-        </template>
-
-        <template v-slot:footer>
-          <div class="delete-model-footer-container">
-            <button class="ab_btn btn-orange delete-model-yes-btn" @click="toggleActivation">Yes</button>
-            <button class="btn-blue" @click="closedeleteUserModal">Cancel</button>
-          </div>
-        </template>
-      </Modal>
 
     </div>
   </div>
+  <Modal v-if="deleteUserModal">
+    <template v-slot:header>
+      <h2>Confirm <span v-if="userActivation.activate">deactivation</span><span v-else>Activation</span></h2>
+    </template>
+
+    <template v-slot:body>
+      <p style="text-align: center;">Are you sure you want to <span v-if="userActivation.activate">deactivate</span><span v-else>activate</span> this user?</p>
+    </template>
+
+    <template v-slot:footer>
+      <div class="delete-model-footer-container">
+        <div>
+          <button class="btn ab_btn btn-orange delete-model-yes-btn" @click="toggleActivation">Yes</button>
+        </div>
+        <div>
+          <button class="btn btn-blue" @click="closedeleteUserModal">Cancel</button>
+        </div>
+      </div>
+    </template>
+  </Modal>
 </template>
 
 <script lang="ts">
@@ -194,6 +203,10 @@ export default defineComponent( {
     margin: 10px;
   }
   // ab
+  .btn{
+    border-radius: 0;
+    margin: 0;
+  }
   .user-container{
     // padding: 2.65% 16%;
     max-width: 1140px;
@@ -210,10 +223,6 @@ export default defineComponent( {
   }
   #search-container{
     width: 50%;
-  }
-
-  .user-btn{
-    margin-top: 20px;
   }
 
   .btn-blue{
@@ -328,5 +337,10 @@ export default defineComponent( {
     width: 100%;
     display: flex;
     justify-content: center;
+  }
+
+  // blur content
+  .blur-content{
+    filter: blur(2px); 
   }
 </style>

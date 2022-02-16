@@ -1,13 +1,13 @@
 <template>
     <div class="pagination">
         <ul>
-            <li><a href="#" @click="moveLeft">&lt;&lt;</a></li>
+            <!-- <li><a href="#" @click="moveLeft">&lt;&lt;</a></li> -->
             <li><a href="#" @click="prev">&lt;</a></li>
             <li :class="p===selected?'active':''" v-for="p in pageNo_list" :key="p">
                 <a href="#" @click="pageSelected(p)">{{p}}</a>
             </li>
             <li><a href="#" @click="next">&gt;</a></li>
-            <li><a href="#" @click="moveRight">&gt;&gt;</a></li>
+            <!-- <li><a href="#" @click="moveRight">&gt;&gt;</a></li> -->
         </ul>
         
         
@@ -136,7 +136,7 @@ export default defineComponent({
         display: inline-block;
         text-align: center;
         text-decoration: none;
-        font-size: 12px;
+        font-size: 14px;
         // font-weight: 500;
         display: inline-block;
         width: 100%;
@@ -145,10 +145,14 @@ export default defineComponent({
         color: #0f2634;
     }
     .pagination > ul > li:first-child > a{
-        color: white
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
     }
     .pagination > ul > li:last-child > a{
-      color: white
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
     }
     
     .pagination li:hover {

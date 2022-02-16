@@ -387,7 +387,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditUser {
-    padding: 2.65% 30%;
+    // padding: 2.65% 30%;
+    padding: 2.65% 26%;
     // padding-left: 15%;
     // padding-right: 15%;
     margin-top: 3%;
@@ -396,13 +397,14 @@ export default defineComponent({
     // margin-top: 3%;
   }
   .diff-shadow{
-    padding: 1.65% 7.56%;
+    padding: 1.65% 6.56%;
   }
   .diff-shadow > h2{
     text-align: center;
     color: $primary-color;
     margin-bottom: 50px;
   }
+  
 
   // .pad-label {
   //   padding: 20px 20px 20px 0px;
@@ -425,6 +427,7 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin: 0;
   }
   .left{
     width: 48%;

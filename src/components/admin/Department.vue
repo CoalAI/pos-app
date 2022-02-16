@@ -1,9 +1,11 @@
 <template>
   <div class="department-container">
     <div class="diff-shadow">
-      <div class="search-grid-list-pages">
+      <div class="page-upper">
           <div id="filter-box">
-            <router-link to="/department/create" class="ab_btn btn-orange">Add New Department</router-link>
+            <div>
+              <router-link to="/department/create" class="btn ab_btn btn-orange">Add Department</router-link>
+            </div>
             <span><b>Company:</b></span>
             <select
               id="company-type"
@@ -20,20 +22,19 @@
           </div>
           <!-- <div class="float-right"> -->
           <div class="right-col">
-            <span><i>Search by: Department Name</i></span>
-            <form class="flex-box">
+            <form class="ab-form-pos">
               <input
                 type="text"
                 placeholder="Search"
-                class="search-input"
+                class=""
                 v-model="search"
                 @input="onSearchCompany"
               />
               <!-- <button class="btn btn-orange search-btn" @click="onSearchCompany">Search Department</button> -->
-              <button class="ab-pos btn-orange" @click="onSearchCompany">
-                <svg id="search-icon" class="search-icon" viewBox="0 0 24 24">
-                  <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                  <path d="M0 0h24v24H0z" fill="none"/>
+              <button class="btn ab-pos btn-orange" @click="onSearchCompany">
+                <svg id="White_search_icon" data-name="White search icon" xmlns="http://www.w3.org/2000/svg" width="13.049" height="13.048" viewBox="0 0 13.049 13.048">
+                    <path id="Path_99" data-name="Path 99" d="M23.076,23.074a.816.816,0,0,1,1.154,0l3.14,3.14a.816.816,0,0,1-1.153,1.154l-3.14-3.14a.816.816,0,0,1,0-1.154Z" transform="translate(-14.56 -14.558)" fill="#fff" fill-rule="evenodd"/>
+                    <path id="Path_100" data-name="Path 100" d="M5.3,9.786A4.485,4.485,0,1,0,.816,5.3,4.485,4.485,0,0,0,5.3,9.786ZM10.6,5.3A5.3,5.3,0,1,1,5.3,0a5.3,5.3,0,0,1,5.3,5.3Z" fill="#fff" fill-rule="evenodd"/>
                 </svg>
               </button>
             </form>
@@ -80,7 +81,7 @@
                 <!-- <a class="btn btn-orange btn-mr-inner" @click="openDeleteCompanyModal(company)">delete</a> -->
                 <router-link
                   :to="{name: 'EditDepartment', params: {companyId: company.id}}" 
-                  class="btn-blue ap"
+                  class="tble-btns btn-blue btn"
                 >Edit</router-link>
               </div>
             </td>
@@ -226,7 +227,8 @@ export default defineComponent({
     margin: 10px;
   }
   .department-container{
-    padding: 2.65% 16%;
+    max-width: 1140px;
+    margin: 0 auto;
   }
   .diff-shadow{
     padding: 1.6% 5.5% 5.5% 5.5%;
@@ -283,6 +285,10 @@ export default defineComponent({
   #delete-table tr:nth-child(even) {
     background-color: $white-color;
   }
+  .btn{
+    border-radius: 0;
+    margin: 0;
+  }
   .btn-blue{
     text-decoration: none;
     text-align: center;
@@ -308,15 +314,14 @@ export default defineComponent({
     cursor: pointer;
     font-size: $btn-font-size;
     border-radius: 20px;
+    width: 135px;
   }
   .search-grid-list-pages{
     align-items: center;
   }
-  .right-col > .flex-box{
-    justify-content: end;
-  }
   #filter-box{
-    margin-top: 25px;
+    display: flex;
+    align-items: center;
   }
   #filter-box > span{
     font-size: 12px;
@@ -333,22 +338,68 @@ export default defineComponent({
     border: none;
     cursor: pointer;
   }
-  #search-icon {
+  // #search-icon {
+  //   fill: white;
+  //   width: 24px;
+  //   vertical-align: middle; 
+  //   cursor: pointer;
+  //   background-color: $primary-color;
+  // }
+  // .right-col > span{
+  //   font-size: 0.8em;
+  //   margin: 0 0 0 65px;
+  // }
+  // .right-col > form > input{
+  //   border-radius: 20px;
+  //   margin: 0px;
+  //   padding: 0 70px 0 20px;
+  //   height: 40px;
+  // }
+  .page-upper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ab_btn{
+    color: $white-color;
+    text-decoration: none;
+    padding: 8px 22px;
+    cursor: pointer;
+    font-size: $btn-font-size;
+    border:none;
+    border-radius: 20px;
+  }
+  .ab-form-pos{
+    position: relative;
+    text-align: right;
+    margin-right: 10px;
+  }
+  .ab-pos{
+    position: absolute;
+    width: 50px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    top:0px; 
+    right: 0px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+  }
+  .right-col{
+    width: 50%;
+  }
+  #White_search_icon {
     fill: white;
     width: 24px;
     vertical-align: middle; 
     cursor: pointer;
     background-color: $primary-color;
   }
-  .right-col > span{
-    font-size: 0.8em;
-    margin: 0 0 0 65px;
-  }
   .right-col > form > input{
+    width: 80%;
+    margin: 0;
+    padding: 8px 70px 8px 20px;
     border-radius: 20px;
-    margin: 0px;
-    padding: 0 70px 0 20px;
-    height: 40px;
   }
   
 </style>
