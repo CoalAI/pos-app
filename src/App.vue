@@ -279,7 +279,7 @@ export default defineComponent({
   button:disabled,
   button[disabled]{
     opacity: 0.8;
-    cursor: no-drop;
+    cursor: no-drop !important;
   }
 
   .tbl_item_input {
