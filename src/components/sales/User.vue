@@ -3,7 +3,7 @@
     <div class="diff-shadow">
       <div class="page-upper">
         <div>
-          <router-link to="/user/create" class="btn user-btn ab_btn btn-orange">Add New User</router-link>
+          <router-link to="/user/create" class="user-btn ab_btn btn-orange">Add User</router-link>
         </div>
         <div id="search-container">
             <form class="ab-form-pos">
@@ -61,13 +61,13 @@
               <td>
                 <div class="flex-box">
                   <div>
-                    <button class="btn ab_btn btn-orange"  @click="setUserActivation(user.id, user.is_active)">
+                    <button class="ab_btn btn-orange"  @click="setUserActivation(user.id, user.is_active)">
                       <span v-if="user.is_active">Deactivate</span>
                       <span v-else>Activate</span>
                     </button>
                   </div>
                   <div>
-                    <router-link :to="{name: 'EditUser', params: {userId: user.id}}" class="btn btn-blue">Edit</router-link>
+                    <router-link :to="{name: 'EditUser', params: {userId: user.id}}" class="btn-blue">Edit</router-link>
                   </div>
                 </div>
               </td>
@@ -79,28 +79,28 @@
 
       <!-- The deletion Modal -->
 
+      <Modal v-if="deleteUserModal">
+        <template v-slot:header>
+          <h2>Confirm <span v-if="userActivation.activate">deactivation</span><span v-else>Activation</span></h2>
+        </template>
+
+        <template v-slot:body>
+          <p style="text-align: center;">Are you sure you want to <span v-if="userActivation.activate">deactivate</span><span v-else>activate</span> this user?</p>
+        </template>
+
+        <template v-slot:footer>
+          <div class="delete-model-footer-container">
+            <div>
+              <button class="ab_btn btn-orange delete-model-yes-btn" @click="toggleActivation">Yes</button>
+            </div>
+            <div>
+              <button class="btn-blue" @click="closedeleteUserModal">Cancel</button>
+            </div>
+          </div>
+        </template>
+      </Modal>
     </div>
   </div>
-  <Modal v-if="deleteUserModal">
-    <template v-slot:header>
-      <h2>Confirm <span v-if="userActivation.activate">deactivation</span><span v-else>Activation</span></h2>
-    </template>
-
-    <template v-slot:body>
-      <p style="text-align: center;">Are you sure you want to <span v-if="userActivation.activate">deactivate</span><span v-else>activate</span> this user?</p>
-    </template>
-
-    <template v-slot:footer>
-      <div class="delete-model-footer-container">
-        <div>
-          <button class="btn ab_btn btn-orange delete-model-yes-btn" @click="toggleActivation">Yes</button>
-        </div>
-        <div>
-          <button class="btn btn-blue" @click="closedeleteUserModal">Cancel</button>
-        </div>
-      </div>
-    </template>
-  </Modal>
 </template>
 
 <script lang="ts">
@@ -225,6 +225,10 @@ export default defineComponent( {
     width: 50%;
   }
 
+  .user-btn{
+    width:135px;
+    padding: 8px 22px !important;
+  }
   .btn-blue{
     text-decoration: none;
     text-align: center;
@@ -234,22 +238,35 @@ export default defineComponent( {
     border-radius: 20px;
     // width: 135px;
     // padding:5px;
-    padding: 8px 40px;
+    padding: 6px 40px;
     cursor: pointer;
     color:$white-color;
-    border:none;
-
+    border: 1.5px solid #0f2636 !important;
     // font-weight:bold;
+  }
+  // hover blue
+  .btn-blue:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
   }
   
   .ab_btn{
     color: $white-color;
     text-decoration: none;
-    padding: 8px 22px;
+    padding: 4px 22px;
     cursor: pointer;
     font-size: $btn-font-size;
-    border:none;
+    border: 1.5px solid $primary-color !important;
     border-radius: 20px;
+    outline:none;
+  }
+  // hover
+  .ab_btn:hover{
+    background-color: white;
+    color: $primary-color;
+    border: 1.5px solid $primary-color;
+    // font-weight: bold;
   }
   .ab-form-pos{
     position: relative;
@@ -312,6 +329,7 @@ export default defineComponent( {
   }
   td > .flex-box{
     justify-content: space-around;
+    align-items: center;
   }
   .content{
     background-color: white; 

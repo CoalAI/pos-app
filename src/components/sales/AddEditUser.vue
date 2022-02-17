@@ -161,7 +161,7 @@
       <div class="ab_btn_container">
         <div>
           <button
-            class="btn btn-orange"
+            class="btn ab_orange_hover btn-orange"
             :disabled="addEditBtn"
             @click="addUpdateUser"
           >
@@ -174,7 +174,7 @@
           <router-link
             to="/users"
             style="margin-left: 20px"
-            class="btn btn-blue"
+            class="btn ab_blue_hover btn-blue"
           >Cancel</router-link>
         </div>
       </div>
@@ -479,11 +479,26 @@ export default defineComponent({
   }
   .ab_btn_container > div:first-child button:first-child{
     border-radius: 20px;
-    padding: 8px 50px;
+    padding: 6px 48px;
+    border: 1.5px solid $primary-color !important;
+  }
+  .ab_orange_hover:hover{
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    background-color: white;
   }
   .btn-blue{
     background-color:#0f2636;
     border-radius: 20px;
-    padding: 8px 50px;
+    padding: 6px 48px;
+    border: 1.5px solid #0f2636 !important;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+  .ab_btn_container a{
+    color:white;
   }
 </style>

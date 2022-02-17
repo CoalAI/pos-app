@@ -4,7 +4,7 @@
       <div class="page-upper">
           <div id="filter-box">
             <div>
-              <router-link to="/department/create" class="btn ab_btn btn-orange">Add Department</router-link>
+              <router-link to="/department/create" class="ab_btn btn-orange">Add Department</router-link>
             </div>
             <span><b>Company:</b></span>
             <select
@@ -81,7 +81,7 @@
                 <!-- <a class="btn btn-orange btn-mr-inner" @click="openDeleteCompanyModal(company)">delete</a> -->
                 <router-link
                   :to="{name: 'EditDepartment', params: {companyId: company.id}}" 
-                  class="tble-btns btn-blue btn"
+                  class="tble-btns btn-blue"
                 >Edit</router-link>
               </div>
             </td>
@@ -297,11 +297,18 @@ export default defineComponent({
     font-size: 12px;
     border-radius: 20px;
     width: 135px;
-    padding:5px;
+    padding: 3.5px 3.5px;
+    border: 1.5px solid #0f2636 !important;
     cursor: pointer;
     color:$white-color;
     border:none;
     font-weight:bold;
+  }
+  // hover blue
+  .btn-blue:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
   }
   // ar custom styles
   .ab-mb-7{
@@ -311,10 +318,18 @@ export default defineComponent({
     color: $white-color;
     text-decoration: none;
     padding: $normal-btn-pad;
+    border: 1.5px solid $primary-color !important;
     cursor: pointer;
     font-size: $btn-font-size;
     border-radius: 20px;
     width: 135px;
+  }
+  // hover
+  .ab_btn:hover{
+    background-color: white;
+    color: $primary-color;
+    border: 1.5px solid $primary-color;
+    // font-weight: bold;
   }
   .search-grid-list-pages{
     align-items: center;
