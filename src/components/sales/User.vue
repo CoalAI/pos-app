@@ -47,7 +47,7 @@
             <th>Company</th>
             <th>Contact</th>
             <th>Credit</th>
-            <th></th>
+            <th>Action</th>
           </tr>
           <template v-for="(user, index) in users" v-bind:key="user.id">
             <tr class="fr-row content">
@@ -350,6 +350,7 @@ export default defineComponent( {
   .delete-model-yes-btn{
     width: 117px;
     margin-right: 20px;
+    padding: 6px 40px;
   }
   .delete-model-footer-container{
     width: 100%;

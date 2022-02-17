@@ -61,7 +61,7 @@
             <th>Type</th>
             <th>Credit</th>
             <th>Balance</th>
-            <th>Edit</th>
+            <th>Action</th>
           </tr>
           <tr class="fr-row content" v-for="(company, index) in companies" v-bind:key="company.id">
             <td>{{index + 1}}</td>
@@ -249,7 +249,7 @@ export default defineComponent({
   }
   .fr-row {
     font-size: 12px;
-    font-family: seg;
+    // font-family: seg;
   }
   .header > th{
     text-align: center;
