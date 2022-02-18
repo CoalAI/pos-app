@@ -2,11 +2,11 @@
   <div class="hello">
     <template v-if="getToken">
       <Header />
+      <p class="coaldev-name">Created by CoalDev</p>
     </template>
-    <div class="page-mr">
+    <div class="login-main">
       <router-view />
     </div>
-    <p class="coaldev-name">Created by CoalDev</p>
     <ErrorHandler v-if="getError"></ErrorHandler>
   </div>
 </template>
@@ -62,7 +62,10 @@ li {
   margin-inline-end: 0px;
 }
 
-.page-mr {
-  margin: $page-margin;
+.login-main {
+  // margin: $page-margin;
+  // background:url("../assets/login-back.png") center center fixed;
+  // background-repeat: no-repeat;
+  // background-size: cover;
 }
 </style>
