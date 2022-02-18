@@ -1,16 +1,20 @@
 <template>
-  <div>
+  <div style="background-color: black">
     <!--<h1 class="text-center">CoalDev POS</h1>-->
-    <!-- <img src="../../assets/logo.png" alt="coaldev"> -->
+    <!--<img src="../../assets/login-back.png" alt="coaldev" style="position: absolute; width:100%"> -->
     <div class="header">
-      <img :src="logo" alt="coaldev" class="img-center">  
+      
+      <img :src="logo" alt="coaldev" class="img-center"> 
+      
     </div>
+    
     <h2 class="head ">POS</h2>
     <div class="wrapper mr-top">
+      
       <div class="col">
-        <form method="POST" @submit="(e) => e.preventDefault()">
+        <form method="POST" @submit="(e) => e.preventDefault()" class="mr-1">
           <div class="flex-box">
-            <img :src="user" class="user login" width="20" height="20" align="center" />
+            <img :src="user" class="user login" align="center"/>
             <!--<label class="pad-label" for="username">
               <strong>Username:</strong>
             </label>-->
@@ -56,6 +60,7 @@
         <Loader v-show="showLoader"/>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -167,7 +172,7 @@ export default defineComponent({
     margin-top:65px;
   }
   .head{
-  color:black;
+  color:white;
   font-size:100px;
   font-weight:bold;
   font-family:seg;
@@ -184,6 +189,7 @@ export default defineComponent({
   position:absolute;
   top:-40px;
   left:calc(50% - 40px);
+  background-position:center;
 }
 .btn-search {
     border-radius:20px 0px 0px 20px;
