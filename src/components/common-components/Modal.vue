@@ -56,8 +56,8 @@ export default defineComponent({
     height: 100%;
     backdrop-filter: blur(3px);
     display: table;
-    
     transition: opacity 0.3s ease;
+    padding:2em;
   }
 
   .scroll {
@@ -87,6 +87,8 @@ export default defineComponent({
     box-shadow: 0 2px 8px $modal-shadow-color;
     transition: all 0.3s ease;
     border: 1px solid $primary-color;
+    padding:0em 4em;
+    font-family:seg;
 
     // overflow-y: auto;
     // height: 600px;
@@ -113,6 +115,7 @@ export default defineComponent({
   .modal-footer {
     padding: 10px 16px 10px 16px;
     border: none;
+    justify-content: center;
   }
 
   /*
