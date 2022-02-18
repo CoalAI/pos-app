@@ -72,7 +72,7 @@
         <div class="ab_btn_container">
           <div>
             <button 
-              class="btn btn-orange"
+              class="btn ab_orange_hover btn-orange"
               :disabled="addEditBtn"
               @click="addUpdateDepartment"
             >
@@ -85,7 +85,7 @@
             <router-link 
               to="/departments"
               style="margin-left: 20px"
-              class="btn btn-blue"
+              class="btn ab_blue_hover btn-blue"
             >Cancel</router-link>
           </div>
         </div>
@@ -218,13 +218,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditdepartment {
-    padding: 2.65% 30%;
+    padding: 2.65% 26%;
     // padding-left: 15%;
     // padding-right: 15%;
     margin-top: 3%;
   }
   .diff-shadow{
-    padding: 1.65% 7.56%;
+    padding: 1.65% 6.56%;
   }
   .diff-shadow > h2{
     text-align: center;
@@ -268,14 +268,14 @@ export default defineComponent({
     flex-grow: 1
   }
   .upper label{
-    margin-right: 50px;
+    margin-right: 30px;
     font-size: 0.875em;
   }
   .form-error{
     font-size: 0.65em; 
   }
   .lower label{
-    margin-right: 27px;
+    margin-right: 8px;
   }
   .ab_btn_container{
     margin-top: 50px;
@@ -284,11 +284,29 @@ export default defineComponent({
   }
   .ab_btn_container > div:first-child button:first-child{
     border-radius: 20px;
-    padding: 8px 50px;
+    padding: 6px 48px;
+    border: 1.5px solid $primary-color !important;
+
+  }
+  .ab_orange_hover:hover{
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    background-color: white;
   }
   .btn-blue{
     background-color:#0f2636;
     border-radius: 20px;
-    padding: 8px 50px;
+    padding: 6px 48px;
+    border: 1.5px solid #0f2636 !important;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+
+  .ab_btn_container a{
+    color:white;
+    
   }
 </style>

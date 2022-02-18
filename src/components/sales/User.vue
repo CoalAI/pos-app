@@ -2,9 +2,10 @@
   <div class="user-container">
     <div class="diff-shadow">
       <div class="page-upper">
-        <router-link to="/user/create" class="user-btn ab_btn btn-orange">Add New User</router-link>
+        <div>
+          <router-link to="/user/create" class="user-btn ab_btn btn-orange">Add User</router-link>
+        </div>
         <div id="search-container">
-            <span>Search by: User Name, Contact, Company Name</span>
             <form class="ab-form-pos">
                 <input
                   label="Username"
@@ -15,7 +16,7 @@
                   v-model="search"
                   @input="searchUsers"
                 />
-                <button class="ab-pos btn-orange" @click="searchUsers">
+                <button class="btn ab-pos btn-orange" @click="searchUsers">
                   <svg id="White_search_icon" data-name="White search icon" xmlns="http://www.w3.org/2000/svg" width="13.049" height="13.048" viewBox="0 0 13.049 13.048">
                     <path id="Path_99" data-name="Path 99" d="M23.076,23.074a.816.816,0,0,1,1.154,0l3.14,3.14a.816.816,0,0,1-1.153,1.154l-3.14-3.14a.816.816,0,0,1,0-1.154Z" transform="translate(-14.56 -14.558)" fill="#fff" fill-rule="evenodd"/>
                     <path id="Path_100" data-name="Path 100" d="M5.3,9.786A4.485,4.485,0,1,0,.816,5.3,4.485,4.485,0,0,0,5.3,9.786ZM10.6,5.3A5.3,5.3,0,1,1,5.3,0a5.3,5.3,0,0,1,5.3,5.3Z" fill="#fff" fill-rule="evenodd"/>
@@ -46,7 +47,7 @@
             <th>Company</th>
             <th>Contact</th>
             <th>Credit</th>
-            <th></th>
+            <th>Action</th>
           </tr>
           <template v-for="(user, index) in users" v-bind:key="user.id">
             <tr class="fr-row content">
@@ -59,11 +60,15 @@
               <td>{{user.credit}}</td>
               <td>
                 <div class="flex-box">
-                  <button class="ab_btn btn-orange"  @click="setUserActivation(user.id, user.is_active)">
-                    <span v-if="user.is_active">Deactivate</span>
-                    <span v-else>Activate</span>
-                  </button>
-                  <router-link :to="{name: 'EditUser', params: {userId: user.id}}" class="btn-blue">Edit</router-link>
+                  <div>
+                    <button class="ab_btn btn-orange"  @click="setUserActivation(user.id, user.is_active)">
+                      <span v-if="user.is_active">Deactivate</span>
+                      <span v-else>Activate</span>
+                    </button>
+                  </div>
+                  <div>
+                    <router-link :to="{name: 'EditUser', params: {userId: user.id}}" class="btn-blue">Edit</router-link>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -73,6 +78,7 @@
       <Paginator :count="counts.users" @pageChange="changePage"/>
 
       <!-- The deletion Modal -->
+
       <Modal v-if="deleteUserModal">
         <template v-slot:header>
           <h2>Confirm <span v-if="userActivation.activate">deactivation</span><span v-else>Activation</span></h2>
@@ -84,12 +90,15 @@
 
         <template v-slot:footer>
           <div class="delete-model-footer-container">
-            <button class="ab_btn btn-orange delete-model-yes-btn" @click="toggleActivation">Yes</button>
-            <button class="btn-blue" @click="closedeleteUserModal">Cancel</button>
+            <div>
+              <button class="ab_btn btn-orange delete-model-yes-btn" @click="toggleActivation">Yes</button>
+            </div>
+            <div>
+              <button class="btn-blue" @click="closedeleteUserModal">Cancel</button>
+            </div>
           </div>
         </template>
       </Modal>
-
     </div>
   </div>
 </template>
@@ -194,6 +203,10 @@ export default defineComponent( {
     margin: 10px;
   }
   // ab
+  .btn{
+    border-radius: 0;
+    margin: 0;
+  }
   .user-container{
     // padding: 2.65% 16%;
     max-width: 1140px;
@@ -213,9 +226,9 @@ export default defineComponent( {
   }
 
   .user-btn{
-    margin-top: 20px;
+    width:135px;
+    padding: 8px 22px !important;
   }
-
   .btn-blue{
     text-decoration: none;
     text-align: center;
@@ -225,22 +238,35 @@ export default defineComponent( {
     border-radius: 20px;
     // width: 135px;
     // padding:5px;
-    padding: 8px 40px;
+    padding: 6px 40px;
     cursor: pointer;
     color:$white-color;
-    border:none;
-
+    border: 1.5px solid #0f2636 !important;
     // font-weight:bold;
+  }
+  // hover blue
+  .btn-blue:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
   }
   
   .ab_btn{
     color: $white-color;
     text-decoration: none;
-    padding: 8px 22px;
+    padding: 4px 22px;
     cursor: pointer;
     font-size: $btn-font-size;
-    border:none;
+    border: 1.5px solid $primary-color !important;
     border-radius: 20px;
+    outline:none;
+  }
+  // hover
+  .ab_btn:hover{
+    background-color: white;
+    color: $primary-color;
+    border: 1.5px solid $primary-color;
+    // font-weight: bold;
   }
   .ab-form-pos{
     position: relative;
@@ -303,6 +329,7 @@ export default defineComponent( {
   }
   td > .flex-box{
     justify-content: space-around;
+    align-items: center;
   }
   .content{
     background-color: white; 
@@ -323,6 +350,7 @@ export default defineComponent( {
   .delete-model-yes-btn{
     width: 117px;
     margin-right: 20px;
+    padding: 6px 40px;
   }
   .delete-model-footer-container{
     width: 100%;
