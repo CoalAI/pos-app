@@ -6,81 +6,182 @@
           <span v-else>Add New</span>
           <span>Product</span>
         </h2>
-        <div class="flex-box">
-          <label class="pad-label w100" for="name">
-            <strong>Name:</strong>
-          </label>
-          <div style="width: 100%">
-            <input
-              name="name"
-              type="text"
-              placeholder="Enter product name"
-              :maxlength="maxlength.name"
-              v-model="product.name"
-            />
-            <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
-            <ErrorField v-if="fieldErrors.name" :errorField="fieldErrors.name"></ErrorField>
+        <div class="first-row row">
+          <div class="left">
+            <label class="" for="name">
+              <strong>Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="name"
+                type="text"
+                placeholder="Enter product name"
+                :maxlength="maxlength.name"
+                v-model="product.name"
+              />
+              <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
+              <ErrorField v-if="fieldErrors.name" :errorField="fieldErrors.name"></ErrorField>
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="barcode">
+              <strong>Bar code:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="barcode"
+                type="text"
+                placeholder="Enter product bar-code"
+                :maxlength="maxlength.barcode"
+                v-model="product.barcode"
+              />
+              <span v-if="productBarCodeValidation" class="form-error">{{productBarCodeValidation}}</span>
+              <ErrorField v-if="fieldErrors.bar_code" :errorField="fieldErrors.bar_code"></ErrorField>
+            </div>
           </div>
         </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="barcode">
-            <strong>Bar code:</strong>
-          </label>
-          <div style="width: 100%">
-            <input
-              name="barcode"
-              type="text"
-              placeholder="Enter product bar-code"
-              :maxlength="maxlength.barcode"
-              v-model="product.barcode"
-            />
-            <span v-if="productBarCodeValidation" class="form-error">{{productBarCodeValidation}}</span>
-            <ErrorField v-if="fieldErrors.bar_code" :errorField="fieldErrors.bar_code"></ErrorField>
+        <div class="second-row row">
+          <div class="left">
+            <label class="" for="category">
+              <strong>Category:</strong>
+            </label>
+            <div class="ab-select-container">
+              <select
+                  tabindex="3"
+                  name="category"
+                  class="custom-select"
+                  v-model="product.category"
+                  ref="batches"
+                >
+                  <option :value="0">No Category</option>
+                  <option v-for="category in categories" :key="category.id" :value="category.id">
+                    {{ category.name }}
+                  </option>
+              </select>
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="unit">
+              <strong>Unit:</strong>
+            </label>
+            <div class="ab-select-container">
+              <select 
+                name="unit"
+                class="custom-select"
+                id="unit"
+                v-model="product.unit"
+              >
+                <option value="">No Unit</option>
+                <option v-for="unit in units" v-bind:key="unit.id" v-bind:value="unit.id">
+                  {{ unit.name }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="category">
-            <strong>Category:</strong>
-          </label>
-          <select
-              tabindex="3"
-              name="category"
-              class="custom-select"
-              v-model="product.category"
-              ref="batches"
-            >
-              <option :value="0">No Category</option>
-              <option v-for="category in categories" :key="category.id" :value="category.id">
-                {{ category.name }}
-              </option>
-            </select>
+        <div class="third-row full-row">
+          <div>
+            <label class="" for="token">
+              <strong>Token Printing:</strong>
+            </label>
+            <input style="" type="checkbox" id="token" name="token" v-model="product.token">
+          </div>
+          <div>
+            <label for="color">
+              <strong>Color:</strong>
+            </label>
+            <input
+              class="pr-var-mr"
+              name="colorcode"
+              type="text"
+              placeholder="Color"
+              :maxlength="maxlength.color"
+              v-model="currentProductVariant.color"
+            />
+          </div>
+          <div>
+            <label for="size"><strong>Size:</strong></label>
+            <input
+              class="pr-var-mr"
+              name="size"
+              type="text"
+              placeholder="Size"
+              :maxlength="maxlength.size"
+              v-model="currentProductVariant.size"
+            />
+          </div>
+          <div>
+            <label for="price"><strong>Price:</strong></label>
+            <input
+              class="pr-var-mr"
+              name="price"
+              type="number"
+              placeholder="Price"
+              v-model="currentProductVariant.price"
+            />
+          </div>
+          <div>
+            <label for="sale_price"><strong>Sale Price:</strong></label>
+            <input
+              class="pr-var-mr"
+              name="sale_price"
+              type="number"
+              placeholder="S.Price"
+              v-model="currentProductVariant.sale_price"
+            />
+          </div>
         </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="unit">
-            <strong>Unit:</strong>
-          </label>
-
-          <select 
-            name="unit"
-            class="custom-select"
-            id="unit"
-            v-model="product.unit"
-          >
-            <option value="">No Unit</option>
-            <option v-for="unit in units" v-bind:key="unit.id" v-bind:value="unit.id">
-              {{ unit.name }}
-            </option>
-          </select>
+        <!-- <p><span><strong>Product Variants</strong></span></p> -->
+        <div class="forth-row">
+          <!-- <div class="flex-box">
+            <input
+              class="pr-var-mr"
+              name="colorcode"
+              type="text"
+              placeholder="Color"
+              :maxlength="maxlength.color"
+              v-model="currentProductVariant.color"
+            />
+            <input
+              class="pr-var-mr"
+              name="size"
+              type="text"
+              placeholder="Size"
+              :maxlength="maxlength.size"
+              v-model="currentProductVariant.size"
+            />
+            <input
+              class="pr-var-mr"
+              name="price"
+              type="number"
+              placeholder="Price"
+              v-model="currentProductVariant.price"
+            />
+            <input
+              class="pr-var-mr"
+              name="sale_price"
+              type="number"
+              placeholder="Sale Price"
+              v-model="currentProductVariant.sale_price"
+            />
+          </div> -->
+          <label for="description"><strong>Description:</strong></label>
+          <div>
+            <textarea 
+              name="description"
+              rows="3"
+              placeholder="Description"
+              :maxlength="maxlength.description"
+              v-model="currentProductVariant.description"
+            ></textarea>
+            <span v-if="VariantPriceValidation" class="form-error">{{ VariantPriceValidation }}</span>
+          </div>
+          <!-- <div class="mr-2">
+            <button style="width: 150px" class="btn btn-orange" @click="addProductVariant" >Add another Variant</button>
+          </div> -->
         </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="token">
-            <strong>Token Printing:</strong>
-          </label>
-          <input style="margin-top: 21px" type="checkbox" id="token" name="token" v-model="product.token">
-        </div>
-        <p><span><strong>Product Variants</strong></span></p>
-        <div class="product_Variant_box">
-          <table class="mr-2">
+        <div class="fifth-row">
+          <table class="">
             <colgroup>
               <col span="1" style="width: 14%;">
               <col span="1" style="width: 14%;">
@@ -148,69 +249,33 @@
           <span v-if="tablePriceValidation" class="form-error">{{ tablePriceValidation }}.</span>
           <span v-if="updateDeleteLastVarient" class="form-error"> {{ updateDeleteLastVarient }}</span>
         </div>
-        <p class="mr-2"><span><strong>Add New Product Variants</strong></span></p>
-        <div style="margin-bottom: 20px">
-          <div class="flex-box">
-            <input
-              class="pr-var-mr"
-              name="colorcode"
-              type="text"
-              placeholder="Color"
-              :maxlength="maxlength.color"
-              v-model="currentProductVariant.color"
-            />
-            <input
-              class="pr-var-mr"
-              name="size"
-              type="text"
-              placeholder="Size"
-              :maxlength="maxlength.size"
-              v-model="currentProductVariant.size"
-            />
-            <input
-              class="pr-var-mr"
-              name="price"
-              type="number"
-              placeholder="Price"
-              v-model="currentProductVariant.price"
-            />
-            <input
-              class="pr-var-mr"
-              name="sale_price"
-              type="number"
-              placeholder="Sale Price"
-              v-model="currentProductVariant.sale_price"
-            />
-          </div>
-          <textarea 
-            name="description"
-            rows="3"
-            placeholder="description"
-            :maxlength="maxlength.description"
-            v-model="currentProductVariant.description"
-          ></textarea>
-          <span v-if="VariantPriceValidation" class="form-error">{{ VariantPriceValidation }}</span>
-          <div class="mr-2">
-            <button style="width: 150px" class="btn btn-orange" @click="addProductVariant" >Add another Variant</button>
-          </div>
+        <div class="p-error-div">
+          <p v-if="productVariantValidation" class="p-error form-error">{{productVariantValidation}}</p>
         </div>
-        <p v-if="productVariantValidation" class="form-error">{{productVariantValidation}}</p>
-        <div style="text-align: right; padding-bottom: 50px">
-          <router-link
-            to="/products"
-            style="margin-right: 20px"
-            class="btn btn-orange btn-mr btn-link"
-          >Cancel</router-link>
-          <button
-            class="btn btn-orange btn-mr"
-            style="width: 150px"
-            :disabled="addEditBtn"
-            @click="addUpdateProduct"
-          >
-            <span v-if="productId">Update</span>
-            <span v-else>Add</span>
-            <span> Product</span>
-          </button>
+        <!-- <p class="mr-2"><span><strong>Add New Product Variants</strong></span></p> -->
+        <div class="ab_btn_container">
+          <div>
+            <button class="btn ab_orange_hover btn-orange" @click="addProductVariant" >Add another Variant</button>
+          </div>
+          <div>
+            <button
+              class="btn ab_orange_hover btn-orange"
+              style=""
+              :disabled="addEditBtn"
+              @click="addUpdateProduct"
+            >
+              <span v-if="productId">Update</span>
+              <span v-else>Add</span>
+              <span> New</span>
+            </button>
+          </div>
+          <div>
+            <router-link
+              to="/products"
+              style="margin-right: 20px"
+              class="btn ab_blue_hover btn-blue"
+            >Cancel</router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -469,26 +534,231 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+  // #AddEditProduct {
+  //   padding-left: 15%;
+  //   padding-right: 15%;
+  //   margin-top: 3%;
+  // }
+
+  // .pad-label {
+  //   padding: 20px 20px 20px 0px;
+  // }
+
+  // .w100 {
+  //   width: $w80;
+  // }
+
+  // label {
+  //   text-align: left;
+  // }
+
+  // .product_Variant_box {
+  //   overflow-y: auto;
+  //   height: 180px;
+  // }
+
+
+
+  // ab css
   #AddEditProduct {
-    padding-left: 15%;
-    padding-right: 15%;
+    // padding: 2.65% 30%;
+    padding: 2.65% 26%;
+    // padding-left: 15%;
+    // padding-right: 15%;
     margin-top: 3%;
+    // padding-left: 15%;
+    // padding-right: 15%;
+    // margin-top: 3%;
+  }
+  .diff-shadow{
+    padding: 1.65% 6.56%;
+  }
+  .diff-shadow > h2{
+    text-align: center;
+    color: $primary-color;
+    margin-bottom: 50px;
   }
 
-  .pad-label {
-    padding: 20px 20px 20px 0px;
+
+  .row{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
+  }
+  .left{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .right{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .ab-select-container > select{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .ab-input-container > input[type=text]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container > input[type=password]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .ab-select-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .row  label{
+    // margin-right: 50px;
+    width: 25%;
+    font-size: 0.875em;
+  }
+  .form-error{
+    font-size: 0.65em; 
   }
 
-  .w100 {
-    width: $w80;
+  // full row designs
+  .full-row{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .full-row div{
+    display: flex;
+    align-items: baseline;
+    flex-grow: 1;
+  }
+  .full-row div > label{
+    font-size: 0.875em;
+    margin: 0 7px;
+    // font-size: 13px;
+    // font-weight: bold;
+  }
+  .full-row div:first-child{
+    align-items: center;
+
+  }
+  .full-row div:first-child > label{
+    margin: 0 7px 0 0;
+    width: 64px; 
+
+  }
+  .full-row div > input[type=text]{
+    width: 68px;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    flex-grow: 1;
+  }
+  .full-row div > input[type=number]{
+    width: 90px;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    flex-grow: 1;
   }
 
-  label {
-    text-align: left;
+  // forth-row designs
+  .forth-row{
+    display: flex;
+    justify-content: space-between;
+  }
+  .forth-row > label{
+    // width: 111.58px;
+    // margin-right: 10px;
+    font-size: 0.875em;
+    width: 13%
+  }
+  .forth-row > div{
+    width: 86%;
+    // flex-grow: 1;
   }
 
-  .product_Variant_box {
-    overflow-y: auto;
-    height: 180px;
+  // table designs
+  .fifth-row{
+    display: flex;
+    justify-content: flex-end;
   }
+  .fifth-row > table{
+    border-collapse: collapse;
+    border-radius: 7px 7px 0 0;
+    overflow: hidden;
+    width: 86%;
+  }
+  .fifth-row > table > tr th{
+    padding: 3px 0;
+    font-size: 13px;
+    background-color: $primary-color;
+    color: white;
+    text-align: center;
+  }
+  .fifth-row > table > tr td{
+    padding: 3px 0;
+    font-size: 13px;
+  }
+  .fifth-row > table > tr td > input{
+    
+    text-align: center;
+  }
+  // p error
+  .p-error-div{
+    display: flex;
+    justify-content: flex-end;
+  }
+  .p-error{
+    width: 86%;
+
+  }
+  // .fifth-row > table
+
+  .ab_btn_container{
+    margin-top: 50px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .ab_btn_container > div{
+    margin: 0 10px;
+  }
+  .ab_btn_container > div:first-child button:first-child{
+    border-radius: 20px;
+    padding: 6px 40px;
+    border: 1.5px solid $primary-color !important;
+  }
+  .ab_btn_container > div:nth-child(2) button:first-child{
+    border-radius: 20px;
+    padding: 6px 40px;
+    border: 1.5px solid $primary-color !important;
+  }
+  .ab_orange_hover:hover{
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    background-color: white;
+  }
+  .btn-blue{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid #0f2636 !important;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+  .ab_btn_container a{
+    color:white;
+  }
+  
 </style>
