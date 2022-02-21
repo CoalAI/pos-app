@@ -105,39 +105,45 @@
           </template>
         </table>
       </div>
-      <div id="Balance-information" class="mr-2">
-        <label class="pad-label" for="balance">
-          <strong>Current Balance:</strong>
-        </label>
-        <div>
-          <input
-            name="balance"
-            type="text"
-            :value="getBalance"
-            readonly
-          />
+      <div id="Balance-information">
+        <div class="balance-info-1">
+          <label class="" for="balance">
+            <strong>Current Balance:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="balance"
+              type="text"
+              :value="getBalance"
+              readonly
+            />
+          </div>
         </div>
-        <label class="pad-label" for="Starting-Balance">
-          <strong>Starting Balance:</strong>
-        </label>
-        <div>
-          <input
-            name="Starting-Balance"
-            type="text"
-            value="0.0000"
-            readonly
-          />
+        <div class="balance-info-2">
+          <label class="" for="Starting-Balance">
+            <strong>Starting Balance:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="Starting-Balance"
+              type="text"
+              value="0.0000"
+              readonly
+            />
+          </div>
         </div>
-        <label class="pad-label" for="expense">
-          <strong>Total Expense:</strong>
-        </label>
-        <div>
-          <input
-            name="expense"
-            type="text"
-            :value="totalExpense"
-            readonly
-          />
+        <div class="balance-info-3">
+          <label class="" for="expense">
+            <strong>Total Expense:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="expense"
+              type="text"
+              :value="totalExpense"
+              readonly
+            />
+          </div>
         </div>
       </div>
       <Paginator :count="counts.transactions" @pageChange="changePage"/>
@@ -266,49 +272,65 @@ export default defineComponent({
   // .e-i {grid-area: e-i;}
   // .b {grid-area: b;}
 
+  // #Balance-information {
+  //   display: grid;
+  //   grid-template-columns: 0.3fr 1fr 0.3fr 1fr;
+  //   grid-template-rows: 1fr 1fr;
+  // }
   #Balance-information {
-    display: grid;
-    grid-template-columns: 0.3fr 1fr 0.3fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    display: flex;
+    margin-bottom: 70px;
+  }
+  #Balance-information > div{
+    display: flex;
+    align-items: baseline;
+    margin-right: 20px;
+  }
+  #Balance-information > div > label{
+    font-size: 13px;
+    margin-right: 10px;
+  }
+  #Balance-information .ab-input-container{
+    width: 100px;
   }
 
-  .btn-mr{
-    margin: 10px;
-  }
+  // .btn-mr{
+  //   margin: 10px;
+  // }
 
-  .btn-mr-inner{
-    margin: 1px 1px 1px 5px;
-  }
+  // .btn-mr-inner{
+  //   margin: 1px 1px 1px 5px;
+  // }
 
-  .pr-var-mr {
-    margin: 10px;
-  }
+  // .pr-var-mr {
+  //   margin: 10px;
+  // }
 
-  #company-type {
-    width: $w200;
-    margin-left: 5%;
-  }
+  // #company-type {
+  //   width: $w200;
+  //   margin-left: 5%;
+  // }
 
-  #delete-table td {
-    border: none;
-  }
+  // #delete-table td {
+  //   border: none;
+  // }
 
-  #delete-table tr:nth-child(even) {
-    background-color: $white-color;
-  }
+  // #delete-table tr:nth-child(even) {
+  //   background-color: $white-color;
+  // }
 
-  .pad-label {
-    padding: 20px 20px 20px 0px;
-  }
+  // .pad-label {
+  //   padding: 20px 20px 20px 0px;
+  // }
 
-  .mr-l {
-    margin-left: 10px;
-  }
+  // .mr-l {
+  //   margin-left: 10px;
+  // }
 
-  .box1-tab {
-    overflow-y: auto;
-    height: $order-item-table-height;
-  }
+  // .box1-tab {
+  //   overflow-y: auto;
+  //   height: $order-item-table-height;
+  // }
 
   // ab css 
   .summary-container{
@@ -392,6 +414,11 @@ export default defineComponent({
   // input type date designs
   .ab-input-container > input[type=date]{
     padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container > input[type=text]{
+    padding: 12px 18px;
     border-radius: 10px;
     font-size: 0.75em;
   }
