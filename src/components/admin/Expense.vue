@@ -1,18 +1,44 @@
 <template>
   <Alert v-if="create_expense" type="success" >"Transaction Successful!"</Alert>
   <div id="expense">
-    <div class="diff-shadow">
-      <ul class="nav nav-tabs">
+    <!--<div class="diff-shadow">-->
+      <div class="diff-box">
+      <h3 class="head">Finance</h3>
+
+  <nav class="navbar navbar-expand-lg ">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item"  @click="expenseMethod = 'Received'" 
+        :class="expenseMethod === 'Received' ? 'nav-link active' : 'nav-link'" >
+          Cash Received
+        </a>
+        <a class="nav-item" @click="expenseMethod = 'Debit'" 
+        :class="expenseMethod === 'Debit' ? 'nav-link active' : 'nav-link'"  >
+          Debit
+        </a>
+        <a class="nav-item" @click="expenseMethod = 'Credit'" 
+        :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'" >
+          Credit
+        </a>
+        <a class="nav-item"  @click="expenseMethod = 'Journal Entry'" 
+        :class="expenseMethod === 'Journal Entry' ? 'nav-link active' : 'nav-link'" >
+          Journal Entry
+        </a>
+      </div>
+    </div>
+  </nav>
+      <!--<ul class="nav nav-tabs">
         <li class="nav-item" @click="expenseMethod = 'Received'">
-          <span :class="expenseMethod === 'Received' ? 'nav-link active' : 'nav-link'">
+          <a :class="expenseMethod === 'Received' ? 'nav-link active' : 'nav-link'">
             <strong>Cash Received</strong>
-          </span>
+          </a>
         </li>
         <li class="nav-item" @click="expenseMethod = 'Debit'">
-          <span :class="expenseMethod === 'Debit' ? 'nav-link active' : 'nav-link'">
+          <a :class="expenseMethod === 'Debit' ? 'nav-link active' : 'nav-link'">
             <strong>Debit</strong>
-          </span>
+          </a>
         </li>
+      </ul>
          <li class="nav-item" @click="expenseMethod = 'Credit'">
           <span :class="expenseMethod === 'Credit' ? 'nav-link active' : 'nav-link'">
             <strong>Credit</strong>
@@ -23,121 +49,146 @@
             <strong>Journal Entry</strong>
           </span>
         </li>
-        <!-- <li class="nav-item" @click="expenseMethod = 'Expense'">
+         <li class="nav-item" @click="expenseMethod = 'Expense'">
           <span :class="expenseMethod === 'Expense' ? 'nav-link active' : 'nav-link'">
             <strong>Expense</strong>
           </span>
-        </li> -->
-      </ul>
-      <h2>{{expenseMethod}}</h2>
+        </li>
+      </ul>-->
+    
+      <!--<h2>{{expenseMethod}}</h2>-->
       <template v-if="expenseMethod === 'Received' || expenseMethod === 'Journal Entry'">
         <div class="flex-box">
-          <label class="pad-label w100" for="products">
+          <label class="pad-label" for="products">
             <strong>Payor:</strong>
           </label>
           <select
             id="user-dropdown"
             name="user-dropdown"
-            class="custom-select"
+            class="custom-select text-box mr-mm"
             v-model="transaction.payor"
           >
             <option :value="-1">SELF</option>
             <option disabled>---User---</option>
             <option class="batches-op" v-for="item in creditUsers"
               v-bind:key="item.id" v-bind:value="item.id">
-              <span>{{item.username}} - {{item.company.company_name}}</span>
+              <span>{{item?.username}}  {{item?.company?.company_name}}</span>
             </option>
           </select>
-        </div>
-      </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Journal Entry' || expenseMethod === 'Credit'">
-        <div class="flex-box">
-          <label class="pad-label w100" for="products">
-            <strong>Payee:</strong>
-          </label>
-          <select
-            id="user-dropdown"
-            name="user-dropdown"
-            class="custom-select"
-            v-model="transaction.payee"
-          >
-            <option :value="-1">SELF</option>
-            <option disabled>--- username - company ---</option>
-            <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
-              <span>{{item.username}} - {{item.company.company_name}}</span>
-            </option>
-            <template v-if="userdata.company.company_type == 'STORE'">
-              <option disabled>--- vendor - phone - company ---</option>
-              <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
-                <span>{{item.first_name}} - {{item.username}} - {{item.company.company_name}}</span>
-              </option>
-            </template>
-          </select>
-        </div>
-      </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit' || expenseMethod === 'Received'">
-        <div class="flex-box">
-          <label class="pad-label w100" for="balance">
+        <template v-if="expenseMethod === 'Received'">
+        <div class="flex-box mr-l">
+          <label class="pad-label" for="balance">
             <strong>Balance:</strong>
           </label>
-          <div class="full-width">
+          <div>
             <input
               name="balance"
+              class="box"
               type="text"
-              placeholder="Balance of company"
+              placeholder="00"
               v-model="userdata.company.balance"
               readonly
             />
           </div>
         </div>
+        </template>
+        
+        </div>
+      </template>
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Journal Entry' || expenseMethod === 'Credit'">
         <div class="flex-box">
-          <label class="pad-label w100" for="amount">
+          <label class="pad-label " for="products">
+            <strong>Payee:</strong>
+          </label>
+          <select
+            id="user-dropdown"
+            name="user-dropdown"
+            class="custom-select text-box mr-mm" 
+            v-model="transaction.payee"
+          >
+            <option :value="-1">SELF</option>
+            <option disabled>--- username - company ---</option>
+            <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+              <span>{{item?.username}} -  {{item?.company?.company_name}}</span>
+            </option>
+            <template v-if="userdata.company.company_type == 'STORE'">
+              <option disabled>--- vendor - phone - company ---</option>
+              <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+                <span>{{item.first_name}} - {{item.username}} -  {{item?.company?.company_name}}</span>
+              </option>
+            </template>
+          </select>
+          <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit'">
+            <div class="flex-box mr-l">
+              <label class="pad-label " for="balance">
+                <strong>Balance:</strong>
+              </label>
+            <div>
+            <input
+              name="balance"
+              class="box"
+              type="text"
+              placeholder="00"
+              v-model="userdata.company.balance"
+              readonly
+            />
+          </div>
+          </div>
+          </template>
+        
+        </div>
+      </template>
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit' || expenseMethod === 'Received'">
+        
+        <div class="flex-box">
+          <label class="pad-label" for="amount">
             <strong>{{expenseMethod}} amount:</strong>
           </label>
-          <div class="full-width">
+          <div>
             <input
               name="amount"
               type="number"
-              placeholder="Enter amount"
+              class="box mr-mi"
+              placeholder="00"
               v-model="transaction.amount"
             />
             <span v-if="amountValidation" class="form-error">{{ amountValidation }}</span>
           </div>
         </div>
         <div class="flex-box">
-          <label class="pad-label w100" for="amount">
+          <label class="pad-label" for="amount">
             <strong>Description:</strong>
           </label>
-          <div class="full-width">
+          <div>
             <textarea 
               name="description"
               rows="7"
-              placeholder="description"
+              class="box w500"
+              placeholder="Description"
               v-model="transaction.description"
             ></textarea>
             <span v-if="descriptionValidation" class="form-error">{{ descriptionValidation }}</span>
           </div>
         </div>
-        <div style="text-align: right; padding-bottom: 50px">
-          <router-link
-            to="/"
-            style="margin-right: 20px"
-            class="btn btn-orange btn-mr btn-link"
-          >Cancel</router-link>
+        <div style="text-align: center; margin-top:2%">
           <button
-            class="btn btn-orange btn-mr"
-            style="width: 150px" @click="addExpense">Add Expense</button>
+            class="btn-b btn-orange btn-mr"
+            style="margin-right: 20px" @click="addExpense">Add Expense</button>
+            <router-link
+            to="/"
+            class="btn-b blue btn-mr btn-link"
+          >Cancel</router-link>
         </div>
       </template>
       <template v-if="expenseMethod === 'Journal Entry'">
         <div class="flex-box">
-          <label class="pad-label w100" for="products">
+          <label class="pad-label" for="products">
             <strong>Dept:</strong>
           </label>
           <select
             id="user-dropdown"
             name="user-dropdown"
-            class="custom-select"
+            class="custom-select text-box mr-mm"
             v-model="company.name"
           >
             <option disabled>--- department ---</option>
@@ -147,10 +198,10 @@
           </select>
         </div>
         <div class="flex-box">
-          <label class="pad-label w100" for="amount">
+          <label class="pad-label" for="amount">
             <strong>Amount:</strong>
           </label>
-          <div class="full-width">
+          <div>
             <input
               name="amount"
               type="number"
@@ -328,15 +379,30 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  #expense {
-    padding-left: 15%;
-    padding-right: 15%;
+.diff-box{
+  border: 1px solid $white-color;
+    border-radius: 10px;
+    padding: 1em 3em;
+    margin-top: 15px;
+
+    -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    box-shadow: 1px 1px 5px -1px $login-shodow-color;
+}
+  #expense {   
+    padding-left: 22%;
+    padding-right: 22%;
+    margin-left:5%;
     margin-top: 3%;
   }
 
   .pad-label {
-    padding: 20px 20px 20px 0px;
+    padding: 13px 20px 20px 0px;
+    font-family:seg;
+    font-size:12px;
+    width: 113px;
   }
+
 
   .w100 {
     width: $w150;
@@ -353,7 +419,9 @@ export default defineComponent({
   .checkbox-label {
     font-size: $label-font-size;
   }
-
+  .navbar{
+    margin-left:50px;
+  }
   .nav {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -374,11 +442,27 @@ export default defineComponent({
     width: 25%;
   }
 
-  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  .nav-tabs .nav-item.show .nav-link, .nav-tabs {
     color: $primary-color;
-    background-color: #fff;
+    background-color: #e7e8ea;
     border-color: #dee2e6 #dee2e6 #fff;
   }
+  .nav-item{
+    background:#e5e9ea;
+    border-radius: 30px;
+    width:113px;
+    text-align:center;
+    padding:0.2rem 0.5rem !important;
+    cursor:pointer;
+  }
+  .nav-link.active{
+    background: #e43d2a;
+    color:white;
+    border-radius: 30px;
+ }
+ .nav-link.active:hover{
+   color:white;
+ }
 
   .nav-tabs .nav-link {
     border: 1px solid transparent;
@@ -390,6 +474,7 @@ export default defineComponent({
     color: #495057;
     display: block;
     padding: .5rem 1rem;
+    font-family:seg;
   }
   td {
   text-align: center;
@@ -397,5 +482,72 @@ export default defineComponent({
   th {
   text-align: center;
   }
-
+  .head{
+    font-family:seg;
+    color:#e43d2a;
+    text-align: center;
+    font-weight: bold;
+  }
+  .blue{
+    background-color: #0f2636;
+  }
+  .btn-b{
+    font-family:seg;
+  font-size: 12px;
+  margin:8px 0px 2px 20px;
+  padding:4px 2px 4px 2px;
+  border-radius: 20px;
+  width: 135px;
+  padding:5px;
+  cursor: pointer;
+  color:$white-color;
+  border:none;
+  font-weight:bold;
+  text-decoration: none;
+  }
+  .btn-b:focus{
+    outline:none;
+  }
+  .text-box {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 164px;
+  height: 30px;
+  //margin-top: 15px;
+  background-color: #e5e9ea !important;
+  border:1px #dddee0 solid;
+}
+.box{
+  font-family:seg;
+  font-size:12px;
+  padding:5px;
+  border-radius:8px;
+  border:1px #dddee0 solid;
+  width:164px;
+  background-color: #e5e9ea !important;
+}
+.h-50{
+  height:50%;
+}
+.mr-l{
+  margin-left:3%;
+}
+.w500{
+  width:458px;
+  height:75px;
+}
+/*.mr-mi{
+  margin-left:-4%;
+}*/
+.mr-mm{
+  margin-left:10%;
+}
+.form-error{
+  font-family:seg;
+  display:block;
+}
+.mr-b{
+  margin-bottom:3%;
+}
 </style>
