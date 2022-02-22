@@ -57,7 +57,7 @@
       </ul>-->
     
       <!--<h2>{{expenseMethod}}</h2>-->
-      <template v-if="expenseMethod === 'Received' || expenseMethod === 'Journal Entry'">
+      <template v-if="expenseMethod === 'Received'">
         <div class="flex-box">
           <label class="pad-label" for="products">
             <strong>Payor:</strong>
@@ -75,7 +75,7 @@
               <span>{{item?.username}}  {{item?.company?.company_name}}</span>
             </option>
           </select>
-        <template v-if="expenseMethod === 'Received'">
+        
         <div class="flex-box mr-l">
           <label class="pad-label" for="balance">
             <strong>Balance:</strong>
@@ -91,11 +91,12 @@
             />
           </div>
         </div>
-        </template>
+        
+        
         
         </div>
       </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Journal Entry' || expenseMethod === 'Credit'">
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit'">
         <div class="flex-box">
           <label class="pad-label " for="products">
             <strong>Payee:</strong>
@@ -118,7 +119,7 @@
               </option>
             </template>
           </select>
-          <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit'">
+          
             <div class="flex-box mr-l">
               <label class="pad-label " for="balance">
                 <strong>Balance:</strong>
@@ -134,7 +135,7 @@
             />
           </div>
           </div>
-          </template>
+          
         
         </div>
       </template>
@@ -183,12 +184,51 @@
       <template v-if="expenseMethod === 'Journal Entry'">
         <div class="flex-box">
           <label class="pad-label" for="products">
+            <strong>Payor:</strong>
+          </label>
+          <select
+            id="user-dropdown"
+            name="user-dropdown"
+            class="custom-select text-box mr-mi"
+            v-model="transaction.payor"
+          >
+            <option :value="-1">SELF</option>
+            <option disabled>---User---</option>
+            <option class="batches-op" v-for="item in creditUsers"
+              v-bind:key="item.id" v-bind:value="item.id">
+              <span>{{item?.username}}  {{item?.company?.company_name}}</span>
+            </option>
+          </select>
+          <label class="pad-label mr-l" for="products">
+            <strong>Payee:</strong>
+          </label>
+          <select
+            id="user-dropdown"
+            name="user-dropdown"
+            class="custom-select text-box mr-mi" 
+            v-model="transaction.payee"
+          >
+            <option :value="-1">SELF</option>
+            <option disabled>--- username - company ---</option>
+            <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+              <span>{{item?.username}} -  {{item?.company?.company_name}}</span>
+            </option>
+            <template v-if="userdata.company.company_type == 'STORE'">
+              <option disabled>--- vendor - phone - company ---</option>
+              <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+                <span>{{item.first_name}} - {{item.username}} -  {{item?.company?.company_name}}</span>
+              </option>
+            </template>
+          </select>
+        </div>
+          <div class="flex-box">
+          <label class="pad-label" for="products">
             <strong>Dept:</strong>
           </label>
           <select
             id="user-dropdown"
             name="user-dropdown"
-            class="custom-select text-box mr-mm"
+            class="custom-select text-box mr-mi"
             v-model="company.name"
           >
             <option disabled>--- department ---</option>
@@ -196,16 +236,16 @@
               {{company.company_name}}
             </option>
           </select>
-        </div>
-        <div class="flex-box">
-          <label class="pad-label" for="amount">
+        
+          <label class="pad-label mr-l" for="amount">
             <strong>Amount:</strong>
           </label>
           <div>
             <input
+              class="box mr-mi"
               name="amount"
               type="number"
-              placeholder="Enter amount"
+              placeholder="00"
               v-model="transaction.amount"
             />
             <span v-if="amountValidation" class="form-error">{{ amountValidation }}</span>
@@ -213,26 +253,26 @@
         </div>
         <div style="text-align: right; padding-bottom: 20px">
           <button
-            class="btn btn-orange btn-mr"
+            class="btn-b btn-orange btn-mr"
             style="width: 150px" @click="addDept">Add</button>
         </div>
         <table>
           <thead>
-            <tr>
-              <th scope="col">Dept Name</th>
-              <th scope="col">Amount</th>
+            <tr class="fr-row header">
+              <th style="border-radius: 10px 0px 0px 10px" scope="col">Dept Name</th>
+              <th style="border-radius: 0px 10px 10px 0px" scope="col">Amount</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="a in table" :key="a.id">
+            <tr v-for="a in table" :key="a.id" class="fr-row content">
               <td>{{a.dept}}</td>
               <td>{{a.amount}}</td>
             </tr>
           </tbody>
         </table>
-        <div style="text-align: center; padding-bottom: 50px; padding-top:20px">
+        <div style="text-align: center; padding-top:20px">
           <button
-            class="btn btn-orange btn-mr"
+            class="btn-b blue btn-mr"
             style="width: 150px">Submit</button>
         </div>
       </template>
@@ -549,5 +589,20 @@ export default defineComponent({
 }
 .mr-b{
   margin-bottom:3%;
+}
+.fr-row{
+  
+  font-size: 12px;
+  font-family: seg;
+}
+.header{
+  
+  border-radius: 5px;
+  background-color: #0f2634; 
+  color: white;
+}
+.content{
+  background-color: white; 
+  color: #0f2634;
 }
 </style>
