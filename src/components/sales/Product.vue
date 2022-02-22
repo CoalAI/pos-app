@@ -1,6 +1,6 @@
 <template>
   <div class="diff-shadow pad-2">
-    <h2>Products</h2>
+    <!--<h2>Products</h2>-->
     <div class="search-grid-list-pages">
         <router-link v-show="allowedAddProduct" to="/product/create" class="btn btn-orange add-btn-width">Add New Product</router-link>
         <div class="float-right">
