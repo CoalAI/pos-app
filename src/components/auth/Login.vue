@@ -1,17 +1,18 @@
 <template>
-  <div style="background-color: black">
+  <div class="login-body">
     <!--<h1 class="text-center">CoalDev POS</h1>-->
-    <!--<img src="../../assets/login-back.png" alt="coaldev" style="position: absolute; width:100%"> -->
+    <!--<img src="../../assets/login-back.png" alt="coaldev" style="position: absolute; width:100%">-->
     <div class="header">
       
       <img :src="logo" alt="coaldev" class="img-center"> 
       
     </div>
     
-    <h2 class="head ">POS</h2>
+    
+    <div class="head ">POS</div>
     <div class="wrapper mr-top">
       
-      <div class="col">
+      <div class="col form-main">
         <form method="POST" @submit="(e) => e.preventDefault()" class="mr-1">
           <div class="flex-box">
             <img :src="user" class="user login" align="center"/>
@@ -117,6 +118,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+  .login-body {
+    height: 100vh;
+    background:url("../../assets/login-back.png") center center fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .form-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .wrapper {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -126,11 +138,11 @@ export default defineComponent({
 
   .col {
     grid-column: 6/10;
-    border: 1px solid $white-color;
+    border: 1px solid $red-color;
     border-radius: 10px;
     padding: 2em 4em;
     left:-25%;
-
+    background: $white-color;
     -webkit-box-shadow: 1px 1px 10px -1px $login-shodow-color;
     -moz-box-shadow: 1px 1px 10px -1px $login-shodow-color;
     box-shadow: 1px 1px 10px -1px $login-shodow-color;
@@ -172,12 +184,13 @@ export default defineComponent({
     margin-top:65px;
   }
   .head{
-  color:white;
-  font-size:100px;
-  font-weight:bold;
-  font-family:seg;
-  margin-top:150px;
-  text-align: center;
+    padding-top:150px;
+    color:white;
+    font-size:100px;
+    font-weight:bold;
+    font-family:seg;
+    // margin-top:150px;
+    text-align: center;
 }
 .user{
   outline:none;
