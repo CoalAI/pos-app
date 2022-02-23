@@ -69,7 +69,7 @@
                 </tr>
               </table>
             </td>
-            <td style="width: 150px">
+            <td style="width: 150px; vertical-align: middle">
               <div class="flex-box">
                 <a class="btn-tab btn-orange btn-mr-inner mr-2" @click="OpenDeleteProductModal(product)">Delete</a>
                 <router-link :to="{name: 'EditProduct', params: {productId: product.id}}" class="mr-2 btn-tab btn-blue btn-mr-inner">Edit</router-link>
@@ -84,19 +84,17 @@
     <!-- The deletion Modal -->
     <Modal v-if="deleteProductModal">
       <template v-slot:header>
-        <h2>Confirm Deletion</h2>
+        <h2 class="head">Confirm Delete</h2>
       </template>
 
       <template v-slot:body>
-        <p style="padding: 8px"><strong>Are you sure you want to delete this product?</strong></p>
+        <p style="text-align:center"><strong>Are you sure you want to delete this product?</strong></p>
         <template v-if="deleteProduct">
-          <table id="delete-table" class="mr-2">
+          <table id="delete-table" class="mr-1">
             <tr>
-              <td><strong>Name:</strong></td>
+              <td><strong style="color:#e43d2a">Name:</strong></td>
               <td>{{deleteProduct.name}}</td>
-            </tr>
-            <tr>
-              <td><strong>BarCode:</strong></td>
+              <td><strong style="color:#e43d2a">Barcode:</strong></td>
               <td>{{deleteProduct.barcode}}</td>
             </tr>
           </table>
@@ -105,8 +103,9 @@
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="closeDeleteProductModal">Cancel</button>
-          <button class="btn btn-orange btn-mr" @click="deleteProductYes">Yes</button>
+          <button class="btn-tab btn-orange btn-mr" @click="deleteProductYes">Yes</button>
+          <button class="btn-tab btn-blue btn-mr" @click="closeDeleteProductModal">Cancel</button>
+          
         </div>
       </template>
     </Modal>
@@ -228,6 +227,8 @@ export default defineComponent({
 
   #delete-table td {
     border: none;
+    padding:0  !important;
+    width:12%;
   }
   #delete-table tr:nth-child(even) {
     background-color: $white-color;
@@ -331,6 +332,7 @@ export default defineComponent({
 }
 td{
   text-align:center !important;
+  
 }
 .btn-tab{
   background-color: #e43d2a;
@@ -349,5 +351,14 @@ td{
 .btn-blue{
   background-color:#0f2634 !important;
   text-decoration:none;
+}
+.head{
+  font-family:seg;
+  font-size:20px;
+  font-weight:bold;
+
+}
+.modal-container{
+  width:37% !important;
 }
 </style>

@@ -170,6 +170,7 @@
             <textarea 
               name="description"
               rows="3"
+              class="box w500"
               placeholder="Description"
               :maxlength="maxlength.description"
               v-model="currentProductVariant.description"
@@ -190,15 +191,15 @@
               <col span="1" style="width: 40%;">
               <col span="1" style="width: 4%;">
             </colgroup>
-            <tr>
-              <th>Color</th>
+            <tr class="fr-row header2">
+              <th style="border-radius: 10px 0px 0px 0px; text-align:center">Color</th>
               <th>Size</th>
               <th>Price</th>
               <th>Sale Price</th>
               <th>Description</th>
-              <th></th>
+              <th style="border-radius: 0px 10px 0px 0px; text-align:center"><img :src="del" alt="Delete"></th>
             </tr>
-            <tr v-for="(productVariant, index) in product.productVariants" v-bind:key="productVariant.id">
+            <tr v-for="(productVariant, index) in product.productVariants" v-bind:key="productVariant.id" class="fr-row content2">
               <td>
                 <input
                   class="tbl_item_input"
@@ -297,6 +298,7 @@ export default defineComponent({
   data() {
     const productVariants: ProductVariant[] = [];
     return {
+      del:require('../../assets/delete_icon.svg'),
       maxlength: {
         name: 50,
         barcode: 48,
@@ -562,16 +564,17 @@ export default defineComponent({
   // ab css
   #AddEditProduct {
     // padding: 2.65% 30%;
-    padding: 2.65% 26%;
+    padding: 2% 26%;
     // padding-left: 15%;
     // padding-right: 15%;
-    margin-top: 3%;
+    //margin-top: 3%;
     // padding-left: 15%;
     // padding-right: 15%;
     // margin-top: 3%;
   }
   .diff-shadow{
     padding: 1.65% 6.56%;
+    margin-top:0 !important;
   }
   .diff-shadow > h2{
     text-align: center;
@@ -597,9 +600,11 @@ export default defineComponent({
     align-items: baseline;
   }
   .ab-select-container > select{
-    padding: 8px 18px;
+    padding: 8px;
     border-radius: 10px;
-    font-size: 12px;
+    font-size: 11px;
+    font-family: seg;
+    background-color: #e5e9ea;
   }
   .ab-input-container > input[type=text]{
     padding: 8px;
@@ -607,6 +612,7 @@ export default defineComponent({
     font-size: 11px;
     font-family: seg;
     border:1px solid #cfd1d0;
+    background:#e5e9ea;
   }
   .ab-input-container > input[type=password]{
     padding: 8px;
@@ -659,12 +665,13 @@ export default defineComponent({
   }
   .full-row-input{
     width:65px; 
-    padding:8px;
+    padding:5px;
     font-family:seg;
     font-size:11px;
     border:1px solid #cfd1d0;
     border-radius:10px;
     margin-left:5px;
+    background:#e5e9ea;
   }
   /*.full-row div > input{
     width: 55px;
@@ -719,7 +726,8 @@ export default defineComponent({
   }
   .fifth-row > table > tr td{
     padding: 3px 0;
-    font-size: 13px;
+    font-size: 12px;
+    vertical-align: middle;
   }
   .fifth-row > table > tr td > input{
     
@@ -737,16 +745,18 @@ export default defineComponent({
   // .fifth-row > table
 
   .ab_btn_container{
-    margin-top: 50px;
+    margin-top: 30px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    margin-left: 66px;
+    font-family:seg;
   }
   .ab_btn_container > div{
     margin: 0 10px;
   }
   .ab_btn_container > div:first-child button:first-child{
     border-radius: 20px;
-    padding: 6px 40px;
+    padding: 6px 13px;
     border: 1.5px solid $primary-color !important;
   }
   .ab_btn_container > div:nth-child(2) button:first-child{
@@ -762,7 +772,7 @@ export default defineComponent({
   .btn-blue{
     background-color:#0f2636;
     border-radius: 20px;
-    padding: 6px 48px;
+    padding: 6px 30px;
     border: 1.5px solid #0f2636 !important;
   }
   .ab_blue_hover:hover{
@@ -776,6 +786,7 @@ export default defineComponent({
   .head{
     font-family:seg;
     font-size:20px;
+    font-weight:bold;
   }
   .pd-lbl{
     font-family:seg;
@@ -784,5 +795,37 @@ export default defineComponent({
   .mr-1{
     margin-left:10px;
   }
+  .box{
+  font-family:seg;
+  font-size:11px;
+  padding:5px;
+  border-radius:8px;
+  border:1px #dddee0 solid;
+  width:164px;
+  background-color: #e5e9ea !important;
+  margin-bottom: 10px;
+}
+.w500{
+  width:467px;
+  height:75px;
+}
+.fr-row {
+  font-size: 12px;
+  font-family: seg;
+  vertical-align:text-bottom;
+}
+.header2{
+  background-color: #e43d2a; 
+  color: white;
   
+}
+.content2{
+  background-color: #e3e2e2 !important; 
+  color: #0f2634;
+  text-align:center;
+}
+.tbl_item_input{
+  padding:0 !important;
+  background: none !important;
+}
 </style>
