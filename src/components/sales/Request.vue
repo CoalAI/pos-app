@@ -1,17 +1,19 @@
 <template>
   <div id="request">
-    <div class="diff-shadow">
-      <h2>Send Request</h2>
+    <!--<div class="diff-shadow">-->
+    <div class="diff-box">
+      <h2 class="head">Send Request</h2>
       <Alert type="success" v-if="created">{{created}}</Alert>
       <div class="flex-box">
-        <label class="pad-label w100" for="products">
+        <label class="pd-lbl" for="products">
           <strong>Company:</strong>
         </label>
-        <div class="full-width">
+        <!--<div class="full-width">-->
+          <div >
           <select
             id="company-type"
             name="company-type"
-            class="custom-select"
+            class="custom-select text-box" 
             v-model="company"
             @change="onChangeCompany"
           >
@@ -22,16 +24,16 @@
           </select>
           <span v-if="companyValidation" class="form-error">{{ companyValidation }}</span>
         </div>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="users">
+        <div class="flex-box mr-l">
+        <label class="pd-lbl" for="users">
           <strong>User:</strong>
         </label>
-        <div class="full-width">
+        <!--<div class="full-width">-->
+          <div>
           <select
             id="users"
             name="users"
-            class="custom-select"
+            class="custom-select text-box" 
             v-model="requestee"
           >
             <option :value="0">None</option>
@@ -42,27 +44,31 @@
           <span v-if="requesteeValidation" class="form-error">{{ requesteeValidation }}</span>
         </div>
       </div>
+      </div>
       <div class="flex-box">
-        <label class="pad-label w100" for="balance">
+        <label class="pd-lbl" for="balance">
           <strong>Balance:</strong>
         </label>
+        <div>
         <select
           id="company-type"
           name="company-type"
-          class="custom-select"
+          class="custom-select text-box" 
           v-model="requestType"
         >
           <option v-for="rType in requestTypes" v-bind:key="rType" v-bind:value="rType">
             {{ rType }}
           </option>
         </select>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="delivery">
+        </div>
+        <div class="flex-box mr-l">
+        <label class="pd-lbl" for="delivery">
           <strong>Delivery:</strong>
         </label>
-        <div class="full-width">
+        <!--<div class="full-width">-->
+        <div>
           <input
+            class="box"
             name="delivery"
             type="date"
             v-model="delivery"
@@ -70,31 +76,36 @@
           <span v-if="deliveryValidation" class="form-error">{{ deliveryValidation }}</span>
         </div>
       </div>
+      </div>
+      
       <div class="flex-box">
-        <label class="pad-label w100" for="amount">
+        <label class="pd-lbl w100" for="amount">
           <strong>Description:</strong>
         </label>
-        <div class="full-width">
+        <!--<div class="full-width">-->
+        <div>
           <textarea 
             name="description"
             rows="7"
-            placeholder="description"
+            class="box w500"
+            placeholder="Description"
             v-model="description"
           ></textarea>
           <span v-if="descriptionValidation" class="form-error">{{ descriptionValidation }}</span>
         </div>
       </div>
-      <div style="text-align: right; padding-bottom: 50px">
-        <router-link
-          to="/"
-          style="margin-right: 20px"
-          class="btn btn-orange btn-mr btn-link"
-        >Cancel</router-link>
+      <div style="padding-bottom: 20px; margin-left:105px">
         <button
           :disabled="addBtn"
           @click="addRequestbtn"
-          class="btn btn-orange btn-mr"
+          class="btn-b btn-orange btn-mr"
           style="width: 150px">Send Request</button>
+        <router-link
+          to="/"
+          style="margin-right: 20px"
+          class="btn-b blue btn-mr btn-link"
+        >Cancel</router-link>
+        
       </div>
       <Loader v-show="loader"></Loader>
     </div>
@@ -141,7 +152,7 @@ export default defineComponent({
     requesteeValidation: function () {
       let errorMessage = null;
       if (this.users.length <= 0) {
-        errorMessage = "Requestee is required. Add selected store's user to system"
+        errorMessage = "Requestee is required. Add selected store's user to system."
       }
       return errorMessage;
     },
@@ -241,8 +252,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #request {
-    padding-left: 15%;
-    padding-right: 15%;
+    padding-left: 22%;
+    padding-right: 22%;
+    margin-left:5%;
     margin-top: 3%;
   }
 
@@ -264,5 +276,84 @@ export default defineComponent({
 
   .checkbox-label {
     font-size: $label-font-size;
+  }
+  .head{
+    font-family:seg;
+    font-size:20px;
+    font-weight:bold;
+    color: #e43d2a;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .pd-lbl{
+    padding: 13px 20px 20px 0px;
+    font-family:seg;
+    font-size:12px;
+    width: 113px;
+  }
+  .mr-mm{
+  margin-left:10%;
+}
+.form-error{
+  font-family:seg;
+  display:block;
+  font-size:9px;
+}
+.w500{
+  width:464px !important;
+  height:75px;
+}
+.text-box {
+  border-radius: 6px;
+  font-family: seg;
+  font-size: 11px;
+  width: 164px;
+  height: 30px;
+  //margin-top: 15px;
+  background-color: #e5e9ea !important;
+  border:1px #dddee0 solid;
+}
+.box{
+  font-family:seg;
+  font-size:12px;
+  padding:5px;
+  border-radius:8px;
+  border:1px #dddee0 solid;
+  width:164px;
+  background-color: #e5e9ea !important;
+}
+.diff-box{
+  border: 1px solid $white-color;
+    border-radius: 10px;
+    padding: 1em 3em;
+    margin-top: 15px;
+
+    -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    box-shadow: 1px 1px 5px -1px $login-shodow-color;
+}
+.mr-l{
+  margin-left:4%;
+}
+.blue{
+    background-color: #0f2636;
+  }
+  .btn-b{
+    font-family:seg;
+  font-size: 12px;
+  margin:8px 0px 2px 20px;
+  padding:4px 2px 4px 2px;
+  border-radius: 20px;
+  width: 135px;
+  padding:5px;
+  cursor: pointer;
+  color:$white-color;
+  border:none;
+  font-weight:bold;
+  text-decoration: none;
+  text-align: center;
+  }
+  .btn-b:focus{
+    outline:none;
   }
 </style>
