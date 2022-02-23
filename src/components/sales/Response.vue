@@ -34,7 +34,7 @@
             </label>
             <div class="ab-select-container">
               <select class="transtype custom-select" v-model="searchStatus" @change="onChangeStatusFilter">
-                <option value="">All</option>
+                <option value="">Select:</option>
                 <option value="PENDING">PENDING</option>
                 <option value="APPROVED">APPROVED</option>
                 <option value="COMPLETE">COMPLETE</option>
@@ -54,7 +54,7 @@
               v-model="orderStatus"
               @change="onOrderStatusChangeFilter"
               >
-                <option value="">ANY</option>
+                <option value="">Select:</option>
                 <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
                 {{item.status}}
                 </option>
