@@ -304,6 +304,7 @@
           <Paginator :count="counts.orders" @pageChange="onOrderChangePage"/>
         </div>
       </div> -->
+      <!-- commented as this was not in the mockup -->
       <!-- <div class="container">
         <h2>{{tab}} Detail</h2>
         <textarea id="requestdetail" type="text" v-bind:value="request_detail" readonly></textarea>
