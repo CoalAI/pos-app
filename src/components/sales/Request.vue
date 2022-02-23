@@ -4,7 +4,7 @@
     <div class="diff-box">
       <h2 class="head">Send Request</h2>
       <Alert type="success" v-if="created">{{created}}</Alert>
-      <div class="flex-box">
+      <div class="flex-box mr-b">
         <label class="pd-lbl" for="products">
           <strong>Company:</strong>
         </label>
@@ -45,7 +45,7 @@
         </div>
       </div>
       </div>
-      <div class="flex-box">
+      <div class="flex-box mr-b">
         <label class="pd-lbl" for="balance">
           <strong>Balance:</strong>
         </label>
@@ -78,7 +78,7 @@
       </div>
       </div>
       
-      <div class="flex-box">
+      <div class="flex-box mr-b">
         <label class="pd-lbl w100" for="amount">
           <strong>Description:</strong>
         </label>
@@ -152,7 +152,7 @@ export default defineComponent({
     requesteeValidation: function () {
       let errorMessage = null;
       if (this.users.length <= 0) {
-        errorMessage = "Requestee is required. Add selected store's user to system."
+        errorMessage = "Requestee is required. Add store's user to system."
       }
       return errorMessage;
     },
@@ -355,5 +355,8 @@ export default defineComponent({
   }
   .btn-b:focus{
     outline:none;
+  }
+  .mr-b{
+    margin-bottom: 10px;
   }
 </style>
