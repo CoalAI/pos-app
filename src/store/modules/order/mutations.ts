@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { Product } from '@/store/models/product';
+import { Category, Product } from '@/store/models/product';
 import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Unit } from '@/store/models/product';
@@ -20,6 +20,7 @@ export enum MutationTypes {
   SetInventory = 'SET_INVENTORY',
   SetListOfRequests = 'SET_LIST_OF_REQUEST',
   SetUnit = 'SET_UNIT',
+  SetCategories = 'SET_CATEGORIES',
   SetBatch = 'SET_BATCH',
   SetInvoiceID = "SET_INVOICEID",
   SetRequest = "SET_REQUEST",
@@ -29,6 +30,7 @@ export enum MutationTypes {
   SetBatchesCount = "SET_BATCHES_COUNT",
   SetInventoryCount = "SET_INVENTORY_COUNT",
   SetRequestsCount = "SET_REQUESTS_COUNT",
+  SetAnalytics = "SET_ANALYTICS",
 }
 
 export type Mutations = {
@@ -44,6 +46,7 @@ export type Mutations = {
   [MutationTypes.SetInventory](state: State, inventory: Inventory[]): void;
   [MutationTypes.SetListOfRequests](state: State, requests: Request[]): void;
   [MutationTypes.SetUnit](state: State, units: Unit[]): void;
+  [MutationTypes.SetCategories](state: State, categories: Category[]): void;
   [MutationTypes.SetBatch](state: State, batch: Batch): void;
   [MutationTypes.SetInvoiceID](state: State, id: string): void;
   [MutationTypes.SetRequest](state: State, request: Request): void;
@@ -52,6 +55,7 @@ export type Mutations = {
   [MutationTypes.SetBatchesCount](state: State, count: number): void;
   [MutationTypes.SetRequestsCount](state: State, count: number): void;
   [MutationTypes.SetInventoryCount](state: State, count: number): void;
+  [MutationTypes.SetAnalytics](state: State, value: any): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -91,6 +95,9 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetUnit](state, units) {
     state.units = units;
   },
+  [MutationTypes.SetCategories](state, categories) {
+    state.categories = categories;
+  },
   [MutationTypes.SetBatch](state: State, batch: Batch) {
     state.batch = batch;
   },
@@ -115,4 +122,7 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetRequestsCount](state: State, count: number) {
     state.totalCounts.requests = count;
   },
+  [MutationTypes.SetAnalytics](state: State, value: any) {
+    state.analytics = value;
+  }
 }

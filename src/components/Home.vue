@@ -2,9 +2,11 @@
   <div class="hello">
     <template v-if="getToken">
       <Header />
+      <p class="coaldev-name">Created by CoalDev</p>
     </template>
-    <router-view class="page-mr" />
-    <p class="coaldev-name">Created by CoalDev</p>
+    <div class="login-main">
+      <router-view />
+    </div>
     <ErrorHandler v-if="getError"></ErrorHandler>
     <Loader v-if="getSync" message="Syncing Data for offline mode. Please wait." ></Loader>
   </div>
@@ -63,7 +65,10 @@ li {
   margin-inline-end: 0px;
 }
 
-.page-mr {
-  margin: $page-margin;
+.login-main {
+  // margin: $page-margin;
+  // background:url("../assets/login-back.png") center center fixed;
+  // background-repeat: no-repeat;
+  // background-size: cover;
 }
 </style>

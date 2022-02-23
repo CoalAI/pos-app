@@ -17,6 +17,12 @@ export interface Unit extends DatesInterface {
   name?: string;
 }
 
+export interface Category extends DatesInterface {
+  id?: number;
+  name?: string;
+  description?: string;
+}
+
 export interface Product extends DatesInterface {
   id?: number;
   unit?: null | Unit;
@@ -24,5 +30,6 @@ export interface Product extends DatesInterface {
   bar_code?: string;
   total_quantity?: string;
   token?: boolean;
+  category?: number;
   product_variant?: ProductVariant[];
 }

@@ -1,14 +1,15 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="logo">
-      <router-link v-if="salesStaff" to="/">
+      <!--<router-link v-if="salesStaff" to="/">
         <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
       </router-link>
       <router-link v-else-if="admin" to="/admin/order">
         <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
-      </router-link>
+      </router-link>-->
+      <img class="logo-img-head" src="../../assets/logo.png" alt="coaldev">
     </div>
-    <div class="b">
+    <!--<div class="b">
       <div class="flex-box">
         <a class="btn btn-grid btn-orange btn-mr" href="/" v-if="salesStaff"
         target="_blank">New Order</a>
@@ -17,7 +18,7 @@
         <router-link v-show="manager" to="/inventory" class="btn btn-grid btn-orange btn-mr">Inventory</router-link>
         <router-link v-show="superadmin" to="/settings" class="btn btn-orange btn-grid btn-mr">Settings</router-link>
         <router-link v-show="admin" to="/users" class="btn btn-grid btn-orange btn-mr">Users</router-link>
-      
+        <router-link v-show="manager" :to="{name: 'order-analytics'}" class="btn btn-grid btn-orange btn-mr">Analytics</router-link>
       </div>
       <div class="flex-box">
         <router-link v-show="admin" to="/products" class="btn btn-grid btn-orange btn-mr">Products</router-link>
@@ -31,15 +32,48 @@
         <router-link v-show="manager" to="/expense-summary" class="btn btn-grid btn-orange btn-mr">Finance Summary</router-link>
         <router-link v-show="manager" to="/expense" class="btn btn-grid btn-orange btn-mr">Finance</router-link>
       </div>
+    </div>-->
+    <div class="b menu-cont">
+        <a class="no btn-grid btn-mr brdr-left active" href="/" v-if="salesStaff" target="_blank">
+        <img :src="order" class="block-align">NEW ORDER</a>
+        <a class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
+        <img :src="order" class="block-align">NEW ORDER</a>
+        <router-link v-show="manager" to="/inventory" class="i btn-grid btn-mr">
+        <img :src="inventory" class="block-align">INVENTORY</router-link>
+        <router-link v-show="superadmin" to="/settings" class="s btn-grid btn-mr">
+        <img :src="settings" class="block-align">SETTINGS</router-link>
+        <router-link v-show="admin" to="/users" class="u btn-grid btn-mr">
+        <img :src="users" class="block-align">USERS</router-link>
+        <router-link v-show="manager" :to="{name: 'order-analytics'}" class="a btn-grid btn-mr">
+        <img :src="analytics" class="block-align">ANALYTICS</router-link>
+        <router-link v-show="admin" to="/products" class="p btn-grid btn-mr">
+        <img :src="products" class="block-align">PRODUCTS</router-link>
+        <router-link v-show="admin" to="/batchs" class="b btn-grid btn-mr">
+        <img :src="batches" class="block-align">BATCHES</router-link>
+        <router-link v-show='admin' to="/vendors" class="v btn-grid btn-mr">
+        <img :src="vendor" class="block-align">VENDORS</router-link>
+        <router-link v-show='admin' to="/departments" class="d btn-grid btn-mr">
+        <img :src="department" class="block-align">DEPARTMENTS</router-link>
+        <router-link v-show="manager" to="/request" class="r btn-grid btn-mr">
+        <img :src="request" class="block-align">REQUEST</router-link>
+        <router-link v-show="manager" to="/response" class="rs btn-grid btn-mr">
+        <img :src="responses" class="block-align">RESPONSES</router-link>
+        <router-link v-show="manager" to="/expense-summary" class="su btn-grid btn-mr">
+        <img :src="summary" class="block-align">SUMMARY</router-link>
+        <router-link v-show="manager" to="/expense" class="f btn-grid btn-mr brdr-right">
+        <img :src="finance" class="block-align">FINANCE</router-link>
     </div>
-    <div class="s">
-      <div class="flex-box">
+    <!--<div class="s">
+      <div class="flex-box search-bar">
+        <button
+          @click="searchOrder"
+          class="btn-search btn-left">Search Order</button>
         <input
           label="ordersearch"
           name="ordersearch"
           type="text"
           placeholder="Invoice ID"
-          class="order-search-in"
+          class="order-search-in order-search"
           v-model="orderSearch"
           @input="searchTyped"
           autocomplete="off"
@@ -47,13 +81,13 @@
         <input
           type="date" 
           id="manufactured" 
-          name="manufactured" 
-          class="order-search-date"
+          name="manufactured"
+          class="order-search-date order-search"
           v-model="orderDate"
         >
         <button
           @click="searchOrder"
-          class="btn btn-orange order-search-btn">Search Order</button>
+          class="btn-search btn-right">Search</button>
       </div>
       <div v-show="showResult" class="search-result-upper">
         <ul class="search-result">
@@ -67,13 +101,14 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div>-->
     <div class="name user-name">
-      <span class="white-color">
+      <img src="../../assets/login-user.png" width="50" height="50" alt="user" class="user" >
+      <div class="white-color">
         <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
         <strong v-else >{{ userdata.username }}</strong>
-      </span>
-      <div class="flex-box">
+      </div>
+      <!--<div class="flex-box">
         <div class="notification" @click="notificationPanel = !notificationPanel">
           <span><img src="../../assets/bell.png" height="30"></span>
           <span v-if="messages.length > 0" class="badge">{{messages.length}}</span>
@@ -84,7 +119,7 @@
             <img v-else src="../../assets/no-signal.png" height="30">
           </span>
         </div>
-      </div>
+      </div>-->
       <div v-show="notificationPanel" class="search-result-upper notification-panel">
         <ul class="search-result">
           <li
@@ -108,11 +143,55 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="logout">
-        <button class="btn btn-orange" @click="logout">Logout</button>
+      
     </div>
   </div>
+  <div>
+  </div>
+  <div class="logout">
+    <button class="lg-btn" v-show="toggle" :class="{'fadeInRight animated': animated}" @click="logout" @animationend="animated = false">Logout</button>
+    <button class="btn-lo" @click="animate"><img :src="log"></button>
+  </div>
+
+  <div class="s">
+      <div class="flex-box search-bar">
+        <button
+          @click="searchOrder"
+          class="btn-search btn-left">Search Order</button>
+        <input
+          label="ordersearch"
+          name="ordersearch"
+          type="text"
+          placeholder="Invoice ID"
+          class="order-search-in order-search"
+          v-model="orderSearch"
+          @input="searchTyped"
+          autocomplete="off"
+        />
+        <input
+          type="date" 
+          id="manufactured" 
+          name="manufactured"
+          class="order-search-date order-search"
+          v-model="orderDate"
+        >
+        <button
+          @click="searchOrder"
+          class="btn-search btn-right">Search</button>
+      </div>
+      <div v-show="showResult" class="search-result-upper">
+        <ul class="search-result">
+          <li
+            class="single-search-item"
+            v-for="order in orders" v-bind:key="order.id"
+            @click="orderDetails(order.id)"
+          >
+            <span><strong>#{{order.id}}</strong></span>
+            <span>{{onlyDate(order.created)}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -127,6 +206,22 @@ export default defineComponent({
   name: 'Header',
   data () {
     return{
+      toggle:false,
+      animated:false,
+      order: require('../../assets/new-order.svg'),
+      inventory: require('../../assets/inventory.svg'),
+      users: require('../../assets/users.svg'),
+      request:require('../../assets/request.svg'),
+      analytics: require('../../assets/analytics.svg'),
+      products: require('../../assets/products.svg'),
+      vendor: require('../../assets/Vendors.svg'),
+      batches: require('../../assets/batches.svg'),
+      department: require('../../assets/department.svg'),
+      settings:require('../../assets/request.svg'),
+      responses:require('../../assets/response.svg'),
+      summary:require('../../assets/summary.svg'),
+      finance:require('../../assets/finance.svg'),
+      log:require('../../assets/logout-arrow.svg'),
       orderSearch: '',
       showResult: false,
       notificationPanel: false,
@@ -178,6 +273,10 @@ export default defineComponent({
     },
   },
   methods: {
+    animate(){
+      this.animated = true
+      this.toggle = !this.toggle
+    },
     clear: function () {
       this.orderSearch = '';
       this.showResult = false;
@@ -252,15 +351,15 @@ export default defineComponent({
   },
   beforeMount: async function() {
     await this.getuserdate();
-    // this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
+    this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
   },
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  .container {
-    background-color: $header-color;
+  /*.container{
+    background-color: #e73b2a;
     padding-bottom: $header-padding-bottom;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -268,36 +367,105 @@ export default defineComponent({
     gap: 1em 1em;
     grid-template-areas:
     "logo b b b b b s s s s name logout"
+  }*/
+  .container-fluid {
+    background-color: #e73b2a;
+    padding-bottom: $header-padding-bottom;
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+    grid-template-rows: 0.4fr;
+    gap: 1em 1em;
+    grid-template-areas:
+    "logo b name"
   }
   .logo {
     grid-area: logo;
   }
   .b {grid-area: b;}
   .s {
-    grid-area: s;
+    //grid-area: s;
+    width:30%;
+    margin: 0 auto;
+    margin-top:30px !important;
   }
   .name {
     grid-area: name;
   }
-
+  .menu-cont{
+    display:grid;
+    grid-template-columns: 1.2fr  1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr 1.1fr;
+    grid-template-areas: 
+    "no i s u a p b v d r rs su f";
+    background-color: #0b2532;
+    width:95%;
+    height:78%;
+    margin: 0 auto;
+    border-radius:0px 0px 20px 20px;
+    text-align:center;
+    //top:-80px;
+    padding: 0px 18px 0px 15px;
+    margin-top: 59px;
+    margin-bottom: -40px;
+  }
+  /*.brdr-left{
+    border-radius: 0px 0px 0px 20px;
+  }
+  .brdr-right{
+    border-radius: 0px 0px 20px 0px;
+  }*/
   .logout {
-    grid-area: logout;
+    //grid-area:logout;
+    display:inline-block;
+    margin:0 !important;
+    padding:0 !important;
   }
 
   .btn-grid {
-    width: $w100;
-    margin: 2px;
+    //width: $w100;
+    //margin: 2px;
+    font-family: seg;
+    font-size: 10px;
+    background: #0b2532;
+    color: $white-color;
+    padding: 11px;
+    margin: 0;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    padding-bottom: 2px !important;
   }
-
-  .logo_img {
-    height: $logo_img_height;
-    width: $logo_img_width;
-    object-fit: contain;
+  .btn-grid:hover{
+    outline:none;
+    text-decoration: none;
+    border-bottom: 5px solid #e73b2a;
+  }
+  .btn-grid.router-link-active, .btn-grid.btn-grid.router-link-exact-active{
+    outline:none;
+    border-bottom: 5px solid #e73b2a !important;
+  }
+  .btn-grid:active::after{
+    outline:none;
+    border-bottom: 5px solid #e73b2a !important;
+  }
+  .btn-grid:focus{
+    outline:none;
+    border-bottom: 5px solid #e73b2a;
+  }
+  .btn-grid:target{
+    outline:none;
+    border-bottom: 5px solid #e73b2a;
+  }
+  .logo-img-head {
+    height:80px;
+    width:160px;
+    object-fit:cover;
   }
 
   .user-name {
     margin-top: 12px;
-    text-align: right;
+    font-family:seg;
+    text-align: center;
+    padding-right: 14px;
   }
 
   .search-result-upper {
@@ -339,18 +507,33 @@ export default defineComponent({
     width: $logo_img_width;
     object-fit: contain;
   }
-
+  /*.order-search-in{
+    width:43%;
+  }
+  .order-search-date{
+    width:37%;
+  }*/
   .order-search-in {
+    margin:0 !important;
+    width: 37%;
+    border-right: 1px solid #949ea0;
+  }
+  .order-search-date {
+    padding:0 !important;
+    margin:0 !important;
     width: 43%;
   }
-
-  .order-search-date {
-    width: 37%;
+  .order-search{
+    padding:5px 5px 5px 30px !important;
+    background: white;
+    border-top: 1px solid #949ea0;
+    border-bottom: 1px solid #949ea0;
+    color: #dcdddf !important;
   }
 
-  .order-search-btn {
+  /*.order-search-btn {
     width: 20%;
-  }
+  }*/
 
   // Notifiction icon
   .notification {
@@ -395,5 +578,88 @@ export default defineComponent({
     background-color: $primary-color;
     border-radius: 50%;
     display: inline-block;
+  }
+  .user{
+    float:none;
+    display:block;
+    border-radius: 50%;
+    background:white;
+    border:none;
+    width:50px;
+    height:50px;
+    margin-right:auto;
+    margin-left: auto;
+  }
+  .lg-btn{
+    color: white;
+    background-color: #0b2532;
+    font-family: seg;
+    font-size: 12px;
+    display: inline-block;
+    padding: 5px;
+    margin: 0;
+    cursor: pointer;
+    height: 30px;
+    left: calc(100% - 81px);
+    position: absolute;
+    top: 90px;
+    font-weight: bold;
+  }
+  .lg-btn:focus{
+    outline:none;
+  }
+  
+  .btn-lo:focus{
+    outline:none;
+  }
+  .btn-lo {
+    //color: $white-color;
+    display:inline-block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    cursor: pointer;
+    background-color: #e73b2a;
+    width:30px;
+    height:30px;
+    position:absolute;
+    top:90px;
+    left:calc(100% - 30px);
+  }
+  .search-bar{
+    border-radius: 40px;
+    font-family:seg;
+    font-size:12px;
+  }
+  .btn-search{
+    padding:0 !important;
+    margin:0 !important;
+    width:25%;
+    color:white;
+    cursor:pointer;
+    border:none;
+  }
+  .btn-search:focus{
+    outline: none;
+  }
+  .btn-left{
+    border-radius: 40px 0px 0px 40px;
+    background-color: #0b2532;
+    border: 1px solid #0b2532;
+    padding: 4px !important;
+  
+  }
+  .btn-right{
+    border-radius: 0px 40px 40px 0px;
+    background: #e73b2a;
+    border:1px solid #ea9493 !important;
+    
+  }
+  .block-align{
+    display: block;
+    margin:auto; 
+    width:30px;
+    height: 30px;
+    margin-bottom:5px;
   }
 </style>

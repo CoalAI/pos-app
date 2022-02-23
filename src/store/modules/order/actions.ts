@@ -22,6 +22,7 @@ export enum ActionTypes {
   GET_SINGLE_PRODUCT = "GET_SINGLE_PRODUCT",
   GET_PRODUCTS_BY_PAGE = "GET_PRODUCTS_BY_PAGE",
   GET_UNITS = "GET_UNITS",
+  FETCH_CATEGORIES = "FETCH_CATEGORIES",
   CREATE_PRODUCT = "CREATE_PRODUCT",
   UPDATE_PRODUCT = "UPDATE_PRODUCT",
   DELETE_PRODUCT = "DELETE_PRODUCT",
@@ -37,6 +38,8 @@ export enum ActionTypes {
   UPDATE_REQUEST = "UPDATE_REQUEST",
   UPDATE_ORDER = "UPDATE_ORDER",
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
+  EMPTY_ORDER = "EMPTY_ORDER",
+  FETCH_ANALYTICS = "FETCH_ANALYTICS",
 }
 
 
@@ -72,6 +75,7 @@ export interface Actions {
   [ActionTypes.GET_SINGLE_PRODUCT]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.GET_PRODUCTS_BY_PAGE]({ commit }: AugmentedActionContext, page?: number): void;
   [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.FETCH_CATEGORIES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product): void;
   [ActionTypes.UPDATE_PRODUCT]({ commit }: AugmentedActionContext, data: {productID: string; product: Product}): void;
   [ActionTypes.DELETE_PRODUCT]({ commit }: AugmentedActionContext, productID: string): void;
@@ -87,6 +91,8 @@ export interface Actions {
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.UPDATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
+  [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any): void;
+  [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -236,6 +242,15 @@ Actions = {
       commit('setError', response.message, {root: true});
     }
   },
+  async [ActionTypes.FETCH_CATEGORIES]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'category/', true, undefined, undefined);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetCategories, response.data.results);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
   async [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product) {
     const response = await serverRequest('post', 'product/', true, product);
     if (isAxiosResponse(response)) {
@@ -297,9 +312,9 @@ Actions = {
   async [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; batch_ids?: string; page?: number}) {
     let response;
     if (data && data.search && data.search) {
-      response = await serverRequest('get', 'inventory/', true, undefined, data);
+      response = await serverRequest('get', 'inventory/', true, undefined, { ...data, quantity__gte: 1});
     } else {
-      response = await serverRequest('get', `inventory/`, true, undefined, data);
+      response = await serverRequest('get', `inventory/`, true, undefined, { ...data, quantity__gte: 1});
     }
     if(isAxiosResponse(response)) {
       commit(MutationTypes.SetInventoryCount, response.data.count)
@@ -375,5 +390,14 @@ Actions = {
   async [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any) {
     commit(MutationTypes.SetError, error);
   },
+  async [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any) {
+    commit(MutationTypes.SetOrder, {});
+  },
+  async [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: {start_end: Date; end_date: Date; company: number }) {
+    const response = await serverRequest('get', 'analytics/', true, undefined, options);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetAnalytics, response.data);
+    }
+  }
 };
 

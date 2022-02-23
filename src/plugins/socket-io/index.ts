@@ -28,13 +28,9 @@ export default class VueSocketIO {
     }
 
     connect(connection: string){
-        if(typeof connection === 'string'){
-            Logger.info(`Received connection string${connection}`);
-            return this.io = io(connection);
-        } else {
-            throw new Error('Unsupported connection type');
-        }
-
+        Logger.info(`Received connection string${connection}`);
+        const con = io(connection, {path: '/posnotify/socket.io'});
+        return this.io = con;
     }
 
     attach_listeners(listeners: string[]){
@@ -45,7 +41,8 @@ export default class VueSocketIO {
                 })
             })
         }else{
-            throw new Error('connection issue or no event listener passed');
+            console.log('connection issue or no event listener passed');
+            // throw new Error('connection issue or no event listener passed');
         }
     }
 

@@ -6,154 +6,177 @@
         <span v-else>Add New</span>
         <span> User</span>
       </h2>
-      <div class="flex-box">
-        <label class="pad-label w100" for="first_name">
-          <strong>First Name:</strong>
-        </label>
-        <input
-          name="first_name"
-          type="text"
-          placeholder="Enter First Name"
-          v-model="user.firstName"
-        />
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="last_name">
-          <strong>Last Name:</strong>
-        </label>
-        <input
-          name="last_name"
-          type="text"
-          placeholder="Enter Last Name"
-          v-model="user.lastName"
-        />
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="email">
-          <strong>Email:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="email"
-            type="text"
-            placeholder="Enter Email"
-            v-model="user.email"
-          />
-          <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+      <div class="first-row row">
+        <div class="left">
+          <label class="" for="first_name">
+            <strong>First Name:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="first_name"
+              type="text"
+              placeholder="Enter First Name"
+              v-model="user.firstName"
+            />
+          </div>
+        </div>
+        <div class="right">
+          <label class="" for="last_name">
+            <strong>Last Name:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="last_name"
+              type="text"
+              placeholder="Enter Last Name"
+              v-model="user.lastName"
+            />
+          </div>
         </div>
       </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="thisusername">
-          <strong>Username:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="thisusername"
-            type="text"
-            placeholder="Enter User Name"
-            v-model="user.userName"
-          />
-          <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
-          <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+      <div class="second-row row">
+        <div class="left">
+          <label class="" for="email">
+            <strong>Email:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="email"
+              type="text"
+              placeholder="Enter Email"
+              v-model="user.email"
+            />
+            <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+          </div>
+        </div>
+        <div v-if="!userId" class="right">
+          <label class="" for="thisusername">
+            <strong>Username:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="thisusername"
+              type="text"
+              placeholder="Enter User Name"
+              v-model="user.userName"
+            />
+            <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
+            <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+          </div>
         </div>
       </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="thisuserpassword">
-          <strong>Password:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            autocomplete="new-password"
-            name="thisuserpassword"
-            type="password"
-            placeholder="Enter Password"
-            v-model="user.password"
-          />
-          <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
-          <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+      <div class="third-row row">
+        <div v-if="!userId" class="left">
+          <label class="" for="thisuserpassword">
+            <strong>Password:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              autocomplete="new-password"
+              name="thisuserpassword"
+              type="password"
+              placeholder="Enter Password"
+              v-model="user.password"
+            />
+            <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
+            <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+          </div>
+        </div>
+        <div v-if="!userId" class="right">
+          <label class="" for="confirmpassword">
+            <strong>Confirm Password:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="confirmpassword"
+              type="password"
+              placeholder="Enter confirm password"
+              v-model="user.confirmPassword"
+            />
+            <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span>
+          </div>
         </div>
       </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="confirmpassword">
-          <strong>Confirm Pwd:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="confirmpassword"
-            type="password"
-            placeholder="Enter confirm password"
-            v-model="user.confirmPassword"
-          />
-          <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span>
+      <div class="forth-row row">
+        <div class="left">
+          <label class="" for="in_stock">
+            <strong>Active:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              style="margin-top: 21px"
+              type="checkbox"
+              id="active"
+              name="active"
+              v-model="user.active"
+            >
+          </div>
         </div>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="in_stock">
-          <strong>Active:</strong>
-        </label>
-        <input
-          style="margin-top: 21px"
-          type="checkbox"
-          id="active"
-          name="active"
-          v-model="user.active"
-        >
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="role">
-          <strong>Role:</strong>
-        </label>
+        <div class="right">
+          <label class="" for="role">
+            <strong>Role:</strong>
+          </label>
 
-        <select name="role" class="custom-select" id="unit" v-model="user.user_type">
-          <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
-            {{ role }}
-          </option>
-        </select>
+          <div class="ab-select-container">
+            <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+              <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+                {{ role }}
+              </option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="companies">
-          <strong>Company:</strong>
-        </label>
+      <div class="fifth-row row">
+        <div v-if="!userId" class="left">
+          <label class="" for="companies">
+            <strong>Company:</strong>
+          </label>
 
-        <select name="companies" class="custom-select" id="companies" v-model="user.company">
-          <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-            {{ company.company_name }}
-          </option>
-        </select>
-        <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-        <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="contact_number">
-          <strong>Contact Number:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="contact_number"
-            type="text"
-            placeholder="Enter contact number"
-            v-model="user.contactNumber"
-          />
-          <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+          <div class="ab-select-container">
+            <select name="companies" class="custom-select" id="companies" v-model="user.company">
+              <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                {{ company.company_name }}
+              </option>
+            </select>
+          </div>
+          <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+          <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+        </div>
+        <div class="right">
+          <label class="" for="contact_number">
+            <strong>Contact Number:</strong>
+          </label>
+          <div class="ab-input-container">
+            <input
+              name="contact_number"
+              type="text"
+              placeholder="Enter contact number"
+              v-model="user.contactNumber"
+            />
+            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+          </div>
         </div>
       </div>
 
-      <div class="mr-2" style="text-align: right; padding-bottom: 50px">
-        <router-link
-          to="/users"
-          style="margin-right: 20px"
-          class="btn btn-orange btn-mr btn-link"
-        >Cancel</router-link>
-        <button
-          class="btn btn-orange btn-mr"
-          style="width: 150px"
-          :disabled="addEditBtn"
-          @click="addUpdateUser"
-        >
-          <span v-if="userId">Update</span>
-          <span v-else>Add</span>
-          <span> User</span>
-        </button>
+      <div class="ab_btn_container">
+        <div>
+          <button
+            class="btn ab_orange_hover btn-orange"
+            :disabled="addEditBtn"
+            @click="addUpdateUser"
+          >
+            <span v-if="userId">Update</span>
+            <span v-else>Add</span>
+            <span> User</span>
+          </button>
+        </div>
+        <div>
+          <router-link
+            to="/users"
+            style="margin-left: 20px"
+            class="btn ab_blue_hover btn-blue"
+          >Cancel</router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -272,7 +295,7 @@ export default defineComponent({
 
     ...mapGetters({
       roles: 'getRoles',
-      companies: 'getCompanies',
+      companies: 'getCompaniesFilterVendor',
       fieldErrors: 'getAuthFieldError',
     })
   },
@@ -364,24 +387,118 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditUser {
-    padding-left: 15%;
-    padding-right: 15%;
+    // padding: 2.65% 30%;
+    padding: 2.65% 26%;
+    // padding-left: 15%;
+    // padding-right: 15%;
     margin-top: 3%;
+    // padding-left: 15%;
+    // padding-right: 15%;
+    // margin-top: 3%;
+  }
+  .diff-shadow{
+    padding: 1.65% 6.56%;
+  }
+  .diff-shadow > h2{
+    text-align: center;
+    color: $primary-color;
+    margin-bottom: 50px;
+  }
+  
+
+  // .pad-label {
+  //   padding: 20px 20px 20px 0px;
+  // }
+
+  // .w100 {
+  //   width: $w150;
+  // }
+
+  // label {
+  //   text-align: left;
+  // }
+
+  // .full-width {
+  //   width: 100%;
+  // }
+
+  // ab-css
+  .row{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
+  }
+  .left{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .right{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .ab-select-container > select{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .ab-input-container > input[type=text]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container > input[type=password]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .ab-select-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .row  label{
+    // margin-right: 50px;
+    width: 30%;
+    font-size: 0.875em;
+  }
+  .form-error{
+    font-size: 0.65em; 
   }
 
-  .pad-label {
-    padding: 20px 20px 20px 0px;
+  // buttons designs 
+  .ab_btn_container{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
   }
-
-  .w100 {
-    width: $w150;
+  .ab_btn_container > div:first-child button:first-child{
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid $primary-color !important;
   }
-
-  label {
-    text-align: left;
+  .ab_orange_hover:hover{
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    background-color: white;
   }
-
-  .full-width {
-    width: 100%;
+  .btn-blue{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid #0f2636 !important;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+  .ab_btn_container a{
+    color:white;
   }
 </style>

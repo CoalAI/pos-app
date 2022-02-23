@@ -83,7 +83,8 @@
           <col span="1" style="width: 12%;">
           <col span="1" style="width: 12%;">
           <col span="1" style="width: 12%;">
-          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 6%;">
+          <col span="1" style="width: 6%;">
           <col span="1" style="width: 20%;">
         </colgroup>
 
@@ -97,6 +98,8 @@
           <th>Payment Method</th>
           <th>Discount Type</th>
           <th>Discount</th>
+          <th>Date</th>
+          <th></th>
           <th></th>
         </tr>
         <tr v-for="(order, index) in orders" v-bind:key="order.id">
@@ -106,9 +109,10 @@
           <td>{{trimDecimalPlaces(order.total)}}</td>
           <td>{{trimDecimalPlaces(order.amount_received)}}</td>
           <td>{{order.status}}</td>
-          <td v-if="order.cash">Cash</td><td v-else>Card</td>
+          <td v-if="order.cash_payment">Cash</td><td v-else>Card</td>
           <td v-if="order.amount_discount">Amount</td><td v-else>Percentage</td>
           <td>{{trimDecimalPlaces(order.total_discount)}}</td>
+          <td>{{order.created.split('T')[0]}}</td>
           <td style="width: 150px">
             <div class="flex-box">
               <router-link 
@@ -116,12 +120,32 @@
               class="btn btn-orange btn-mr-inner">Details</router-link>
             </div>
           </td>
+          <td style="width: 150px">
+            <div class="flex-box">
+              <div class="btn btn-orange btn-mr-inner" @click="printOrderBill(order.id)">Print</div>
+            </div>
+          </td>
         </tr>
       </table>
       <Paginator :count="counts.orders" @pageChange="changePage"/>
     </div>
-
   </div>
+  <Modal v-if="order_response && printOrder" type="scrollable">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <OrderBill :orderId="order_response.id"/>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button @click="closeReprintDialog();" class="btn btn-orange btn-mr" v-focus>Close</button>
+        </div>
+      </template>
+  </Modal>
+
 </template>
 
 <script lang="ts">
@@ -129,20 +153,27 @@ import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import Paginator from '@/components/common-components/Paginator.vue';
+import OrderBill from '@/components/sales/OrderBill.vue';
+import Modal from '@/components/common-components/Modal.vue';
+
 import { ActionTypes } from '@/store/modules/order/actions';
 import { isManager } from '@/utils/permission_utils';
 
 export default defineComponent({
   name: 'OrdersList',
   components: {
-    Paginator
+    Paginator,
+    OrderBill,
+    Modal
   },
   data () {
     return {
       search: '',
       orderStatus: '',
       orderDate: '',
-      paymentMethod: ''
+      paymentMethod: '',
+      printOrder: false,
+      orderid: '',
     }
   },
   computed: {
@@ -150,7 +181,8 @@ export default defineComponent({
       orders: 'getListOfOrders',
       statuses: 'getOrderStatuses',
       counts: 'getTotalCountsOrderModule',
-      user: 'getUser'
+      user: 'getUser',
+      order_response: 'getOrder',
     })
   },
   methods: {
@@ -217,14 +249,24 @@ export default defineComponent({
 
       await this.fetchOrders(this.getOptions(unproxied_options));
     },
-
+    closeReprintDialog: function(){
+        this.changeOrderStatus('');
+        this.printOrder=false;
+    },
+    printOrderBill: async function(orderid: any){
+      console.log(orderid);
+      await this.fetchOrder(orderid);
+      this.printOrder=true;
+    },
     trimDecimalPlaces: function (value: string) {
       return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
     },
 
     ...mapActions({
       fetchOrders: ActionTypes.FETCH_ORDERS,
-      fetchOrderStatuses: ActionTypes.FETCH_ORDER_STATUSES
+      fetchOrderStatuses: ActionTypes.FETCH_ORDER_STATUSES,
+      fetchOrder: ActionTypes.FETCH_ORDER,
+      changeOrderStatus: ActionTypes.CHANGE_ORDER_STATUS
     })
   },
   async beforeMount () {
