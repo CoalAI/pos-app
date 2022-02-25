@@ -203,8 +203,9 @@ export default defineComponent({
   .diff-shadow-box {
     border: 1px solid $white-color;
     border-radius: 10px;
-    padding: 1em 13em;
-    margin: 15px 141px 0px 194px;
+    padding: 1em 8em;
+    margin: 2% 10%;
+    margin-left:10% !important;
 
     -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
     -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
