@@ -275,9 +275,8 @@ export default defineComponent({
     border: 1px solid $white-color;
     border-radius: 10px;
     padding: 1em 4em;
-    margin-top: 15px;
-    margin-left:195px;
-    margin-right:140px;
+    margin: 2% 10%;
+    margin-left:10% !important;
 
     -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
     -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
