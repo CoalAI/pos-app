@@ -1,30 +1,39 @@
 <template>
   <div>
-    <div class="flex-box">
-      <label class="pad-label ls" for="start_date">
-        <strong>Company:</strong>
-      </label>
-      <select
-        id="company-type"
-        name="company-type"
-        class="custom-select"
-        style="width: 30%"
-        v-model="company"
-        @change="fetchAnalyticsBtn"
-        :disabled="!admin"
-      >
-        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-          {{company.company_name}}
-        </option>
-      </select>
+    <div class="ab-flex-box">
+      <div id="select-con">
+        <label class="" for="start_date">
+          <strong>Company:</strong>
+        </label>
+        <div class="ab-select-container">
+          <select
+            id="company-type"
+            name="company-type"
+            class="custom-select"
+            v-model="company"
+            @change="fetchAnalyticsBtn"
+            :disabled="!admin"
+          >
+            <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+              {{company.company_name}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="date-container">
+        <DateRange @dateRangeChange="setRange"  />
+      </div>
     </div>
-    <div class="flex-box">
-      <DateRange @dateRangeChange="setRange"  />
+    <div class="b">
+        <button class="btn-blue" @click="fetchAnalyticsBtn">Search</button>
+    </div>
+    <!-- commented out -->
+    <!-- <div class="flex-box">
       <div class="b" style="margin-left: 10px">
         <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
       </div>
-    </div>
-    <table>
+    </div> -->
+    <!-- <table>
       <colgroup>
         <col span="1" style="width: 50%;">
         <col span="1" style="width: 50%;">
@@ -41,7 +50,21 @@
         <td><strong>Expense</strong></td>
         <td>PKR {{analytics.total_expense}}</td>
       </tr>
-    </table>
+    </table> -->
+    <div class="stats">
+      <div>
+        <span>Total Orders:</span>
+        <span>{{analytics.total_orders}}</span>
+      </div>
+      <div>
+        <span>Total Amount:</span>
+        <span>{{analytics.total_orders_amount}}</span>
+      </div>
+      <div>
+        <span>Expenses:</span>
+        <span>{{analytics.total_expense}}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -122,7 +145,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 table {
   border-collapse: collapse;
   width: 100%;
@@ -140,5 +163,69 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) input {
   background-color: inherit;
+}
+
+/* ab css */
+.ab-flex-box{
+  display: flex;
+  align-items: baseline;
+}
+
+/* upper left designs */
+#select-con{
+  display: flex;
+  align-items: baseline;
+  width: 30%
+}
+#select-con > .ab-select-container{
+  width: 100%;
+}
+#select-con > .ab-select-container > select{
+  margin-left: 10px;
+  /* padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 12px; */
+}
+.date-container{
+  display: flex;
+}
+
+
+/* btn blue  */
+.b{
+  text-align: right;
+}
+.btn-blue{
+  text-decoration: none;
+  text-align: center;
+  background-color:#0f2636;
+  font-size: 12px;
+  border-radius: 20px;
+  padding: 6px 40px;
+  cursor: pointer;
+  color:$white-color;
+  border: 1.5px solid #0f2636 !important;
+}
+.btn-blue:hover{
+  color: #0f2636;
+  background-color: white;
+  border: 1.5px solid #0f2636;
+}
+
+// stats designs
+.stats{
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.stats > div > span:first-child{
+  font-size: 15px;
+  font-weight: 600;
+  margin-right: 2px;
+}
+.stats > div > span:last-child{
+  font-size: 15px;
+  font-weight: 550;
+  color: #e73b2a;
 }
 </style>

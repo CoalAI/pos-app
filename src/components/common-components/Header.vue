@@ -1,13 +1,13 @@
 <template>
   <div class="container-fluid">
     <div class="logo">
-      <!--<router-link v-if="salesStaff" to="/">
-        <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
+      <router-link v-if="salesStaff" to="/">
+        <img class="logo-img-head" src="../../assets/rohi_logo.jpg" alt="coaldev">
       </router-link>
       <router-link v-else-if="admin" to="/admin/order">
-        <img class="logo_img" src="../../assets/rohi_logo.jpg" alt="coaldev">
-      </router-link>-->
-      <img class="logo-img-head" src="../../assets/logo.png" alt="coaldev">
+        <img class="logo-img-head" src="../../assets/rohi_logo.jpg" alt="coaldev">
+      </router-link>
+      <!--<img class="logo-img-head" :src="logo" alt="coaldev">-->
     </div>
     <!--<div class="b">
       <div class="flex-box">
@@ -55,7 +55,7 @@
         <router-link v-show='admin' to="/departments" class="d btn-grid btn-mr">
         <img :src="department" class="block-align">DEPARTMENTS</router-link>
         <router-link v-show="manager" to="/request" class="r btn-grid btn-mr">
-        <img :src="request" class="block-align">REQUEST</router-link>
+        <img :src="request" class="block-align">REQUESTS</router-link>
         <router-link v-show="manager" to="/response" class="rs btn-grid btn-mr">
         <img :src="responses" class="block-align">RESPONSES</router-link>
         <router-link v-show="manager" to="/expense-summary" class="su btn-grid btn-mr">
@@ -206,6 +206,7 @@ export default defineComponent({
   name: 'Header',
   data () {
     return{
+      logo: require('../../assets/login-top-logo.svg'),
       toggle:false,
       animated:false,
       order: require('../../assets/new-order.svg'),
@@ -397,8 +398,8 @@ export default defineComponent({
     grid-template-areas: 
     "no i s u a p b v d r rs su f";
     background-color: #0b2532;
-    width:95%;
-    height:78%;
+    width:100%;
+    height:85%;
     margin: 0 auto;
     border-radius:0px 0px 20px 20px;
     text-align:center;
@@ -456,9 +457,9 @@ export default defineComponent({
     border-bottom: 5px solid #e73b2a;
   }
   .logo-img-head {
-    height:80px;
-    width:160px;
-    object-fit:cover;
+    height: 86px;
+    //width: 160px;
+    object-fit: contain;
   }
 
   .user-name {
@@ -634,7 +635,7 @@ export default defineComponent({
   .btn-search{
     padding:0 !important;
     margin:0 !important;
-    width:25%;
+    width:30%;
     color:white;
     cursor:pointer;
     border:none;

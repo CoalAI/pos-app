@@ -1593,7 +1593,7 @@ export default defineComponent({
 .split-container {
   display: inline-block;
   grid-template-columns: 2fr 1fr;
-  margin:10px;
+  margin: 20px 10px;
 
 }
 .split-container:hover{
@@ -1644,7 +1644,7 @@ export default defineComponent({
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 86px;
+  width: 71px;
   height: 30px;
   padding: 0px 0px 0px 5px;
 }
@@ -1652,7 +1652,7 @@ export default defineComponent({
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 135px;
+  width: 119px;
   height: 30px;
   margin-top: 15px;
   padding: 0px 0px 0px 5px;
@@ -1662,7 +1662,7 @@ export default defineComponent({
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 95px;
+  width: 79px;
   height: 30px;
   margin-top: 15px;
   padding: 0px 0px 0px 5px;
@@ -1876,12 +1876,13 @@ float-right{
 }
 .col-3{
   -webkit-box-flex: 0;
-  flex: 0 0 27% !important;
-  max-width: 27% !important;
+      flex: 0 0 30% !important;
+    max-width: 30% !important;
+    margin-left: 23px !important;
 }
 .col-6{
   -webkit-box-flex: 0;
-  flex: 0 0 54%;
-  max-width: 54%;
+  flex: 0 0 50%;
+  max-width: 50%;
 }
 </style>

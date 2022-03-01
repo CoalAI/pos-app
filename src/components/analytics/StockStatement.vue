@@ -1,61 +1,74 @@
 <template>
-     <div class="diff-shadow">
-         <div class="flex-box" style="height:60px; width:100%" >
-             <label class="pad-label ls" for="department">
-           <strong>Department:</strong>
-         </label>
-         <select
-             id="department"
-             name="department"
-             class="custom-select"
-           >
-             <option value="">Bakery</option>
+    
+  <div class="ab-flex-box" >
+    <div class="left">
+      <label class="" for="department">
+        <strong>Department:</strong>
+      </label>
+      <div class="ab-select-container">
+        <select
+          id="department"
+          name="department"
+          class="custom-select"
+        >
+          <option value="">Bakery</option>
 
-           </select>
-
-              <label class="pad-label ls" for="user">
-           <strong>Product Category:</strong>
-         </label>
-         <select
-             id="category"
-             name="category"
-             class="custom-select"
-           >
-             <option value="">Fresh Goods</option>
-
-           </select>
-          <div>
-           <button class="btn btn-orange" style="width:80px">Search</button>
-          </div>
-         </div>
-  <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Product Category</th>
-                    <th>Quantity</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="product in ProductInfo" :key="product.id">
-                    <td>{{product.Name}}</td>
-                    <td>{{product.Category}}</td>
-                    <td>{{product.Quantity}}</td>
-                    <td>{{product.Amount}}</td>
-                </tr>
-            </tbody>
-        </table>
-       <div>
-         <b> Total Quantity: </b> 
-         <p> {{totalQuantity}} </p>
-       </div>
-        <div>
-        <b> Total Amount:</b> 
-       <p> PKR {{totalAmount}} </p>
-       </div>
-       <button class="btn btn-orange" style="width:80px">Print</button>
+        </select>
       </div>
+    </div>
+    <div class="right">
+      <label class="" for="user">
+        <strong>Product Category:</strong>
+      </label>
+      <div class="ab-select-container">
+        <select
+            id="category"
+            name="category"
+            class="custom-select"
+          >
+            <option value="">Fresh Goods</option>
+
+        </select>
+      </div>
+    </div>
+    <!-- <div>
+      <button class="btn btn-orange" style="width:80px">Search</button>
+    </div> -->
+  </div>
+  <table class="tble-mt">
+    <colgroup>
+        <col span="1" style="width: 30%;">
+        <col span="1" style="width: 30%;">
+        <col span="1" style="width: 15%;">
+        <col span="1" style="width: 25%;">
+    </colgroup>
+    <thead>
+        <tr class="fr-row header">
+            <th>Product Name</th>
+            <th>Product Category</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="fr-row content" v-for="product in ProductInfo" :key="product.id">
+            <td>{{product.Name}}</td>
+            <td>{{product.Category}}</td>
+            <td>{{product.Quantity}}</td>
+            <td>{{product.Amount}}</td>
+        </tr>
+    </tbody>
+  </table>
+  <!-- commented out as this was not in mockups -->
+  <!-- <div>
+    <b> Total Quantity: </b> 
+    <p> {{totalQuantity}} </p>
+  </div>
+  <div>
+    <b> Total Amount:</b> 
+    <p> PKR {{totalAmount}} </p>
+  </div>
+  <button class="btn btn-orange" style="width:80px">Print</button> -->
  </template>
 
  <script lang="ts">
@@ -108,78 +121,72 @@
    methods: {
    }
  });
- </script>
+</script>
 
- <style lang="scss" scoped>
- .flex-container {
-   display: flex;
-   flex-direction: row-reverse;
- }
-   #detail {
-     padding-left: 15%;
-     padding-right: 15%;
-     margin-top: 3%;
-   }
-   .pad-label {
-     padding: 20px 20px 20px 0px;
-   }
-   .w100 {
-     width: $w150;
-   }
-   label {
-     text-align: left;
-   }
-   .full-width {
-     width: 100%;
-   }
-   .checkbox-label {
-     font-size: $label-font-size;
-   }
-   .nav {
-     display: -webkit-box;
-     display: -ms-flexbox;
-     display: flex;
-     -ms-flex-wrap: wrap;
-     flex-wrap: wrap;
-     padding-left: 0;
-     margin-bottom: 0;
-     list-style: none;
-   }
-   .nav-tabs {
-     border-bottom: 1px solid #dee2e6;
-   }
-   .nav-tabs .nav-item {
-     margin-bottom: -1px;
-     width: 25%;
-   }
-   .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-     color: $primary-color;
-     background-color: #fff;
-     border-color: #dee2e6 #dee2e6 #fff;
-   }
-   .nav-tabs .nav-link {
-     border: 1px solid transparent;
-     border-top-left-radius: .25rem;
-     border-top-right-radius: .25rem;
-   }
-   .nav-link {
-     color: #495057;
-     display: block;
-     padding: .5rem 1rem;
-   }
-   a:visited {
-     color: #495057;
-   }
-   .active a {
-     color: $primary-color;
-   }
-    #department {
-     width: $w200;
-     margin-left: 1%;
-     margin-right: 2%
-   }
-    #user {
-     width: $w200;
-     margin-left: 1%;
-   }
- </style>
+<style lang="scss" scoped>
+  .ab-flex-box{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .left{
+    display: flex;
+    align-items: baseline;
+    width: 40%;
+  }
+  .left > label{
+    font-size: 13px
+  }
+  .right{
+    display: flex;
+    align-items: baseline;
+    width: 40%;
+  }
+  .right > label{
+    font-size: 13px;
+  }
+  .ab-select-container{
+    flex-grow: 1;
+  }
+  .ab-select-container > select{
+    margin-left: 10px;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  /* table designs */
+  .tble-mt{
+    margin: 20px 0;
+  }
+
+  .fr-row {
+    font-size: 12px;
+  }
+  .header > th{
+    text-align: center;
+  }
+  .header > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header {
+    border-radius: 5px;
+    background-color: #0f2634; 
+    color: white;
+  }
+  td > .flex-box{
+    justify-content: space-around;
+    align-items: center;
+  }
+  .content{
+    background-color: white; 
+    color: #0f2634;
+  }
+  .content > td{
+    text-align: center;
+  }
+</style>
