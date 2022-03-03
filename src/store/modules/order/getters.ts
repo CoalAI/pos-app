@@ -6,6 +6,7 @@ import { State } from './state';
 import { Batch } from "@/store/models/batch";
 import { Inventory } from "@/store/models/company";
 import { Request } from "@/store/models/request";
+import { state } from "../auth/state";
 
 
 export interface Getters {
@@ -32,6 +33,7 @@ export interface Getters {
   getFieldError(state: State): any;
   getTotalCountsOrderModule(state: State): any;
   getAnalytics(state: State): any;
+  getSalesanalytics(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -88,4 +90,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getFieldError: (state: State) => state.error,
   getTotalCountsOrderModule: (state: State) => state.totalCounts,
   getAnalytics: (state: State) => state.analytics,
+  getSalesanalytics: (state: State) => state.salesanalytics,
 };

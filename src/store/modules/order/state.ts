@@ -32,6 +32,7 @@ export type State = {
     requests: number;
   };
   analytics: any;
+  salesanalytics: any;
 };
 
 
@@ -62,4 +63,5 @@ export const state: State = {
     requests: 0,
   },
   analytics: {},
+  salesanalytics: {},
 };

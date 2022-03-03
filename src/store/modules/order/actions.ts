@@ -39,6 +39,7 @@ export enum ActionTypes {
   SET_FIELD_ERROR = "SET_FIELD_ERROR",
   EMPTY_ORDER = "EMPTY_ORDER",
   FETCH_ANALYTICS = "FETCH_ANALYTICS",
+  FETCH_SALESANALYTICS = "FETCH_SALESANALYTICS",
   PRODUCT_QUANTITY = "PRODUCT_QUANTITY"
 }
 
@@ -93,6 +94,7 @@ export interface Actions {
   [ActionTypes.SET_FIELD_ERROR]({ commit }: AugmentedActionContext, error: any): void;
   [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any): void;
   [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
+  [ActionTypes.FETCH_SALESANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
   [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number}): void;
 }
 
@@ -386,6 +388,12 @@ Actions = {
     const response = await serverRequest('get', 'analytics/', true, undefined, options);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetAnalytics, response.data);
+    }
+  },
+  async [ActionTypes.FETCH_SALESANALYTICS]({ commit }: AugmentedActionContext, options: {start_end: Date; end_date: Date; company: number }) {
+    const response = await serverRequest('get', 'user-sales/', true, undefined, options);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetSalesanalytics, response.data);
     }
   },
   async [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company?: number; category?: number}) {

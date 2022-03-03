@@ -1,35 +1,29 @@
 <template>
   <div>
-    <div class="ab-flex-box">
-      <div id="select-con">
-        <label class="" for="start_date">
-          <strong>Department:</strong>
-        </label>
-        <div class="ab-select-container">
-          <select
-            id="company-type"
-            name="company-type"
-            class="custom-select"
-            v-model="company"
-            @change="fetchAnalyticsBtn"
-            :disabled="!admin"
-          >
-            <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-              {{company.company_name}}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="date-container">
-        <DateRange @dateRangeChange="setRange"  />
-      </div>
+    <div class="flex-box">
+      <label class="pad-label ls" for="start_date">
+        <strong>Department:</strong>
+      </label>
+      <select
+        id="company-type"
+        name="company-type"
+        class="custom-select"
+        style="width: 30%"
+        v-model="company"
+        @change="fetchSalesanalyticsBtn"
+        :disabled="!admin"
+      >
+        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+          {{company.company_name}}
+        </option>
+      </select>
     </div>
-    <!-- <div class="flex-box">
+    <div class="flex-box">
       <DateRange @dateRangeChange="setRange"  />
       <div class="b" style="margin-left: 10px">
-        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
+        <button class="btn btn-orange" @click="fetchSalesanalyticsBtn">Search</button>
       </div>
-    </div> -->
+    </div> 
     <table class="tble-mt">
       <colgroup>
         <col span="1" style="width: 25%;">
@@ -46,11 +40,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="fr-row content">
-        <td>example</td>
-        <td>example</td>
-        <td>example</td>
-        <td>example</td>
+      <tr v-for="data in salesanalytics.result" :key="data">
+        <td>{{data.username}}</td>
+        <td>{{data.user_type}}</td>
+        <td>{{data.order_count}}</td>
+        <td>{{data.total_amount}}</td>
       </tr>
     </tbody>
   </table>
@@ -85,7 +79,7 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      analytics: 'getAnalytics',
+      salesanalytics: 'getSalesanalytics',
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
     }),
@@ -111,7 +105,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions({
-      fetchAnalytics: ActionTypes.FETCH_ANALYTICS,
+      fetchSalesanalytics: ActionTypes.FETCH_SALESANALYTICS,
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       fetchUser: AuthActionTypes.USER_DATA,
     }),
@@ -121,8 +115,8 @@ export default defineComponent({
         this.endDate = range.endDate.toString();
       }
     },
-    async fetchAnalyticsBtn() {
-      await this.fetchAnalytics({
+    async fetchSalesanalyticsBtn() {
+      await this.fetchSalesanalytics({
         start_date: this.startDate,
         end_date: this.endDate,
         company: this.company,
@@ -132,7 +126,7 @@ export default defineComponent({
   async mounted() {
     await this.fetchUser();
     await this.fetchCompanies();
-    await this.fetchAnalyticsBtn();
+    await this.fetchSalesanalyticsBtn();
     this.company = this.userdata.company.id;
   },
 })
