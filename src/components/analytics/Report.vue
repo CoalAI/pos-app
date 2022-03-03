@@ -1,30 +1,40 @@
 <template>
   <div>
-    <div class="flex-box">
-      <label class="pad-label ls" for="start_date">
-        <strong>Company:</strong>
-      </label>
-      <select
-        id="company-type"
-        name="company-type"
-        class="custom-select"
-        style="width: 30%"
-        v-model="company"
-        @change="fetchAnalyticsBtn"
-        :disabled="!admin"
-      >
-        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-          {{company.company_name}}
-        </option>
-      </select>
+    <div class="ab-flex-box">
+      <div id="select-con">
+        <label class="" for="start_date">
+          <strong>Company:</strong>
+        </label>
+        <div class="ab-select-container">
+          <select
+            id="company-type"
+            name="company-type"
+            class="custom-select"
+            v-model="company"
+            @change="fetchAnalyticsBtn"
+            :disabled="!admin"
+          >
+            <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+              {{company.company_name}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="date-container">
+        <DateRange @dateRangeChange="setRange"  />
+      </div>
     </div>
-    <div class="flex-box">
+    <div class="b" >
+      <button class="btn-blue" @click="fetchAnalyticsBtn">Search</button>
+    </div>
+    <!-- commnet out -->
+    <!-- <div class="flex-box">
       <DateRange @dateRangeChange="setRange"  />
       <div class="b" style="margin-left: 10px">
         <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
       </div>
-    </div>
-    <div class="row">
+    </div> -->
+    <!-- <div class="row">
       <div class="column">
         <h4>Total Order Received: {{analytics.total_orders}}</h4>
         <h4>Total Amount Received: {{analytics.total_orders_amount}}</h4>
@@ -33,6 +43,32 @@
         <h4>Total Order Given: {{analytics.purchasing_orders}}</h4>
         <h4>Expense: {{analytics.total_expense}}</h4>
         <h4>Total Amount Given: {{analytics.purchasing_orders_amount}}</h4>
+      </div>
+    </div> -->
+    <div class="stats">
+      <div class="stat-row">
+        <div>
+          <span>Total Orders Received:</span>
+          <span>{{analytics.total_orders}}</span>
+        </div>
+        <div>
+          <span>Total Amount:</span>
+          <span>{{analytics.total_orders_amount}}</span>
+        </div>
+        <div>
+          <span>Total Order Given:</span>
+          <span>{{analytics.purchasing_orders}}</span>
+        </div>
+      </div>
+      <div class="stat-row-2">
+        <div>
+          <span>Expense:</span>
+          <span>{{analytics.total_expense}}</span>
+        </div>
+        <div>
+          <span>ExpenseTotal Amount Given:</span>
+          <span>{{analytics.purchasing_orders_amount}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -115,7 +151,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 table {
   border-collapse: collapse;
   width: 100%;
@@ -147,5 +183,76 @@ tr:nth-child(odd) input {
   content: "";
   display: table;
   clear: both;
+}
+
+
+/* ab css */
+.ab-flex-box{
+  display: flex;
+  align-items: baseline;
+}
+
+/* upper left designs */
+#select-con{
+  display: flex;
+  align-items: baseline;
+  width: 30%
+}
+#select-con > .ab-select-container{
+  width: 100%;
+}
+#select-con > .ab-select-container > select{
+  margin-left: 10px;
+  /* padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 12px; */
+}
+.date-container{
+  display: flex;
+}
+/* btn blue  */
+.b{
+  text-align: right;
+}
+.btn-blue{
+  text-decoration: none;
+  text-align: center;
+  background-color:#0f2636;
+  font-size: 12px;
+  border-radius: 20px;
+  padding: 6px 40px;
+  cursor: pointer;
+  color:$white-color;
+  border: 1.5px solid #0f2636 !important;
+}
+.btn-blue:hover{
+  color: #0f2636;
+  background-color: white;
+  border: 1.5px solid #0f2636;
+}
+
+// stats designs
+.stat-row{
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+}
+.stat-row-2{
+  margin-bottom: 20px;
+  display: flex;
+  // justify-content: space-between;
+}
+.stat-row-2 > div{
+  width: 46%;
+}
+.stats div > span:first-child{
+  font-size: 15px;
+  font-weight: 600;
+  margin-right: 2px;
+}
+.stats div > span:last-child{
+  font-size: 15px;
+  font-weight: 550;
+  color: #e73b2a;
 }
 </style>

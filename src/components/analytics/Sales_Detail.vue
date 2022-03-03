@@ -18,15 +18,21 @@
         </option>
       </select>
     </div>
-    <div class="flex-box">
+    <!-- <div class="flex-box">
       <DateRange @dateRangeChange="setRange"  />
       <div class="b" style="margin-left: 10px">
         <button class="btn btn-orange" @click="fetchSalesanalyticsBtn">Search</button>
       </div>
-    </div>
-    <table class="marginTop">
+    </div> -->
+    <table class="tble-mt">
+      <colgroup>
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+    </colgroup>
     <thead>
-      <tr>
+      <tr class="fr-row header">
         <th scope="col">User Name</th>
         <th scope="col">User Type</th>
         <th scope="col">Total Orders</th>
@@ -42,9 +48,10 @@
       </tr>
     </tbody>
   </table>
-  <div class="flex-container marginTop">
+  <!-- commented out as this was not in the mockup -->
+  <!-- <div class="flex-container marginTop">
     <button class="btn btn-orange" style="width:80px">Print</button>
-  </div> 
+  </div>  -->
   </div>
 </template>
 
@@ -126,7 +133,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-table {
+/* table {
   border-collapse: collapse;
   width: 100%;
 }
@@ -147,5 +154,65 @@ tr:nth-child(odd) input {
 .flex-container {
   display: flex;
   flex-direction: row-reverse;
+} */
+
+/* ab css */
+/* ab-flex-box */
+.ab-flex-box{
+  display: flex;
+  align-items: baseline;
+}
+/* upper left designs */
+#select-con{
+  display: flex;
+  align-items: baseline;
+  width: 30%
+}
+#select-con > .ab-select-container{
+  width: 100%;
+}
+#select-con > .ab-select-container > select{
+  margin-left: 10px;
+  /* padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 12px; */
+}
+.date-container{
+  display: flex;
+}
+/* table designs */
+.tble-mt{
+  margin: 20px 0;
+}
+
+.fr-row {
+  font-size: 12px;
+}
+.header > th{
+  text-align: center;
+}
+.header > th:first-child{
+  border: none;
+  border-radius: 10px 0px 0px 10px;
+}
+.header > th:last-child{
+  border: none;
+  border-radius: 0px 10px 10px 0px;
+}
+.header {
+  border-radius: 5px;
+  background-color: #0f2634; 
+  color: white;
+}
+td > .flex-box{
+  justify-content: space-around;
+  align-items: center;
+}
+.content{
+  background-color: white; 
+  color: #0f2634;
+}
+.content > td{
+  text-align: center;
 }
 </style>

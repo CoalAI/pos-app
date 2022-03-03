@@ -6,90 +6,102 @@
           <span v-else>Add New</span>
           <span> Batch</span>
         </h2>
-        <div v-if="batchId" class="flex-box">
-          <label class="pad-label w100" for="products">
-            <strong>Products:</strong>
-          </label>
-          <input
-            type="text"
-            v-model="productVariantName"
-            readonly
-          >
-        </div>
-        <div v-else class="flex-box">
-          <label class="pad-label w100" for="products">
-            <strong>Products:</strong>
-          </label>
+        <div class="first-row row">
+          <div v-if="batchId" class="left">
+            <label class="" for="products">
+              <strong>Products:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                type="text"
+                v-model="productVariantName"
+                readonly
+              >
+            </div>
+          </div>
+          <div v-else class="left">
+            <label class="" for="products">
+              <strong>Products:</strong>
+            </label>
 
-          <div class="full-width">
-            <select name="products" class="custom-select" id="products" v-model="batch.productVariant">
-              <template v-for="product in products" v-bind:key="product.id">
-                <option 
-                  v-for="productVariant in product.product_variant"
-                  v-bind:key="productVariant.id"
-                  v-bind:value="productVariant.id"
-                >
-                  {{product.name}}: {{productVariant.price}}
-                </option>
-              </template>
-            </select>
-            <span v-if="productVariantValidation" class="form-error">{{ productVariantValidation }}</span>
+            <div class="ab-select-container">
+              <select name="products" class="custom-select" id="products" v-model="batch.productVariant">
+                <template v-for="product in products" v-bind:key="product.id">
+                  <option 
+                    v-for="productVariant in product.product_variant"
+                    v-bind:key="productVariant.id"
+                    v-bind:value="productVariant.id"
+                  >
+                    {{product.name}}: {{productVariant.price}}
+                  </option>
+                </template>
+              </select>
+              <span v-if="productVariantValidation" class="form-error">{{ productVariantValidation }}</span>
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="quantity">
+              <strong>Quantity:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="quantity"
+                type="text"
+                placeholder="Enter quantity"
+                v-model="batch.quantity"
+              />
+              <span v-if="batchQuantityValidation" class="form-error">{{ batchQuantityValidation }}</span>
+            </div>
+
           </div>
         </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="quantity">
-            <strong>Quantity:</strong>
-          </label>
-          <div class="full-width">
-            <input
-              name="quantity"
-              type="text"
-              placeholder="Enter quantity"
-              v-model="batch.quantity"
-            />
-            <span v-if="batchQuantityValidation" class="form-error">{{ batchQuantityValidation }}</span>
+
+        <div class="second-row row">
+          <div class="left">
+            <label class="" for="manufactured">
+              <strong>Manufactured Date:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input type="date" id="manufactured" name="manufactured" v-model="batch.manufacturedDate">
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="expiry">
+              <strong>Expiry date:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input type="date" id="expiry" name="expiry" v-model="batch.expiryDate">
+              <div v-if="expiryDateValidation" class="form-error">{{ expiryDateValidation }}</div>  
+            </div>
           </div>
         </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="manufactured">
-            <strong>Manufactured date:</strong>
-          </label>
-          <div class="full-width">
-            <input type="date" id="manufactured" name="manufactured" v-model="batch.manufacturedDate">
-          </div>
-        </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="expiry">
-            <strong>Expiry date:</strong>
-          </label>
-          <div class="full-width">
-            <input type="date" id="expiry" name="expiry" v-model="batch.expiryDate">
-            <div v-if="expiryDateValidation" class="form-error">{{ expiryDateValidation }}</div>  
-          </div>
-        </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="in_stock">
+        <div class="third-row">
+          <label class="" for="in_stock">
             <strong>In Stock:</strong>
           </label>
-          <input style="margin-top: 21px" type="checkbox" id="in_stock" name="in_stock" v-model="batch.in_stock">
+          <input style="" type="checkbox" id="in_stock" name="in_stock" v-model="batch.in_stock">
         </div>
 
-        <div style="text-align: right; padding-bottom: 50px">
-          <router-link
-            to="/batchs"
-            style="margin-right: 20px"
-            class="btn btn-orange btn-mr btn-link"
-          >Cancel</router-link>
-          <button
-            class="btn btn-orange btn-mr"
-            style="width: 150px"
-            :disabled="addEditBtn"
-            @click="addUpdateBatch"
-          >
-            <span v-if="batchId">Update</span>
-            <span v-else>Add</span>
-            <span> Batch</span>
-          </button>
+        <div class="ab_btn_container">
+          <div>
+            <button
+              class="btn ab_orange_hover btn-orange"
+              style=""
+              :disabled="addEditBtn"
+              @click="addUpdateBatch"
+            >
+              <span v-if="batchId">Update</span>
+              <span v-else>Add</span>
+              <span> Batch</span>
+            </button>
+          </div>
+          <div>
+            <router-link
+              to="/batchs"
+              style="margin-left: 20px"
+              class="btn ab_blue_hover btn-blue"
+            >Cancel</router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -239,24 +251,128 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditBatch {
-    padding-left: 15%;
-    padding-right: 15%;
+    // padding: 2.65% 30%;
+    padding: 2.65% 26%;
     margin-top: 3%;
   }
-
-  .pad-label {
-    padding: 20px 20px 20px 0px;
+  .diff-shadow{
+    // padding: 1.65% 7.56%;
+    padding: 1.65% 6.56%;
+  }
+  .diff-shadow > h2{
+    text-align: center;
+    color: $primary-color;
+    margin-bottom: 50px;
   }
 
-  .w100 {
-    width: $w150;
+  // .pad-label {
+  //   padding: 20px 20px 20px 0px;
+  // }
+
+  // .w100 {
+  //   width: $w150;
+  // }
+
+  // label {
+  //   text-align: left;
+  // }
+
+  // .full-width {
+  //   width: 100%;
+  // }
+  .row{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
+  }
+  .left{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .right{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .ab-select-container > select{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .ab-input-container > input[type=text]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container > input[type=date]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .ab-select-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .row  label{
+    // margin-right: 50px;
+    width: 30%;
+    font-size: 0.85em;
+    // font-weight: bold;
+  }
+  .third-row{
+    margin-top: 20px;
+  }
+  .third-row label{
+    // margin-right: 50px;
+    // width: 30%;
+    width: 93.39px;
+    font-size: 0.85em;
+    // font-weight: bold;
+  }
+  .third-row input{
+    // margin-right: 50px;
+    // width: 30%;
+    color: $primary-color;
+    // font-weight: bold;
+  }
+  .form-error{
+    font-size: 0.65em; 
   }
 
-  label {
-    text-align: left;
+  // buttons designs 
+  .ab_btn_container{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
   }
-
-  .full-width {
-    width: 100%;
+  .ab_btn_container > div:first-child button:first-child{
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid $primary-color !important;
+  }
+  .ab_orange_hover:hover{
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    background-color: white;
+  }
+  .btn-blue{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid #0f2636 !important;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+  .ab_btn_container a{
+    color:white;
   }
 </style>
