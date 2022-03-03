@@ -16,7 +16,7 @@
               @input="searchInventory"
             />
             <button class="btn-search btn-orange" @click="searchInventory">
-              <img src="//assets/search_icon.svg" alt="Search">
+              <img :src="searchbar" alt="Search">
             </button>
           </form>
           <label class="search-lbl">Search by Name:</label>
@@ -31,7 +31,7 @@
               @input="searchInventory"
             />
             <button class="btn-search btn-orange" @click="searchInventory">
-              <img src="/Svgs/Search.svg" alt="Search">
+              <img :src="searchbar" alt="Search">
             </button>
           </form>
         </div>
@@ -80,7 +80,7 @@
           <col span="1" style="width: 7%" />
           <col span="1" style="width: 3%" />
           <col span="1" style="width: 4%" />
-          <col span="1" style="width: 5%" />
+          <col span="1" style="width: 8%" />
         </colgroup>
 
         <tr
@@ -141,6 +141,7 @@ export default defineComponent({
   },
   data() {
     return {
+      searchbar: require('../../assets/search_icon.svg'),
       checkedValue: -1,
       search: "",
       company: "",
@@ -259,6 +260,7 @@ export default defineComponent({
 .fr-row {
   font-size: 12px;
   font-family: seg;
+  vertical-align:text-bottom;
 }
 .header {
   border-radius: 5px;
@@ -285,26 +287,29 @@ export default defineComponent({
 .search-box{
   border-radius:20px 0px 0px 20px;
   padding:0px 0px 0px 10px;
-  margin:8px 0px 8px 20px;
+  margin: 0px 0px 15px 20px;
   font-size:14px;
   color:#9ea3a6;
   font-family:seg;
   border: 1px solid #dfe0e1;
   border-right-style:none !important;
 }
-.diff-shadow-box{
+.diff-shadow{
   border: 1px solid $white-color;
   border-radius: 10px;
-  padding: 2.5em;
-  margin: 100px;
+  padding: 1em 2em;
+  margin: 2% 10%;
+  margin-left:10% !important;
 
   -webkit-box-shadow: 1px 1px 5px -1px rgb(0 0 0 / 40%);
   -moz-box-shadow: 1px 1px 5px -1px rgb(0 0 0 / 40%);
   box-shadow: 1px 1px 5px 1px rgb(0 0 0 / 40%);
 }
-
+.btn-search:focus{
+  outline:none;
+}
 .search-lbl{
-  font-size:11px;
+  font-size:9px;
   font-style:italic;
   margin:0px 0px 0px 25px;
   color:#9ea3a6;
@@ -313,14 +318,17 @@ export default defineComponent({
     border-radius:0px 20px 20px 0px;
     color: $white-color;
     //padding: $normal-btn-pad;
-    margin: $margin-btn-input;
+    margin: 0px 0px 15px;
     cursor: pointer;
     font-family:seg;
     font-size: 10px;
-    border: 1px solid #dfe0e1;
+    border: 1px solid #e43d2a;
     border-right-style:none!important;
     text-align: center;
     width:20%; 
+  }
+  .btn-search:focus{
+    outline:none;
   }
   .check {
     //position: absolute;
