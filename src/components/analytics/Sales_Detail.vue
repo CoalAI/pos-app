@@ -18,12 +18,12 @@
         </option>
       </select>
     </div>
-    <!-- <div class="flex-box">
+    <div class="flex-box">
       <DateRange @dateRangeChange="setRange"  />
       <div class="b" style="margin-left: 10px">
         <button class="btn btn-orange" @click="fetchSalesanalyticsBtn">Search</button>
       </div>
-    </div> -->
+    </div> 
     <table class="tble-mt">
       <colgroup>
         <col span="1" style="width: 25%;">
