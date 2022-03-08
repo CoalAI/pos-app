@@ -96,9 +96,9 @@
               @change="onCheckChange"  
               v-model="company.id"              
               id="company-type" 
-              :value="company"
+              value="company.id"
               name="company-type" 
-              :checked="checkedValue==company"/>
+              :checked="checkedValue==company.id"/>
                 {{ company.company_name }}
               
               </div>
@@ -213,8 +213,8 @@ export default defineComponent({
   },
   methods: {
     onCheckChange: async function(e: any){
-      this.checkedValue = e.target.value
-      console.log(this.checkedValue)
+      this.checkedValue = parseInt(e.target.value)
+      //console.log(this.checkedValue)
       await this.fetchInventory({
         company: this.company,
         search: this.search,
