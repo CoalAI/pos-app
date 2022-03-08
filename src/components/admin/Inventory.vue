@@ -36,7 +36,7 @@
           </form>
         </div>
         <div>
-        <div id="filter-box">
+        <!--<div id="filter-box">
           <select
             v-if="admin"
             id="company-type"
@@ -54,53 +54,22 @@
               {{ company.company_name }}
             </option>
           </select>
+        </div>-->
           <div id="company-type">
-            <form class="filter inline" v-if="admin">                 
-              <!--<div>
-              <input 
-              type="checkbox" 
-              value="0" 
-              v-if="admin" 
-              id="company-type" 
-              name="company-type"
-              v-model="company"
-              @change="onCheckChange" 
-              :checked="checkedValue==0">
+            <form class="filter inline" v-if="admin">
+              <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type"> All</div>
               <div 
               class="batches-op"
               v-for="company in companies"
-              v-bind:key="company.id"
-              v-bind:value="company.id"
-              >
-                {{ company.company_name }}<br>
-              </div>
-              </div>-->
-              <!--<input 
-              type="checkbox" 
-              @change="onCheckChange"  
-              v-for="company in companies" 
-              v-bind:key="company.id"
-              v-bind:value="company.id" 
-              v-model="company.id"              
-              id="company-type" 
-              name="company-type" 
-              :checked="checkedValue==company"/>-->
-              
-              <div 
-              class="batches-op "
-              v-for="company in companies"
-              v-bind:key="company.id"
-              v-bind:value="company.id">
+              v-bind:key="company.id">
               <input 
               type="checkbox" 
-              @change="onCheckChange"  
-              v-model="company.id"              
+              @change="onCheckChange"                
               id="company-type" 
-              value="company.id"
+              :value="company.id"
               name="company-type" 
               :checked="checkedValue==company.id"/>
                 {{ company.company_name }}
-              
               </div>
 
               <!--<input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
@@ -109,7 +78,6 @@
               <label>Rohi Stores</label>-->
             </form>
           </div>
-        </div>
       </div>
       </div>
       
@@ -213,12 +181,13 @@ export default defineComponent({
   },
   methods: {
     onCheckChange: async function(e: any){
-      this.checkedValue = parseInt(e.target.value)
-      //console.log(this.checkedValue)
+      this.checkedValue = e.target.value
+      console.log(this.checkedValue)
       await this.fetchInventory({
-        company: this.company,
+        company: this.checkedValue,
         search: this.search,
       });
+      
     
     },
     onChangeCompany: async function () {
