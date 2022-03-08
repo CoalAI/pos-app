@@ -181,9 +181,7 @@ Actions = {
         if (options.user_type === 'REGULAR_CUSTOMER') {
           customers = await offlineStoreService.getAllRegularCustomers();
         } else if (options.user_type === 'WALK_IN_CUSTOMER') {
-          console.log("AYAYYA");
           customers = await offlineStoreService.getWalkInCustomers();
-          console.log(customers);
         }
       } else if (options && options.search) {
         const singleCustomer = await offlineStoreService.getRegularCustomerByUsername(options.search);
