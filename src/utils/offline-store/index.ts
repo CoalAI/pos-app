@@ -54,10 +54,12 @@ class OfflineStore {
     let product = undefined;
     let result: Product | undefined = undefined;
     const length= this.productStore.length();
+    let nam = "";
       for (let i = 0; i < await length; i++) {
             product = (await this.productStore.key(i));
             product = (await this.productStore.getItem(product)) as Product;
-                if(product.name?.includes(name)){
+            nam = product.name as string;
+                if(nam.includes(name)){
                   result=product;
                 }
       }
