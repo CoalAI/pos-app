@@ -1,5 +1,6 @@
 import { Product } from '@/store/models/product';
 import { User } from '@/store/models/user';
+import { Order } from '@/store/models/order';
 import StoreInstance from './table';
 
 class OfflineStore {
@@ -8,6 +9,7 @@ class OfflineStore {
   private loggedInUserStore: StoreInstance;
   private invoiceIdStore: StoreInstance;
   private customerStore: StoreInstance;
+  private orderStore: StoreInstance;
 
 
   // constants
@@ -23,6 +25,8 @@ class OfflineStore {
     this.loggedInUserStore = new StoreInstance('user', 'user-data/', true, pageSize, 'user-data');
     this.invoiceIdStore = new StoreInstance('invoice-id', 'invoice-id/', true, pageSize, 'start-invoice-id');
     this.customerStore = new StoreInstance('customers', 'user/', true, pageSize, 'username');
+    this.orderStore = new StoreInstance('order', 'order/', true, pageSize, 'id');
+
   }
 
   async initialize() {
@@ -33,6 +37,7 @@ class OfflineStore {
     await this.invoiceIdStore.setItem(this.START_INVOICE, invoiceData.results[0].InvoiceID);
     await this.invoiceIdStore.setItem(this.CURENT_INVOICE, invoiceData.results[0].InvoiceID);
     await this.customerStore.fetchData();
+    await this.orderStore.fetchData();
   }
 
   async getProductByBarCode(barCode: string) {
@@ -44,6 +49,21 @@ class OfflineStore {
     }
     return product;
   }
+
+  async getProductByName(name: string) {
+    let product = undefined;
+    let result: Product | undefined = undefined;
+    const length= this.productStore.length();
+      for (let i = 0; i < await length; i++) {
+            product = (await this.productStore.key(i));
+            product = (await this.productStore.getItem(product)) as Product;
+                if(product.name?.includes(name)){
+                  result=product;
+                }
+      }
+    return result;
+  }
+
 
   async getUserData() {
     let user = undefined;
@@ -109,6 +129,20 @@ class OfflineStore {
       console.log(error);
     }
     return customers;
+  }
+
+  async setOrder(order: Order) {
+    let product = undefined;
+    let max = 0;
+    const length= this.orderStore.length();
+      for (let i = 0; i < await length; i++) {
+            product = (await this.orderStore.key(i));
+            if(product>max){
+              max=product
+            }
+      }
+    const id = max.toString();
+    this.orderStore.setItem(id, order);
   }
 
   async clear() {
