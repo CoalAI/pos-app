@@ -45,7 +45,7 @@
             @change="onChangeCompany"
           >
             <option value="">All</option>
-            <option
+            <option 
               class="batches-op"
               v-for="company in companies"
               v-bind:key="company.id"
@@ -55,15 +55,58 @@
             </option>
           </select>
           <div id="company-type">
-            <form class="filter inline"> 
-              <input type="checkbox" value="0" @change="onCheckChange" :checked="checkedValue==0"/>
-              <label>All</label><br>
-              <input type="checkbox" value="1" @change="onCheckChange" :checked="checkedValue==1"/>
-              <label>Rohi Bakery</label><br>
-              <input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
+            <form class="filter inline" v-if="admin">                 
+              <!--<div>
+              <input 
+              type="checkbox" 
+              value="0" 
+              v-if="admin" 
+              id="company-type" 
+              name="company-type"
+              v-model="company"
+              @change="onCheckChange" 
+              :checked="checkedValue==0">
+              <div 
+              class="batches-op"
+              v-for="company in companies"
+              v-bind:key="company.id"
+              v-bind:value="company.id"
+              >
+                {{ company.company_name }}<br>
+              </div>
+              </div>-->
+              <!--<input 
+              type="checkbox" 
+              @change="onCheckChange"  
+              v-for="company in companies" 
+              v-bind:key="company.id"
+              v-bind:value="company.id" 
+              v-model="company.id"              
+              id="company-type" 
+              name="company-type" 
+              :checked="checkedValue==company"/>-->
+              
+              <div 
+              class="batches-op "
+              v-for="company in companies"
+              v-bind:key="company.id"
+              v-bind:value="company.id">
+              <input 
+              type="checkbox" 
+              @change="onCheckChange"  
+              v-model="company.id"              
+              id="company-type" 
+              :value="company"
+              name="company-type" 
+              :checked="checkedValue==company"/>
+                {{ company.company_name }}
+              
+              </div>
+
+              <!--<input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
               <label>Rohi Sweets</label><br> 
               <input type="checkbox" value="3" @change="onCheckChange" :checked="checkedValue==3"/>
-              <label>Rohi Stores</label>
+              <label>Rohi Stores</label>-->
             </form>
           </div>
         </div>
@@ -116,7 +159,7 @@
         </tr>
       </table>
       
-    </div>
+    </div> 
     <Paginator
       class="mr-2 pager"
       :count="counts.inventory"
@@ -170,7 +213,8 @@ export default defineComponent({
   },
   methods: {
     onCheckChange: async function(e: any){
-      this.checkedValue = parseInt(e.target.value)
+      this.checkedValue = e.target.value
+      console.log(this.checkedValue)
       await this.fetchInventory({
         company: this.company,
         search: this.search,
@@ -245,7 +289,7 @@ export default defineComponent({
 }
 
 #company-type {
-  width: 90%;
+  //width: 90%;
   margin-top: 4%;
   margin-left: 8%;
   border-radius:10px;
@@ -273,6 +317,9 @@ export default defineComponent({
 }
 .inline{
   display:inline-block;
+}
+.block{
+  display:block;
 }
 .float-right{
   float: right;
