@@ -8,6 +8,7 @@
       <router-view />
     </div>
     <ErrorHandler v-if="getError"></ErrorHandler>
+    <Loader v-if="getSync" message="Syncing Data for offline mode. Please wait." ></Loader>
   </div>
 </template>
 
@@ -17,16 +18,18 @@ import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
 
 import Header from './common-components/Header.vue';
-import ErrorHandler from './common-components/ErrorHandler.vue'
+import ErrorHandler from './common-components/ErrorHandler.vue';
+import Loader from './common-components/Loader.vue';
 
 export default defineComponent({
   name: 'App',
   components: { 
     Header,
     ErrorHandler,
+    Loader,
   },
   computed: {
-    ...mapGetters(['getToken', 'getError'])
+    ...mapGetters(['getToken', 'getError', 'getSync'])
   },
   methods: {
     ...mapActions({

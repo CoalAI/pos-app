@@ -198,7 +198,8 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/auth/actions';
-import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions'
+import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
+import offlineStoreService from '@/utils/offline-store';
 import { Notification } from '@/store/models/notification';
 
 export default defineComponent({
@@ -344,7 +345,8 @@ export default defineComponent({
       this.showResult = true;
     },
 
-    logout() {
+    async logout() {
+      await offlineStoreService.clear();
       this.$router.push({name: 'logout'});
     }
   },

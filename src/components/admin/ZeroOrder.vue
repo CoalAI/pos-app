@@ -705,6 +705,7 @@ import { Batch } from "@/store/models/batch";
 import { User } from "@/store/models/user";
 import { OrderItem } from "@/store/models/orderItem";
 import { Product, ProductVariant } from "@/store/models/product";
+import offlineStoreService from "@/utils/offline-store/index";
 
 export default defineComponent({
   name: "ZeroOrder",
@@ -1328,6 +1329,7 @@ export default defineComponent({
     },
 
     searchByBarcode: async function (event: Event) {
+      
       await this.searchProductByBarcode(this.product.barCode);
 
       if (this.productResult.length === 1) {
@@ -1505,6 +1507,7 @@ export default defineComponent({
       search: "",
     });
     this.buyer = this.userdata.id;
+    await offlineStoreService.initialize();
   },
 });
 </script>

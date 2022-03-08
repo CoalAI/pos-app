@@ -26,9 +26,10 @@ export default defineComponent({
             default:20
         },
     },
-    data(){
+    data() {
+        const pageSize = process.env.VUE_APP_PAGE_SIZE as number || 30;
         return {
-            records_per_page : 30,
+            records_per_page : pageSize,
             selected: 1,
             // total_pages: 5,
             list_max: 5,

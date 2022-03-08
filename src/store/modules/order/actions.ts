@@ -1,12 +1,13 @@
 import { ActionContext, ActionTree, CommitOptions } from "vuex";
 import { IRootState } from '@/store/models/root';
-import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
+import serverRequest, { isAxiosError, isAxiosResponse } from '@/utils/request'
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Order } from '@/store/models/order';
 import { Product } from '@/store/models/product';
 import { Batch } from '@/store/models/batch';
 import { Request } from "@/store/models/request";
+import offlineStoreService from '@/utils/offline-store';
 
 
 export enum ActionTypes {
@@ -101,22 +102,35 @@ export interface Actions {
 export const actions: ActionTree<State, IRootState> &
 Actions = {
   async [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string) {
-    if (name === '') {
-      commit(MutationTypes.SetProductResults, []);
-    } else {
-      const response = await serverRequest('get', 'product/', true, undefined, {name__icontains: name});
-      if (isAxiosResponse(response)) {
-        commit(MutationTypes.SetProductResults, response.data.results);
+    if(navigator.onLine){
+      if (name === '') {
+        commit(MutationTypes.SetProductResults, []);
+      } else {
+        const response = await serverRequest('get', 'product/', true, undefined, {name__icontains: name});
+        if (isAxiosResponse(response)) {
+          commit(MutationTypes.SetProductResults, response.data.results);
+        }
+        if(isAxiosError(response)) {
+          commit('setError', "Failed to search product!", {root: true});
+        }
       }
-      if(isAxiosError(response)) {
-        commit('setError', "Failed to search product!", {root: true});
+    }
+    else{
+      console.log("offline");
+      if (name === '') {
+        commit(MutationTypes.SetProductResults, []);
+      } else {
+        const productsArr: Product[] = [];
+        const product = await offlineStoreService.getProductByName(name);
+        if (product) {
+          productsArr.push(product)
+        }
+        commit(MutationTypes.SetProductResults, productsArr);
       }
     }
   },
   async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, barcode: string) {
-    if (barcode === '') {
-      commit(MutationTypes.SetProductResults, []);
-    } else {
+    if (navigator.onLine) {
       const response = await serverRequest('get', 'product/', true, undefined, {bar_code: barcode});
       if (isAxiosResponse(response)) {
         commit(MutationTypes.SetProductResults, response.data.results);
@@ -124,6 +138,13 @@ Actions = {
       if(isAxiosError(response)) {
         commit('setError', response.message, {root: true});
       }
+    } else {
+      const productsArr: Product[] = [];
+      const product = await offlineStoreService.getProductByBarCode(barcode);
+      if (product) {
+        productsArr.push(product)
+      }
+      commit(MutationTypes.SetProductResults, productsArr);
     }
   },
   async [ActionTypes.FETCH_ORDERS](
@@ -167,23 +188,30 @@ Actions = {
     }
   },
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
-    const response = await serverRequest('post', 'order/', true, order);
-    if (isAxiosResponse(response)) {
-      const response2 = await serverRequest('get', `order/${response.data.id}`, true);
-      if(isAxiosResponse(response2) && response2.data.results && response2.data.results.length === 1 )
-        commit(MutationTypes.SetOrder, response2.data.results[0]);
-      commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
-      commit(MutationTypes.SetError, {});  
-    }
-    if(isAxiosError(response)) {
-      if (response.response && response.response.data){
-          if( response.response.data.non_field_errors) {
-            commit('setError', response.response.data.non_field_errors[0], {root: true});
-          } else {
-            commit(MutationTypes.SetError, response.response.data);   
-          }
+    if(navigator.onLine){
+      const response = await serverRequest('post', 'order/', true, order);
+      if (isAxiosResponse(response)) {
+        const response2 = await serverRequest('get', `order/${response.data.id}`, true);
+        if(isAxiosResponse(response2) && response2.data.results && response2.data.results.length === 1 )
+          commit(MutationTypes.SetOrder, response2.data.results[0]);
+        commit(MutationTypes.SetOrderStatus, 'Order is completed successfully!.');
+        commit(MutationTypes.SetError, {});  
       }
-      commit(MutationTypes.SetOrderStatus, "Failed to create the Order!.");
+      if(isAxiosError(response)) {
+        if (response.response && response.response.data){
+            if( response.response.data.non_field_errors) {
+              commit('setError', response.response.data.non_field_errors[0], {root: true});
+            } else {
+              commit(MutationTypes.SetError, response.response.data);   
+            }
+        }
+        commit(MutationTypes.SetOrderStatus, "Failed to create the Order!.");
+      }
+    }
+    else{
+      await offlineStoreService.setOrder(order);
+      commit(MutationTypes.SetOrderStatus, "Order saved to local db");
+      console.log("Order saved to local db");
     }
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {
@@ -337,10 +365,17 @@ Actions = {
     }
   },
   async [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext) {
-    const response = await serverRequest('get', 'invoice-id/', true, undefined, undefined);
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
-        commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
+    if (navigator.onLine) {
+      const response = await serverRequest('get', 'invoice-id/', true, undefined, undefined);
+      if (isAxiosResponse(response)) {
+        if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {
+          commit(MutationTypes.SetInvoiceID, response.data.results[0].InvoiceID);
+        }
+      }
+    } else {
+      const invoiceId = await offlineStoreService.getInvoiceId();
+      if (invoiceId) {
+        commit(MutationTypes.SetInvoiceID, invoiceId);
       }
     }
   },
