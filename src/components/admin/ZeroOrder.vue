@@ -690,6 +690,7 @@
         </div>
       </template>
     </Modal>
+    <p class="coaldev-name ">Created by CoalDev</p>
   </div>
 </template>
 
@@ -1513,6 +1514,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.coaldev-name {
+  font-size: 15px;
+  color: $coaldev-name-color;
+  padding: 0px 0px 5px 20px;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
 .focuschange {
   outline: none !important;
   border-left: 5px solid red;
