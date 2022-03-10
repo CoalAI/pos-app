@@ -2,11 +2,11 @@
   <div class="hello">
     <template v-if="getToken">
       <Header />
-      <p class="coaldev-name">Created by CoalDev</p>
     </template>
     <div class="login-main">
       <router-view />
     </div>
+    <p class="coaldev-name">Created by CoalDev</p>
     <ErrorHandler v-if="getError"></ErrorHandler>
     <Loader v-if="getSync" message="Syncing Data for offline mode. Please wait." ></Loader>
   </div>

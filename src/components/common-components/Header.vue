@@ -40,8 +40,6 @@
         <img :src="order" class="block-align">NEW ORDER</a>
         <router-link v-show="manager" to="/inventory" class="i btn-grid btn-mr">
         <img :src="inventory" class="block-align">INVENTORY</router-link>
-        <router-link v-show="superadmin" to="/settings" class="s btn-grid btn-mr">
-        <img :src="settings" class="block-align">SETTINGS</router-link>
         <router-link v-show="admin" to="/users" class="u btn-grid btn-mr">
         <img :src="users" class="block-align">USERS</router-link>
         <router-link v-show="manager" :to="{name: 'order-analytics'}" class="a btn-grid btn-mr">
