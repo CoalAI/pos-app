@@ -2,11 +2,12 @@
   <div class="hello">
     <template v-if="getToken">
       <Header />
-      <p class="coaldev-name">Created by CoalDev</p>
     </template>
     <div class="login-main">
       <router-view />
+      
     </div>
+    
     <ErrorHandler v-if="getError"></ErrorHandler>
     <Loader v-if="getSync" message="Syncing Data for offline mode. Please wait." ></Loader>
   </div>
@@ -55,15 +56,7 @@ li {
   display: inline-block;
   margin: 0 10px;
 }
-.coaldev-name {
-  font-size: 15px;
-  color: $coaldev-name-color;
-  padding: 0px 0px 5px 20px;
-  margin-block-start: 0px;
-  margin-block-end: 0px;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-}
+
 
 .login-main {
   // margin: $page-margin;

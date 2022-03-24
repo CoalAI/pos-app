@@ -343,8 +343,8 @@
     <div class="diff-shadow split-container col-2">
       <div id="container-zero-order">
         <div id="box1">
-          <div>  
-            <label class="pad-label bc" for="sellerID">
+          <div class="box1Responsive">  
+            <label class="pad-label bc mt-1" for="sellerID">
             <strong>Seller:</strong>
             </label>
             <div class="bc-i">
@@ -396,8 +396,8 @@
             </div>
           </div>
 
-          <div>
-          <label class="pad-label q" for="BuyerID">
+          <div class="box1Responsive">
+          <label class="pad-label q  mt-1" for="BuyerID">
             <strong>Buyer:</strong>
           </label>
           <div class="q-i">
@@ -690,6 +690,7 @@
         </div>
       </template>
     </Modal>
+    <p class="coaldev-name ">Created by CoalDev</p>
   </div>
 </template>
 
@@ -1553,6 +1554,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.coaldev-name {
+  font-size: 15px;
+  color: $coaldev-name-color;
+  padding: 0px 0px 5px 20px;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
 .focuschange {
   outline: none !important;
   border-left: 5px solid red;
@@ -1678,7 +1688,7 @@ export default defineComponent({
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 118px;
+  width: 7.375vw;
   height: 30px;
   margin-top: 15px;
   padding: 0px 0px 0px 5px;
@@ -1927,5 +1937,34 @@ float-right{
   -webkit-box-flex: 0;
   flex: 0 0 50%;
   max-width: 50%;
+}
+.box1Responsive{
+  display: flex;
+}
+.row{
+  margin-left: 0vw !important;
+  width: 100% !important;
+}
+// @media screen and (max-width:1217px ){
+//   .col-2{
+//     max-width: 25% !important;
+//   }
+// }
+@media screen and (max-width:1216px ){
+  .split-container{
+    margin-left: 2vw;
+  }
+  .col-2{
+    max-width: 25% !important;
+  }
+}
+@media screen and (max-width:1029px ){
+  .col-3{
+    max-width: 35% !important;
+  }
+  .container-fluid{
+    gap: 0rem 0rem !important;
+        // width: 115% !important
+  }
 }
 </style>
