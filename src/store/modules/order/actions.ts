@@ -116,7 +116,6 @@ Actions = {
       }
     }
     else{
-      console.log("offline");
       if (name === '') {
         commit(MutationTypes.SetProductResults, []);
       } else {
@@ -211,7 +210,6 @@ Actions = {
     else{
       await offlineStoreService.setOrder(order);
       commit(MutationTypes.SetOrderStatus, "Order saved to local db");
-      console.log("Order saved to local db");
     }
   },
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string) {

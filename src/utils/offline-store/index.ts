@@ -2,6 +2,8 @@ import { Product } from '@/store/models/product';
 import { User } from '@/store/models/user';
 import { Order } from '@/store/models/order';
 import StoreInstance from './table';
+import localForage from 'localforage';
+import serverRequest from '@/utils/request'
 
 class OfflineStore {
 
@@ -10,6 +12,7 @@ class OfflineStore {
   private invoiceIdStore: StoreInstance;
   private customerStore: StoreInstance;
   private orderStore: StoreInstance;
+  private syncOrder: LocalForage;
 
 
   // constants
@@ -26,6 +29,7 @@ class OfflineStore {
     this.invoiceIdStore = new StoreInstance('invoice-id', 'invoice-id/', true, pageSize, 'start-invoice-id');
     this.customerStore = new StoreInstance('customers', 'user/', true, pageSize, 'username');
     this.orderStore = new StoreInstance('order', 'order/', true, pageSize, 'id');
+    this.syncOrder = localForage.createInstance({name: "syncOrder"});
 
   }
 
@@ -38,6 +42,15 @@ class OfflineStore {
     await this.invoiceIdStore.setItem(this.CURENT_INVOICE, invoiceData.results[0].InvoiceID);
     await this.customerStore.fetchData();
     await this.orderStore.fetchData();
+  }
+
+  async initializeStore() {
+    await this.productStore.fetchData();
+    await this.orderStore.fetchData();
+  }
+
+  async intializeSync(){
+    this.syncOrder.setItem("bool", false);
   }
 
   async getProductByBarCode(barCode: string) {
@@ -137,14 +150,52 @@ class OfflineStore {
     let product = undefined;
     let max = 0;
     const length= this.orderStore.length();
-      for (let i = 0; i < await length; i++) {
-            product = (await this.orderStore.key(i));
+      {for (let i = 0; i < await length; i++) {
+            product = parseInt(await this.orderStore.key(i));
             if(product>max){
-              max=product
+              max=product;
             }
       }
+      max=max+1;
+    }
     const id = max.toString();
-    this.orderStore.setItem(id, order);
+    if(order.order_item){
+      for (const pro of order.order_item) {
+        if(pro.batch){
+          this.orderStore.setItem(id+"to", order);
+        }
+        else{
+          this.orderStore.setItem(id+"from", order);
+        }
+      }
+    }
+  }
+
+
+  setsyncOrder(sync: boolean){
+    this.syncOrder.setItem("bool", sync);
+  }
+
+  async getsyncOrder(){
+    return this.syncOrder.getItem("bool") 
+  }
+
+  async Order(){
+    const length= this.orderStore.length();
+      for (let i = 0; i < await length; i++) {
+        const product = await this.orderStore.key(i);
+        if(product.includes("from")){
+          const order = await this.orderStore.getItem(product) as Order;
+          await serverRequest('post', 'orderoffline/', true, order);
+          await this.orderStore.removeItem(product);
+        }
+        else if(product.includes("to")){
+          const order = await this.orderStore.getItem(product) as Order;
+          console.log(order)
+          await serverRequest('post', 'order/', true, order);
+          await this.orderStore.removeItem(product);
+        }
+      }
   }
 
   async clear() {
@@ -152,6 +203,7 @@ class OfflineStore {
     await this.loggedInUserStore.clear();
     await this.invoiceIdStore.clear();
     await this.customerStore.clear();
+    await this.orderStore.clear();
   }
   
 }
