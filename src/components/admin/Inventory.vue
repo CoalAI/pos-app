@@ -36,7 +36,7 @@
           </form>
         </div>
         <div>
-        <div id="filter-box">
+        <!--<div id="filter-box">
           <select
             v-if="admin"
             id="company-type"
@@ -45,7 +45,7 @@
             @change="onChangeCompany"
           >
             <option value="">All</option>
-            <option
+            <option 
               class="batches-op"
               v-for="company in companies"
               v-bind:key="company.id"
@@ -54,19 +54,30 @@
               {{ company.company_name }}
             </option>
           </select>
+        </div>-->
           <div id="company-type">
-            <form class="filter inline"> 
-              <input type="checkbox" value="0" @change="onCheckChange" :checked="checkedValue==0"/>
-              <label>All</label><br>
-              <input type="checkbox" value="1" @change="onCheckChange" :checked="checkedValue==1"/>
-              <label>Rohi Bakery</label><br>
-              <input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
+            <form class="filter inline" v-if="admin">
+              <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type"> All</div>
+              <div 
+              class="batches-op"
+              v-for="company in companies"
+              v-bind:key="company.id">
+              <input 
+              type="checkbox" 
+              @change="onCheckChange"                
+              id="company-type" 
+              :value="company.id"
+              name="company-type" 
+              :checked="checkedValue==company.id"/>
+                {{ company.company_name }}
+              </div>
+
+              <!--<input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
               <label>Rohi Sweets</label><br> 
               <input type="checkbox" value="3" @change="onCheckChange" :checked="checkedValue==3"/>
-              <label>Rohi Stores</label>
+              <label>Rohi Stores</label>-->
             </form>
           </div>
-        </div>
       </div>
       </div>
       
@@ -116,7 +127,7 @@
         </tr>
       </table>
       
-    </div>
+    </div> 
     <Paginator
       class="mr-2 pager"
       :count="counts.inventory"
@@ -170,11 +181,13 @@ export default defineComponent({
   },
   methods: {
     onCheckChange: async function(e: any){
-      this.checkedValue = parseInt(e.target.value)
+      this.checkedValue = e.target.value
+      console.log(this.checkedValue)
       await this.fetchInventory({
-        company: this.company,
+        company: this.checkedValue,
         search: this.search,
       });
+      
     
     },
     onChangeCompany: async function () {
@@ -245,7 +258,7 @@ export default defineComponent({
 }
 
 #company-type {
-  width: 90%;
+  //width: 90%;
   margin-top: 4%;
   margin-left: 8%;
   border-radius:10px;
@@ -273,6 +286,9 @@ export default defineComponent({
 }
 .inline{
   display:inline-block;
+}
+.block{
+  display:block;
 }
 .float-right{
   float: right;
