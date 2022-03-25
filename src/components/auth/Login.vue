@@ -110,6 +110,7 @@ export default defineComponent({
           password: this.password
         });
         this.showLoader=false;
+        offlineStoreService.intializeSync();
         if (this.offlineMode) {
           this.syncOfflineData(true);
           await offlineStoreService.initialize();

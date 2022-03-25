@@ -1094,11 +1094,11 @@ export default defineComponent({
         )
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
-      const batchId =
+      const batch =
         this.productBatchSelect.length > 0
           ? (this.productBatchSelect[0] as Batch).id
           : undefined;
-      this.product.batch = batchId !== undefined ? batchId.toString() : "";
+      this.product.batch = batch !== undefined ? batch.toString() : "";
       if (this.orderType == "to") {
         (
           this.$refs.batches as HTMLSelectElement & { focus: () => void }
@@ -1216,7 +1216,8 @@ export default defineComponent({
         }
       );
 
-      for (const singleOrderItem of unproxiedOrderItems) {
+      if(navigator.onLine){
+        for (const singleOrderItem of unproxiedOrderItems) {
         if (singleOrderItem.batch) {
           if (this.orderType == "from") {
             await this.createBatch(singleOrderItem.batch);
@@ -1229,7 +1230,35 @@ export default defineComponent({
           }
         }
       }
-
+      }
+      else{
+        for (const singleOrderItem of unproxiedOrderItems) {
+          if (singleOrderItem.batch) {
+            if (this.orderType == "from"){
+              if (typeof singleOrderItem.batch !== "number"){
+                  const batch = {
+                  manufacturing_date: singleOrderItem.batch.manufacturing_date?.toString(),
+                  expiry_date: singleOrderItem.batch.expiry_date?.toString(),
+                  quantity: singleOrderItem.batch.quantity,
+                  product_variant: singleOrderItem.batch.product_variant?.toString(),
+                } as Batch;
+                console.log("batchh", batch);
+                singleOrderItem.order_batch = batch;
+                singleOrderItem.batch = undefined;
+                
+              }
+            }
+            else if (
+            this.orderType == "to" &&
+            typeof singleOrderItem.batch !== "number"
+          ) {
+            singleOrderItem.batch = singleOrderItem.batch.id;
+          }
+          }
+        }
+      }
+      
+      
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
 
@@ -1244,7 +1273,9 @@ export default defineComponent({
         invoice_id: this.invoiceID,
         internal_order: true,
       };
-
+      if(!navigator.onLine){
+        offlineStoreService.setsyncOrder(true)
+      }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
     },
@@ -1486,6 +1517,14 @@ export default defineComponent({
       (this.$refs.scrollContainer as any).scrollTop = liH * this.focusedTile;
     },
 
+    async syncOrder() {
+      const check = await offlineStoreService.getsyncOrder();
+      if(check == true){
+        offlineStoreService.Order();
+        offlineStoreService.setsyncOrder(false);
+      }
+    },
+
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: OrderActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1500,6 +1539,7 @@ export default defineComponent({
     }),
   },
   async beforeMount() {
+    this.syncOrder();
     await this.fetchInvoiceID();
     await this.getUsers("ADMIN");
     await this.getVendors("");
@@ -1508,7 +1548,7 @@ export default defineComponent({
       search: "",
     });
     this.buyer = this.userdata.id;
-    await offlineStoreService.initialize();
+    await offlineStoreService.initializeStore();
   },
 });
 </script>
