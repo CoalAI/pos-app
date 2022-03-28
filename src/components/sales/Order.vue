@@ -733,6 +733,7 @@ import { User, UserExtra } from "@/store/models/user";
 import ErrorField from "@/components/common-components/ErrorField.vue";
 import OrderBill from "@/components/sales/OrderBill.vue";
 import { Inventory } from "@/store/models/company";
+import offlineStoreService from "@/utils/offline-store/index";
 
 export default defineComponent({
   name: "Order",
@@ -1385,6 +1386,9 @@ export default defineComponent({
         singleOrder.status = "RETURNED";
       }
 
+      if(!navigator.onLine){
+        offlineStoreService.setsyncOrder(true)
+      }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
       await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
@@ -1592,6 +1596,14 @@ export default defineComponent({
       return parseFloat(quan !== undefined ? quan : "0.0").toFixed(4);
     },
 
+    async syncOrder() {
+      const check = await offlineStoreService.getsyncOrder();
+      if(check == true){
+        offlineStoreService.Order();
+        offlineStoreService.setsyncOrder(false);
+      }
+    },
+
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
       searchProductByBarcode: ActionTypes.SEARCH_PRODUCT_BY_BARCODE,
@@ -1607,6 +1619,7 @@ export default defineComponent({
     }),
   },
   async beforeMount() {
+    this.syncOrder();
     await this.fetchInvoiceID();
     await this.getUsersByType({ user_type: "WALK_IN_CUSTOMER" });
     this.walkinCustomer = this.customers.find(
@@ -1615,6 +1628,7 @@ export default defineComponent({
         item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`
     );
     await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
+    await offlineStoreService.initializeStore();
   },
   async unmounted() {
     await this.setFieldError({});
