@@ -293,7 +293,17 @@ export default defineComponent({
   color: white;
   
 }
-
+.header > th{
+    text-align: center;
+  }
+  .header > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
 .content{
   background-color: white; 
   color: #0f2634;

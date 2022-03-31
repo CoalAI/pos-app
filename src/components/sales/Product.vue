@@ -62,7 +62,7 @@
                   <th style="border-radius: 0px 10px 0px 0px; text-align:center">Size</th>
                 </tr>
 
-                <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id" class="fr-row content2">
+                <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id" class="fr-row content2 header2">
                   <td style="border-radius:0px 0px 0px 10px;">{{ productVariant.price }}</td>
                   <td>{{ productVariant.sale_price }}</td>
                   <td style="border-radius: 0px 0px 10px 0px;" v-if="productVariant.size">{{productVariant.size}}</td><td style="border-radius: 0px 0px 10px 0px;" v-else class="text-center">-</td>
@@ -309,23 +309,61 @@ export default defineComponent({
   font-family: seg;
   vertical-align:text-bottom;
 }
-.header {
-  border-radius:5px 5px 0px 0px;
-  background-color: #0f2634; 
-  color: white;
-}
+.header > th{
+    text-align: center;
+  }
+  .header > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header {
+    border-radius: 5px;
+    background-color: #0f2634; 
+    color: white;
+  }
 .header2{
   background-color: #e43d2a; 
   color: white;
   
 }
+.header2 > th{
+    text-align: center;
+  }
+  .header2 > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header2 > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header2 > td{
+    text-align: center;
+  }
+  .header2 > td:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 8px;
+  }
+  .header2 > td:last-child{
+    border: none;
+    border-radius: 0px 10px 8px 0px;
+  }
+  // .header2 > th:last-child{
+  //   border: none;
+  //   border-radius: 0px 10px 10px 0px;
+  // }
+
 .content{
   background-color: white; 
   color: #0f2634;
   text-align:center;
 }
 .content2{
-  background-color: blue !important; 
+  // background-color: blue !important; 
   color: #0f2634;
   text-align:center;
 }
