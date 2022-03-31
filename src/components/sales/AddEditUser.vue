@@ -312,47 +312,57 @@ export default defineComponent({
         this.num_error_message = ""
       }
       
-      if ( this.userNameValidation === null &&
-      this.passwordValidation === null &&
-      this.ConfirmPasswordValidation === null &&
-      this.emailValidation === null &&
-      this.contactNumberValidation === null &&
-      this.companyValidation === null && 
-      this.ab_error_message === "" && 
-      this.ps_error_message === "" &&
-      this.cp_error_message === "" && this.num_error_message === ""){
-        console.log("in the air")
+      
 
-        let userIdNumber = 0;
-        if (this.userId) {
-          userIdNumber = parseFloat(this.userId);
-          if (isNaN(userIdNumber)) return;
-        }
+      let userIdNumber = 0;
+      if (this.userId) {
+        userIdNumber = parseFloat(this.userId);
+        if (isNaN(userIdNumber)) return;
+      }
 
-        const user: User = {
-          username: this.user.userName,
-          first_name: this.user.firstName,
-          last_name: this.user.lastName,
-          email: this.user.email,
-          is_active: this.user.active,
-          is_staff: true,
-          user_type: this.user.user_type,
-          contact_number: this.user.contactNumber
-        }
+      const user: User = {
+        username: this.user.userName,
+        first_name: this.user.firstName,
+        last_name: this.user.lastName,
+        email: this.user.email,
+        is_active: this.user.active,
+        is_staff: true,
+        user_type: this.user.user_type,
+        contact_number: this.user.contactNumber
+      }
 
-        if (this.userId) {
+      if (this.userId) {
+        if (this.contactNumberValidation === null && this.num_error_message === ""){
           user.id = userIdNumber;
           await this.updateUser(user);
-        } else {
-          user.company = this.user.company,
-          user.password = this.user.password;
-          await this.registerUser(user);
+          if (Object.keys(this.fieldErrors).length === 0) {
+            this.$router.push({name: 'User'});
+          } else {
+            window.scrollTo(0,0);
+          }
         }
-        if (Object.keys(this.fieldErrors).length === 0) {
-          this.$router.push({name: 'User'});
-        } else {
-          window.scrollTo(0,0);
-        }
+      } 
+      else {
+        if ( this.userNameValidation === null &&
+          this.passwordValidation === null &&
+          this.ConfirmPasswordValidation === null &&
+          this.emailValidation === null &&
+          this.contactNumberValidation === null &&
+          this.companyValidation === null && 
+          this.ab_error_message === "" && 
+          this.ps_error_message === "" &&
+          this.cp_error_message === "" && this.num_error_message === "")
+          {
+            console.log("in the air")
+            user.company = this.user.company,
+            user.password = this.user.password;
+            await this.registerUser(user);
+            if (Object.keys(this.fieldErrors).length === 0) {
+              this.$router.push({name: 'User'});
+            } else {
+              window.scrollTo(0,0);
+            }
+          }
       }
     },
 
