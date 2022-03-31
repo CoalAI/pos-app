@@ -60,7 +60,8 @@
               placeholder="Enter User Name"
               v-model="user.userName"
             />
-            <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
+            <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br> 
+            <span v-if="ab_error_message" class="form-error">{{ab_error_message}}</span> <br>
             <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
           </div>
         </div>
@@ -78,7 +79,8 @@
               placeholder="Enter Password"
               v-model="user.password"
             />
-            <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
+            <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span> <br>
+            <span v-if="ps_error_message" class="form-error">{{ps_error_message}}</span> <br>
             <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
           </div>
         </div>
@@ -93,7 +95,8 @@
               placeholder="Enter confirm password"
               v-model="user.confirmPassword"
             />
-            <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span>
+            <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span> <br>
+            <span v-if="cp_error_message" class="form-error">{{cp_error_message}}</span> <br>
           </div>
         </div>
       </div>
@@ -153,7 +156,8 @@
               placeholder="Enter contact number"
               v-model="user.contactNumber"
             />
-            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span> <br>
+            <span v-if="num_error_message" class="form-error">{{num_error_message}}</span> <br>
           </div>
         </div>
       </div>
@@ -162,7 +166,7 @@
         <div>
           <button
             class="btn ab_orange_hover btn-orange"
-            :disabled="addEditBtn"
+            
             @click="addUpdateUser"
           >
             <span v-if="userId">Update</span>
@@ -198,6 +202,10 @@ export default defineComponent({
   },
   data () {
     return {
+      ab_error_message: '',
+      ps_error_message: '',
+      cp_error_message: '',
+      num_error_message: '',
       user: {
         userName: '',
         password: '',
@@ -216,11 +224,9 @@ export default defineComponent({
     userNameValidation: function () {
       let errorMessage = null;
       const re = /^[a-zA-Z0-9@.+\-_]{3,150}$/;
-      if (this.user.userName.length <= 0) {
-        errorMessage = "User Name is required";
-      } else if (this.user.userName.length > 150) {
+      if (this.user.userName.length > 150) {
         errorMessage = "Only 150 characters or fewer are allowed";
-      }else if (!re.test(this.user.userName)) {
+      }else if (this.user.userName.length != 0 && !re.test(this.user.userName)) {
         errorMessage = "Minimum three characters and only letters, digits and these character (@ . + - _) are allowed"
       }
       return errorMessage;
@@ -230,9 +236,7 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.userId) {
         const re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-        if (this.user.password.length <= 0) {
-          errorMessage = "Password is required"
-        }  else if (!re.test(this.user.password)) {
+        if (this.user.password.length != 0 && !re.test(this.user.password)) {
           errorMessage = "Minimum eight characters, at least one letter, one number and one special character (@$!%*#?&)"
         }
       }
@@ -242,9 +246,7 @@ export default defineComponent({
     ConfirmPasswordValidation: function () {
       let errorMessage = null;
       if (!this.userId) {
-        if (this.user.confirmPassword.length <= 0) {
-          errorMessage = "Confirm Password is required"
-        } else if (this.user.password && this.user.password !== this.user.confirmPassword) {
+        if (this.user.confirmPassword.length != 0 && this.user.password && this.user.password !== this.user.confirmPassword) {
           errorMessage = "Confirm Password does not matches with password"
         }
       }
@@ -261,13 +263,9 @@ export default defineComponent({
 
     contactNumberValidation: function () {
       let errorMessage = null;
-      if (this.user.contactNumber.length <= 0) {
-        errorMessage = "Number is required"
-      } else {
-        const regex = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{3,5}-{0,1}\d{7}$/;
-        if (!regex.test(this.user.contactNumber)) {
-          errorMessage = "Phone number is not valid"
-        }
+      const regex = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{3,5}-{0,1}\d{7}$/;
+      if (this.user.contactNumber.length != 0 && !regex.test(this.user.contactNumber)) {
+        errorMessage = "Phone number is not valid"
       }
       return errorMessage;
     },
@@ -280,19 +278,6 @@ export default defineComponent({
       return errorMessage;
     },
 
-    addEditBtn: function () {
-      let disable = true;
-      if ( this.userNameValidation === null &&
-      this.passwordValidation === null &&
-      this.ConfirmPasswordValidation === null &&
-      this.emailValidation === null &&
-      this.contactNumberValidation === null &&
-      this.companyValidation === null) {
-        disable = false;
-      }
-      return disable
-    },
-
     ...mapGetters({
       roles: 'getRoles',
       companies: 'getCompaniesFilterVendor',
@@ -301,35 +286,73 @@ export default defineComponent({
   },
   methods: {
     addUpdateUser: async function () {
-      let userIdNumber = 0;
-      if (this.userId) {
-        userIdNumber = parseFloat(this.userId);
-        if (isNaN(userIdNumber)) return;
+      // validate
+      if (this.user.userName.length <= 0) {
+        this.ab_error_message = "User Name is required";
       }
+      else {
+        this.ab_error_message = ""
+      }
+      if (this.user.password.length <= 0) {
+        this.ps_error_message = "Password is required"
+      }
+      else {
+        this.ps_error_message = ""
+      }
+      if (this.user.confirmPassword.length <= 0) {
+        this.cp_error_message = "Confirm Password is required" 
+      }
+      else {
+        this.cp_error_message = ""
+      }
+      if (this.user.contactNumber.length <= 0) {
+        this.num_error_message = "Number is required"
+      }
+      else {
+        this.num_error_message = ""
+      }
+      
+      if ( this.userNameValidation === null &&
+      this.passwordValidation === null &&
+      this.ConfirmPasswordValidation === null &&
+      this.emailValidation === null &&
+      this.contactNumberValidation === null &&
+      this.companyValidation === null && 
+      this.ab_error_message === "" && 
+      this.ps_error_message === "" &&
+      this.cp_error_message === "" && this.num_error_message === ""){
+        console.log("in the air")
 
-      const user: User = {
-        username: this.user.userName,
-        first_name: this.user.firstName,
-        last_name: this.user.lastName,
-        email: this.user.email,
-        is_active: this.user.active,
-        is_staff: true,
-        user_type: this.user.user_type,
-        contact_number: this.user.contactNumber
-      }
+        let userIdNumber = 0;
+        if (this.userId) {
+          userIdNumber = parseFloat(this.userId);
+          if (isNaN(userIdNumber)) return;
+        }
 
-      if (this.userId) {
-        user.id = userIdNumber;
-        await this.updateUser(user);
-      } else {
-        user.company = this.user.company,
-        user.password = this.user.password;
-        await this.registerUser(user);
-      }
-      if (Object.keys(this.fieldErrors).length === 0) {
-        this.$router.push({name: 'User'});
-      } else {
-        window.scrollTo(0,0);
+        const user: User = {
+          username: this.user.userName,
+          first_name: this.user.firstName,
+          last_name: this.user.lastName,
+          email: this.user.email,
+          is_active: this.user.active,
+          is_staff: true,
+          user_type: this.user.user_type,
+          contact_number: this.user.contactNumber
+        }
+
+        if (this.userId) {
+          user.id = userIdNumber;
+          await this.updateUser(user);
+        } else {
+          user.company = this.user.company,
+          user.password = this.user.password;
+          await this.registerUser(user);
+        }
+        if (Object.keys(this.fieldErrors).length === 0) {
+          this.$router.push({name: 'User'});
+        } else {
+          window.scrollTo(0,0);
+        }
       }
     },
 
