@@ -6,158 +6,302 @@
         <span v-else>Add New</span>
         <span> User</span>
       </h2>
-      <div class="first-row row">
-        <div class="left">
-          <label class="" for="first_name">
-            <strong>First Name:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="first_name"
-              type="text"
-              placeholder="Enter First Name"
-              v-model="user.firstName"
-            />
+      <div v-if="!userId">
+        <div class="first-row row">
+          <div class="left">
+            <label class="" for="first_name">
+              <strong>First Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="first_name"
+                type="text"
+                placeholder="Enter First Name"
+                v-model="user.firstName"
+              />
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="last_name">
+              <strong>Last Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="last_name"
+                type="text"
+                placeholder="Enter Last Name"
+                v-model="user.lastName"
+              />
+            </div>
           </div>
         </div>
-        <div class="right">
-          <label class="" for="last_name">
-            <strong>Last Name:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="last_name"
-              type="text"
-              placeholder="Enter Last Name"
-              v-model="user.lastName"
-            />
+        <div class="second-row row">
+          <div class="left">
+            <label class="" for="email">
+              <strong>Email:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="email"
+                type="text"
+                placeholder="Enter Email"
+                v-model="user.email"
+              />
+              <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+            </div>
+          </div>
+          <div v-if="!userId" class="right">
+            <label class="" for="thisusername">
+              <strong>Username:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="thisusername"
+                type="text"
+                placeholder="Enter User Name"
+                v-model="user.userName"
+              />
+              <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br> 
+              <span v-if="ab_error_message" class="form-error">{{ab_error_message}}</span> <br>
+              <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="second-row row">
-        <div class="left">
-          <label class="" for="email">
-            <strong>Email:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="email"
-              type="text"
-              placeholder="Enter Email"
-              v-model="user.email"
-            />
-            <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+        <div class="third-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="thisuserpassword">
+              <strong>Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                autocomplete="new-password"
+                name="thisuserpassword"
+                type="password"
+                placeholder="Enter Password"
+                v-model="user.password"
+              />
+              <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span> <br>
+              <span v-if="ps_error_message" class="form-error">{{ps_error_message}}</span> <br>
+              <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+            </div>
+          </div>
+          <div v-if="!userId" class="right">
+            <label class="" for="confirmpassword">
+              <strong>Confirm Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="confirmpassword"
+                type="password"
+                placeholder="Enter confirm password"
+                v-model="user.confirmPassword"
+              />
+              <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span> <br>
+              <span v-if="cp_error_message" class="form-error">{{cp_error_message}}</span> <br>
+            </div>
           </div>
         </div>
-        <div v-if="!userId" class="right">
-          <label class="" for="thisusername">
-            <strong>Username:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="thisusername"
-              type="text"
-              placeholder="Enter User Name"
-              v-model="user.userName"
-            />
-            <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br> 
-            <span v-if="ab_error_message" class="form-error">{{ab_error_message}}</span> <br>
-            <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+        <div class="forth-row row">
+          <div class="left">
+            <label class="" for="in_stock">
+              <strong>Active:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                style="margin-top: 21px"
+                type="checkbox"
+                id="active"
+                name="active"
+                v-model="user.active"
+              >
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="third-row row">
-        <div v-if="!userId" class="left">
-          <label class="" for="thisuserpassword">
-            <strong>Password:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              autocomplete="new-password"
-              name="thisuserpassword"
-              type="password"
-              placeholder="Enter Password"
-              v-model="user.password"
-            />
-            <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span> <br>
-            <span v-if="ps_error_message" class="form-error">{{ps_error_message}}</span> <br>
-            <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
-          </div>
-        </div>
-        <div v-if="!userId" class="right">
-          <label class="" for="confirmpassword">
-            <strong>Confirm Password:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="confirmpassword"
-              type="password"
-              placeholder="Enter confirm password"
-              v-model="user.confirmPassword"
-            />
-            <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span> <br>
-            <span v-if="cp_error_message" class="form-error">{{cp_error_message}}</span> <br>
-          </div>
-        </div>
-      </div>
-      <div class="forth-row row">
-        <div class="left">
-          <label class="" for="in_stock">
-            <strong>Active:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              style="margin-top: 21px"
-              type="checkbox"
-              id="active"
-              name="active"
-              v-model="user.active"
-            >
-          </div>
-        </div>
-        <div class="right">
-          <label class="" for="role">
-            <strong>Role:</strong>
-          </label>
+          <div class="right">
+            <label class="" for="role">
+              <strong>Role:</strong>
+            </label>
 
-          <div class="ab-select-container">
-            <select name="role" class="custom-select" id="unit" v-model="user.user_type">
-              <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
-                {{ role }}
-              </option>
-            </select>
+            <div class="ab-select-container">
+              <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+                <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+                  {{ role }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="fifth-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="companies">
+              <strong>Company:</strong>
+            </label>
+
+            <div class="ab-select-container">
+              <select name="companies" class="custom-select" id="companies" v-model="user.company">
+                <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                  {{ company.company_name }}
+                </option>
+              </select>
+            </div>
+            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+          </div>
+          <div class="right">
+            <label class="" for="contact_number">
+              <strong>Contact Number:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="contact_number"
+                type="text"
+                placeholder="Enter contact number"
+                v-model="user.contactNumber"
+              />
+              <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span> <br>
+              <span v-if="num_error_message" class="form-error">{{num_error_message}}</span> <br>
+            </div>
           </div>
         </div>
       </div>
-      <div class="fifth-row row">
-        <div v-if="!userId" class="left">
-          <label class="" for="companies">
-            <strong>Company:</strong>
-          </label>
-
-          <div class="ab-select-container">
-            <select name="companies" class="custom-select" id="companies" v-model="user.company">
-              <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-                {{ company.company_name }}
-              </option>
-            </select>
+      <div v-if="userId">
+        <div class="first-row row">
+          <div class="left">
+            <label class="" for="first_name">
+              <strong>First Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="first_name"
+                type="text"
+                placeholder="Enter First Name"
+                v-model="user.firstName"
+              />
+            </div>
           </div>
-          <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-          <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+          <div class="right">
+            <label class="" for="last_name">
+              <strong>Last Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="last_name"
+                type="text"
+                placeholder="Enter Last Name"
+                v-model="user.lastName"
+              />
+            </div>
+          </div>
         </div>
-        <div class="right">
-          <label class="" for="contact_number">
-            <strong>Contact Number:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="contact_number"
-              type="text"
-              placeholder="Enter contact number"
-              v-model="user.contactNumber"
-            />
-            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span> <br>
-            <span v-if="num_error_message" class="form-error">{{num_error_message}}</span> <br>
+        <div class="second-row row">
+          <div class="left">
+            <label class="" for="email">
+              <strong>Email:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="email"
+                type="text"
+                placeholder="Enter Email"
+                v-model="user.email"
+              />
+              <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="role">
+              <strong>Role:</strong>
+            </label>
+
+            <div class="ab-select-container">
+              <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+                <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+                  {{ role }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="third-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="thisuserpassword">
+              <strong>Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                autocomplete="new-password"
+                name="thisuserpassword"
+                type="password"
+                placeholder="Enter Password"
+                v-model="user.password"
+              />
+              <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span> <br>
+              <span v-if="ps_error_message" class="form-error">{{ps_error_message}}</span> <br>
+              <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+            </div>
+          </div>
+          <div v-if="!userId" class="right">
+            <label class="" for="confirmpassword">
+              <strong>Confirm Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="confirmpassword"
+                type="password"
+                placeholder="Enter confirm password"
+                v-model="user.confirmPassword"
+              />
+              <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span> <br>
+              <span v-if="cp_error_message" class="form-error">{{cp_error_message}}</span> <br>
+            </div>
+          </div>
+        </div>
+        <div class="forth-row row">
+          <div class="left">
+            <label class="" for="in_stock">
+              <strong>Active:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                style="margin-top: 21px"
+                type="checkbox"
+                id="active"
+                name="active"
+                v-model="user.active"
+              >
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="contact_number">
+              <strong>Contact Number:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="contact_number"
+                type="text"
+                placeholder="Enter contact number"
+                v-model="user.contactNumber"
+              />
+              <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span> <br>
+              <span v-if="num_error_message" class="form-error">{{num_error_message}}</span> <br>
+            </div>
+          </div>
+          
+        </div>
+        <div class="fifth-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="companies">
+              <strong>Company:</strong>
+            </label>
+
+            <div class="ab-select-container">
+              <select name="companies" class="custom-select" id="companies" v-model="user.company">
+                <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                  {{ company.company_name }}
+                </option>
+              </select>
+            </div>
+            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
           </div>
         </div>
       </div>
