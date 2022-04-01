@@ -693,6 +693,28 @@
       </template>
     </Modal>
 
+    <Modal v-if="orderStatus">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <p>{{ orderStatus }}</p>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button
+            @click="handleOrderStatus()"
+            class="btn btn-orange btn-mr"
+            v-focus
+          >
+            New Order
+          </button>
+        </div>
+      </template>
+    </Modal>
+    
     <Modal v-if="order_response.id" type="scrollable">
       <template v-slot:header>
         <h2>Order Status</h2>
