@@ -415,15 +415,6 @@ export default defineComponent({
       }
       return errorMessage;
     },
-
-    // companyValidation: function () {
-    //   let errorMessage = null;
-    //   if (this.companies.length <= 0) {
-    //     errorMessage = "Comapny is required. Add Comapany to system"
-    //   }
-    //   return errorMessage;
-    // },
-
     ...mapGetters({
       roles: 'getRoles',
       companies: 'getCompaniesFilterVendor',
@@ -431,7 +422,7 @@ export default defineComponent({
     })
   },
   methods: {
-    addUpdateUser: async function () {
+    checkAllValidation: function(){
       // validate
       if (this.user.userName.length <= 0) {
         this.ab_error_message = "User Name is required";
@@ -463,9 +454,22 @@ export default defineComponent({
       else{
         this.company_errormessage = ""
       }
-      
-      
-
+  
+      if ( this.userNameValidation === null &&
+          this.passwordValidation === null &&
+          this.ConfirmPasswordValidation === null &&
+          this.emailValidation === null &&
+          this.contactNumberValidation === null &&      
+          this.ab_error_message === "" && 
+          this.ps_error_message === "" &&
+          this.cp_error_message === "" && this.num_error_message === "" && this.company_errormessage === ""){
+            return true
+          }
+      else{
+        return false
+      }
+    },
+    addUpdateUser: async function () {
       let userIdNumber = 0;
       if (this.userId) {
         userIdNumber = parseFloat(this.userId);
@@ -495,14 +499,7 @@ export default defineComponent({
         }
       } 
       else {
-        if ( this.userNameValidation === null &&
-          this.passwordValidation === null &&
-          this.ConfirmPasswordValidation === null &&
-          this.emailValidation === null &&
-          this.contactNumberValidation === null &&      
-          this.ab_error_message === "" && 
-          this.ps_error_message === "" &&
-          this.cp_error_message === "" && this.num_error_message === "" && this.company_errormessage === "")
+        if (this.checkAllValidation())
           {
             console.log("in the air")
             user.company = this.user.company,
