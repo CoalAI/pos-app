@@ -246,7 +246,7 @@
                   color: white;
                   font-size: 12px;
                   align-content: center;
-                "
+                " class="header"
               >
                 <th style="border-radius: 8px 0px 0px 8px">Sr No.</th>
                 <th>Bar Code</th>
@@ -1983,7 +1983,7 @@ float-right {
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 7.375vw;
+  width: 6.375vw;
   height: 30px;
   margin-top: 15px;
   padding: 0px 0px 0px 5px;
@@ -2001,7 +2001,7 @@ float-right {
   border-radius: 6px;
   font-family: seg;
   font-size: 11px;
-  width: 7.375vw;
+  width: 6.375vw;
   height: 30px;
   margin-top: 15px;
   padding: 0px 0px 0px 5px;
@@ -2071,7 +2071,7 @@ float-right {
   margin-left: 10px !important;
 }
 .mr-l8 {
-  width: 58%;
+  width: 71%;
   margin: auto;
 }
 .mr-l50 {
@@ -2189,32 +2189,57 @@ td {
 }
 .col-2{
     -webkit-box-flex: 0;
-    flex: 0 0 18% !important;
-    max-width: 18% !important;
+    flex: 0 0 21% !important;
+    max-width: 21% !important;
 }
 .col-3{
   -webkit-box-flex: 0;
-      flex: 0 0 28% !important;
-    max-width: 28% !important;
+      flex: 0 0 25% !important;
+    max-width: 25% !important;
     margin-left: 23px !important;
 }
 .col-6{
   -webkit-box-flex: 0;
-  flex: 0 0 48%;
-  max-width: 48%;
+  flex: 0 0 47%;
+  max-width: 47%;
 }
 .box1Responsive{
   display: flex;
 }
-@media screen and (max-width:1342px ){
+.header {
+  border-radius: 5px;
+  background-color: #0f2634; 
+  color: white;
+}
+.header > th{
+    text-align: center;
+  }
+  .header > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+@media screen and (max-width:1200px ){
   .col-3{
     max-width: 35% !important;
   }
   .col-2{
-    max-width: 31% !important
+    max-width: 25% !important;
+    flex: 0 0 25% !important;
   }
+  
   .split-container {
     margin-left: 2vw;
+}
+  .mr-l8 {
+    width: 74%;
+    margin: auto;
+}
+.form-container {
+  grid-gap: 1.2rem 1.8rem;
 }
 }
 @media screen and (max-width:1029px ){
