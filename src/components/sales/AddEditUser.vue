@@ -138,13 +138,14 @@
 
             <div class="ab-select-container">
               <select name="companies" class="custom-select" id="companies" v-model="user.company">
+                <option value="0">Select</option>
                 <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
                   {{ company.company_name }}
                 </option>
               </select>
+              <span v-if="company_errormessage" class="form-error">{{company_errormessage}}</span>
+              <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
             </div>
-            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
           </div>
           <div class="right">
             <label class="" for="contact_number">
@@ -300,7 +301,7 @@
                 </option>
               </select>
             </div>
-            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+            <span v-if="company_errormessage" class="form-error">{{company_errormessage}}</span>
             <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
           </div>
         </div>
@@ -350,6 +351,7 @@ export default defineComponent({
       ps_error_message: '',
       cp_error_message: '',
       num_error_message: '',
+      company_errormessage: '',
       user: {
         userName: '',
         password: '',
@@ -414,13 +416,13 @@ export default defineComponent({
       return errorMessage;
     },
 
-    companyValidation: function () {
-      let errorMessage = null;
-      if (this.companies.length <= 0) {
-        errorMessage = "Comapny is required. Add Comapany to system"
-      }
-      return errorMessage;
-    },
+    // companyValidation: function () {
+    //   let errorMessage = null;
+    //   if (this.companies.length <= 0) {
+    //     errorMessage = "Comapny is required. Add Comapany to system"
+    //   }
+    //   return errorMessage;
+    // },
 
     ...mapGetters({
       roles: 'getRoles',
@@ -454,6 +456,12 @@ export default defineComponent({
       }
       else {
         this.num_error_message = ""
+      }
+      if (this.user.company === 0) {
+        this.company_errormessage = "Comapny is required. Add Comapany to system"
+      }
+      else{
+        this.company_errormessage = ""
       }
       
       
@@ -491,11 +499,10 @@ export default defineComponent({
           this.passwordValidation === null &&
           this.ConfirmPasswordValidation === null &&
           this.emailValidation === null &&
-          this.contactNumberValidation === null &&
-          this.companyValidation === null && 
+          this.contactNumberValidation === null &&      
           this.ab_error_message === "" && 
           this.ps_error_message === "" &&
-          this.cp_error_message === "" && this.num_error_message === "")
+          this.cp_error_message === "" && this.num_error_message === "" && this.company_errormessage === "")
           {
             console.log("in the air")
             user.company = this.user.company,
@@ -540,7 +547,7 @@ export default defineComponent({
     await this.fetchCompanies();
 
     if (this.companies && this.companies.length > 0) {
-      this.user.company = this.companies[0].id;
+      // this.user.company = this.companies[0].id;
     }
 
     if (this.userId) {
