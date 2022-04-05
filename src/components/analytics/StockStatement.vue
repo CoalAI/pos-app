@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex-box">
-      <label class="pad-label ls">
+      <label class="labelCmp ls" style=";padding-right:12px">
         <strong>Department:</strong>
       </label>
       <select
@@ -16,7 +16,7 @@
           {{company.company_name}}
         </option>
       </select>
-      <label class="pad-label ls">
+      <label class="labelCmp ls" style="padding-left:12px;padding-right:12px">
         <strong>Product Category:</strong>
       </label>
       <select
@@ -35,9 +35,15 @@
         <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
       </div>
     </div>
-    <table class="marginTop">
+    <table class="tble-mt">
+      <colgroup>
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+      </colgroup>
       <thead>
-        <tr>
+        <tr class="fr-row header">
           <th scope="col">Product Name</th>
           <th scope="col">Product Category</th>
           <th scope="col">Quantity</th>
@@ -46,19 +52,26 @@
       </thead>
       <tbody>
        <tr v-for="data in inventory" :key="data.id">
-          <td scope="col">{{data.batch.product_variant.product.name}}</td>
-          <td scope="col">{{data.batch.product_variant.product.category}}</td>
-          <td scope="col">{{parseInt(data.quantity)}}</td>
-          <td scope="col">{{data.quantity * data.batch.product_variant.price}}</td>
+          <td>{{data.batch.product_variant.product.name}}</td>
+          <td>{{data.batch.product_variant.product.category}}</td>
+          <td>{{parseInt(data.quantity)}}</td>
+          <td>{{data.quantity * data.batch.product_variant.price}}</td>
         </tr>
       </tbody>
     </table>
-    <div class="flex-row">
-        <div><b>Total Quantity:</b> {{inventory.map((item) => parseInt(item.quantity)).reduce((a, b) => a + b, 0)}}</div>
-        <div><b>Total Amount:</b> {{inventory.map((item) => parseInt(item.quantity * item.batch.product_variant.price)).reduce((a, b) => a + b, 0)}}</div>
+    <div class="stats">
+      <div>
+        <span>Total Quantity:</span>
+        <span>{{inventory.map((item) => parseInt(item.quantity)).reduce((a, b) => a + b, 0)}}</span>
+      </div>
+      <div>
+        <span>Total Amount:</span>
+        <span>{{inventory.map((item) => parseInt(item.quantity * item.batch.product_variant.price)).reduce((a, b) => a + b, 0)}}</span>
+      </div>
     </div>
+    
     <div class="flex-container marginTop">
-      <button class="btn btn-orange" style="width:80px">Print</button>
+      <button class="btn btn-orange" style="width:80px;margin-right:7px">Print</button>
     </div> 
   </div>
 </template>
@@ -121,24 +134,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td, th {
-  border: none;
-  text-align: left;
-  padding: 20px;
-}
-
-tr:nth-child(even) {
-  background-color: inherit;
-}
-
-tr:nth-child(odd) input {
-  background-color: inherit;
-}
 .flex-container {
   display: flex;
   flex-direction: row-reverse;
@@ -147,5 +142,52 @@ tr:nth-child(odd) input {
    display: flex;
    justify-content: space-between;
    padding: 2%
+}
+.labelCmp{
+  padding: 20px;
+  padding-top: 14px !important;
+}
+.tble-mt{
+  margin: 20px 0;
+}
+.header > th{
+  text-align: center;
+}
+.header > th:first-child{
+  border: none;
+  border-radius: 10px 0px 0px 10px;
+}
+.header > th:last-child{
+  border: none;
+  border-radius: 0px 10px 10px 0px;
+}
+.header {
+  border-radius: 5px;
+  background-color: #0f2634; 
+  color: white;
+}
+td > .flex-box{
+  justify-content: space-around;
+  align-items: center;
+}
+.fr-row {
+  font-size: 12px;
+}
+.stats{
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.stats > div > span:first-child{
+  font-size: 15px;
+  font-weight: 600;
+  margin-right: 2px;
+}
+.stats > div > span:last-child{
+  font-size: 15px;
+  font-weight: 550;
+  color: #e73b2a;
 }
 </style>
