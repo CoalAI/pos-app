@@ -3,7 +3,7 @@
     <div class="diff-shadow">
       <div class="page-upper">
           <div>
-            <router-link to="" class="batch-btn ab_btn btn-orange">Add Batch</router-link>
+            <router-link to="/Addbatch" class="batch-btn ab_btn btn-orange">Add Batch</router-link>
           </div>
           <div id="search-container">
             <form class="ab-form-pos">

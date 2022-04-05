@@ -29,8 +29,8 @@
             v-model="vendor.lastName"
           />
 
-          <label class="label cn" for="contact_number">
-            <strong>Contact:</strong>
+          <label class="label cn " for="contact_number">
+            <strong>Contact:</strong><span class="required">*</span>
           </label>
           <div>
             <input
@@ -41,7 +41,7 @@
               v-model="vendor.contact"
             />
             <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
-            <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+            
           </div>
           
           
@@ -182,13 +182,14 @@ export default defineComponent({
         firstName: '',
         lastName: '',
         company: 0
-      }
+      },
+      showError: false,
     }
   },
   computed: {
     contactNumberValidation: function () {
       let errorMessage = null;
-      if (this.vendor.contact.length <= 0) {
+      if (this.vendor.contact.length <= 0 && this.showError==true) {
         errorMessage = "Number is required"
       }
       return errorMessage;
@@ -217,6 +218,7 @@ export default defineComponent({
   },
   methods: {
     addUpdateVendor: async function () {
+      this.showError = true;
       let vendorIdNumber = 0;
       if (this.vendorId) {
         vendorIdNumber = parseFloat(this.vendorId);
@@ -418,5 +420,9 @@ export default defineComponent({
 }
 .blue{
   background-color: #0f2634;
+}
+.required{
+  content:" *";
+    color: red;
 }
 </style>
