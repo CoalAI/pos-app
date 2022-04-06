@@ -1,6 +1,6 @@
 <template>
   <div class="ab-flex-box">
-    <label class="" for="start_date">
+    <label class="labelCmp" for="start_date">
       <strong>Company:</strong>
     </label>
     <div class="ab-select-container">
@@ -114,29 +114,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* table {
-  border-collapse: collapse;
-  width: 100%;
-}
 
-td, th {
-  border: none;
-  text-align: left;
-  padding: 20px;
-}
-
-tr:nth-child(even) {
-  background-color: inherit;
-}
-
-tr:nth-child(odd) input {
-  background-color: inherit;
-}
-*/
 .analytics{
   display: flex;
   justify-content: space-between;
   width: 50%;
+  margin-left: 1rem;
 }
 .analytics > div > span:first-child{
   font-size: 15px;
@@ -155,17 +138,15 @@ tr:nth-child(odd) input {
     align-items: baseline;
   }
   .ab-flex-box > .ab-select-container{
-    width: 20%;
+    width: 100%;
     margin-left: 10px;
   }
   .ab-flex-box > label{
-    font-size: 13px;
     font-weight: 500;
   }
   /* select designs */
   .ab-select-container > select{
     padding: 8px 18px;
-    border-radius: 10px;
     font-size: 12px;
   }
   /* table designs */
@@ -202,5 +183,11 @@ tr:nth-child(odd) input {
   }
   .content > td{
     text-align: center;
+}
+.labelCmp{
+  padding: 20px;
+}
+.custom-select{
+  width: 35%;
 }
 </style>

@@ -19,51 +19,19 @@
               <img :src="searchbar" alt="Search">
             </button>
           </form>
-          <label class="search-lbl">Search by Name:</label>
-          <form class="flex-box">
-            <input
-              label="orderIdSearch"
-              name="orderIdSearch"
-              type="text"
-              placeholder="Search"
-              class="search-input search-box"
-              v-model="search"
-              @input="searchInventory"
-            />
-            <button class="btn-search btn-orange" @click="searchInventory">
-              <img :src="searchbar" alt="Search">
-            </button>
-          </form>
+        
         </div>
         <div>
-        <!--<div id="filter-box">
-          <select
-            v-if="admin"
-            id="company-type"
-            name="company-type"
-            v-model="company"
-            @change="onChangeCompany"
-          >
-            <option value="">All</option>
-            <option 
-              class="batches-op"
-              v-for="company in companies"
-              v-bind:key="company.id"
-              v-bind:value="company.id"
-            >
-              {{ company.company_name }}
-            </option>
-          </select>
-        </div>-->
           <div id="company-type">
             <form class="filter inline" v-if="admin">
               <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type"> All</div>
               <div 
-              class="batches-op"
+              class="batches-op d-flex"
               v-for="company in companies"
               v-bind:key="company.id">
               <input 
-              type="checkbox" 
+              type="checkbox"
+              class="mx-1"
               @change="onCheckChange"                
               id="company-type" 
               :value="company.id"
@@ -275,11 +243,22 @@ export default defineComponent({
   font-family: seg;
   vertical-align:text-bottom;
 }
-.header {
-  border-radius: 5px;
-  background-color: #0f2634; 
-  color: white;
-}
+.header > th{
+    text-align: center;
+  }
+  .header > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header {
+    border-radius: 5px;
+    background-color: #0f2634; 
+    color: white;
+  }
 .content{
   background-color: white; 
   color: #0f2634;

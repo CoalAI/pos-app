@@ -344,13 +344,40 @@ export default defineComponent({
   color: white;
   
 }
+.header2 > th{
+    text-align: center;
+  }
+  .header2 > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header2 > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header2 > td{
+    text-align: center;
+  }
+  .header2 > td:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 8px;
+  }
+  .header2 > td:last-child{
+    border: none;
+    border-radius: 0px 10px 8px 0px;
+  }
+  // .header2 > th:last-child{
+  //   border: none;
+  //   border-radius: 0px 10px 10px 0px;
+  // }
+
 .content{
   background-color: white; 
   color: #0f2634;
   text-align:center;
 }
 .content2{
-  background-color: blue !important; 
+  // background-color: blue !important; 
   color: #0f2634;
   text-align:center;
 }

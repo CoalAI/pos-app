@@ -138,6 +138,13 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: storeAdmin,
   },
   {
+    path: "/Addbatch",
+    name: "AddBatch",
+    component: AddEditBatch,
+    props: true,
+    beforeEnter: storeAdmin,
+  },
+  {
     path: "/user/create",
     name: "",
     component: AddEditUser,
