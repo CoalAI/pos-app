@@ -488,6 +488,7 @@ export default defineComponent({
     await this.fetchCategories();
     if (this.productId) {
       await this.getProduct(this.productId);
+      console.log(this.singleProduct)
       this.loadData(this.singleProduct);
     }
   },
