@@ -30,34 +30,6 @@
           </li>
         </ul>
       </div>
-      
-        <!-- <button :class="tab === 'order' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'order'" :to="{name: 'order-analytics'}">
-            <strong>Orders</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'inventory' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'inventory'" :to="{name: 'inventory-analytics'}">
-            <strong>Inventory</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'detail' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'detail'" :to="{name: 'operator-sales-detail'}">
-            <strong>Operator Sales</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'report' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'report'" :to="{name: 'profit-loss-report'}">
-            <strong>Profit/Loss Report</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'StockStatement' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-            <router-link @click="tab = 'StockStatement'" :to="{name: 'StockStatement'}">
-              <strong>Stock Statement</strong>
-            </router-link>
-        </button> -->
-      <!--</div>-->
-      <!-- <hr class="solid"> -->
       <div class="route-con">
         <router-view />
       </div>
