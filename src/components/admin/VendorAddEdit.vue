@@ -46,7 +46,7 @@
           
           
           <label v-if="!vendorId" class="label c" for="companies">
-            <strong>Company:</strong>
+            <strong>Company:</strong><span class="required">*</span>
           </label>
           <div v-if="!vendorId">
             <select name="companies" class="custom-select text-box sc" id="companies" v-model="vendor.company">
@@ -55,8 +55,6 @@
               </option>
             </select>
             <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
-        
         </div>
         </div>
 
@@ -173,7 +171,7 @@ export default defineComponent({
   name: 'VendorAddEdit',
   props: ['vendorId'],
   components: {
-    ErrorField,
+    // ErrorField,
   },
   data () {
     return {
@@ -183,13 +181,14 @@ export default defineComponent({
         lastName: '',
         company: 0
       },
-      showError: false,
+      showErrorContact: false,
+      showErrorCompany: false,
     }
   },
   computed: {
     contactNumberValidation: function () {
       let errorMessage = null;
-      if (this.vendor.contact.length <= 0 && this.showError==true) {
+      if (this.vendor.contact.length <= 0 && this.showErrorContact==true) {
         errorMessage = "Number is required"
       }
       return errorMessage;
@@ -205,7 +204,7 @@ export default defineComponent({
 
     companyValidation: function () {
       let errorMessage = null;
-      if (this.companies.length <= 0) {
+      if (this.companies.length <= 0 && this.showErrorCompany==true) {
         errorMessage = "Comapny is required. Add vendor comapany to system"
       }
       return errorMessage;
@@ -218,7 +217,8 @@ export default defineComponent({
   },
   methods: {
     addUpdateVendor: async function () {
-      this.showError = true;
+      this.showErrorContact = true;
+      this.showErrorCompany = true;
       let vendorIdNumber = 0;
       if (this.vendorId) {
         vendorIdNumber = parseFloat(this.vendorId);
