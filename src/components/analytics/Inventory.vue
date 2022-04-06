@@ -1,36 +1,59 @@
 <template>
-  <div class="flex-box">
-    <label class="pad-label ls" for="start_date">
+  <div class="ab-flex-box">
+    <label class="labelCmp" for="start_date">
       <strong>Company:</strong>
     </label>
-    <select
-      id="company-type"
-      name="company-type"
-      class="custom-select"
-      style="width: 30%"
-      v-model="company"
-      @change="fetchAnalyticsBtn"
-      :disabled="!admin"
-    >
-      <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-        {{company.company_name}}
-      </option>
-    </select>
+    <div class="ab-select-container">
+      <select
+        id="company-type"
+        name="company-type"
+        class="custom-select"
+        v-model="company"
+        @change="fetchAnalyticsBtn"
+        :disabled="!admin"
+      >
+        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+          {{company.company_name}}
+        </option>
+      </select>
+    </div>
   </div>
-  <table>
+
+  <table class="tble-mt">
     <colgroup>
-      <col span="1" style="width: 50%;">
-      <col span="1" style="width: 50%;">
+      <col span="1" style="width: 35%;">
+      <col span="1" style="width: 35%;">
+      <col span="1" style="width: 35%;">
     </colgroup>
-    <tr>
-      <td><strong>Total Products</strong></td>
-      <td>{{analytics.unique_products_count}}</td>
-    </tr>
-    <tr>
-      <td><strong>Total Inventory Amount</strong></td>
-      <td>PKR {{analytics.total_inventory_amount}}</td>
-    </tr>
+    <thead>
+      <tr class="fr-row header">
+        <th scope="col">Category</th>
+        <th scope="col">Total Products</th>
+        <th scope="col">Total Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="fr-row content" v-for="(item, key) in analytics.category_stats" :key="key">
+        <td>{{key}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.total_amount}}</td>
+      </tr>
+    </tbody>
   </table>
+  <div class="analytics">
+    <div>
+      <span>
+        Net Products:
+      </span>
+      <span>{{analytics.unique_products_count}}</span>
+    </div>
+    <div>
+      <span>
+        Net Amount:
+      </span>
+      <span>{{analytics.total_inventory_amount}}</span> 
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -91,22 +114,80 @@ export default defineComponent({
 </script>
 
 <style scoped>
-table {
-  border-collapse: collapse;
-  width: 100%;
+
+.analytics{
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+  margin-left: 1rem;
+}
+.analytics > div > span:first-child{
+  font-size: 15px;
+  font-weight: 600;
+}
+.analytics > div > span:last-child{
+  font-size: 15px;
+  font-weight: 500;
+  color: #e73b2a;
 }
 
-td, th {
-  border: none;
-  text-align: left;
+/* ab css */
+  /* ab-flex-box */
+  .ab-flex-box{
+    display: flex;
+    align-items: baseline;
+  }
+  .ab-flex-box > .ab-select-container{
+    width: 100%;
+    margin-left: 10px;
+  }
+  .ab-flex-box > label{
+    font-weight: 500;
+  }
+  /* select designs */
+  .ab-select-container > select{
+    padding: 8px 18px;
+    font-size: 12px;
+  }
+  /* table designs */
+  .tble-mt{
+    margin: 20px 0;
+  }
+
+  .fr-row {
+    font-size: 12px;
+  }
+  .header > th{
+    text-align: center;
+  }
+  .header > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header {
+    border-radius: 5px;
+    background-color: #0f2634; 
+    color: white;
+  }
+  td > .flex-box{
+    justify-content: space-around;
+    align-items: center;
+  }
+  .content{
+    background-color: white; 
+    color: #0f2634;
+  }
+  .content > td{
+    text-align: center;
+}
+.labelCmp{
   padding: 20px;
 }
-
-tr:nth-child(even) {
-  background-color: inherit;
-}
-
-tr:nth-child(odd) input {
-  background-color: inherit;
+.custom-select{
+  width: 35%;
 }
 </style>

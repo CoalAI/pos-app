@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import App from './App.vue';
 import { store } from './store/index';
 import router from './router';
-import vueDebounce from 'vue-debounce'
+import vueDebounce from 'vue-debounce';
 // Vue.config.productionTip = false;
 import VueSocketIO from '@/plugins/socket-io/index'
 
@@ -18,6 +18,7 @@ if (shouldSW) {
     console.log('Dev Service Worker Registered!');
   })
 }
+
 
 const app = createApp(App)
 

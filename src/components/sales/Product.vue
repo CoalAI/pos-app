@@ -1,100 +1,100 @@
 <template>
-  <div class="diff-shadow pad-2">
-    <h2>Products</h2>
+  <!--<div class="diff-shadow pad-2">-->
+    <div class= "diff-box">
+    <!--<h2>Products</h2>-->
     <div class="search-grid-list-pages">
-        <router-link v-show="allowedAddProduct" to="/product/create" class="btn btn-orange add-btn-width">Add New Product</router-link>
+        <router-link v-show="allowedAddProduct" to="/product/create" class="btn-b btn-orange">Add New Product</router-link>
         <div class="float-right">
-          <form class="flex-box">
+          <label class="search-lbl">Search by: Product Name or Barcode</label>
+          <form class="flex-box mr-l">
             <input
               label="Username"
               name="username"
               type="text"
-              placeholder="Enter product name or barcode to search"
-              class="search-input"
+              placeholder="Search"
+              class="input-search"
               v-model="search"
               @input="searchProducts"
             />
-            <button class="btn btn-orange search-btn" @click="searchProducts">Search product</button>
+            <button class=" btn-orange search-btn" @click="searchProducts"><img :src="searchbar" alt="search"></button>
           </form>
         </div>
     </div>
-    <div class="mr-2">
+    <div class="mr-1">
       <table>
         <colgroup>
           <col span="1" style="width: 2%;">
-          <col span="1" style="width: 20%;">
-          <col span="1" style="width: 20%;">
-          <col span="1" style="width: 9%;">
+          <col span="1" style="width: 15%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 12%;">
           <col span="1" style="width: 5%;">
+          <col span="1" style="width: 30%;">
           <col span="1" style="width: 24%;">
-          <col span="1" style="width: 20%;">
         </colgroup>
 
-        <tr>
-          <th>Sr No.</th>
+        <tr class="fr-row header">
+          <th style="border-radius: 10px 0px 0px 10px">Sr No.</th>
           <th>Product Name</th>
           <th>Bar code</th>
           <th>Category</th>
           <th>Token</th>
           <th>Product Variants</th>
-          <th></th>
+          <th style="border-radius: 0px 10px 10px 0px">Delete / Edit</th>
         </tr>
         <template v-for="(product, index) in productsList" v-bind:key="product.id">
-          <tr>
+          <tr class="fr-row content"> 
             <td>{{ index + 1 }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.bar_code }}</td>
             <td v-if="product.category">{{ getCategoryName(product.category) }}</td><td v-else class="text-center">-</td>
             <td v-if="product.token">Yes</td><td v-else>No</td>
             <td>
-              <table class="nested-table">
+              <table class="nested-table ">
                 <colgroup>
                   <col span="1" style="width: 40%;">
                   <col span="1" style="width: 40%;">
                   <col span="1" style="width: 20%;">
                 </colgroup>
 
-                <tr>
-                  <th>Cost Price</th>
-                  <th>Price</th>
-                  <th>Size</th>
+                <tr class="fr-row header2">
+                  <th style="border-radius: 10px 0px 0px 0px; text-align:center">Cost Price</th>
+                  <th style="text-align:center">Price</th>
+                  <th style="border-radius: 0px 10px 0px 0px; text-align:center">Size</th>
                 </tr>
 
-                <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id">
-                  <td>{{ productVariant.price }}</td>
+                <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id" class="fr-row content2 header2">
+                  <td style="border-radius:0px 0px 0px 10px;">{{ productVariant.price }}</td>
                   <td>{{ productVariant.sale_price }}</td>
-                  <td v-if="productVariant.size">{{productVariant.size}}</td><td v-else class="text-center">-</td>
+                  <td style="border-radius: 0px 0px 10px 0px;" v-if="productVariant.size">{{productVariant.size}}</td><td style="border-radius: 0px 0px 10px 0px;" v-else class="text-center">-</td>
                 </tr>
               </table>
             </td>
-            <td style="width: 150px">
+            <td style="width: 150px; vertical-align: middle">
               <div class="flex-box">
-                <a class="btn btn-orange btn-mr-inner" @click="OpenDeleteProductModal(product)">delete</a>
-                <router-link :to="{name: 'EditProduct', params: {productId: product.id}}" class="btn btn-orange btn-mr-inner">edit</router-link>
+                <a class="btn-tab btn-orange btn-mr-inner mr-2" @click="OpenDeleteProductModal(product)">Delete</a>
+                <router-link :to="{name: 'EditProduct', params: {productId: product.id}}" class="mr-2 btn-tab btn-blue btn-mr-inner">Edit</router-link>
               </div>
             </td>
           </tr>
         </template>
       </table>
-      <Paginator :count="productsCount" @pageChange="changePage"/>
+      <Paginator class="mr-2" :count="productsCount" @pageChange="changePage"/>
     </div>
 
     <!-- The deletion Modal -->
     <Modal v-if="deleteProductModal">
       <template v-slot:header>
-        <h2>Confirm Deletion</h2>
+        <h2 class="head">Confirm Delete</h2>
       </template>
 
       <template v-slot:body>
-        <p style="padding: 8px"><strong>Are you sure you want to delete this product?</strong></p>
+        <p style="text-align:center"><strong>Are you sure you want to delete this product?</strong></p>
         <template v-if="deleteProduct">
-          <table id="delete-table" class="mr-2">
+          <table id="delete-table" class="mr-1">
             <tr>
-              <td><strong>Name:</strong></td>
+              <td><strong style="color:#e43d2a">Name:</strong></td>
               <td>{{deleteProduct.name}}</td>
-            </tr>
-            <tr>
-              <td><strong>BarCode:</strong></td>
+              <td><strong style="color:#e43d2a">Barcode:</strong></td>
               <td>{{deleteProduct.barcode}}</td>
             </tr>
           </table>
@@ -103,8 +103,9 @@
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="closeDeleteProductModal">Cancel</button>
-          <button class="btn btn-orange btn-mr" @click="deleteProductYes">Yes</button>
+          <button class="btn-tab btn-orange btn-mr" @click="deleteProductYes">Yes</button>
+          <button class="btn-tab btn-blue btn-mr" @click="closeDeleteProductModal">Cancel</button>
+          
         </div>
       </template>
     </Modal>
@@ -128,6 +129,7 @@ export default defineComponent({
   },
   data() {
     return {
+      searchbar: require('../../assets/search_icon.svg'),
       search: '',
       deleteProductModal: false,
       deleteProduct: {
@@ -225,17 +227,175 @@ export default defineComponent({
 
   #delete-table td {
     border: none;
+    padding:0  !important;
+    width:12%;
   }
   #delete-table tr:nth-child(even) {
     background-color: $white-color;
   }
 
   .nested-table td {
-    background-color: $white-color !important;
+    background-color: #d4d1cf !important;
     padding: 3px;
+    //border-radius:0px 0px 10px 10px;
   }
 
   .nested-table th {
     padding: 3px;
   }
+  .btn-b{
+    font-family:seg;
+  font-size: 12px;
+  margin:20px 0px 0px 0px;
+  padding:8px;
+  border-radius: 20px;
+  width: 108px;
+  padding:5px;
+  cursor: pointer;
+  color:$white-color;
+  border:none;
+  font-weight:bold;
+  text-decoration: none;
+  text-align: center;
+  height:28px;
+  }
+  .btn-b:focus{
+    outline:none;
+  }
+  .input-search{
+    border-radius:30px 0px 0px 30px;
+    font-family:seg;
+    font-size:12px;
+    padding:8px 10px;
+    width:250px;
+    border:1px #cfd1d0 solid;
+    margin-top:0 !important;
+  }
+  .diff-box {
+    border: 1px solid $white-color;
+    border-radius: 10px;
+    padding: 1em 4em;
+    margin: 2% 10%;
+    margin-left:10% !important;
+
+    -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
+    box-shadow: 1px 1px 5px -1px $login-shodow-color;
+  }
+  .search-btn{
+    border-radius:0px 30px 30px 0px;
+    padding:5px;
+    text-decoration: none;
+    text-align: center;
+    height:36px;    
+    border:none;
+    
+  }
+  .search-btn:focus{
+    outline:none;
+  }
+  .mr-l{
+    margin-left:100px;
+  }
+  .search-lbl{
+  font-size:11px;
+  font-style:italic;
+  color:#2f3437;
+  margin-bottom:0 !important;
+  margin-left:110px;
+}
+.fr-row {
+  font-size: 12px;
+  font-family: seg;
+  vertical-align:text-bottom;
+}
+.header > th{
+    text-align: center;
+  }
+  .header > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header {
+    border-radius: 5px;
+    background-color: #0f2634; 
+    color: white;
+  }
+.header2{
+  background-color: #e43d2a; 
+  color: white;
+  
+}
+.header2 > th{
+    text-align: center;
+  }
+  .header2 > th:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+  }
+  .header2 > th:last-child{
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+  }
+  .header2 > td{
+    text-align: center;
+  }
+  .header2 > td:first-child{
+    border: none;
+    border-radius: 10px 0px 0px 8px;
+  }
+  .header2 > td:last-child{
+    border: none;
+    border-radius: 0px 10px 8px 0px;
+  }
+  // .header2 > th:last-child{
+  //   border: none;
+  //   border-radius: 0px 10px 10px 0px;
+  // }
+
+.content{
+  background-color: white; 
+  color: #0f2634;
+  text-align:center;
+}
+.content2{
+  // background-color: blue !important; 
+  color: #0f2634;
+  text-align:center;
+}
+td{
+  text-align:center !important;
+  
+}
+.btn-tab{
+  background-color: #e43d2a;
+    font-family: seg;
+    font-size: 12px;
+    border-radius: 20px;
+    width: 100px;
+    cursor: pointer;
+    color: #ffffff !important;
+    border: none;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    height: 25px;
+}
+.btn-blue{
+  background-color:#0f2634 !important;
+  text-decoration:none;
+}
+.head{
+  font-family:seg;
+  font-size:20px;
+  font-weight:bold;
+
+}
+.modal-container{
+  width:37% !important;
+}
 </style>
