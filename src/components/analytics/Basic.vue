@@ -1,59 +1,35 @@
 <template>
   <div id="expense">
     <div class="diff-shadow">
-      <div class="flex-box nav-tabs">
-        <button :class="tab === 'order' ? 'active-li ab1' : 'ab1'">
-          <router-link @click="tab = 'order'" :to="{name: 'order-analytics'}">
-            <strong>Orders</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'inventory' ? 'active-li ab2' : 'ab2'">
-          <router-link @click="tab = 'inventory'" :to="{name: 'inventory-analytics'}">
-            <strong>Inventory</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'detail' ? 'active-li ab3' : 'ab3'">
-          <router-link @click="tab = 'detail'" :to="{name: 'operator-sales-detail'}">
-            <strong>Operator Sales</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'report' ? 'active-li ab4' : 'ab4'">
-          <router-link @click="tab = 'report'" :to="{name: 'profit-loss-report'}">
-            <strong>Profit/Loss Report</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'StockStatement' ? 'active-li ab5' : 'ab5'">
-            <router-link @click="tab = 'StockStatement'" :to="{name: 'StockStatement'}">
+      <div class="page-upper">
+        <ul class="nav nav-tabs">
+          <li :class="tab === 'order' ? 'active-li ab1' : 'ab1'" @click="onClickOrder()">
+            <span>
+              <strong>Order</strong>
+            </span>
+          </li>
+          <li :class="tab === 'inventory' ? 'active-li ab1 tab2' : 'ab1 tab2'" @click="onClickInventory()">
+            <span>
+              <strong>Inventory</strong>
+            </span>
+          </li>
+          <li :class="tab === 'detail' ? 'active-li ab1 tab3' : 'ab1 tab3'" @click="onClickDetails()">
+            <span>
+              <strong>Operator Sales</strong>
+            </span>
+          </li>
+          <li :class="tab === 'report' ? 'active-li ab1 tab4' : 'ab1 tab4'" @click="onClickReport()">
+            <span>
+              <strong>Profit/Loss Report</strong>
+            </span>
+          </li>
+          <li :class="tab === 'StockStatement' ? 'active-li ab1 tab5' : 'ab1 tab5'" @click="onClickStockStatement()">
+            <span>
               <strong>Stock Statement</strong>
-            </router-link>
-        </button>
-        <!-- <button :class="tab === 'order' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'order'" :to="{name: 'order-analytics'}">
-            <strong>Orders</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'inventory' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'inventory'" :to="{name: 'inventory-analytics'}">
-            <strong>Inventory</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'detail' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'detail'" :to="{name: 'operator-sales-detail'}">
-            <strong>Operator Sales</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'report' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-          <router-link @click="tab = 'report'" :to="{name: 'profit-loss-report'}">
-            <strong>Profit/Loss Report</strong>
-          </router-link>
-        </button>
-        <button :class="tab === 'StockStatement' ? 'nav-link active' : 'nav-link'" class="btn btn-grid">
-            <router-link @click="tab = 'StockStatement'" :to="{name: 'StockStatement'}">
-              <strong>Stock Statement</strong>
-            </router-link>
-        </button> -->
+            </span>
+          </li>
+        </ul>
       </div>
-      <!-- <hr class="solid"> -->
       <div class="route-con">
         <router-view />
       </div>
@@ -74,6 +50,29 @@ export default defineComponent({
       tab: path.split('/')[2],
 
     }
+  },
+  methods: {
+    onClickOrder(){
+      this.tab = 'order'
+      this.$router.push({ name: "order-analytics" });
+    },
+    onClickInventory(){
+      this.tab = 'inventory'
+      this.$router.push({ name: "inventory-analytics" });
+    },
+    onClickDetails(){
+      this.tab = 'detail'
+      this.$router.push({ name: "operator-sales-detail" });
+    },
+    onClickReport(){
+      this.tab = 'report'
+      this.$router.push({ name: "profit-loss-report" });
+    },
+    onClickStockStatement(){
+      this.tab = 'StockStatement'
+      this.$router.push({ name: "StockStatement" });
+    },
+
   },
   computed: {
     // dateValidation: function(): string | null {
@@ -219,8 +218,9 @@ export default defineComponent({
 .nav-tabs > button{
   position: absolute;
 }
-.ab1{
-}
+// .ab1{
+
+// }
 .ab2{
   left: 138px;
 }
@@ -233,4 +233,81 @@ export default defineComponent({
 .ab5{
   left: 599px;
 }
+
+.page-upper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .page-upper > .right-cont{
+    width: 30%;
+  }
+  .page-upper > .right-cont > .flex-box{
+    align-items: baseline;
+    width: 100%;
+  }
+  .page-upper > .right-cont > .flex-box > label{
+    margin-right: 10px;
+    font-size: 13px;
+    // font-weight: 500;
+  }
+  .page-upper > .right-cont > .flex-box > .ab-select-container{
+    flex-grow: 1;
+  }
+
+  // page upper ul designs;
+  // normalization
+  .page-upper > .nav-tabs{
+    border: none;
+    position: relative;
+  }
+  .page-upper > .nav-tabs > li{
+    width: 150px;
+    padding: 0.5rem 1rem;
+    background-color: #f5f2f2;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  // active
+  .page-upper > .nav-tabs > .active-li{
+    z-index: 10;
+    background-color: $primary-color;
+    color: white;
+    text-align: center;
+  }
+  .page-upper > .custom-toggle-btn-ab{
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+  }
+  .ab1{
+    text-align: center;
+    position: absolute;
+  }
+  .tab2{
+    left: 114px;
+  }
+  .tab3{
+    left: 233px;
+    width: 168px !important;
+  }
+  .tab4{
+    left: 375px;
+    width: 180px !important;
+  }
+  .tab5{
+    left: 528px;
+    width: 173px !important;
+  }
+  @media Screen and (max-width: 1375px){
+    .diff-shadow{
+      width: 62vw;
+    }
+  }
+  @media Screen and (max-width: 1164px){
+    .diff-shadow{
+      width: 72vw;
+    }
+  }
 </style>

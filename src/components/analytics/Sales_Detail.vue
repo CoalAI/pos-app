@@ -8,7 +8,6 @@
         id="company-type"
         name="company-type"
         class="custom-select"
-        style="width: 30%"
         v-model="company"
         @change="fetchSalesanalyticsBtn"
         :disabled="!admin"
@@ -20,7 +19,7 @@
     </div>
     <div class="flex-box">
       <DateRange @dateRangeChange="setRange"  />
-      <div class="b" style="margin-left: 10px">
+      <div class="b">
         <button class="btn btn-orange" @click="fetchSalesanalyticsBtn">Search</button>
       </div>
     </div> 
@@ -166,7 +165,6 @@ tr:nth-child(odd) input {
 #select-con{
   display: flex;
   align-items: baseline;
-  width: 30%
 }
 #select-con > .ab-select-container{
   width: 100%;
@@ -214,5 +212,14 @@ td > .flex-box{
 }
 .content > td{
   text-align: center;
+}
+.b{
+  text-align: right;
+  padding: 7px;
+  margin-left: 1rem;
+  width: 7rem;
+}
+.custom-select{
+  width:28%;
 }
 </style>

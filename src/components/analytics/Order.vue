@@ -2,7 +2,7 @@
   <div>
     <div class="ab-flex-box">
       <div id="select-con">
-        <label class="" for="start_date">
+        <label class="labelCmp" for="start_date">
           <strong>Company:</strong>
         </label>
         <div class="ab-select-container">
@@ -20,13 +20,16 @@
           </select>
         </div>
       </div>
-      <div class="date-container">
-        <DateRange @dateRangeChange="setRange"  />
+      <div class="d-flex">
+        <div class="date-container">
+          <DateRange @dateRangeChange="setRange"  />
+        </div>
+        <div class="b">
+          <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
+        </div>
       </div>
     </div>
-    <div class="b">
-        <button class="btn-blue" @click="fetchAnalyticsBtn">Search</button>
-    </div>
+   
     <!-- commented out -->
     <!-- <div class="flex-box">
       <div class="b" style="margin-left: 10px">
@@ -167,7 +170,7 @@ tr:nth-child(odd) input {
 
 /* ab css */
 .ab-flex-box{
-  display: flex;
+  // display: flex;
   align-items: baseline;
 }
 
@@ -175,7 +178,6 @@ tr:nth-child(odd) input {
 #select-con{
   display: flex;
   align-items: baseline;
-  width: 30%
 }
 #select-con > .ab-select-container{
   width: 100%;
@@ -191,9 +193,12 @@ tr:nth-child(odd) input {
 }
 
 
-/* btn blue  */
+/* btn search  */
 .b{
   text-align: right;
+  padding: 7px;
+  margin-left: 1rem;
+  width: 7rem;
 }
 .btn-blue{
   text-decoration: none;
@@ -217,6 +222,8 @@ tr:nth-child(odd) input {
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 .stats > div > span:first-child{
   font-size: 15px;
@@ -227,5 +234,11 @@ tr:nth-child(odd) input {
   font-size: 15px;
   font-weight: 550;
   color: #e73b2a;
+}
+.labelCmp{
+  padding: 20px;
+}
+.custom-select{
+  width: 35%;
 }
 </style>
