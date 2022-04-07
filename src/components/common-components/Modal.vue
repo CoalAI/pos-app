@@ -54,10 +54,10 @@ export default defineComponent({
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: $modal-backgorund-color;
+    backdrop-filter: blur(3px);
     display: table;
-    
     transition: opacity 0.3s ease;
+    padding:2em;
   }
 
   .scroll {
@@ -83,9 +83,13 @@ export default defineComponent({
     width: 40%;
     margin: 0px auto;
     background-color: $white-color;
-    border-radius: 2px;
+    border-radius: 5px;
     box-shadow: 0 2px 8px $modal-shadow-color;
     transition: all 0.3s ease;
+    border: 1px solid $primary-color;
+    padding:0em 4em;
+    font-family:seg;
+
     // overflow-y: auto;
     // height: 600px;
 
@@ -96,9 +100,12 @@ export default defineComponent({
   }
 
   .modal-header {
-    padding: 2px 16px;
-    background-color: $primary-color;
-    color: $white-color;
+    padding: 10px 16px 5px 16px;
+    // background-color: $primary-color;
+    // color: $white-color;
+    color: $primary-color;
+    justify-content: center;
+    border: none;
   }
 
   .modal-body {
@@ -106,7 +113,9 @@ export default defineComponent({
   }
 
   .modal-footer {
-    padding: 2px 16px;
+    padding: 10px 16px 10px 16px;
+    border: none;
+    justify-content: center;
   }
 
   /*

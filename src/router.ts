@@ -32,6 +32,9 @@ import Basic from '@/components/analytics/Basic.vue';
 import OrderAnaltyics from '@/components/analytics/Order.vue';
 import FinanceAnaltyics from '@/components/analytics/Finance.vue';
 import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
+import StockStatement from '@/components/analytics/StockStatement.vue';
+import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
+import ProfifLossReport from '@/components/analytics/Report.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -130,6 +133,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/batch/edit/:productId/:productVariantId/:batchId",
     name: "EditBatch",
+    component: AddEditBatch,
+    props: true,
+    beforeEnter: storeAdmin,
+  },
+  {
+    path: "/Addbatch",
+    name: "AddBatch",
     component: AddEditBatch,
     props: true,
     beforeEnter: storeAdmin,
@@ -257,8 +267,24 @@ const routes: Array<RouteRecordRaw> = [
         name: 'inventory-analytics',
         component: InventoryAnaltyics,
       },
+      {
+        path: 'Stock',
+        name: 'StockStatement',
+        component: StockStatement,
+      },
+      {
+        path: 'detail',
+        name: 'operator-sales-detail',
+        component: OperatorSalesDetail,
+      },
+      {
+        path: 'report',
+        name: 'profit-loss-report',
+        component: ProfifLossReport,
+      },
     ]
-  }
+  },
+  
 ];
 
 const router = createRouter({

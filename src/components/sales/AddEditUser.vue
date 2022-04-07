@@ -6,154 +6,326 @@
         <span v-else>Add New</span>
         <span> User</span>
       </h2>
-      <div class="flex-box">
-        <label class="pad-label w100" for="first_name">
-          <strong>First Name:</strong>
-        </label>
-        <input
-          name="first_name"
-          type="text"
-          placeholder="Enter First Name"
-          v-model="user.firstName"
-        />
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="last_name">
-          <strong>Last Name:</strong>
-        </label>
-        <input
-          name="last_name"
-          type="text"
-          placeholder="Enter Last Name"
-          v-model="user.lastName"
-        />
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="email">
-          <strong>Email:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="email"
-            type="text"
-            placeholder="Enter Email"
-            v-model="user.email"
-          />
-          <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+      <div v-if="!userId">
+        <div class="first-row row">
+          <div class="left">
+            <label class="" for="first_name">
+              <strong>First Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="first_name"
+                type="text"
+                placeholder="Enter First Name"
+                v-model="user.firstName"
+              />
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="last_name">
+              <strong>Last Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="last_name"
+                type="text"
+                placeholder="Enter Last Name"
+                v-model="user.lastName"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="thisusername">
-          <strong>Username:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="thisusername"
-            type="text"
-            placeholder="Enter User Name"
-            v-model="user.userName"
-          />
-          <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br>
-          <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+        <div class="second-row row">
+          <div class="left">
+            <label class="" for="email">
+              <strong>Email:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="email"
+                type="text"
+                placeholder="Enter Email"
+                v-model="user.email"
+              />
+              <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+            </div>
+          </div>
+          <div v-if="!userId" class="right">
+            <label class="" for="thisusername">
+              <strong>Username:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="thisusername"
+                type="text"
+                placeholder="Enter User Name"
+                v-model="user.userName"
+              />
+              <span v-if="userNameValidation" class="form-error">{{userNameValidation}}</span> <br> 
+              <span v-if="ab_error_message" class="form-error">{{ab_error_message}}</span> <br>
+              <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
+            </div>
+          </div>
         </div>
-      </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="thisuserpassword">
-          <strong>Password:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            autocomplete="new-password"
-            name="thisuserpassword"
-            type="password"
-            placeholder="Enter Password"
-            v-model="user.password"
-          />
-          <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span>
-          <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+        <div class="third-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="thisuserpassword">
+              <strong>Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                autocomplete="new-password"
+                name="thisuserpassword"
+                type="password"
+                placeholder="Enter Password"
+                v-model="user.password"
+              />
+              <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span> <br>
+              <span v-if="ps_error_message" class="form-error">{{ps_error_message}}</span> <br>
+              <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+            </div>
+          </div>
+          <div v-if="!userId" class="right">
+            <label class="" for="confirmpassword">
+              <strong>Confirm Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="confirmpassword"
+                type="password"
+                placeholder="Enter confirm password"
+                v-model="user.confirmPassword"
+              />
+              <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span> <br>
+              <span v-if="cp_error_message" class="form-error">{{cp_error_message}}</span> <br>
+            </div>
+          </div>
         </div>
-      </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="confirmpassword">
-          <strong>Confirm Pwd:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="confirmpassword"
-            type="password"
-            placeholder="Enter confirm password"
-            v-model="user.confirmPassword"
-          />
-          <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span>
-        </div>
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="in_stock">
-          <strong>Active:</strong>
-        </label>
-        <input
-          style="margin-top: 21px"
-          type="checkbox"
-          id="active"
-          name="active"
-          v-model="user.active"
-        >
-      </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="role">
-          <strong>Role:</strong>
-        </label>
+        <div class="forth-row row">
+          <div class="left">
+            <label class="" for="in_stock">
+              <strong>Active:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                style="margin-top: 21px"
+                type="checkbox"
+                id="active"
+                name="active"
+                v-model="user.active"
+              >
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="role">
+              <strong>Role:</strong>
+            </label>
 
-        <select name="role" class="custom-select" id="unit" v-model="user.user_type">
-          <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
-            {{ role }}
-          </option>
-        </select>
-      </div>
-      <div v-if="!userId" class="flex-box">
-        <label class="pad-label w100" for="companies">
-          <strong>Company:</strong>
-        </label>
+            <div class="ab-select-container">
+              <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+                <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+                  {{ role }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="fifth-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="companies">
+              <strong>Company:</strong>
+            </label>
 
-        <select name="companies" class="custom-select" id="companies" v-model="user.company">
-          <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-            {{ company.company_name }}
-          </option>
-        </select>
-        <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-        <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+            <div class="ab-select-container">
+              <select name="companies" class="custom-select" id="companies" v-model="user.company">
+                <option value="0">Select</option>
+                <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                  {{ company.company_name }}
+                </option>
+              </select>
+              <span v-if="company_errormessage" class="form-error">{{company_errormessage}}</span>
+              <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="contact_number">
+              <strong>Contact Number:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="contact_number"
+                type="text"
+                placeholder="Enter contact number"
+                v-model="user.contactNumber"
+              />
+              <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span> <br>
+              <span v-if="num_error_message" class="form-error">{{num_error_message}}</span> <br>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="flex-box">
-        <label class="pad-label w100" for="contact_number">
-          <strong>Contact Number:</strong>
-        </label>
-        <div class="full-width">
-          <input
-            name="contact_number"
-            type="text"
-            placeholder="Enter contact number"
-            v-model="user.contactNumber"
-          />
-          <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+      <div v-if="userId">
+        <div class="first-row row">
+          <div class="left">
+            <label class="" for="first_name">
+              <strong>First Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="first_name"
+                type="text"
+                placeholder="Enter First Name"
+                v-model="user.firstName"
+              />
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="last_name">
+              <strong>Last Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="last_name"
+                type="text"
+                placeholder="Enter Last Name"
+                v-model="user.lastName"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="second-row row">
+          <div class="left">
+            <label class="" for="email">
+              <strong>Email:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="email"
+                type="text"
+                placeholder="Enter Email"
+                v-model="user.email"
+              />
+              <span v-if="emailValidation" class="form-error">{{emailValidation}}</span>
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="role">
+              <strong>Role:</strong>
+            </label>
+
+            <div class="ab-select-container">
+              <select name="role" class="custom-select" id="unit" v-model="user.user_type">
+                <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
+                  {{ role }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="third-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="thisuserpassword">
+              <strong>Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                autocomplete="new-password"
+                name="thisuserpassword"
+                type="password"
+                placeholder="Enter Password"
+                v-model="user.password"
+              />
+              <span v-if="passwordValidation" class="form-error">{{passwordValidation}}</span> <br>
+              <span v-if="ps_error_message" class="form-error">{{ps_error_message}}</span> <br>
+              <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
+            </div>
+          </div>
+          <div v-if="!userId" class="right">
+            <label class="" for="confirmpassword">
+              <strong>Confirm Password:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="confirmpassword"
+                type="password"
+                placeholder="Enter confirm password"
+                v-model="user.confirmPassword"
+              />
+              <span v-if="ConfirmPasswordValidation" class="form-error">{{ConfirmPasswordValidation}}</span> <br>
+              <span v-if="cp_error_message" class="form-error">{{cp_error_message}}</span> <br>
+            </div>
+          </div>
+        </div>
+        <div class="forth-row row">
+          <div class="left">
+            <label class="" for="in_stock">
+              <strong>Active:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                style="margin-top: 21px"
+                type="checkbox"
+                id="active"
+                name="active"
+                v-model="user.active"
+              >
+            </div>
+          </div>
+          <div class="right">
+            <label class="" for="contact_number">
+              <strong>Contact Number:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="contact_number"
+                type="text"
+                placeholder="Enter contact number"
+                v-model="user.contactNumber"
+              />
+              <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span> <br>
+              <span v-if="num_error_message" class="form-error">{{num_error_message}}</span> <br>
+            </div>
+          </div>
+          
+        </div>
+        <div class="fifth-row row">
+          <div v-if="!userId" class="left">
+            <label class="" for="companies">
+              <strong>Company:</strong>
+            </label>
+
+            <div class="ab-select-container">
+              <select name="companies" class="custom-select" id="companies" v-model="user.company">
+                <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                  {{ company.company_name }}
+                </option>
+              </select>
+            </div>
+            <span v-if="company_errormessage" class="form-error">{{company_errormessage}}</span>
+            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+          </div>
         </div>
       </div>
 
-      <div class="mr-2" style="text-align: right; padding-bottom: 50px">
-        <router-link
-          to="/users"
-          style="margin-right: 20px"
-          class="btn btn-orange btn-mr btn-link"
-        >Cancel</router-link>
-        <button
-          class="btn btn-orange btn-mr"
-          style="width: 150px"
-          :disabled="addEditBtn"
-          @click="addUpdateUser"
-        >
-          <span v-if="userId">Update</span>
-          <span v-else>Add</span>
-          <span> User</span>
-        </button>
+      <div class="ab_btn_container">
+        <div>
+          <button
+            class="btn ab_orange_hover btn-orange"
+            
+            @click="addUpdateUser"
+          >
+            <span v-if="userId">Update</span>
+            <span v-else>Add</span>
+            <span> User</span>
+          </button>
+        </div>
+        <div>
+          <router-link
+            to="/users"
+            style="margin-left: 20px"
+            class="btn ab_blue_hover btn-blue"
+          >Cancel</router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -175,6 +347,11 @@ export default defineComponent({
   },
   data () {
     return {
+      ab_error_message: '',
+      ps_error_message: '',
+      cp_error_message: '',
+      num_error_message: '',
+      company_errormessage: '',
       user: {
         userName: '',
         password: '',
@@ -193,11 +370,9 @@ export default defineComponent({
     userNameValidation: function () {
       let errorMessage = null;
       const re = /^[a-zA-Z0-9@.+\-_]{3,150}$/;
-      if (this.user.userName.length <= 0) {
-        errorMessage = "User Name is required";
-      } else if (this.user.userName.length > 150) {
+      if (this.user.userName.length > 150) {
         errorMessage = "Only 150 characters or fewer are allowed";
-      }else if (!re.test(this.user.userName)) {
+      }else if (this.user.userName.length != 0 && !re.test(this.user.userName)) {
         errorMessage = "Minimum three characters and only letters, digits and these character (@ . + - _) are allowed"
       }
       return errorMessage;
@@ -207,9 +382,7 @@ export default defineComponent({
       let errorMessage = null;
       if (!this.userId) {
         const re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-        if (this.user.password.length <= 0) {
-          errorMessage = "Password is required"
-        }  else if (!re.test(this.user.password)) {
+        if (this.user.password.length != 0 && !re.test(this.user.password)) {
           errorMessage = "Minimum eight characters, at least one letter, one number and one special character (@$!%*#?&)"
         }
       }
@@ -219,9 +392,7 @@ export default defineComponent({
     ConfirmPasswordValidation: function () {
       let errorMessage = null;
       if (!this.userId) {
-        if (this.user.confirmPassword.length <= 0) {
-          errorMessage = "Confirm Password is required"
-        } else if (this.user.password && this.user.password !== this.user.confirmPassword) {
+        if (this.user.confirmPassword.length != 0 && this.user.password && this.user.password !== this.user.confirmPassword) {
           errorMessage = "Confirm Password does not matches with password"
         }
       }
@@ -238,38 +409,12 @@ export default defineComponent({
 
     contactNumberValidation: function () {
       let errorMessage = null;
-      if (this.user.contactNumber.length <= 0) {
-        errorMessage = "Number is required"
-      } else {
-        const regex = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{3,5}-{0,1}\d{7}$/;
-        if (!regex.test(this.user.contactNumber)) {
-          errorMessage = "Phone number is not valid"
-        }
+      const regex = /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{3,5}-{0,1}\d{7}$/;
+      if (this.user.contactNumber.length != 0 && !regex.test(this.user.contactNumber)) {
+        errorMessage = "Phone number is not valid"
       }
       return errorMessage;
     },
-
-    companyValidation: function () {
-      let errorMessage = null;
-      if (this.companies.length <= 0) {
-        errorMessage = "Comapny is required. Add Comapany to system"
-      }
-      return errorMessage;
-    },
-
-    addEditBtn: function () {
-      let disable = true;
-      if ( this.userNameValidation === null &&
-      this.passwordValidation === null &&
-      this.ConfirmPasswordValidation === null &&
-      this.emailValidation === null &&
-      this.contactNumberValidation === null &&
-      this.companyValidation === null) {
-        disable = false;
-      }
-      return disable
-    },
-
     ...mapGetters({
       roles: 'getRoles',
       companies: 'getCompaniesFilterVendor',
@@ -277,6 +422,53 @@ export default defineComponent({
     })
   },
   methods: {
+    checkAllValidation: function(){
+      // validate
+      if (this.user.userName.length <= 0) {
+        this.ab_error_message = "User Name is required";
+      }
+      else {
+        this.ab_error_message = ""
+      }
+      if (this.user.password.length <= 0) {
+        this.ps_error_message = "Password is required"
+      }
+      else {
+        this.ps_error_message = ""
+      }
+      if (this.user.confirmPassword.length <= 0) {
+        this.cp_error_message = "Confirm Password is required" 
+      }
+      else {
+        this.cp_error_message = ""
+      }
+      if (this.user.contactNumber.length <= 0) {
+        this.num_error_message = "Number is required"
+      }
+      else {
+        this.num_error_message = ""
+      }
+      if (this.user.company === 0) {
+        this.company_errormessage = "Comapny is required. Add Comapany to system"
+      }
+      else{
+        this.company_errormessage = ""
+      }
+  
+      if ( this.userNameValidation === null &&
+          this.passwordValidation === null &&
+          this.ConfirmPasswordValidation === null &&
+          this.emailValidation === null &&
+          this.contactNumberValidation === null &&      
+          this.ab_error_message === "" && 
+          this.ps_error_message === "" &&
+          this.cp_error_message === "" && this.num_error_message === "" && this.company_errormessage === ""){
+            return true
+          }
+      else{
+        return false
+      }
+    },
     addUpdateUser: async function () {
       let userIdNumber = 0;
       if (this.userId) {
@@ -296,17 +488,29 @@ export default defineComponent({
       }
 
       if (this.userId) {
-        user.id = userIdNumber;
-        await this.updateUser(user);
-      } else {
-        user.company = this.user.company,
-        user.password = this.user.password;
-        await this.registerUser(user);
-      }
-      if (Object.keys(this.fieldErrors).length === 0) {
-        this.$router.push({name: 'User'});
-      } else {
-        window.scrollTo(0,0);
+        if (this.contactNumberValidation === null && this.num_error_message === ""){
+          user.id = userIdNumber;
+          await this.updateUser(user);
+          if (Object.keys(this.fieldErrors).length === 0) {
+            this.$router.push({name: 'User'});
+          } else {
+            window.scrollTo(0,0);
+          }
+        }
+      } 
+      else {
+        if (this.checkAllValidation())
+          {
+            console.log("in the air")
+            user.company = this.user.company,
+            user.password = this.user.password;
+            await this.registerUser(user);
+            if (Object.keys(this.fieldErrors).length === 0) {
+              this.$router.push({name: 'User'});
+            } else {
+              window.scrollTo(0,0);
+            }
+          }
       }
     },
 
@@ -340,7 +544,7 @@ export default defineComponent({
     await this.fetchCompanies();
 
     if (this.companies && this.companies.length > 0) {
-      this.user.company = this.companies[0].id;
+      // this.user.company = this.companies[0].id;
     }
 
     if (this.userId) {
@@ -364,24 +568,118 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditUser {
-    padding-left: 15%;
-    padding-right: 15%;
+    // padding: 2.65% 30%;
+    padding: 2.65% 26%;
+    // padding-left: 15%;
+    // padding-right: 15%;
     margin-top: 3%;
+    // padding-left: 15%;
+    // padding-right: 15%;
+    // margin-top: 3%;
+  }
+  .diff-shadow{
+    padding: 1.65% 6.56%;
+  }
+  .diff-shadow > h2{
+    text-align: center;
+    color: $primary-color;
+    margin-bottom: 50px;
+  }
+  
+
+  // .pad-label {
+  //   padding: 20px 20px 20px 0px;
+  // }
+
+  // .w100 {
+  //   width: $w150;
+  // }
+
+  // label {
+  //   text-align: left;
+  // }
+
+  // .full-width {
+  //   width: 100%;
+  // }
+
+  // ab-css
+  .row{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
+  }
+  .left{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .right{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
+  }
+  .ab-select-container > select{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .ab-input-container > input[type=text]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container > input[type=password]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
+  }
+  .ab-input-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .ab-select-container{
+    width: 60%;
+    flex-grow: 1
+  }
+  .row  label{
+    // margin-right: 50px;
+    width: 30%;
+    font-size: 0.875em;
+  }
+  .form-error{
+    font-size: 0.65em; 
   }
 
-  .pad-label {
-    padding: 20px 20px 20px 0px;
+  // buttons designs 
+  .ab_btn_container{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
   }
-
-  .w100 {
-    width: $w150;
+  .ab_btn_container > div:first-child button:first-child{
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid $primary-color !important;
   }
-
-  label {
-    text-align: left;
+  .ab_orange_hover:hover{
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    background-color: white;
   }
-
-  .full-width {
-    width: 100%;
+  .btn-blue{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid #0f2636 !important;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+  .ab_btn_container a{
+    color:white;
   }
 </style>

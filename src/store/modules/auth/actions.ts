@@ -1,11 +1,12 @@
 import { ActionContext, ActionTree, CommitOptions} from "vuex";
 import { IRootState } from '@/store/models/root';
 import { User, Credentials } from '@/store/models/user';
-import serverRequest, { isAxiosError, isAxiosResponse } from '@/store/modules/request'
+import serverRequest, { isAxiosError, isAxiosResponse } from '@/utils/request';
 import { Mutations, MutationTypes } from "./mutations";
 import { State } from './state';
 import { Company } from '@/store/models/company';
 import { Transaction } from "@/store/models/transaction";
+import offlineStoreService from '@/utils/offline-store';
 
 
 export enum ActionTypes {
@@ -18,7 +19,7 @@ export enum ActionTypes {
   GET_USERS = "GET_USERS",
   GET_All_USERS = "GET_All_USERS",
   GET_USERS_BY_TYPES = "GET_USERS_BY_TYPES",
-  GET_USERS_BY_TYPE = "GET_USERS_BY_TYPE",
+  GET_CUSTOMER_USERS = "GET_CUSTOMER_USERS",
   CREATE_EXPENSE = "CREATE_EXPENSE",
   FETCH_TYPES = "FETCH_TYPES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
@@ -51,7 +52,7 @@ export interface Actions {
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string; page?: number}): void;
   [ActionTypes.GET_All_USERS]({ commit }: AugmentedActionContext, company?: string): void;
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
-  [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}): void;
+  [ActionTypes.GET_CUSTOMER_USERS]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}): void;
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string; page?: number}): void;
@@ -113,11 +114,18 @@ Actions = {
     localStorage.clear();
     commit(MutationTypes.SetToken, '');
   },
-  async [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext) {
-    const response = await serverRequest('get', 'user-data/', true, undefined, undefined);
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
-        commit(MutationTypes.SetUser, response.data.results[0]);
+  async [ActionTypes.USER_DATA]({ commit, rootGetters }: AugmentedActionContext) {
+    if (rootGetters.getOfflineMode) {
+      const userData = await offlineStoreService.getUserData();
+      if (userData) {
+        commit(MutationTypes.SetUser, userData);
+      }
+    } else {
+      const response = await serverRequest('get', 'user-data/', true, undefined, undefined);
+      if (isAxiosResponse(response)) {
+        if (response.data.results.length > 0) {
+          commit(MutationTypes.SetUser, response.data.results[0]);
+        }
       }
     }
   },
@@ -166,14 +174,30 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.GET_USERS_BY_TYPE]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
-    const response = await serverRequest('get', 'user/', true, undefined, options);
-    commit(MutationTypes.SetListOfUsers, {});
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0) {
-        commit(MutationTypes.SetUsersCount, response.data.count)
-        const usersData = response.data.results;
-        commit(MutationTypes.SetListOfUsers, usersData)
+  async [ActionTypes.GET_CUSTOMER_USERS]({ commit, rootGetters }: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
+    if (rootGetters.getOfflineMode) {
+      let customers: User[] = [];
+      if (options && options.user_type) {
+        if (options.user_type === 'REGULAR_CUSTOMER') {
+          customers = await offlineStoreService.getAllRegularCustomers();
+        } else if (options.user_type === 'WALK_IN_CUSTOMER') {
+          customers = await offlineStoreService.getWalkInCustomers();
+        }
+      } else if (options && options.search) {
+        const singleCustomer = await offlineStoreService.getRegularCustomerByUsername(options.search);
+        if (singleCustomer) customers.push(singleCustomer);
+      }
+      commit(MutationTypes.SetUsersCount, customers.length);
+      commit(MutationTypes.SetListOfUsers, customers);
+    } else {
+      const response = await serverRequest('get', 'user/', true, undefined, options);
+      commit(MutationTypes.SetListOfUsers, {});
+      if (isAxiosResponse(response)) {
+        if (response.data.results.length > 0) {
+          commit(MutationTypes.SetUsersCount, response.data.count)
+          const usersData = response.data.results;
+          commit(MutationTypes.SetListOfUsers, usersData)
+        }
       }
     }
   },
