@@ -20,6 +20,7 @@
             </div>
           </div>
           <div v-else class="left">
+          <span class="required">*</span>
             <label class="" for="products">
               <strong>Products:</strong>
             </label>
@@ -40,6 +41,7 @@
             </div>
           </div>
           <div class="right">
+          <span class="required">*</span>
             <label class="" for="quantity">
               <strong>Quantity:</strong>
             </label>
@@ -58,6 +60,7 @@
 
         <div class="second-row row">
           <div class="left">
+            <span class="required">*</span>
             <label class="" for="manufactured">
               <strong>Manufactured Date:</strong>
             </label>
@@ -66,6 +69,7 @@
             </div>
           </div>
           <div class="right">
+            <span class="required">*</span>
             <label class="" for="expiry">
               <strong>Expiry date:</strong>
             </label>
@@ -263,7 +267,7 @@ export default defineComponent({
 <style lang="scss" scoped>
   #AddEditBatch {
     // padding: 2.65% 30%;
-    padding: 2.65% 26%;
+    padding: 2.65% 25%;
     margin-top: 3%;
   }
   .diff-shadow{
@@ -338,6 +342,7 @@ export default defineComponent({
   }
   .third-row{
     margin-top: 20px;
+    margin-left: 9px;
   }
   .third-row label{
     // margin-right: 50px;
@@ -385,5 +390,23 @@ export default defineComponent({
   }
   .ab_btn_container a{
     color:white;
+  }
+  .required{
+    content:" *";
+    color: red;
+    font-size: 17px;
+    margin-right: 3px;
+  }
+  @media Screen and (max-width: 1497px){
+    #AddEditBatch {
+    padding: 2.65% 21%;
+    margin-top: 3%;
+  }
+  }
+  @media Screen and (max-width: 1247px){
+    #AddEditBatch {
+    padding: 2.65% 19%;
+    margin-top: 3%;
+  }
   }
 </style>

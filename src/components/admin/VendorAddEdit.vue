@@ -28,10 +28,14 @@
             placeholder="Enter Last Name"
             v-model="vendor.lastName"
           />
-
-          <label class="label cn " for="contact_number">
-            <strong>Contact:</strong><span class="required">*</span>
-          </label>
+          <div class="d-flex">
+          <div style="padding: 17px 2px;"><span class="required">*</span></div>
+          <div>
+            <label class="label cn " for="contact_number">
+              <strong>Contact:</strong>
+            </label>
+          </div>
+          </div>
           <div>
             <input
               class="text-box mr-r tc"
@@ -43,11 +47,14 @@
             <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
             
           </div>
-          
-          
-          <label v-if="!vendorId" class="label c" for="companies">
-            <strong>Company:</strong><span class="required">*</span>
-          </label>
+          <div class="d-flex">
+            <div style="padding: 17px 2px;"><span class="required">*</span></div>
+            <div>
+              <label v-if="!vendorId" class="label c" for="companies">
+                <strong>Company:</strong>
+              </label>
+            </div>
+          </div>
           <div v-if="!vendorId">
             <select name="companies" class="custom-select text-box sc" id="companies" v-model="vendor.company">
               <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
