@@ -8,7 +8,8 @@
         </h2>
         <div class="upper">
           <div class="left">
-            <label class="" for="company-name">
+          <span class="required">*</span>
+            <label class="" for="company-name" style="margin-right: 20px;">
               <strong>Name:</strong>
             </label>
             <div class="ab-input-container">
@@ -110,13 +111,14 @@ export default defineComponent({
         address: '',
         contactNumber: '',
         type: 'FACTORY',
-      }
+      }, 
+      showErrorName: false,
     }
   },
   computed: {
     comapanyNameValidation: function () {
       let errorMessage = null;
-      if (this.company.name.length <= 0) {
+      if (this.company.name.length <= 0 && this.showErrorName == true) {
         errorMessage = "Name is required"
       }
       return errorMessage;
@@ -149,7 +151,10 @@ export default defineComponent({
   },
   methods: {
     addUpdateDepartment: async function () {
+      this.showErrorName = true;
       let companyIdNumber = 0;
+      if(this.comapanyNameValidation === null){
+
       if (this.companyId) {
         companyIdNumber = parseFloat(this.companyId);
         if (isNaN(companyIdNumber)) return;
@@ -175,7 +180,9 @@ export default defineComponent({
           await this.createCompany(company);
         }
       }
+      
       this.$router.push({name: 'department'});
+      }
     },
 
     loadData: function (company: Company) {
@@ -272,7 +279,8 @@ export default defineComponent({
     font-size: 0.875em;
   }
   .form-error{
-    font-size: 0.65em; 
+    font-size: 0.65em;
+    margin-left: 6px;
   }
   .lower label{
     margin-right: 8px;
@@ -307,6 +315,11 @@ export default defineComponent({
 
   .ab_btn_container a{
     color:white;
-    
   }
+  .required{
+    content:" *";
+    color: red;
+    font-size: 17px;
+    margin-right: 3px;
+}
 </style>
