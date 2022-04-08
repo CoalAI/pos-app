@@ -79,7 +79,6 @@
             >
               <span v-if="companyId">Update</span>
               <span v-else>Add</span>
-              <span>New</span>
             </button>
           </div>
           <div>
@@ -294,6 +293,7 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 48px;
     border: 1.5px solid $primary-color !important;
+    width: 8rem;
 
   }
   .ab_orange_hover:hover{
@@ -304,8 +304,9 @@ export default defineComponent({
   .btn-blue{
     background-color:#0f2636;
     border-radius: 20px;
-    padding: 6px 48px;
+    padding: 6px 42px;
     border: 1.5px solid #0f2636 !important;
+    width: 8rem;
   }
   .ab_blue_hover:hover{
     color: #0f2636;

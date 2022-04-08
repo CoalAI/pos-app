@@ -140,7 +140,7 @@
           </div>
         </div>-->
 
-        <div style="text-align: center; padding-top: 30px">
+        <div class="ab_btn_container" style="text-align: center; padding-top: 30px">
           <button
             class="btn-b btn-mr red btn-link"
             style=" margin-right: 20px"
@@ -149,7 +149,6 @@
           >
             <span v-if="vendorId">Update</span>
             <span v-else>Add</span>
-            <span> New</span>
           </button>
           <router-link
             to="/Vendors"
@@ -402,15 +401,22 @@ export default defineComponent({
     font-family: seg;
     font-size: 12px;
     border-radius: 20px;
-    width: 100px;
+    // width: 100px;
     cursor: pointer;
     color: #ffffff;
     border: none;
-    padding: 12px 6px;
-    font-weight: bold;
+    // padding: 12px 6px;
+    // font-weight: bold;
     text-align: center;
-    height: 40px;
+    // height: 40px;
     margin-top: 12px;
+
+    margin-right: 20px;
+    /* height: 33px; */
+    width: 8rem;
+    font-weight: 400;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 .btn-b:focus{
   outline:none;
@@ -425,4 +431,11 @@ export default defineComponent({
   content:" *";
     color: red;
 }
+.ab_btn_container{
+    // margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    // margin-left: 66px;
+    // font-family:seg;
+  }
 </style>

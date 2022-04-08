@@ -213,7 +213,9 @@ export default defineComponent( {
     margin: 0 auto;
   }
   .diff-shadow{
-    padding: 1.6% 5.5% 5.5% 5.5%;
+    // padding: 1.6% 5.5% 5.5% 5.5%;
+    padding: 1.6% 5.5% 1.5% 5.5%;
+    
   }
 
   .page-upper{
