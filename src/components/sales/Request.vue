@@ -176,7 +176,6 @@ export default defineComponent({
   computed: {
     companyValidation: function () {
       let errorMessage = null;
-      console.log("companies", this.companies.length);
       if (this.companies.length <= 0 && this.showErrorCompany == true) {
         errorMessage = "Comapny is required. Add store to system";
       }
@@ -271,8 +270,6 @@ export default defineComponent({
       if (this.requestSent && this.requestSent.id) {
         this.created = `Request is sent. Request id is ${this.requestSent.id}`;
       }
-      }else{
-        console.log("error");
       }
     },
 
