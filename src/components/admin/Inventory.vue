@@ -24,20 +24,13 @@
         <div>
           <div id="company-type">
             <form class="filter inline" v-if="admin">
-              <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type"> All</div>
-              <div 
-              class="batches-op d-flex"
-              v-for="company in companies"
-              v-bind:key="company.id">
-              <input 
-              type="checkbox"
-              class="mx-1"
-              @change="onCheckChange"                
-              id="company-type" 
-              :value="company.id"
-              name="company-type" 
-              :checked="checkedValue==company.id"/>
-                {{ company.company_name }}
+              <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type2"> All</div>
+              <div class="batches-op d-flex" v-for="company in companies" v-bind:key="company.id">
+                <input type="checkbox" @change="onCheckChange" id="company-type2" 
+                :value="company.id"
+                name="company-type" 
+                :checked="checkedValue==company.id"/>
+                <span>{{ company.company_name }}</span>
               </div>
 
               <!--<input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
@@ -226,7 +219,7 @@ export default defineComponent({
 }
 
 #company-type {
-  //width: 90%;
+  width: 90%;
   margin-top: 4%;
   margin-left: 8%;
   border-radius:10px;
@@ -236,6 +229,9 @@ export default defineComponent({
   background-color:#0f2634;
   color:white;
   border:none !important;
+}
+#company-type2{
+  margin-right: 4px;
 }
 
 .fr-row {
@@ -336,12 +332,18 @@ export default defineComponent({
     background-color: white;
     cursor:pointer;
   }
-
+.filter{
+  width: 100%;
+}
 .filter label{
   font-size:14px;
   font-family:seg;
   margin-left:8px;
   margin-bottom:10px;
+}
+.filter > div{
+  display: flex;
+  align-items: center;
 }
 .checkradio{
    appearance: none;
