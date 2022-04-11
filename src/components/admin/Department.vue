@@ -22,6 +22,7 @@
           </div>
           <!-- <div class="float-right"> -->
           <div class="right-col">
+          <label class="search-lbl" >Search by: Name</label>
             <form class="ab-form-pos">
               <input
                 type="text"
@@ -227,7 +228,7 @@ export default defineComponent({
     margin: 10px;
   }
   .department-container{
-    max-width: 1140px;
+    max-width: 1163px;
     margin: 0 auto;
   }
   .diff-shadow{
@@ -416,5 +417,11 @@ export default defineComponent({
     padding: 8px 70px 8px 20px;
     border-radius: 20px;
   }
+  .search-lbl {
+    font-size: 11px;
+    font-style: italic;
+    margin: 0px 0px 0px 120px;
+    color: #9ea3a6;
+}
   
 </style>

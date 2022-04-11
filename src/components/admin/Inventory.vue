@@ -24,7 +24,7 @@
         <div>
           <div id="company-type">
             <form class="filter inline" v-if="admin">
-              <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type"> All</div>
+              <div style="margin-right: 5rem;"><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type"> All</div>
               <div 
               class="batches-op d-flex"
               v-for="company in companies"
@@ -232,7 +232,7 @@ export default defineComponent({
   border-radius:10px;
   padding:10px 0px 10px 12px;
   font-size:12px;
-  font-family:seg;
+  // font-family:seg;
   background-color:#0f2634;
   color:white;
   border:none !important;
@@ -240,8 +240,8 @@ export default defineComponent({
 
 .fr-row {
   font-size: 12px;
-  font-family: seg;
-  vertical-align:text-bottom;
+  // font-family: seg;
+  // vertical-align:text-bottom;
 }
 .header > th{
     text-align: center;
@@ -285,14 +285,14 @@ export default defineComponent({
   margin: 0px 0px 15px 20px;
   font-size:14px;
   color:#9ea3a6;
-  font-family:seg;
+  // font-family:seg;
   border: 1px solid #dfe0e1;
   border-right-style:none !important;
 }
 .diff-shadow{
   border: 1px solid $white-color;
   border-radius: 10px;
-  padding: 1em 2em;
+  padding: 1em 4em;
   margin: 2% 10%;
   margin-left:10% !important;
 
@@ -315,7 +315,7 @@ export default defineComponent({
     //padding: $normal-btn-pad;
     margin: 0px 0px 15px;
     cursor: pointer;
-    font-family:seg;
+    // font-family:seg;
     font-size: 10px;
     border: 1px solid #e43d2a;
     border-right-style:none!important;
@@ -339,7 +339,7 @@ export default defineComponent({
 
 .filter label{
   font-size:14px;
-  font-family:seg;
+  // font-family:seg;
   margin-left:8px;
   margin-bottom:10px;
 }
