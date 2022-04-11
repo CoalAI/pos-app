@@ -33,6 +33,7 @@
               ref="barcode"
               v-focus
             />
+            
             <span v-if="productBarCodeValidation" class="form-error">{{
               productBarCodeValidation
             }}</span>
@@ -55,6 +56,7 @@
               @input="changeProductQuantity"
               @keydown="shiftfocusTo($event, 'expirydate')"
             />
+            <br/>
             <span v-if="productQuantityValidation" class="form-error">{{
               productQuantityValidation
             }}</span>
@@ -76,6 +78,7 @@
               @keydown="checkkey"
               autocomplete="off"
             />
+            <br/>
             <span v-if="productNameValidation" class="form-error">{{
               productNameValidation
             }}</span>
@@ -108,6 +111,7 @@
                 type="date"
                 v-model="product.manufacturedDate"
               />
+              <br/>
               <span v-if="productManufacturedValidation" class="form-error">{{
                 productManufacturedValidation
               }}</span>
@@ -125,6 +129,7 @@
                 ref="expirydate"
                 @keydown="shiftfocusTo($event, 'addproduct')"
               />
+              <br/>
               <span v-if="productExpiryValidation" class="form-error">{{
                 productExpiryValidation
               }}</span>
@@ -153,6 +158,7 @@
                   {{ batch.inventory_quantity }}
                 </option>
               </select>
+              <br/>
               <span v-if="productBatchValidation" class="form-error">{{
                 productBatchValidation
               }}</span>
@@ -205,7 +211,7 @@
           <span class="checkmark"></span>
         </label>
       </div>
-        <div class="ap-e mr-2">
+        <div class="ap-e mr-2 d-flex">
           <button class="btn-blue ap" @click="clearProduct">
             Clear Product
           </button>
@@ -266,7 +272,7 @@
           </ul>
         </div>
         <div class="box1-tab">
-          <table style="width: 98%; float:right; border-collapse:collapse">
+          <table style="" class="orderTable">
             <colgroup>
               <col span="1" style="width: 1%" />
               <col span="1" style="width: 1%" />
@@ -281,8 +287,8 @@
               <col span="1" style="width: 1%" />
             </colgroup>
 
-            <tr style= "background-color:#0f2636; color:white; font-size:12px; align-content:centre">
-              <th style="border-radius:8px 0px 0px 8px">Sr No.</th>
+            <tr>
+              <th style=" border-radius:8px 0px 0px 8px">Sr No.</th>
               <th>Barcode</th>
               <th>Name</th>
               <th>Qty</th>
@@ -291,7 +297,7 @@
               <th>Manu Date</th>
               <th>Expiry Date</th>
               <th>Batch Qty</th>
-              <th style="border-radius:0px 8px 8px 0px">Total Price</th>
+              <th style="border-radius:0px 8px 8px 0px; border:none !important">Total Price</th>
             </tr>
             <tr
               v-for="(orderItem, index) in orderItems"
@@ -364,7 +370,7 @@
               v-model="seller"
               @change="sellerVendorCheck"
             >
-              <option disabled value="0">select a seller</option>
+              <option disabled value="0">Select a seller</option>
               <option
                 v-for="user in users"
                 v-bind:key="user.id"
@@ -393,6 +399,7 @@
                 >
               </option>
             </select>
+            <span v-if="sellerValidation" class="form-error">{{sellerValidation}}</span>
             </div>
           </div>
 
@@ -417,7 +424,7 @@
               id="BuyerID"
               v-model="buyer"
             >
-              <option disabled value="0">select a buyer</option>
+              <option disabled value="0">Select a buyer</option>
               <option
                 v-for="user in users"
                 v-bind:key="user.id"
@@ -432,6 +439,7 @@
                 >
               </option>
             </select>
+            <span v-if="buyerValidation" class="form-error">{{buyerValidation}}</span>
           </div>
           </div>
 
@@ -763,6 +771,8 @@ export default defineComponent({
         contact: "",
         company: 0,
       },
+      showErrorSeller: false,
+      showErrorBuyer: false,
     };
   },
   computed: {
@@ -951,7 +961,8 @@ export default defineComponent({
         this.orderItems.length > 0 &&
         this.orderTotalDiscountValidation === null &&
         this.orderCashReceivedValidation === null &&
-        this.submitOrderBtnDisable === false
+        this.submitOrderBtnDisable === false && 
+        this.sellerValidation === null && this.buyerValidation === null
       ) {
         disable = false;
       }
@@ -1015,7 +1026,20 @@ export default defineComponent({
       });
       return variants;
     },
-
+    sellerValidation: function () {
+      let errorMessage = null;
+      if (this.orderType === "from" && this.seller === 0 && this.showErrorSeller === true) {
+          errorMessage = "Seller is required";
+        }
+      return errorMessage;
+    },
+    buyerValidation: function () {
+      let errorMessage = null;
+      if (this.orderType === "to" && this.buyer === 0 && this.showErrorBuyer === true) {
+          errorMessage = "Buyer is required";
+        }
+      return errorMessage;
+    },
     ...mapGetters({
       productResult: "getProductResults",
       userdata: "getUser",
@@ -1201,6 +1225,13 @@ export default defineComponent({
 
     submitOrder: async function () {
       this.submitOrderBtnDisable = true;
+      this.showErrorSeller = true;
+      if(this.orderType === "from"){
+        this.showErrorSeller = true;
+      }else{
+        this.showErrorBuyer = true;
+      }
+      
       if (this.orderItems.length < 0) return;
       if (this.buyer === 0 || this.seller === 0) return;
 
@@ -1278,6 +1309,8 @@ export default defineComponent({
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
+      this.showErrorSeller = false;
+      this.showErrorBuyer = false;
     },
 
     changeQuantity: function (index: number) {
@@ -1661,6 +1694,7 @@ export default defineComponent({
   grid-template-columns: 1.2fr 5fr;
   gap: 0.1em 0.1em;
   font-family:seg;
+  margin-top: 5px;
 }
 .table-container-left {
   display: grid;
@@ -1945,11 +1979,23 @@ float-right{
   margin-left: 0vw !important;
   width: 100% !important;
 }
-// @media screen and (max-width:1217px ){
-//   .col-2{
-//     max-width: 25% !important;
-//   }
-// }
+.orderTable{
+  width: 98%;
+  float:right;
+  border-collapse:collapse;
+}
+.orderTable th {
+  background-color:#0f2636;
+  color:white;
+  font-size:12px;
+  text-align: center;
+  border: none !important;
+  border-right: 1px solid !important;
+  border-color: #ddd !important;
+}
+.form-error{
+  font-size: 9px;
+}
 @media screen and (max-width:1216px ){
   .split-container{
     margin-left: 2vw;
