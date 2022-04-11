@@ -501,7 +501,6 @@ export default defineComponent({
       else {
         if (this.checkAllValidation())
           {
-            console.log("in the air")
             user.company = this.user.company,
             user.password = this.user.password;
             await this.registerUser(user);

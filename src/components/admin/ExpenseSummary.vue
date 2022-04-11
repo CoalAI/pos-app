@@ -1,7 +1,6 @@
 <template>
   <div class="summary-container">
     <div class="diff-shadow">
-      <!-- <h2>Expense Summary</h2> -->
       <div class="page-upper">
         <div class="page-upper-left">
           <div>
@@ -12,21 +11,10 @@
             <input type="radio" name="order_type" value="to" :checked="custom_range" @change="custom_range=true">
             <label for="">Custom</label>
           </div>
-
-
-          <!-- <label class="custom-radio" style="margin-right: 10px">Daily
-            <input type="radio" name="order_type" value="from" :checked="!custom_range"  @change="custom_range=false">
-            <span class="checkmark"></span>
-          </label>
-          <label class="custom-radio" style="margin-right: 10px">Custom
-            <input type="radio" name="order_type" value="to" :checked="custom_range" @change="custom_range=true">
-            <span class="checkmark"></span>
-          </label> -->
         </div>
         <div class="page-upper-right">
           <div class="pur_1">
             <label class="" for="start_date">
-              <!-- <strong>Start:</strong> -->
               Start:
             </label>
             <div class="ab-input-container">
@@ -35,27 +23,23 @@
                 type="date"
                 v-model="from"
               />
+              <span v-if="date_validation_error" class="form-error">{{date_validation_error}}</span>
             </div>
           </div>
           <div class="pur_2">
             <label class="" for="end_date">
-              <!-- <strong>End:</strong> -->
               End:
             </label>
-            <!-- <div class="e-i"> -->
             <div class="ab-input-container">
               <input
                 name="end_date"
                 type="date"
                 v-model="to"
+                @change=dateValidation
               />
-              <span v-if="dateValidation" class="form-error">{{dateValidation}}</span>
             </div>
           </div>
         </div>
-        <!-- <div class="b">
-          <button class="btn btn-orange" @click="fetchTrans">Search Summary</button>
-        </div> -->
       </div>
       <div class="ab-mb-7">
         <table>
@@ -167,6 +151,7 @@ export default defineComponent({
   },
   data(){
     return {
+      date_validation_error : '',
       custom_range : false,
       from : '',
       to : ''
@@ -182,16 +167,6 @@ export default defineComponent({
       user: 'getUser',
       counts: 'getTotalCounts',
     }),
-    dateValidation: function(): string | null {
-      if(this.from !== undefined && this.to !== undefined && 
-        this.from !=='' && this.to !== '' &&
-        Date.parse(this.from) <= Date.parse(this.to)
-      ){
-        return null;
-      }
-
-      return 'invalid date range';
-    },
     totalExpense: function(): string {
       const trans: Transaction[] = this.transactions;
       const requester_company = this.user.company.id;
@@ -226,6 +201,16 @@ export default defineComponent({
        getTransactions : ActionTypes.FETCH_TRANSACTIONS,
        getUserData: ActionTypes.USER_DATA
     }),
+    dateValidation: function(): string {
+      if(this.from !== undefined && this.to !== undefined && 
+        this.from !=='' && this.to !== '' &&
+        Date.parse(this.from) <= Date.parse(this.to)
+      ){
+        return this.date_validation_error = ""
+      }
+
+      return this.date_validation_error =  'Invalid date range';
+    },
 
     trimNumber: function(value: string): string{
         return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
@@ -233,7 +218,7 @@ export default defineComponent({
 
     changePage: async function (pageNo: number) {
       if(this.custom_range){
-         if (this.dateValidation === null)
+         if (this.date_validation_error === "")
            await this.getTransactions({start_date:this.from, end_date:this.to, page:pageNo})
       }
       else
@@ -242,7 +227,7 @@ export default defineComponent({
 
     fetchTrans: async function(){
       if(this.custom_range){
-         if (this.dateValidation === null)
+         if (this.date_validation_error === "")
            await this.getTransactions({start_date:this.from, end_date:this.to})
       }
       else
@@ -253,30 +238,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  // .filter-grid {
-  //   display: grid;
-  //   grid-template-columns: 1fr 0.5fr 2fr 0.5fr 2fr 1fr;
-  //   grid-template-rows: 1fr;
-  //   gap: 0.1em 0.1em;
-  //   grid-template-areas:
-  //   "sw ls s-i le e-i b"
-  // }
-
-  // .sw .custom-radio {
-  //   grid-area: sw;
-  //   font-size: 15px;
-  // }
-  // .ls {grid-area: ls;}
-  // .s-i {grid-area: s-i;}
-  // .le {grid-area: le;}
-  // .e-i {grid-area: e-i;}
-  // .b {grid-area: b;}
-
-  // #Balance-information {
-  //   display: grid;
-  //   grid-template-columns: 0.3fr 1fr 0.3fr 1fr;
-  //   grid-template-rows: 1fr 1fr;
-  // }
   #Balance-information {
     display: flex;
     margin-bottom: 70px;
@@ -294,47 +255,8 @@ export default defineComponent({
     width: 100px;
   }
 
-  // .btn-mr{
-  //   margin: 10px;
-  // }
-
-  // .btn-mr-inner{
-  //   margin: 1px 1px 1px 5px;
-  // }
-
-  // .pr-var-mr {
-  //   margin: 10px;
-  // }
-
-  // #company-type {
-  //   width: $w200;
-  //   margin-left: 5%;
-  // }
-
-  // #delete-table td {
-  //   border: none;
-  // }
-
-  // #delete-table tr:nth-child(even) {
-  //   background-color: $white-color;
-  // }
-
-  // .pad-label {
-  //   padding: 20px 20px 20px 0px;
-  // }
-
-  // .mr-l {
-  //   margin-left: 10px;
-  // }
-
-  // .box1-tab {
-  //   overflow-y: auto;
-  //   height: $order-item-table-height;
-  // }
-
   // ab css 
   .summary-container{
-    // padding: 2.65% 16%;
     max-width: 1140px;
     margin: 0 auto;
   }
@@ -455,6 +377,7 @@ export default defineComponent({
     text-align: center;
   }
   .ab-mb-7{
+    margin-top: 20px;
     margin-bottom: 70px;
   }
   .diff-shadow{
