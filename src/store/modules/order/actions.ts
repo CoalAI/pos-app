@@ -19,8 +19,10 @@ export enum ActionTypes {
   CREATE_ORDER = "CREATE_ORDER",
   CHANGE_ORDER_STATUS = "CHANGE_ORDER_STATUS",
   GET_PRODUCTS = "GET_PRODUCTS",
+  GET_BATCHES = "GET_BATCHES",
   GET_SINGLE_PRODUCT = "GET_SINGLE_PRODUCT",
   GET_PRODUCTS_BY_PAGE = "GET_PRODUCTS_BY_PAGE",
+  GET_BATCHES_BY_PAGE = "GET_BATCHES_BY_PAGE",
   GET_UNITS = "GET_UNITS",
   FETCH_CATEGORIES = "FETCH_CATEGORIES",
   CREATE_PRODUCT = "CREATE_PRODUCT",
@@ -74,8 +76,10 @@ export interface Actions {
   [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.CHANGE_ORDER_STATUS]({ commit }: AugmentedActionContext, value: string): void;
   [ActionTypes.GET_PRODUCTS]({ commit }: AugmentedActionContext, search: string): void;
+  [ActionTypes.GET_BATCHES]({ commit }: AugmentedActionContext, search: string): void;
   [ActionTypes.GET_SINGLE_PRODUCT]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.GET_PRODUCTS_BY_PAGE]({ commit }: AugmentedActionContext, page?: number): void;
+  [ActionTypes.GET_BATCHES_BY_PAGE]({ commit }: AugmentedActionContext, page?: number): void;
   [ActionTypes.GET_UNITS]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_CATEGORIES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_PRODUCT]({ commit }: AugmentedActionContext, product: Product): void;
@@ -307,6 +311,37 @@ Actions = {
     const response = await serverRequest('delete', `product-variant/${productVariantID}/`, true);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetOrder, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.GET_BATCHES]({ commit }: AugmentedActionContext, search: string) {
+    let response;
+    if (search) {
+      response = await serverRequest('get', 'batch/', true, undefined, {search: search});
+    }else{
+      response = await serverRequest('get', 'batch/', true, undefined, undefined);
+    }
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfBatches, response.data.results);
+      if(!search){
+        commit(MutationTypes.SetBatchesCount, response.data.count);
+      }
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.GET_BATCHES_BY_PAGE]({ commit }: AugmentedActionContext, page?: number) {
+    let response;
+    if (page) {
+      response = await serverRequest('get', 'batch/', true, undefined, {page: page});
+    }else{
+      response = await serverRequest('get', 'batch/', true, undefined, undefined);
+    }
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetListOfBatches, response.data.results);
     }
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
