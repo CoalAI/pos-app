@@ -5,9 +5,9 @@
 				<img class="img-responsive" src="../../assets/rohi_logo.jpg" alt="Rohi">
 			</div>
 			<div class="company-info">
-				<p class="mb-5 pb-5" style="font-size: 16px;"><strong>Rohi Sweets &amp; Bakers</strong></p>
-				<p class="text-center">Zahirpir Road Khanpur</p>
-				<p class="text-center">068-5572999</p>
+				<p class="mb-5 pb-5" style="font-size: 16px;"><strong>Rohi Bakers &amp; Restaurant</strong></p>
+				<p class="text-center">Bypass Road Khanpur</p>
+				<p class="text-center">068-5955051</p>
 				<!-- <p class="text-center">Sales Invoice</p>
 				<span class="text-center" style="border: 1px solid black; padding: 2px;">{{order.invoice_id}}</span> -->
 			</div>
@@ -50,8 +50,8 @@
 				</tr>
 				<tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
 					<td>{{ index+1 }}</td>
-					<td style="font-size: x-small;">{{ getProductName(orderItem) }}</td>
-					<td style="font-size: x-small;">{{getProductSize(orderItem)}}</td>
+					<td style="font-size: small;">{{ getProductName(orderItem) }}</td>
+					<td style="font-size: small;">{{getProductSize(orderItem)}}</td>
 					<td>{{ trimNumber(orderItem.quantity) }}</td>
 					<td>{{ trimNumber(orderItem.price) }}</td>
 					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
@@ -149,6 +149,9 @@ export default defineComponent({
 				@page {
 					size: 80mm;
 					margin: 0
+				}
+				@body {
+					margin-left: 5%;
 				}
 				.company-info{
 					display: flex;
