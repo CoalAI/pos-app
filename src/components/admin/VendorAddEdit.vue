@@ -28,10 +28,14 @@
             placeholder="Enter Last Name"
             v-model="vendor.lastName"
           />
-
-          <label class="label cn " for="contact_number">
-            <strong>Contact:</strong><span class="required">*</span>
-          </label>
+          <div class="d-flex">
+          <div style="padding: 17px 2px;"><span class="required">*</span></div>
+          <div>
+            <label class="label cn " for="contact_number">
+              <strong>Contact:</strong>
+            </label>
+          </div>
+          </div>
           <div>
             <input
               class="text-box mr-r tc"
@@ -43,11 +47,14 @@
             <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
             
           </div>
-          
-          
-          <label v-if="!vendorId" class="label c" for="companies">
-            <strong>Company:</strong>
-          </label>
+          <div class="d-flex">
+            <div style="padding: 17px 2px;"><span class="required">*</span></div>
+            <div>
+              <label v-if="!vendorId" class="label c" for="companies">
+                <strong>Company:</strong>
+              </label>
+            </div>
+          </div>
           <div v-if="!vendorId">
             <select name="companies" class="custom-select text-box sc" id="companies" v-model="vendor.company">
               <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
@@ -55,8 +62,6 @@
               </option>
             </select>
             <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
-        
         </div>
         </div>
 
@@ -172,7 +177,7 @@ export default defineComponent({
   name: 'VendorAddEdit',
   props: ['vendorId'],
   components: {
-    ErrorField,
+    // ErrorField,
   },
   data () {
     return {
@@ -182,13 +187,14 @@ export default defineComponent({
         lastName: '',
         company: 0
       },
-      showError: false,
+      showErrorContact: false,
+      showErrorCompany: false,
     }
   },
   computed: {
     contactNumberValidation: function () {
       let errorMessage = null;
-      if (this.vendor.contact.length <= 0 && this.showError==true) {
+      if (this.vendor.contact.length <= 0 && this.showErrorContact==true) {
         errorMessage = "Number is required"
       }
       return errorMessage;
@@ -204,7 +210,7 @@ export default defineComponent({
 
     companyValidation: function () {
       let errorMessage = null;
-      if (this.companies.length <= 0) {
+      if (this.companies.length <= 0 && this.showErrorCompany==true) {
         errorMessage = "Comapny is required. Add vendor comapany to system"
       }
       return errorMessage;
@@ -217,7 +223,8 @@ export default defineComponent({
   },
   methods: {
     addUpdateVendor: async function () {
-      this.showError = true;
+      this.showErrorContact = true;
+      this.showErrorCompany = true;
       let vendorIdNumber = 0;
       if (this.vendorId) {
         vendorIdNumber = parseFloat(this.vendorId);

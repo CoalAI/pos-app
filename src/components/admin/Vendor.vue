@@ -6,7 +6,7 @@
         <!--<router-link to="/vendor/create" class="btn btn-orange add-btn-width">Add Vendor</router-link>-->
         <router-link to="/vendor/create" class="btn-red btn-orange add-btn-width">Add Vendor</router-link>
         <div class="float-right">
-          <label class="search-lbl">Search by: Product Name</label>
+          <label class="search-lbl">Search by: Name</label>
           <form class="flex-box">  
             <input
               type="text"
