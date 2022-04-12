@@ -1,37 +1,40 @@
 <template>
   <div id="request">
-    <!--<div class="diff-shadow">-->
     <div class="diff-box">
       <h2 class="head">Send Request</h2>
       <Alert type="success" v-if="created">{{ created }}</Alert>
       <div class="flex-box mr-b">
-        <label class="pd-lbl" for="products">
-          <strong>Company:</strong>
-        </label>
-        <!--<div class="full-width">-->
-        <div>
-          <select
-            id="company-type"
-            name="company-type"
-            class="custom-select text-box"
-            v-model="company"
-            @change="onChangeCompany"
-          >
-            <option :value="0">None</option>
-            <option
-              class="batches-op"
-              v-for="item in companies"
-              v-bind:key="item.id"
-              v-bind:value="item.id"
+        <div class="rows">
+          <span class="required">*</span>
+          <label class="pd-lbl" for="products">
+            <strong>Company:</strong>
+          </label>
+          <!--<div class="full-width">-->
+          <div>
+            <select
+              id="company-type"
+              name="company-type"
+              class="custom-select text-box"
+              v-model="company"
+              @change="onChangeCompany"
             >
-              {{ item.company_name }}
-            </option>
-          </select>
-          <span v-if="companyValidation" class="form-error">{{
-            companyValidation
-          }}</span>
+              <option :value="0">None</option>
+              <option
+                class="batches-op"
+                v-for="item in companies"
+                v-bind:key="item.id"
+                v-bind:value="item.id"
+              >
+                {{ item.company_name }}
+              </option>
+            </select>
+            <span v-if="companyValidation" class="form-error">{{
+              companyValidation
+            }}</span>
+          </div>
         </div>
-        <div class="flex-box mr-l">
+        <div class="rows">
+          <span class="required">*</span>
           <label class="pd-lbl" for="users">
             <strong>User:</strong>
           </label>
@@ -60,6 +63,8 @@
         </div>
       </div>
       <div class="flex-box mr-b">
+        <div class="rows">
+        <span class="required"></span>
         <label class="pd-lbl" for="balance">
           <strong>Balance:</strong>
         </label>
@@ -79,7 +84,9 @@
             </option>
           </select>
         </div>
-        <div class="flex-box mr-l">
+        </div>
+        <div class="rows">
+          <span class="required">*</span>
           <label class="pd-lbl" for="delivery">
             <strong>Delivery:</strong>
           </label>
@@ -93,8 +100,9 @@
         </div>
       </div>
 
-      <div class="flex-box mr-b">
-        <label class="pd-lbl w100" for="amount">
+      <div class="rowFifth mr-b">
+        <span class="required">*</span>
+        <label class="pd-lbl w100" for="amount" style="padding-right: 37px;">
           <strong>Description:</strong>
         </label>
         <!--<div class="full-width">-->
@@ -111,7 +119,7 @@
           }}</span>
         </div>
       </div>
-      <div style="padding-bottom: 20px; margin-left: 105px">
+      <div style="padding-bottom: 20px; margin-left: 5rem">
         <button
           :disabled="addBtn"
           @click="addRequestbtn"
@@ -148,7 +156,7 @@ export default defineComponent({
     Loader,
     Alert,
   },
-
+  
   data() {
     return {
       loader: false,
@@ -158,12 +166,17 @@ export default defineComponent({
       delivery: "",
       description: "",
       created: "",
+
+      showErrorCompany: false,
+      showErrorUser: false,
+      showErrorDelivery: false,
+      showErrorDescription: false,
     };
   },
   computed: {
     companyValidation: function () {
       let errorMessage = null;
-      if (this.companies.length <= 0) {
+      if (this.companies.length <= 0 && this.showErrorCompany == true) {
         errorMessage = "Comapny is required. Add store to system";
       }
       return errorMessage;
@@ -171,7 +184,7 @@ export default defineComponent({
 
     requesteeValidation: function () {
       let errorMessage = null;
-      if (this.users.length <= 0) {
+      if (this.users.length <= 0 && this.showErrorUser == true) {
         errorMessage = "Requestee is required. Add store's user to system.";
       }
       return errorMessage;
@@ -179,7 +192,7 @@ export default defineComponent({
 
     deliveryValidation: function () {
       let errorMessage = null;
-      if (this.delivery === "") {
+      if (this.delivery === "" && this.showErrorDelivery == true) {
         errorMessage = "Delivery is required";
       }
       return errorMessage;
@@ -187,7 +200,7 @@ export default defineComponent({
 
     descriptionValidation: function () {
       let errorMessage = null;
-      if (this.description === "") {
+      if (this.description === "" && this.showErrorDescription == true) {
         errorMessage = "Description is required";
       }
       return errorMessage;
@@ -215,6 +228,7 @@ export default defineComponent({
     }),
   },
   methods: {
+    
     onChangeCompany: async function () {
       if (this.company > 0) {
         await this.getUsers({
@@ -227,7 +241,16 @@ export default defineComponent({
     },
 
     addRequestbtn: async function () {
-      this.loader = true;
+      
+      this.showErrorCompany= true
+      this.showErrorUser= true
+      this.showErrorDelivery=true
+      this.showErrorDescription=true
+      if(this.requesteeValidation == null && this.companyValidation==null &&
+        this.deliveryValidation == null &&
+        this.descriptionValidation == null)
+      {
+        this.loader = true;
       const request: Request = {
         sender: this.userData.id,
         receiver: this.requestee,
@@ -246,6 +269,7 @@ export default defineComponent({
       this.created = "";
       if (this.requestSent && this.requestSent.id) {
         this.created = `Request is sent. Request id is ${this.requestSent.id}`;
+      }
       }
     },
 
@@ -331,7 +355,6 @@ label {
   font-size: 11px;
   width: 164px;
   height: 30px;
-  //margin-top: 15px;
   background-color: #e5e9ea !important;
   border: 1px #dddee0 solid;
 }
@@ -380,5 +403,40 @@ label {
 }
 .mr-b {
   margin-bottom: 10px;
+}
+.required{  
+  color: red;
+  font-size: 17px;
+  margin-right: 3px;
+  padding-top: 8px;
+}
+.rows{
+    width: 16rem;
+    display: flex;
+    align-items: baseline;
+}
+.rowFifth{
+  width: 11rem;
+  display: flex;
+  margin-left:-1rem;
+}
+.flex-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 0;
+  width: 35rem;
+}
+@media screen and (max-width:1214px){
+  #request {
+    padding-left: 18%;
+    padding-right: 18%;
+  }
+}
+@media screen and (max-width:1055px){
+  #request {
+    padding-left: 16%;
+    padding-right: 16%;
+  }
 }
 </style>
