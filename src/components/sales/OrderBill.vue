@@ -50,8 +50,8 @@
 				</tr>
 				<tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
 					<td>{{ index+1 }}</td>
-					<td style="font-size: x-small;">{{ getProductName(orderItem) }}</td>
-					<td style="font-size: x-small;">{{getProductSize(orderItem)}}</td>
+					<td style="font-size: small;">{{ getProductName(orderItem) }}</td>
+					<td style="font-size: small;">{{getProductSize(orderItem)}}</td>
 					<td>{{ trimNumber(orderItem.quantity) }}</td>
 					<td>{{ trimNumber(orderItem.price) }}</td>
 					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
