@@ -19,7 +19,7 @@
                 :maxlength="maxlength.name"
                 v-model="product.name"
               />
-              <span v-if="productNameValidation" class="form-error">{{ productNameValidation }}</span>
+              <span v-if="productName_error" class="form-error">{{ productName_error }}</span>
               <ErrorField v-if="fieldErrors.name" :errorField="fieldErrors.name"></ErrorField>
             </div>
           </div>
@@ -35,7 +35,7 @@
                 :maxlength="maxlength.barcode"
                 v-model="product.barcode"
               />
-              <span v-if="productBarCodeValidation" class="form-error">{{productBarCodeValidation}}</span>
+              <span v-if="productBar_error" class="form-error">{{productBar_error}}</span>
               <ErrorField v-if="fieldErrors.bar_code" :errorField="fieldErrors.bar_code"></ErrorField>
             </div>
           </div>
@@ -53,7 +53,7 @@
                   v-model="product.category"
                   ref="batches"
                 >
-                  <option :value="0">No Category</option>
+                  <option value="0">Select Category</option>
                   <option v-for="category in categories" :key="category.id" :value="category.id">
                     {{ category.name }}
                   </option>
@@ -71,7 +71,7 @@
                 id="unit"
                 v-model="product.unit"
               >
-                <option value="">No Unit</option>
+                <option value="">Select Unit</option>
                 <option v-for="unit in units" v-bind:key="unit.id" v-bind:value="unit.id">
                   {{ unit.name }}
                 </option>
@@ -133,38 +133,6 @@
         </div>
         <!-- <p><span><strong>Product Variants</strong></span></p> -->
         <div class="forth-row">
-          <!-- <div class="flex-box">
-            <input
-              class="pr-var-mr"
-              name="colorcode"
-              type="text"
-              placeholder="Color"
-              :maxlength="maxlength.color"
-              v-model="currentProductVariant.color"
-            />
-            <input
-              class="pr-var-mr"
-              name="size"
-              type="text"
-              placeholder="Size"
-              :maxlength="maxlength.size"
-              v-model="currentProductVariant.size"
-            />
-            <input
-              class="pr-var-mr"
-              name="price"
-              type="number"
-              placeholder="Price"
-              v-model="currentProductVariant.price"
-            />
-            <input
-              class="pr-var-mr"
-              name="sale_price"
-              type="number"
-              placeholder="Sale Price"
-              v-model="currentProductVariant.sale_price"
-            />
-          </div> -->
           <label class="pd-lbl" for="description"><strong>Description:</strong></label>
           <div>
             <textarea 
@@ -174,12 +142,9 @@
               placeholder="Description"
               :maxlength="maxlength.description"
               v-model="currentProductVariant.description"
-            ></textarea>
+            ></textarea><br>
             <span v-if="VariantPriceValidation" class="form-error">{{ VariantPriceValidation }}</span>
-          </div>
-          <!-- <div class="mr-2">
-            <button style="width: 150px" class="btn btn-orange" @click="addProductVariant" >Add another Variant</button>
-          </div> -->
+          </div>          
         </div>
         <div class="fifth-row">
           <table class="">
@@ -242,18 +207,17 @@
                   v-model="productVariant.description"
                 />
               </td>
-              <td style="cursor: pointer;" @click="removeProductVariant(index)">
-                <hr style="border: 1px solid red">
+              <td @click="removeProductVariant(index)" style="text-align: center">
+               <img id="del_img" :src="del" alt="Delete">
               </td>
             </tr>
           </table>
-          <span v-if="tablePriceValidation" class="form-error">{{ tablePriceValidation }}.</span>
-          <span v-if="updateDeleteLastVarient" class="form-error"> {{ updateDeleteLastVarient }}</span>
         </div>
         <div class="p-error-div">
-          <p v-if="productVariantValidation" class="p-error form-error">{{productVariantValidation}}</p>
+          <p v-if="tablePriceValidation" class="form-error">{{ tablePriceValidation }}.</p>
+          <p v-if="updateDeleteLastVarient" class="form-error"> {{ updateDeleteLastVarient }}</p>
+          <p v-if="productVariant_error" class="p-error form-error">{{productVariant_error}}</p>
         </div>
-        <!-- <p class="mr-2"><span><strong>Add New Product Variants</strong></span></p> -->
         <div class="ab_btn_container">
           <div>
             <button class="btn ab_orange_hover btn-orange" @click="addProductVariant" >Add another Variant</button>
@@ -262,12 +226,10 @@
             <button
               class="btn ab_orange_hover btn-orange"
               style=""
-              :disabled="addEditBtn"
               @click="addUpdateProduct"
             >
               <span v-if="productId">Update</span>
               <span v-else>Add</span>
-              <span> New</span>
             </button>
           </div>
           <div>
@@ -299,6 +261,9 @@ export default defineComponent({
     const productVariants: ProductVariant[] = [];
     return {
       del:require('../../assets/delete_icon.svg'),
+      productName_error: "",
+      productBar_error: "",
+      productVariant_error: "",
       maxlength: {
         name: 50,
         barcode: 48,
@@ -328,41 +293,6 @@ export default defineComponent({
     }
   },
   computed: {
-
-    productNameValidation: function () {
-      let errorMessage = null;
-      if (this.product.name.length <= 0) {
-        errorMessage = "Name is required"
-      }
-      return errorMessage;
-    },
-
-    productBarCodeValidation: function () {
-      let errorMessage = null;
-      if (this.product.barcode.length <= 0) {
-        errorMessage = "Barcode is required"
-      }
-      return errorMessage;
-    },
-
-    productVariantValidation: function () {
-      let errorMessage = null;
-      if (this.product.productVariants.length <= 0) {
-        errorMessage = "At least one product variant is required"
-      }
-      return errorMessage;
-    },
-
-    addEditBtn: function () {
-      let disable = true;
-      if ( this.product.productVariants.length > 0 &&
-      this.productNameValidation === null &&
-      this.productBarCodeValidation === null) {
-        disable = false;
-      }
-      return disable
-    },
-
     ...mapGetters({
       units: 'getUnits',
       singleProduct: 'getSingleProduct',
@@ -371,6 +301,36 @@ export default defineComponent({
     })
   },
   methods: {
+    // validation function
+    productCreationValidation: function () {
+      if (this.product.name.length <= 0) {
+        this.productName_error = "Name is required"
+      }
+      else{
+        this.productName_error = ""
+      }
+      if (this.product.barcode.length <= 0) {
+        this.productBar_error = "Barcode is required"
+      }
+      else{
+        this.productBar_error = ""
+      }
+      if (this.product.productVariants.length <= 0) {
+        this.productVariant_error = "At least one product variant is required"
+      }
+      else{
+        this.productVariant_error = ""
+      }
+      if (this.productName_error === "" && 
+          this.productBar_error === "" &&
+          this.productVariant_error === "")
+        {
+          return true
+        }
+      else{
+        false
+      }
+    },
     clearProductVariant: function () {
       this.currentProductVariant.color = '';
       this.currentProductVariant.size = '';
@@ -383,7 +343,7 @@ export default defineComponent({
       let errorMessage = null;
       const _price = parseFloat(price);
       if (!_price && isNaN(_price)) {
-        errorMessage = 'price is required';
+        errorMessage = 'Price is required';
       } 
       if (!isNaN(_price) &&  _price <= 0) {
         errorMessage = 'price should be greater than zero';
@@ -488,17 +448,18 @@ export default defineComponent({
       // submit to API call action from store
       if (this.productId) {
         currentProduct.id = productIdNumber;
-        await this.updateProduct({
-          productID: this.productId,
-          product: currentProduct
-        });
+        if(this.productCreationValidation()){
+          await this.updateProduct({
+            productID: this.productId,
+            product: currentProduct
+          });
+          this.$router.push({name: 'Product'});
+        }
       } else {
-        await this.createProduct(currentProduct);
-      }
-      if (Object.keys(this.fieldErrors).length === 0) {
-        this.$router.push({name: 'Product'});
-      } else {
-        window.scrollTo(0,0);
+        if(this.productCreationValidation()){
+          await this.createProduct(currentProduct);
+          this.$router.push({name: 'Product'});
+        }
       }
     },
 
@@ -526,6 +487,7 @@ export default defineComponent({
     await this.fetchCategories();
     if (this.productId) {
       await this.getProduct(this.productId);
+      console.log(this.singleProduct)
       this.loadData(this.singleProduct);
     }
   },
@@ -536,41 +498,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  // #AddEditProduct {
-  //   padding-left: 15%;
-  //   padding-right: 15%;
-  //   margin-top: 3%;
-  // }
-
-  // .pad-label {
-  //   padding: 20px 20px 20px 0px;
-  // }
-
-  // .w100 {
-  //   width: $w80;
-  // }
-
-  // label {
-  //   text-align: left;
-  // }
-
-  // .product_Variant_box {
-  //   overflow-y: auto;
-  //   height: 180px;
-  // }
-
-
-
   // ab css
   #AddEditProduct {
-    // padding: 2.65% 30%;
-    padding: 2% 26%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    //margin-top: 3%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    // margin-top: 3%;
+    padding: 2.65% 26%;
   }
   .diff-shadow{
     padding: 1.65% 6.56%;
@@ -628,7 +558,6 @@ export default defineComponent({
     flex-grow: 1
   }
   .row  label{
-    // margin-right: 50px;
     width: 25%;
     font-size: 0.875em;
   }
@@ -650,12 +579,10 @@ export default defineComponent({
   }
   .full-row div > label{
     font-size: 0.875em;
-    //margin: 0 7px;
-    // font-size: 13px;
-    // font-weight: bold;
   }
   .full-row div:first-child{
     align-items: center;
+    justify-content: space-between;
 
   }
   .full-row div:first-child > label{
@@ -673,22 +600,6 @@ export default defineComponent({
     margin-left:5px;
     background:#e5e9ea;
   }
-  /*.full-row div > input{
-    width: 55px;
-    padding: 8px;
-    border-radius: 10px;
-    font-size: 1px;
-    //flex-grow: 1;
-    font-family:seg;
-    
-  }*/
-  /*.full-row div > input[type=number]{
-    width: 90px;
-    padding: 8px 18px;
-    border-radius: 10px;
-    font-size: 0.75em;
-    flex-grow: 1;
-  }*/
 
   // forth-row designs
   .forth-row{
@@ -696,14 +607,11 @@ export default defineComponent({
     justify-content: space-between;
   }
   .forth-row > label{
-    // width: 111.58px;
-    // margin-right: 10px;
     font-size: 0.875em;
     width: 13%
   }
   .forth-row > div{
     width: 86%;
-    // flex-grow: 1;
   }
 
   // table designs
@@ -733,7 +641,6 @@ export default defineComponent({
     
     text-align: center;
   }
-  // p error
   .p-error-div{
     display: flex;
     justify-content: flex-end;
@@ -742,7 +649,6 @@ export default defineComponent({
     width: 86%;
 
   }
-  // .fifth-row > table
 
   .ab_btn_container{
     margin-top: 30px;
@@ -758,11 +664,13 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 13px;
     border: 1.5px solid $primary-color !important;
+    
   }
   .ab_btn_container > div:nth-child(2) button:first-child{
     border-radius: 20px;
     padding: 6px 40px;
     border: 1.5px solid $primary-color !important;
+    width:8rem;
   }
   .ab_orange_hover:hover{
     border: 1.5px solid $primary-color;
@@ -774,6 +682,7 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 30px;
     border: 1.5px solid #0f2636 !important;
+    width: 8rem;
   }
   .ab_blue_hover:hover{
     color: #0f2636;
@@ -806,7 +715,7 @@ export default defineComponent({
   margin-bottom: 10px;
 }
 .w500{
-  width:467px;
+  width:80%;
   height:75px;
 }
 .fr-row {
@@ -827,5 +736,11 @@ export default defineComponent({
 .tbl_item_input{
   padding:0 !important;
   background: none !important;
+}
+#del_img{
+  margin-left: 1px;
+  width: 12px;
+  height: 12px;
+  filter: invert(31%) sepia(29%) saturate(5827%) hue-rotate(347deg) brightness(94%) contrast(92%);
 }
 </style>

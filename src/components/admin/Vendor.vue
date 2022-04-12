@@ -6,7 +6,7 @@
         <!--<router-link to="/vendor/create" class="btn btn-orange add-btn-width">Add Vendor</router-link>-->
         <router-link to="/vendor/create" class="btn-red btn-orange add-btn-width">Add Vendor</router-link>
         <div class="float-right">
-          <label class="search-lbl">Search by: Product Name</label>
+          <label class="search-lbl">Search by: Name</label>
           <form class="flex-box">  
             <input
               type="text"
@@ -203,9 +203,9 @@ export default defineComponent({
   .diff-shadow-box {
     border: 1px solid $white-color;
     border-radius: 10px;
-    padding: 1em 8em;
-    margin: 2% 10%;
-    margin-left:10% !important;
+    padding: 1em 4em;
+    margin: 2% 18%;
+    // margin-left:10% !important;
 
     -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
     -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
@@ -285,7 +285,7 @@ export default defineComponent({
 .fr-row {
   font-size: 12px;
   font-family: seg;
-  vertical-align:text-bottom;
+  // vertical-align:text-bottom;
 }
 .header {
   border-radius: 5px;

@@ -22,7 +22,7 @@
 			<p class="text-center">{{getCurrentDate(order.created)}}</p>
 		</div>
 
-		<div id="customer-details-sections" style="margin-bottom: 5px">
+		<div id="customer-details-sections" style="margin-bottom: 5px; customer-details-sections">
 			<p v-if="getCustomerFullName()!=='' && customer.user_type!=='WALK_IN_CUSTOMER'">
 				<span><strong>Customer's Name: </strong></span>
 				<span>{{getCustomerFullName()}}</span>
@@ -102,7 +102,7 @@
 			</div>
 		</div>
 
-		<div id="footer-section">
+		<div id="footer-section" style="width:80mm">
 			<p>
 				<span>Operator: </span>
 				<span>{{getOperatorFullName()}}</span>
@@ -144,7 +144,104 @@ export default defineComponent({
 
 		printBill: function() {
 			let styles = '', links = '';
-			styles = this.getElementTag('style');
+			styles = `
+			<style lang="scss" scoped>	
+				@page {
+					size: 80mm;
+					margin: 0
+				}
+				.company-info{
+					display: flex;
+					flex-wrap: nowrap;
+					flex-direction: column;
+					align-content: center;
+					justify-content: center;
+					align-items: center;
+					font-size: 12px;
+				}
+
+				.maindiv-print {
+					padding: 4px;
+					max-width: 800px;
+				}
+
+				#header-section {
+					display: grid;
+					grid-template-columns: 1fr 2fr;
+					grid-template-rows: 1fr;
+					gap: 0.1em 0.1em;
+					width:80mm;
+				}
+
+				#date-section {
+					display: grid;
+					grid-template-columns: 1fr 2fr;
+					grid-template-rows: 1fr;
+					gap: 0.1em 0.1em;
+					width:80mm;
+				}
+
+				#order-items-section table {
+					border-collapse: separate !important;
+					width: 80mm;
+				}
+
+				#order-items-section th {
+					border: 1px solid;
+					border-color: black;
+					text-align: center;
+					padding: 1px;
+				}
+
+				#order-items-section td {
+					border: none;
+					text-align: center;
+					padding: 1px;
+				}
+
+				#order-items-section tr:nth-child(even) {
+					background-color: white;
+				}
+
+				#totals-section {
+				width: 80mm;
+				display: flex;
+				justify-content: space-between;
+				}
+
+				#totals-section p {
+					text-align: right;
+				}
+
+				#totals-section td {
+					border: none;
+					text-align: right;
+					padding: 1px;
+				}
+
+				#totals-section tr:nth-child(even) {
+					background-color: white;
+				}
+
+				.mb-5 {
+					border-bottom: 2px solid black;
+					padding-bottom: 5px;
+				}
+
+				.pt-5 {
+					padding-top: 5px;
+				}
+
+				.img-responsive{
+					max-width: 100%;
+					height: auto;
+				}
+
+				.text-center{
+					text-align: center
+				}
+			</style>
+			`;
 			links = this.getElementTag('link');
 			const printContents = this.getHtmlContents();
       this.printContent(printContents, styles, links);

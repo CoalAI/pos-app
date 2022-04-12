@@ -316,7 +316,7 @@
           >
             <span v-if="userId">Update</span>
             <span v-else>Add</span>
-            <span> User</span>
+            
           </button>
         </div>
         <div>
@@ -501,7 +501,6 @@ export default defineComponent({
       else {
         if (this.checkAllValidation())
           {
-            console.log("in the air")
             user.company = this.user.company,
             user.password = this.user.password;
             await this.registerUser(user);
@@ -662,6 +661,7 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 48px;
     border: 1.5px solid $primary-color !important;
+    width:8rem;
   }
   .ab_orange_hover:hover{
     border: 1.5px solid $primary-color;
@@ -671,8 +671,9 @@ export default defineComponent({
   .btn-blue{
     background-color:#0f2636;
     border-radius: 20px;
-    padding: 6px 48px;
+    padding: 6px 30px;
     border: 1.5px solid #0f2636 !important;
+    width:8rem;
   }
   .ab_blue_hover:hover{
     color: #0f2636;
