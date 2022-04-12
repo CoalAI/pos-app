@@ -34,10 +34,13 @@
       </div>
     </div>-->
     <div class="b menu-cont">
-        <a class="no btn-grid btn-mr brdr-left active" href="/" v-if="salesStaff" target="_blank">
-        <img :src="order" class="block-align">NEW ORDER</a>
-        <a class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
-        <img :src="order" class="block-align">NEW ORDER</a>
+        <router-link class="btn-grid btn-mr" to="/admin/order" v-if="salesStaff" v-show="!showActiveOrder" target="_blank" @click="activeOrder()">
+        <img :src="order" class="block-align">NEW ORDER</router-link>
+        <router-link class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
+        <img :src="order" class="block-align">NEW ORDER</router-link>
+        <router-link class="btn-grid btn-mr" to="/admin/order" v-show="showActiveOrder" target="_blank" style="border-bottom:none !important" @click="activeOrder()" >
+        <img :src="order" class="block-align">NEW ORDER</router-link>
+
         <router-link v-show="manager" to="/inventory" class="i btn-grid btn-mr">
         <img :src="inventory" class="block-align">INVENTORY</router-link>
         <router-link v-show="admin" to="/users" class="u btn-grid btn-mr">
@@ -225,6 +228,7 @@ export default defineComponent({
       showResult: false,
       notificationPanel: false,
       orderDate: '',
+      showActiveOrder: false,
     }
   },
   computed: {
@@ -270,8 +274,12 @@ export default defineComponent({
       }
       return false;
     },
+   
   },
   methods: {
+     activeOrder(){
+      this.showActiveOrder = !this.showActiveOrder;
+    },
     animate(){
       this.animated = true
       this.toggle = !this.toggle
@@ -599,10 +607,11 @@ export default defineComponent({
     margin: 0;
     cursor: pointer;
     height: 30px;
-    left: calc(100% - 81px);
+    left: calc(100% - 77px);
     position: absolute;
     top: 90px;
     font-weight: bold;
+    border: none;
   }
   .lg-btn:focus{
     outline:none;

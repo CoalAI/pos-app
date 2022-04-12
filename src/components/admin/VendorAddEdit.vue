@@ -28,10 +28,14 @@
             placeholder="Enter Last Name"
             v-model="vendor.lastName"
           />
-
-          <label class="label cn " for="contact_number">
-            <strong>Contact:</strong><span class="required">*</span>
-          </label>
+          <div class="d-flex">
+          <div style="padding: 17px 2px;"><span class="required">*</span></div>
+          <div>
+            <label class="label cn " for="contact_number">
+              <strong>Contact:</strong>
+            </label>
+          </div>
+          </div>
           <div>
             <input
               class="text-box mr-r tc"
@@ -43,11 +47,14 @@
             <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
             
           </div>
-          
-          
-          <label v-if="!vendorId" class="label c" for="companies">
-            <strong>Company:</strong>
-          </label>
+          <div class="d-flex">
+            <div style="padding: 17px 2px;"><span class="required">*</span></div>
+            <div>
+              <label v-if="!vendorId" class="label c" for="companies">
+                <strong>Company:</strong>
+              </label>
+            </div>
+          </div>
           <div v-if="!vendorId">
             <select name="companies" class="custom-select text-box sc" id="companies" v-model="vendor.company">
               <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
@@ -55,8 +62,6 @@
               </option>
             </select>
             <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
-        
         </div>
         </div>
 
@@ -140,7 +145,7 @@
           </div>
         </div>-->
 
-        <div style="text-align: center; padding-top: 30px">
+        <div class="ab_btn_container" style="text-align: center; padding-top: 30px">
           <button
             class="btn-b btn-mr red btn-link"
             style=" margin-right: 20px"
@@ -149,7 +154,6 @@
           >
             <span v-if="vendorId">Update</span>
             <span v-else>Add</span>
-            <span> New</span>
           </button>
           <router-link
             to="/Vendors"
@@ -173,7 +177,7 @@ export default defineComponent({
   name: 'VendorAddEdit',
   props: ['vendorId'],
   components: {
-    ErrorField,
+    // ErrorField,
   },
   data () {
     return {
@@ -183,13 +187,14 @@ export default defineComponent({
         lastName: '',
         company: 0
       },
-      showError: false,
+      showErrorContact: false,
+      showErrorCompany: false,
     }
   },
   computed: {
     contactNumberValidation: function () {
       let errorMessage = null;
-      if (this.vendor.contact.length <= 0 && this.showError==true) {
+      if (this.vendor.contact.length <= 0 && this.showErrorContact==true) {
         errorMessage = "Number is required"
       }
       return errorMessage;
@@ -205,7 +210,7 @@ export default defineComponent({
 
     companyValidation: function () {
       let errorMessage = null;
-      if (this.companies.length <= 0) {
+      if (this.companies.length <= 0 && this.showErrorCompany==true) {
         errorMessage = "Comapny is required. Add vendor comapany to system"
       }
       return errorMessage;
@@ -218,7 +223,8 @@ export default defineComponent({
   },
   methods: {
     addUpdateVendor: async function () {
-      this.showError = true;
+      this.showErrorContact = true;
+      this.showErrorCompany = true;
       let vendorIdNumber = 0;
       if (this.vendorId) {
         vendorIdNumber = parseFloat(this.vendorId);
@@ -402,15 +408,22 @@ export default defineComponent({
     font-family: seg;
     font-size: 12px;
     border-radius: 20px;
-    width: 100px;
+    // width: 100px;
     cursor: pointer;
     color: #ffffff;
     border: none;
-    padding: 12px 6px;
-    font-weight: bold;
+    // padding: 12px 6px;
+    // font-weight: bold;
     text-align: center;
-    height: 40px;
+    // height: 40px;
     margin-top: 12px;
+
+    margin-right: 20px;
+    /* height: 33px; */
+    width: 8rem;
+    font-weight: 400;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 .btn-b:focus{
   outline:none;
@@ -425,4 +438,11 @@ export default defineComponent({
   content:" *";
     color: red;
 }
+.ab_btn_container{
+    // margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    // margin-left: 66px;
+    // font-family:seg;
+  }
 </style>

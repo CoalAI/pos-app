@@ -20,13 +20,14 @@
             </div>
           </div>
           <div v-else class="left">
+          <span class="required">*</span>
             <label class="" for="products">
               <strong>Products:</strong>
             </label>
-
             <div class="ab-select-container">
               <select name="products" class="custom-select" id="products" v-model="batch.productVariant">
                 <template v-for="product in products" v-bind:key="product.id">
+                  
                   <option 
                     v-for="productVariant in product.product_variant"
                     v-bind:key="productVariant.id"
@@ -40,6 +41,7 @@
             </div>
           </div>
           <div class="right">
+          <span class="required">*</span>
             <label class="" for="quantity">
               <strong>Quantity:</strong>
             </label>
@@ -58,6 +60,7 @@
 
         <div class="second-row row">
           <div class="left">
+            <span class="required">*</span>
             <label class="" for="manufactured">
               <strong>Manufactured Date:</strong>
             </label>
@@ -66,6 +69,7 @@
             </div>
           </div>
           <div class="right">
+            <span class="required">*</span>
             <label class="" for="expiry">
               <strong>Expiry date:</strong>
             </label>
@@ -92,7 +96,6 @@
             >
               <span v-if="batchId">Update</span>
               <span v-else>Add</span>
-              <span> Batch</span>
             </button>
           </div>
           <div>
@@ -127,19 +130,22 @@ export default defineComponent({
         expiryDate: '',
         in_stock: true
       },
-      productVariantName: ''
+      productVariantName: '',
+      showErrorProduct: false,
+      showErrorQuantity:false,
+      showErrorExpiryDate: false
     }
   },
   computed: {
 
     batchQuantityValidation: function () {
       let errorMessage = null;
-      if (this.batch.quantity === undefined || this.batch.quantity === '')
+      if (this.batch.quantity === undefined || this.batch.quantity === '' && this.showErrorQuantity == true)
       {
         errorMessage = 'Quantity is required';
       } else {
         const value = parseFloat(this.batch.quantity);
-        if (isNaN(value)) {
+        if (isNaN(value) && this.showErrorQuantity == true) {
           errorMessage = 'Only numbers are allowed';
         } else {
           if ( value <= 0) {
@@ -152,7 +158,7 @@ export default defineComponent({
 
     productVariantValidation: function () {
       let errorMessage = null;
-      if (this.batch.productVariant === undefined || this.batch.productVariant === 0) {
+      if (this.batch.productVariant === undefined || this.batch.productVariant === 0 && this.showErrorProduct == true) {
         errorMessage = 'Product Variant is required, please select any or add product';
       }
       return errorMessage;
@@ -160,13 +166,15 @@ export default defineComponent({
 
     expiryDateValidation: function() {
       let errorMessage = null;
-      if(!this.batch.manufacturedDate || !this.batch.expiryDate){
+      if((!this.batch.manufacturedDate || !this.batch.expiryDate)
+      && this.showErrorExpiryDate == true){
         errorMessage = 'Manufacture & Expiry Dates are required'
       }
       return errorMessage;
     },
 
     addEditBtn: function () {
+      
       let disable = true;
       if ( this.batchQuantityValidation === null &&
       this.productVariantValidation === null &&
@@ -183,6 +191,10 @@ export default defineComponent({
   },
   methods: {
     addUpdateBatch: async function () {
+      this.showErrorQuantity = true;
+      this.showErrorProduct = true;
+      this.showErrorExpiryDate = true;
+    
       let batchIdNumber = 0;
       if (this.batchId) {
         batchIdNumber = parseFloat(this.batchId);
@@ -197,13 +209,15 @@ export default defineComponent({
         in_stock: this.batch.in_stock
       };
 
-      if (this.productId && this.productVariantId && this.batchId) {
+      if (this.productId && this.productVariantId && this.batchId && this.batchQuantityValidation == null && this.expiryDateValidation ==null) {
         batch.id = batchIdNumber;
         await this.updateBatch(batch);
-      } else {
+        this.$router.push({name: 'Batch'});
+      } else if(this.batchQuantityValidation == null && this.expiryDateValidation ==null){
         await this.createBatch(batch);
+        this.$router.push({name: 'Batch'});
       }
-      this.$router.push({name: 'Batch'});
+      
     },
 
     loadData: function (batch: Batch) {
@@ -252,7 +266,7 @@ export default defineComponent({
 <style lang="scss" scoped>
   #AddEditBatch {
     // padding: 2.65% 30%;
-    padding: 2.65% 26%;
+    padding: 2.65% 25%;
     margin-top: 3%;
   }
   .diff-shadow{
@@ -327,6 +341,7 @@ export default defineComponent({
   }
   .third-row{
     margin-top: 20px;
+    margin-left: 9px;
   }
   .third-row label{
     // margin-right: 50px;
@@ -355,6 +370,7 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 48px;
     border: 1.5px solid $primary-color !important;
+    width: 8rem;
   }
   .ab_orange_hover:hover{
     border: 1.5px solid $primary-color;
@@ -364,8 +380,9 @@ export default defineComponent({
   .btn-blue{
     background-color:#0f2636;
     border-radius: 20px;
-    padding: 6px 48px;
+    padding: 6px 45px;
     border: 1.5px solid #0f2636 !important;
+    width: 8rem;
   }
   .ab_blue_hover:hover{
     color: #0f2636;
@@ -374,5 +391,23 @@ export default defineComponent({
   }
   .ab_btn_container a{
     color:white;
+  }
+  .required{
+    content:" *";
+    color: red;
+    font-size: 17px;
+    margin-right: 3px;
+  }
+  @media Screen and (max-width: 1497px){
+    #AddEditBatch {
+    padding: 2.65% 21%;
+    margin-top: 3%;
+  }
+  }
+  @media Screen and (max-width: 1247px){
+    #AddEditBatch {
+    padding: 2.65% 19%;
+    margin-top: 3%;
+  }
   }
 </style>

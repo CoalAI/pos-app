@@ -6,6 +6,7 @@
             <router-link to="/Addbatch" class="batch-btn ab_btn btn-orange">Add Batch</router-link>
           </div>
           <div id="search-container">
+            <label class="search-lbl">Search by: Name</label>
             <form class="ab-form-pos">
               <input
                 label="Username"
@@ -374,6 +375,11 @@ export default defineComponent({
   .delete-modal-body-container > .upper p{
     padding: 5px 0;
   }
-
+  .search-lbl{
+  font-size:11px;
+  font-style:italic;
+  margin:0px 0px 0px 120px;
+  color:#9ea3a6;
+}
 
 </style>

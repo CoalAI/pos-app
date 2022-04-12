@@ -380,4 +380,11 @@ export default defineComponent({
     margin-top: 20px;
     margin-bottom: 70px;
   }
+  .diff-shadow{
+      border: 1px solid #ffffff;
+    border-radius: 10px;
+    padding: 1em 4rem;
+    margin-top: 15px;
+    box-shadow: 1px 1px 5px -1px rgb(0 0 0 / 75%);
+}
 </style>

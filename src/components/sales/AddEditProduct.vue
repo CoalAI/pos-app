@@ -230,7 +230,6 @@
             >
               <span v-if="productId">Update</span>
               <span v-else>Add</span>
-              <span> New</span>
             </button>
           </div>
           <div>
@@ -665,11 +664,13 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 13px;
     border: 1.5px solid $primary-color !important;
+    
   }
   .ab_btn_container > div:nth-child(2) button:first-child{
     border-radius: 20px;
     padding: 6px 40px;
     border: 1.5px solid $primary-color !important;
+    width:8rem;
   }
   .ab_orange_hover:hover{
     border: 1.5px solid $primary-color;
@@ -681,6 +682,7 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 30px;
     border: 1.5px solid #0f2636 !important;
+    width: 8rem;
   }
   .ab_blue_hover:hover{
     color: #0f2636;
