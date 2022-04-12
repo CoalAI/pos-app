@@ -30,7 +30,7 @@
                 :value="company.id"
                 name="company-type" 
                 :checked="checkedValue==company.id"/>
-                <span>{{ company.company_name }}</span>
+                <span id="comp-name">{{ company.company_name }}</span>
               </div>
 
               <!--<input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
@@ -242,19 +242,19 @@ export default defineComponent({
 .header > th{
     text-align: center;
   }
-  .header > th:first-child{
-    border: none;
-    border-radius: 10px 0px 0px 10px;
-  }
-  .header > th:last-child{
-    border: none;
-    border-radius: 0px 10px 10px 0px;
-  }
-  .header {
-    border-radius: 5px;
-    background-color: #0f2634; 
-    color: white;
-  }
+.header > th:first-child{
+  border: none;
+  border-radius: 10px 0px 0px 10px;
+}
+.header > th:last-child{
+  border: none;
+  border-radius: 0px 10px 10px 0px;
+}
+.header {
+  border-radius: 5px;
+  background-color: #0f2634; 
+  color: white;
+}
 .content{
   background-color: white; 
   color: #0f2634;
@@ -344,6 +344,9 @@ export default defineComponent({
 .filter > div{
   display: flex;
   align-items: center;
+}
+#comp-name{
+  text-transform: capitalize;
 }
 .checkradio{
    appearance: none;
