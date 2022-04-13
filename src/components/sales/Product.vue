@@ -64,15 +64,15 @@
                     </colgroup>
 
                     <tr class="fr-row header2">
-                      <th style="border-radius: 10px 0px 0px 0px; text-align:center">Cost Price</th>
-                      <th style="text-align:center">Price</th>
-                      <th style="border-radius: 0px 10px 0px 0px; text-align:center">Size</th>
+                      <th style="">Cost Price</th>
+                      <th style="">Price</th>
+                      <th style="">Size</th>
                     </tr>
 
                     <tr v-for="productVariant in product.product_variant" v-bind:key="productVariant.id" class="fr-row content2">
-                      <td style="border-radius:0px 0px 0px 10px;">{{ productVariant.price }}</td>
+                      <td>{{ productVariant.price }}</td>
                       <td>{{ productVariant.sale_price }}</td>
-                      <td style="border-radius: 0px 0px 10px 0px;" v-if="productVariant.size">{{productVariant.size}}</td><td style="border-radius: 0px 0px 10px 0px;" v-else class="text-center">-</td>
+                      <td v-if="productVariant.size">{{productVariant.size}}</td><td style="border-radius: 0px 0px 10px 0px;" v-else class="text-center">-</td>
                     </tr>
                   </table>
                 </td>
@@ -226,38 +226,18 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-//   .btn-mr{
-//     margin: 10px;
-//   }
+.nested-table td {
+  background-color: #d4d1cf !important;
+  padding: 3px;
+  text-align: center;
+}
 
-//   .btn-mr-inner{
-//     margin: 1px 1px 1px 5px;
-//   }
-
-//   .pr-var-mr {
-//     margin: 10px;
-//   }
-
-//   #delete-table td {
-//     border: none;
-//     padding:0  !important;
-//     width:12%;
-//   }
-//   #delete-table tr:nth-child(even) {
-//     background-color: $white-color;
-//   }
-
-  .nested-table td {
-    background-color: #d4d1cf !important;
-    padding: 3px;
-    //border-radius:0px 0px 10px 10px;
-  }
-
-  .nested-table th {
-    padding: 3px;
-  }
-  .btn-b{
-    font-family:seg;
+.nested-table th {
+  padding: 3px;
+  text-align: center;
+}
+.btn-b{
+  font-family:seg;
   font-size: 12px;
   margin:20px 0px 0px 0px;
   padding:8px;
@@ -271,52 +251,10 @@ export default defineComponent({
   text-decoration: none;
   text-align: center;
   height:28px;
+}
+.btn-b:focus{
+  outline:none;
   }
-  .btn-b:focus{
-    outline:none;
-  }
-//   .input-search{
-//     border-radius:30px 0px 0px 30px;
-//     font-family:seg;
-//     font-size:12px;
-//     padding:8px 10px;
-//     width:250px;
-//     border:1px #cfd1d0 solid;
-//     margin-top:0 !important;
-//   }
-//   .diff-box {
-//     border: 1px solid $white-color;
-//     border-radius: 10px;
-//     padding: 1em 4em;
-//     margin: 2% 10%;
-//     margin-left:10% !important;
-
-//     -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
-//     -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
-//     box-shadow: 1px 1px 5px -1px $login-shodow-color;
-//   }
-//   .search-btn{
-//     border-radius:0px 30px 30px 0px;
-//     padding:5px;
-//     text-decoration: none;
-//     text-align: center;
-//     height:36px;    
-//     border:none;
-    
-//   }
-//   .search-btn:focus{
-//     outline:none;
-//   }
-//   .mr-l{
-//     margin-left:100px;
-//   }
-//   .search-lbl{
-//   font-size:11px;
-//   font-style:italic;
-//   color:#2f3437;
-//   margin-bottom:0 !important;
-//   margin-left:110px;
-// }
 .fr-row {
   font-size: 12px;
   font-family: seg;
@@ -339,45 +277,46 @@ export default defineComponent({
   color: white;
 }
 .header2{
-  border-radius: 5px;
+  // border-radius: 5px;
   background-color: #e43d2a; 
   color: white;
   
 }
-.header2 > th{
-    text-align: center;
-  }
-  .header2 > th:first-child{
-    border: none;
-    border-radius: 10px 0px 0px 10px;
-  }
-  .header2 > th:last-child{
-    border: none;
-    border-radius: 0px 10px 10px 0px;
-  }
-  .header2 > td{
-    text-align: center;
-  }
-  .header2 > td:first-child{
-    border: none;
-    border-radius: 10px 0px 0px 8px;
-  }
-  .header2 > td:last-child{
-    border: none;
-    border-radius: 0px 10px 8px 0px;
-  }
-  // .header2 > th:last-child{
-  //   border: none;
-  //   border-radius: 0px 10px 10px 0px;
-  // }
-
-.content{
-  background-color: white; 
+.header2 > th:first-child{
+  border-radius: 10px 0px 0px 0px;
+  border-top: 1px transparent;
+  border-left: 1px transparent;
+}
+.header2 > th:last-child{
+  border-radius: 0px 10px 0px 0px;
+  border-top: 1px transparent;
+  border-right: 1px transparent;
+}
+.content2{
   color: #0f2634;
   text-align:center;
 }
-.content2{
-  // background-color: blue !important; 
+tr.content2 > td:first-child{
+  border-left: 1px transparent;
+}
+tr.content2:last-child > td{
+  border-bottom: 1px transparent;
+}
+tr.content2:last-child > td:first-child{
+  border-radius: 0px 0px 0px 10px;
+  border-top: 1px transparent;
+  border-left: 1px transparent;
+  // border-right: 1.1px solid #ddd;
+}
+tr.content2:last-child > td:last-child{
+  border-radius: 0px 0px 10px 0px;
+  border-top: 1px transparent;
+  border-right: 1px transparent;
+  // border-left: 1.1px solid #ddd;
+}
+
+.content{
+  background-color: white; 
   color: #0f2634;
   text-align:center;
 }
