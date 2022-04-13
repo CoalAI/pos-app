@@ -235,79 +235,80 @@ export default defineComponent({
 }
 
 .page-upper{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .page-upper > .right-cont{
-    width: 30%;
-  }
-  .page-upper > .right-cont > .flex-box{
-    align-items: baseline;
-    width: 100%;
-  }
-  .page-upper > .right-cont > .flex-box > label{
-    margin-right: 10px;
-    font-size: 13px;
-    // font-weight: 500;
-  }
-  .page-upper > .right-cont > .flex-box > .ab-select-container{
-    flex-grow: 1;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page-upper > .right-cont{
+  width: 30%;
+}
+.page-upper > .right-cont > .flex-box{
+  align-items: baseline;
+  width: 100%;
+}
+.page-upper > .right-cont > .flex-box > label{
+  margin-right: 10px;
+  font-size: 13px;
+  // font-weight: 500;
+}
+.page-upper > .right-cont > .flex-box > .ab-select-container{
+  flex-grow: 1;
+}
 
   // page upper ul designs;
   // normalization
-  .page-upper > .nav-tabs{
-    border: none;
-    position: relative;
+.page-upper > .nav-tabs{
+  border: none;
+  position: relative;
+}
+.page-upper > .nav-tabs > li{
+  width: 150px;
+  padding: 0.5rem 1rem;
+  background-color: #f5f2f2;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+// active
+.page-upper > .nav-tabs > .active-li{
+  z-index: 10;
+  background-color: $primary-color;
+  color: white;
+  text-align: center;
+}
+.page-upper > .custom-toggle-btn-ab{
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+}
+.ab1{
+  text-align: center;
+  position: absolute;
+}
+.tab2{
+  left: 114px;
+}
+.tab3{
+  left: 233px;
+  width: 168px !important;
+}
+.tab4{
+  left: 375px;
+  width: 180px !important;
+}
+.tab5{
+  left: 528px;
+  width: 173px !important;
+}
+@media Screen and (max-width: 1375px){
+  .diff-shadow{
+    width: 62vw;
   }
-  .page-upper > .nav-tabs > li{
-    width: 150px;
-    padding: 0.5rem 1rem;
-    background-color: #f5f2f2;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
+}
+@media Screen and (max-width: 1164px){
+  .diff-shadow{
+    width: 72vw;
   }
-  // active
-  .page-upper > .nav-tabs > .active-li{
-    z-index: 10;
-    background-color: $primary-color;
-    color: white;
-    text-align: center;
-  }
-  .page-upper > .custom-toggle-btn-ab{
-    display: flex;
-    align-items: center;
-    list-style-type: none;
-  }
-  .ab1{
-    text-align: center;
-    position: absolute;
-  }
-  .tab2{
-    left: 114px;
-  }
-  .tab3{
-    left: 233px;
-    width: 168px !important;
-  }
-  .tab4{
-    left: 375px;
-    width: 180px !important;
-  }
-  .tab5{
-    left: 528px;
-    width: 173px !important;
-  }
-  @media Screen and (max-width: 1375px){
-    .diff-shadow{
-      width: 62vw;
-    }
-  }
-  @media Screen and (max-width: 1164px){
-    .diff-shadow{
-      width: 72vw;
-    }
-  }
+}
 </style>

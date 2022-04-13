@@ -9,7 +9,7 @@
       <div v-if="!userId">
         <div class="first-row row">
           <div class="left">
-            <label class="" for="first_name">
+            <label class="" for="first_name" style="padding-left: 5px;">
               <strong>First Name:</strong>
             </label>
             <div class="ab-input-container">
@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="" for="last_name">
+            <label class="" for="last_name" style="padding-left: 5px;">
               <strong>Last Name:</strong>
             </label>
             <div class="ab-input-container">
@@ -37,7 +37,7 @@
         </div>
         <div class="second-row row">
           <div class="left">
-            <label class="" for="email">
+            <label class="" for="email" style="padding-left: 5px;">
               <strong>Email:</strong>
             </label>
             <div class="ab-input-container">
@@ -52,7 +52,7 @@
           </div>
           <div v-if="!userId" class="right">
             <label class="" for="thisusername">
-              <strong>Username:</strong>
+              <strong><strong id="req_sign">*</strong>Username:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -70,7 +70,7 @@
         <div class="third-row row">
           <div v-if="!userId" class="left">
             <label class="" for="thisuserpassword">
-              <strong>Password:</strong>
+              <strong><strong id="req_sign">*</strong>Password:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -87,7 +87,7 @@
           </div>
           <div v-if="!userId" class="right">
             <label class="" for="confirmpassword">
-              <strong>Confirm Password:</strong>
+              <strong><strong id="req_sign">*</strong>Confirm Password:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -103,7 +103,7 @@
         </div>
         <div class="forth-row row">
           <div class="left">
-            <label class="" for="in_stock">
+            <label class="" for="in_stock" style="padding-left: 5px;">
               <strong>Active:</strong>
             </label>
             <div class="ab-input-container">
@@ -117,7 +117,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="" for="role">
+            <label class="" for="role" style="padding-left: 5px;">
               <strong>Role:</strong>
             </label>
 
@@ -133,7 +133,7 @@
         <div class="fifth-row row">
           <div v-if="!userId" class="left">
             <label class="" for="companies">
-              <strong>Company:</strong>
+              <strong><strong id="req_sign">*</strong>Company:</strong>
             </label>
 
             <div class="ab-select-container">
@@ -149,7 +149,7 @@
           </div>
           <div class="right">
             <label class="" for="contact_number">
-              <strong>Contact Number:</strong>
+              <strong><strong id="req_sign">*</strong>Contact Number:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -603,6 +603,9 @@ export default defineComponent({
   // }
 
   // ab-css
+  #req_sign{
+    color: red;
+  }
   .row{
     display: flex;
     justify-content: space-between;

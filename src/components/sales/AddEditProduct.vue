@@ -9,7 +9,7 @@
         <div class="first-row row">
           <div class="left">
             <label class="pd-lbl" for="name">
-              <strong>Name:</strong>
+              <strong><strong id="req_sign">*</strong>Name:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -25,7 +25,7 @@
           </div>
           <div class="right">
             <label class="pd-lbl" for="barcode">
-              <strong>Bar code:</strong>
+              <strong><strong id="req_sign">*</strong>Bar code:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -42,7 +42,7 @@
         </div>
         <div class="second-row row">
           <div class="left">
-            <label class="pd-lbl" for="category">
+            <label class="pd-lbl" for="category" style="padding-left: 5px;">
               <strong>Category:</strong>
             </label>
             <div class="ab-select-container">
@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="pd-lbl" for="unit">
+            <label class="pd-lbl" for="unit" style="padding-left: 7px;">
               <strong>Unit:</strong>
             </label>
             <div class="ab-select-container">
@@ -498,6 +498,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+  #req_sign{
+    color: red;
+  }
   // ab css
   #AddEditProduct {
     padding: 2.65% 26%;
