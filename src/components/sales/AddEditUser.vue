@@ -9,7 +9,7 @@
       <div v-if="!userId">
         <div class="first-row row">
           <div class="left">
-            <label class="" for="first_name" style="padding-left: 5px;">
+            <label class="" for="first_name" style="padding-left: 7px;">
               <strong>First Name:</strong>
             </label>
             <div class="ab-input-container">
@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="" for="last_name" style="padding-left: 5px;">
+            <label class="" for="last_name" style="padding-left: 7px;">
               <strong>Last Name:</strong>
             </label>
             <div class="ab-input-container">
@@ -37,7 +37,7 @@
         </div>
         <div class="second-row row">
           <div class="left">
-            <label class="" for="email" style="padding-left: 5px;">
+            <label class="" for="email" style="padding-left: 7px;">
               <strong>Email:</strong>
             </label>
             <div class="ab-input-container">
@@ -103,7 +103,7 @@
         </div>
         <div class="forth-row row">
           <div class="left">
-            <label class="" for="in_stock" style="padding-left: 5px;">
+            <label class="" for="in_stock" style="padding-left: 7px;">
               <strong>Active:</strong>
             </label>
             <div class="ab-input-container">
@@ -117,7 +117,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="" for="role" style="padding-left: 5px;">
+            <label class="" for="role" style="padding-left: 7px;">
               <strong>Role:</strong>
             </label>
 
