@@ -362,6 +362,7 @@
               :value="userdata.username"
               readonly
             />
+            
             <select
               v-else
               name="sellerID"
@@ -399,6 +400,7 @@
                 >
               </option>
             </select>
+            <br/>
             <span v-if="sellerValidation" class="form-error">{{sellerValidation}}</span>
             </div>
           </div>
@@ -439,6 +441,7 @@
                 >
               </option>
             </select>
+            <br/>
             <span v-if="buyerValidation" class="form-error">{{buyerValidation}}</span>
           </div>
           </div>
@@ -560,49 +563,60 @@
 
       <template v-slot:body>
         <div class="flex-box">
-          <label class="pad-label w100" for="firstname">
-            <strong>First Name:</strong>
-          </label>
-          <input
-            name="firstname"
-            type="text"
-            placeholder="Enter first name"
-            v-model="vendor.firstName"
-          />
+          <div class="width-label">
+            <label class="pad-label w100 " for="firstname" >
+              <strong>First Name:</strong>
+            </label>
+          </div>
+          <div>
+            <input
+              name="firstname"
+              type="text"
+              placeholder="Enter first name"
+              v-model="vendor.firstName"
+            />
+          </div>
         </div>
         <div class="flex-box">
+        <div class="width-label">
           <label class="pad-label w100" for="lastname">
             <strong>Last Name:</strong>
           </label>
-          <input
-            name="lastname"
-            type="text"
-            placeholder="Enter last name"
-            v-model="vendor.lastName"
-          />
+        </div>
+          <div>
+            <input
+              name="lastname"
+              type="text"
+              placeholder="Enter last name"
+              v-model="vendor.lastName"
+            />
+          </div>
         </div>
         <div class="flex-box">
-          <label class="pad-label w100" for="contact_number">
-            <strong>Contact Number:</strong>
-          </label>
-          <div class="full-width">
+          <div class="width-label p-contact">
+            <label class="pad-label w100" for="contact_number">
+              <strong>Contact Number:</strong>
+            </label>
+          </div>
+          <div style="width: 14.7rem;">
             <input
               name="contact_number"
               type="text"
               placeholder="Enter contact"
               v-model="vendor.contact"
             />
-            <span v-if="contactNumberValidation" class="form-error">{{
+            <span v-if="contactNumberValidation" class="form-error ">{{
               contactNumberValidation
             }}</span>
           </div>
         </div>
-
         <div class="flex-box">
-          <label class="pad-label w100" for="companies">
-            <strong>Company:</strong>
-          </label>
-          <div class="full-width">
+          <div class="width-label">
+            <label class="pad-label w100"  for="companies">
+              <strong>Company:</strong>
+            </label>
+          </div>
+          <div style="width: 14.7rem;">
             <select
               name="companies"
               class="custom-select"
@@ -626,10 +640,10 @@
 
       <template v-slot:footer>
         <div class="flex-box">
-          <button class="btn btn-orange btn-mr" @click="addVendorModal = false">
+         <button class="btn btn-red btn-mr" @click="addVendor">Add</button>
+          <button class="btn btn-blue btn-mr" @click="addVendorModal = false">
             Cancel
           </button>
-          <button class="btn btn-orange btn-mr" @click="addVendor">Add</button>
         </div>
       </template>
     </Modal>
@@ -773,6 +787,8 @@ export default defineComponent({
       },
       showErrorSeller: false,
       showErrorBuyer: false,
+      showErrorVenCont: false,
+      showErrorVenComp: false,
     };
   },
   computed: {
@@ -1000,7 +1016,7 @@ export default defineComponent({
 
     contactNumberValidation: function () {
       let errorMessage = null;
-      if (this.vendor.contact.length <= 0) {
+      if (this.vendor.contact.length <= 0 && this.showErrorVenCont===true) {
         errorMessage = "Number is required";
       }
       return errorMessage;
@@ -1008,7 +1024,7 @@ export default defineComponent({
 
     companyValidation: function () {
       let errorMessage = null;
-      if (this.companies.length <= 0) {
+      if (this.companies.length <= 0 && this.showErrorVenComp===true) {
         errorMessage = "Comapny is required. Add vendor comapany to system";
       }
       return errorMessage;
@@ -1481,22 +1497,32 @@ export default defineComponent({
     },
 
     addVendor: async function () {
-      const user: User = {
-        first_name: this.vendor.firstName,
-        last_name: this.vendor.lastName,
-        username: this.vendor.contact,
-        contact_number: this.vendor.contact,
-        company: this.vendor.company,
-        is_active: true,
-        user_type: "VENDOR",
-      };
+      this.showErrorVenCont = true;
+      this.showErrorVenComp= true;
+      if(this.contactNumberValidation == null && this.companyValidation == null){
+        const user: User = {
+          first_name: this.vendor.firstName,
+          last_name: this.vendor.lastName,
+          username: this.vendor.contact,
+          contact_number: this.vendor.contact,
+          company: this.vendor.company,
+          is_active: true,
+          user_type: "VENDOR",
+        };
 
-      await this.registerUser(user);
-      await this.getVendors("");
+        await this.registerUser(user);
+        await this.getVendors("");
+      }
     },
 
     openAddVendorModal: async function () {
       this.addVendorModal = true;
+      this.vendor.firstName = "";
+      this.vendor.lastName = "";
+      this.vendor.contact = "";
+      this.vendor.company = 0;
+      this.showErrorVenCont = false;
+      this.showErrorVenComp = false;
       if (this.companies && this.companies.length > 0) {
         this.vendor.company = this.companies[0].id;
       }
@@ -1945,7 +1971,6 @@ li > div:hover {
   font-size: 12px; 
   display:inline-block;
 }
-
 .custom-select:active{
   border:3px solid #e43d2a;
 }
@@ -1996,6 +2021,19 @@ float-right{
 .form-error{
   font-size: 9px;
 }
+.width-label{
+  width: 6rem;
+}
+.p-contact{
+  padding-right: 0px;
+}
+.btn-blue-vendor{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 6px 30px;
+    border: 1.5px solid #0f2636 !important;
+    width:8rem;
+  }
 @media screen and (max-width:1216px ){
   .split-container{
     margin-left: 2vw;
@@ -2011,6 +2049,16 @@ float-right{
   .container-fluid{
     gap: 0rem 0rem !important;
         // width: 115% !important
+  }
+}
+@media screen and (max-width: 1400px){
+  .p-contact{
+    padding-right: 46px;
+  }
+}
+@media screen and (max-width: 1245px){
+  .p-contact{
+    padding-right: 38px;
   }
 }
 </style>

@@ -59,6 +59,7 @@
         </tr>
       </tbody>
     </table>
+    <Paginator :count="counts.inventory" @pageChange="changePage"/>
     <div class="stats">
       <div>
         <span>Total Quantity:</span>
@@ -82,9 +83,13 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import Paginator from '@/components/common-components/Paginator.vue';
 
 export default defineComponent({
   name: 'OperatorSalesDetail',
+  components: {
+    Paginator,
+  },
   data() {
     return {
       company: 0,
@@ -96,7 +101,8 @@ export default defineComponent({
       inventory: 'getInventory',
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
-      categories: 'getCategories'
+      categories: 'getCategories',
+      counts: 'getTotalCounts',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -120,6 +126,13 @@ export default defineComponent({
       await this.getProducts({
          company: this.company,
          category: this.category,
+      });
+    },
+     changePage: async function (pageNo: number) {
+      await this.fetchCompanies({
+         company: this.company,
+        // search: this.search,
+        page: pageNo,
       });
     },
   },

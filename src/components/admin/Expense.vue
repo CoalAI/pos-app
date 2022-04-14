@@ -3,7 +3,7 @@
   <div id="expense">
     <!--<div class="diff-shadow">-->
     <div class="diff-shadow">
-      <h3 class="head">Finance</h3>
+      <h2 class="head">Finance</h2>
       <div class="page-upper">
         <ul class="nav nav-tabs">
           <li :class="expenseMethod === 'Received' ? 'active-li ab1' : 'ab1'" @click="expenseMethod = 'Received'">
@@ -436,8 +436,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #expense {
-    padding: 2.65% 23%;
-    margin-top: 3%;
+    padding: 1.65% 24%;
 }
 .diff-shadow{
   padding: 1.65% 3.56%;
@@ -759,11 +758,9 @@ font-weight: 500;
   text-align: center;
   }
   .head{
-    margin-bottom: 15px;
-    font-family:seg;
-    color:#e43d2a;
+    margin-bottom: 28px;
+    color: $primary-color;
     text-align: center;
-    font-weight: bold;
   }
   .blue{
     background-color: #0f2636;

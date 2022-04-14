@@ -114,8 +114,8 @@
 
           <template v-slot:footer>
             <div class="flex-box">
-              <button class="btn-tab btn-orange btn-mr" @click="deleteProductYes">Yes</button>
-              <button class="btn-tab btn-blue btn-mr" @click="closeDeleteProductModal">Cancel</button>
+              <button class="ab_btn btn-orange mx-1" @click="deleteProductYes">Yes</button>
+              <button class="btn-tab btn-blue" @click="closeDeleteProductModal">Cancel</button>
               
             </div>
           </template>
@@ -400,11 +400,7 @@ td{
   margin: 0 auto;
 }
 .diff-shadow{
-  padding: 1.6% 5.5% 5.5% 5.5%;
-  // border: 1px solid #ffffff;
-  // border-radius: 10px;
-  // margin-top: 15px;
-  // box-shadow: 1px 1px 5px -1px rgba(0, 0, 0, 0.75);
+  padding: 1.6% 5.5% 1.5% 5.5%;
 }
 
 .page-upper{
@@ -448,6 +444,7 @@ td{
   border: 1.5px solid $primary-color !important;
   border-radius: 20px;
   outline:none;
+  width: 7rem;
 }
 // hover
 .ab_btn:hover{

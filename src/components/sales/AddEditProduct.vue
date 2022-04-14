@@ -1,7 +1,7 @@
 <template>
     <div id="AddEditProduct">
       <div class="diff-shadow">
-        <h2 class="head">
+        <h2>
           <span v-if="productId">Edit </span>
           <span v-else>Add New </span>
           <span>Product</span>
@@ -500,17 +500,16 @@ export default defineComponent({
 <style lang="scss" scoped>
   // ab css
   #AddEditProduct {
-    padding: 2.65% 26%;
+    padding: 1.65% 26%;
   }
   .diff-shadow{
     padding: 1.65% 6.56%;
-    margin-top:0 !important;
   }
-  .diff-shadow > h2{
+  .diff-shadow > h2 {
     text-align: center;
-    color: $primary-color;
-    margin-bottom: 20px;
-  }
+    color: #e73b2a;
+    margin-bottom: 40px;
+}
 
 
   .row{

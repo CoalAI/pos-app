@@ -3,7 +3,7 @@
   <div class = "diff-shadow">
     <div class="inline">
       <div class="float-right">
-        <div class="mr-1">
+        <div class="topMargin">
           <label class="search-lbl">Search by: Product Name or Barcode</label>
           <form class="flex-box brdr">
             <input
@@ -288,12 +288,13 @@ export default defineComponent({
   // font-family:seg;
   border: 1px solid #dfe0e1;
   border-right-style:none !important;
+  height: 32px;
 }
 .diff-shadow{
   border: 1px solid $white-color;
   border-radius: 10px;
   padding: 1em 4em;
-  margin: 2% 10%;
+  margin-right:10%;
   margin-left:10% !important;
 
   -webkit-box-shadow: 1px 1px 5px -1px rgb(0 0 0 / 40%);
@@ -365,5 +366,13 @@ export default defineComponent({
   color:  #0f2634 !important;
   content: "\00A0\2713\00A0" !important;
   background-color: white;
+}
+.topMargin{
+    margin-top: -5px;
+  }
+@media screen and (max-width: 1225px){
+  .topMargin{
+    margin-top: 0px;
+  }
 }
 </style>
