@@ -6,23 +6,23 @@
           <router-link to="/user/create" class="user-btn ab_btn btn-orange">Add User</router-link>
         </div>
         <div id="search-container">
-            <form class="ab-form-pos">
-                <input
-                  label="Username"
-                  name="username"
-                  type="text"
-                  placeholder="Search"
-                  class=""
-                  v-model="search"
-                  @input="searchUsers"
-                />
-                <button class="btn ab-pos btn-orange" @click="searchUsers">
-                  <svg id="White_search_icon" data-name="White search icon" xmlns="http://www.w3.org/2000/svg" width="13.049" height="13.048" viewBox="0 0 13.049 13.048">
-                    <path id="Path_99" data-name="Path 99" d="M23.076,23.074a.816.816,0,0,1,1.154,0l3.14,3.14a.816.816,0,0,1-1.153,1.154l-3.14-3.14a.816.816,0,0,1,0-1.154Z" transform="translate(-14.56 -14.558)" fill="#fff" fill-rule="evenodd"/>
-                    <path id="Path_100" data-name="Path 100" d="M5.3,9.786A4.485,4.485,0,1,0,.816,5.3,4.485,4.485,0,0,0,5.3,9.786ZM10.6,5.3A5.3,5.3,0,1,1,5.3,0a5.3,5.3,0,0,1,5.3,5.3Z" fill="#fff" fill-rule="evenodd"/>
-                  </svg>
-                </button>
-            </form>
+          <form class="ab-form-pos">
+              <input
+                label="Username"
+                name="username"
+                type="text"
+                placeholder="Search"
+                class=""
+                v-model="search"
+                @input="searchUsers"
+              />
+              <button class="btn ab-pos btn-orange" @click="searchUsers">
+                <svg id="White_search_icon" data-name="White search icon" xmlns="http://www.w3.org/2000/svg" width="13.049" height="13.048" viewBox="0 0 13.049 13.048">
+                  <path id="Path_99" data-name="Path 99" d="M23.076,23.074a.816.816,0,0,1,1.154,0l3.14,3.14a.816.816,0,0,1-1.153,1.154l-3.14-3.14a.816.816,0,0,1,0-1.154Z" transform="translate(-14.56 -14.558)" fill="#fff" fill-rule="evenodd"/>
+                  <path id="Path_100" data-name="Path 100" d="M5.3,9.786A4.485,4.485,0,1,0,.816,5.3,4.485,4.485,0,0,0,5.3,9.786ZM10.6,5.3A5.3,5.3,0,1,1,5.3,0a5.3,5.3,0,0,1,5.3,5.3Z" fill="#fff" fill-rule="evenodd"/>
+                </svg>
+              </button>
+          </form>
         </div>
       </div>
       <div class="ab-mb-7">

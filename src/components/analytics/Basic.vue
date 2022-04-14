@@ -109,10 +109,9 @@ export default defineComponent({
 <style lang="scss" scoped>
   #expense {
     // padding: 2.65% 30%;
-    padding: 2.65% 23%;
+    padding: 1.65% 23%;
     // padding-left: 15%;
     // padding-right: 15%;
-    margin-top: 3%;
     // padding-left: 15%;
     // padding-right: 15%;
     // margin-top: 3%;

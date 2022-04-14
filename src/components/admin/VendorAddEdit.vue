@@ -1,167 +1,98 @@
 <template>
-    <div id="AddEditVendor">
-      <!--<div class="diff-shadow">-->
-      <div class="diff-sm-box">
-        <h2 class="head">
-          <span v-if="vendorId">Update</span>
-          <span v-else>Add New</span>
-          <span> Vendor</span>
-        </h2>
-        <div class="container-grid">
-          <label class="label fn" for="firstname">
-            <strong>First Name:</strong>
-          </label>
-          <input
-            class="text-box mr-r tf"
-            name="firstname"
-            type="text"
-            placeholder="Enter First Name"
-            v-model="vendor.firstName"
-          />
-          <label class="label ln" for="lastname">
-            <strong>Last Name:</strong>
-          </label>
-          <input
-            class="text-box tl"
-            name="lastname"
-            type="text"
-            placeholder="Enter Last Name"
-            v-model="vendor.lastName"
-          />
-          <div class="d-flex">
-          <div style="padding: 17px 2px;"><span class="required">*</span></div>
-          <div>
-            <label class="label cn " for="contact_number">
-              <strong>Contact:</strong>
+  <div id="AddEditVendor">
+    <div class="diff-shadow">
+      <h2>
+        <span v-if="vendorId">Update</span>
+        <span v-else>Add New</span>
+        <span> Vendor</span>
+      </h2>
+      <div>
+        <div class="first-row row">
+          <div class="left">
+            <label class="" for="firstname">
+              <strong>First Name:</strong>
             </label>
+            <div class="ab-input-container">
+              <input
+                name="firstname"
+                type="text"
+                placeholder="Enter First Name"
+                v-model="vendor.firstName"
+              />
+            </div>
           </div>
+          <div class="right">
+            <label class="" for="lastname">
+              <strong>Last Name:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                class="text-box tl"
+                name="lastname"
+                type="text"
+                placeholder="Enter Last Name"
+                v-model="vendor.lastName"
+              />
+            </div>
           </div>
-          <div>
-            <input
-              class="text-box mr-r tc"
-              name="contact_number"
-              type="text"
-              placeholder="Enter Contact"
-              v-model="vendor.contact"
-            />
-            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
-            
+        </div>
+        <div class="second-row row mt-3">
+          <div class="left">
+            <div class="d-flex" style="width: 5.5rem;">
+              <span class="required">*</span>
+              <label class="" for="contact_number">
+                <strong>Contact:</strong>
+              </label>
+            </div>
+            <div class="ab-input-container">
+              <input
+                name="contact_number"
+                type="text"
+                placeholder="Enter Contact"
+                v-model="vendor.contact"
+              />
+              <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
+            </div>
           </div>
-          <div class="d-flex">
-            <div style="padding: 17px 2px;"><span class="required">*</span></div>
-            <div>
-              <label v-if="!vendorId" class="label c" for="companies">
+          <div class="right">
+            <div class=" d-flex" style="width: 5.5rem;">
+              <span v-if="!vendorId" class="required">*</span>
+              <label v-if="!vendorId" class="" for="companies">
                 <strong>Company:</strong>
               </label>
             </div>
-          </div>
-          <div v-if="!vendorId">
-            <select name="companies" class="custom-select text-box sc" id="companies" v-model="vendor.company">
-              <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-                {{ company.company_name }}
-              </option>
-            </select>
-            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-        </div>
-        </div>
-
-        <!--<div class="flex-box pad-t">
-          <label class="label" for="firstname">
-            <strong>First Name:</strong>
-          </label>
-          <input
-            class="text-box mr-r"
-            name="firstname"
-            type="text"
-            placeholder="Enter first name"
-            v-model="vendor.firstName"
-          />
-          <label class="label" for="lastname">
-            <strong>Last Name:</strong>
-          </label>
-          <input
-            class="text-box"
-            name="lastname"
-            type="text"
-            placeholder="Enter last name"
-            v-model="vendor.lastName"
-          />
-        </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="lastname">
-            <strong>Last Name:</strong>
-          </label>
-          <input
-            name="lastname"
-            type="text"
-            placeholder="Enter last name"
-            v-model="vendor.lastName"
-          />
-        </div>
-        <div class="flex-box pad-t">
-          <label class="label" for="contact_number">
-            <strong>Contact Number:</strong>
-          </label>
-          <div>
-            <input
-              class="text-box mr-r"
-              name="contact_number"
-              type="text"
-              placeholder="Enter contact"
-              v-model="vendor.contact"
-            />
-            <span v-if="contactNumberValidation" class="form-error">{{contactNumberValidation}}</span>
-            <ErrorField v-if="fieldErrors.username" :errorField="fieldErrors.username"></ErrorField>
-          </div>
-          
-          <div v-if="!vendorId" class="flex-box">
-          <label class="label " for="companies">
-            <strong>Company:</strong>
-          </label>
-          <div class="text-box">
-            <select name="companies" class="custom-select" id="companies" v-model="vendor.company">
-              <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-                {{ company.company_name }}
-              </option>
-            </select>
-            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
+            <div  v-if="!vendorId" class="ab-select-container">
+              <select name="companies" class="custom-select" id="companies" v-model="vendor.company">
+                <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                  {{ company.company_name }}
+                </option>
+              </select>
+              <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
+            </div>
           </div>
         </div>
-        </div>
-
-        <div v-if="!vendorId" class="flex-box">
-          <label class="pad-label w100" for="companies">
-            <strong>Company:</strong>
-          </label>
-          <div class="full-width">
-            <select name="companies" class="custom-select" id="companies" v-model="vendor.company">
-              <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-                {{ company.company_name }}
-              </option>
-            </select>
-            <span v-if="companyValidation" class="form-error">{{companyValidation}}</span>
-            <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
-          </div>
-        </div>-->
-
-        <div class="ab_btn_container" style="text-align: center; padding-top: 30px">
+      </div>      
+      <div class="ab_btn_container">
+        <div>
           <button
-            class="btn-b btn-mr red btn-link"
-            style=" margin-right: 20px"
+            class="btn ab_orange_hover btn-orange"
             :disabled="addEditBtn"
             @click="addUpdateVendor"
           >
             <span v-if="vendorId">Update</span>
             <span v-else>Add</span>
           </button>
+        </div>
+        <div>
           <router-link
             to="/Vendors"
-            class="btn-b blue btn-link"
+            style="margin-left: 20px"
+            class="btn ab_blue_hover btn-blue"
           >Cancel</router-link>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -171,7 +102,6 @@ import { mapActions, mapGetters } from 'vuex';
 import { User } from '@/store/models/user';
 import { ActionTypes } from '@/store/modules/auth/actions';
 import ErrorField from '@/components/common-components/ErrorField.vue';
-
 
 export default defineComponent({
   name: 'VendorAddEdit',
@@ -300,149 +230,125 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditVendor {
-    padding-left: 15%;
-    padding-right: 15%;
-    margin-top: 3%;
+    // padding: 2.65% 30%;
+    padding: 1.65% 26%;
+    // padding-left: 15%;
+    // padding-right: 15%;
+    // margin-top: 3%;
+    // padding-left: 15%;
+    // padding-right: 15%;
+    // margin-top: 3%;
   }
-
-  /*.pad-label {
-    padding: 20px 20px 20px 0px;
-  }*/
-  label{
-    font-family:seg;
-    font-size: 12px;
-    padding:20px 20px 20px 0;
-    width:75%;
+  .diff-shadow{
+    padding: 1.65% 6.56%;
   }
-
-  .w100 {
-    width: $w150;
-  }
-
-  label {
-    text-align: left;
-  }
-
-  .full-width {
-    width: 100%;
-  }
-  .head{
+  .diff-shadow > h2{
     text-align: center;
-    font-family: seg;
-    font-size:20px;
-    font-weight:bold;
-    color:#e43d2a;
+    color: $primary-color;
+    margin-bottom: 40px;
   }
-  .diff-sm-box{
-    border: 1px solid #ffffff;
-    border-radius: 10px;
-    padding: 1em 3em;
-    margin: 15px 40px 0px 100px;
+  
 
-    -webkit-box-shadow: 1px 1px 5px -1px $login-shodow-color;
-    -moz-box-shadow: 1px 1px 5px -1px $login-shodow-color;
-    box-shadow: 1px 1px 5px -1px $login-shodow-color;
+  // .pad-label {
+  //   padding: 20px 20px 20px 0px;
+  // }
+
+  // .w100 {
+  //   width: $w150;
+  // }
+
+  // label {
+  //   text-align: left;
+  // }
+
+  // .full-width {
+  //   width: 100%;
+  // }
+
+  // ab-css
+  .row{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
   }
-  .pad-t{
-    padding-top:25px;
+  .left{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
   }
-  .text-box{
-    font-family:seg;
-    font-size:12px;
-    height:48%;
-    margin-top:15px;
-    border-radius:0.4rem;
-    padding:8px;
-    border:1px solid #d8dcdc;
-    color: #6c757d;
-    width:85%;
+  .right{
+    width: 48%;
+    display: flex;
+    align-items: baseline;
   }
-  .text-box:focus{
-    outline:none;
+  .ab-select-container > select{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 12px;
   }
-  .mr-r{
-    margin-right:12px;
+  .ab-input-container > input[type=text]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
   }
-  .container-grid{
-    display:grid;
-    margin-top:25px;
-    grid-template-columns: 1fr 2fr 1fr 2fr;
-    gap:1.2rem 0.4rem;
-    grid-template-areas: 
-    "fn tf ln tn"
-    "cn tc c sc"
+  .ab-input-container > input[type=password]{
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.75em;
   }
-  .fn{
-    grid-area:fn;
+  .ab-input-container{
+    width: 60%;
+    flex-grow: 1
   }
-  .tf{
-    grid-area:tf;
+  .ab-select-container{
+    width: 60%;
+    flex-grow: 1
   }
-  .ln{
-    grid-area:ln;
-  }
-  .tn{
-    grid-area:tn;
-  }
-  .cn{
-    grid-area:cn;
-  }
-  .tc{
-    grid-area:tc;
-  }
-  .c{
-    grid-area:c;
-  }
-  .sc{
-    grid-area:sc;
+  .row  label{
+    // margin-right: 50px;
+    width: 30%;
+    font-size: 0.875em;
   }
   .form-error{
-    display:block;
-    font-family:seg;
-    font-size:12px;
-    color:#e43d2a;
-}
-.btn-b{
-  text-decoration:none;
+    font-size: 0.65em; 
+  }
 
-    font-family: seg;
-    font-size: 12px;
-    border-radius: 20px;
-    // width: 100px;
-    cursor: pointer;
-    color: #ffffff;
-    border: none;
-    // padding: 12px 6px;
-    // font-weight: bold;
-    text-align: center;
-    // height: 40px;
-    margin-top: 12px;
-
-    margin-right: 20px;
-    /* height: 33px; */
-    width: 8rem;
-    font-weight: 400;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-.btn-b:focus{
-  outline:none;
-}
-.red{
-  background-color:#e43d2a;
-}
-.blue{
-  background-color: #0f2634;
-}
-.required{
-  content:" *";
-    color: red;
-}
-.ab_btn_container{
-    // margin-top: 30px;
+  // buttons designs 
+  .ab_btn_container{
+    margin-top: 50px;
     display: flex;
     justify-content: center;
-    // margin-left: 66px;
-    // font-family:seg;
   }
+  .ab_btn_container > div:first-child button:first-child{
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid $primary-color !important;
+  }
+  .ab_orange_hover:hover{
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    background-color: white;
+  }
+  .btn-blue{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 6px 30px;
+    border: 1.5px solid #0f2636 !important;
+    width:8rem;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+  .ab_btn_container a{
+    color:white;
+  }
+  .required{
+    content:" *";
+    color: red;
+    font-size: 17px;
+    margin-right: 3px;
+}
 </style>

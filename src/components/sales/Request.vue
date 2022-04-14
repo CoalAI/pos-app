@@ -123,15 +123,15 @@
         <button
           :disabled="addBtn"
           @click="addRequestbtn"
-          class="btn-b btn-orange btn-mr"
+          class="ab_btn btn-orange mr-l"
           style="width: 150px"
         >
           Send Request
         </button>
         <router-link
           to="/"
-          style="margin-right: 20px"
-          class="btn-b blue btn-mr btn-link"
+          style="margin-right: 20px; margin-left: 17px;"
+          class="btn-blue"
           >Cancel</router-link
         >
       </div>
@@ -298,10 +298,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #request {
-  padding-left: 22%;
-  padding-right: 22%;
-  margin-left: 5%;
-  margin-top: 3%;
+  padding: 1.65% 24%;
+  // margin-left: 5%;
+  // margin-top: 3%;
 }
 
 .pad-label {
@@ -324,12 +323,12 @@ label {
   font-size: $label-font-size;
 }
 .head {
-  font-family: seg;
-  font-size: 20px;
-  font-weight: bold;
-  color: #e43d2a;
+  // font-family: seg;
+  // font-size: 20px;
+  // font-weight: bold;
+  color: $primary-color;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 .pd-lbl {
   padding: 13px 20px 20px 0px;
@@ -380,27 +379,52 @@ label {
 .mr-l {
   margin-left: 4%;
 }
-.blue {
-  background-color: #0f2636;
-}
-.btn-b {
-  font-family: seg;
-  font-size: 12px;
-  margin: 8px 0px 2px 20px;
-  padding: 4px 2px 4px 2px;
-  border-radius: 20px;
-  width: 135px;
-  padding: 5px;
-  cursor: pointer;
-  color: $white-color;
-  border: none;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-}
+.ab_btn{
+    color: $white-color;
+    text-decoration: none;
+    padding: 4px 22px;
+    cursor: pointer;
+    font-size: $btn-font-size;
+    border: 1.5px solid $primary-color !important;
+    border-radius: 20px;
+    outline:none;
+  }
+  .ab_btn:hover{
+    background-color: white;
+    color: $primary-color;
+    border: 1.5px solid $primary-color;
+  }
 .btn-b:focus {
   outline: none;
 }
+.btn-blue{
+    background-color:#0f2636;
+    border-radius: 20px;
+    padding: 6px 48px;
+    border: 1.5px solid #0f2636 !important;
+  }
+  .ab_blue_hover:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
+  .btn-blue{
+    text-decoration: none;
+    text-align: center;
+    background-color:#0f2636;
+    font-size: 12px;
+    border-radius: 20px;
+    padding: 6px 40px;
+    cursor: pointer;
+    color:$white-color;
+    border: 1.5px solid #0f2636 !important;
+  }
+  // hover blue
+  .btn-blue:hover{
+    color: #0f2636;
+    background-color: white;
+    border: 1.5px solid #0f2636;
+  }
 .mr-b {
   margin-bottom: 10px;
 }

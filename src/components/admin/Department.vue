@@ -2,44 +2,44 @@
   <div class="department-container">
     <div class="diff-shadow">
       <div class="page-upper">
-          <div id="filter-box">
-            <div>
-              <router-link to="/department/create" class="ab_btn btn-orange">Add Department</router-link>
-            </div>
-            <span><b>Company:</b></span>
-            <select
-              id="company-type"
-              name="company-type"
-              class="custom-select"
-              v-model="companyType"
-              @change="onChangeCompanyType"
-            >
-              <option value="">All</option>
-              <option v-for="role in companyTypes" v-bind:key="role" v-bind:value="role">
-                {{ role }}
-              </option>
-            </select>
+        <div id="filter-box">
+          <div>
+            <router-link to="/department/create" class="ab_btn btn-orange">Add Department</router-link>
           </div>
-          <!-- <div class="float-right"> -->
-          <div class="right-col">
+          <span><b>Company:</b></span>
+          <select
+            id="company-type"
+            name="company-type"
+            class="custom-select"
+            v-model="companyType"
+            @change="onChangeCompanyType"
+          >
+            <option value="">All</option>
+            <option v-for="role in companyTypes" v-bind:key="role" v-bind:value="role">
+              {{ role }}
+            </option>
+          </select>
+        </div>
+        <!-- <div class="float-right"> -->
+        <div class="right-col">
           <label class="search-lbl" >Search by: Name</label>
-            <form class="ab-form-pos">
-              <input
-                type="text"
-                placeholder="Search"
-                class=""
-                v-model="search"
-                @input="onSearchCompany"
-              />
-              <!-- <button class="btn btn-orange search-btn" @click="onSearchCompany">Search Department</button> -->
-              <button class="btn ab-pos btn-orange" @click="onSearchCompany">
-                <svg id="White_search_icon" data-name="White search icon" xmlns="http://www.w3.org/2000/svg" width="13.049" height="13.048" viewBox="0 0 13.049 13.048">
-                    <path id="Path_99" data-name="Path 99" d="M23.076,23.074a.816.816,0,0,1,1.154,0l3.14,3.14a.816.816,0,0,1-1.153,1.154l-3.14-3.14a.816.816,0,0,1,0-1.154Z" transform="translate(-14.56 -14.558)" fill="#fff" fill-rule="evenodd"/>
-                    <path id="Path_100" data-name="Path 100" d="M5.3,9.786A4.485,4.485,0,1,0,.816,5.3,4.485,4.485,0,0,0,5.3,9.786ZM10.6,5.3A5.3,5.3,0,1,1,5.3,0a5.3,5.3,0,0,1,5.3,5.3Z" fill="#fff" fill-rule="evenodd"/>
-                </svg>
-              </button>
-            </form>
-          </div>
+          <form class="ab-form-pos">
+            <input
+              type="text"
+              placeholder="Search"
+              class=""
+              v-model="search"
+              @input="onSearchCompany"
+            />
+            <!-- <button class="btn btn-orange search-btn" @click="onSearchCompany">Search Department</button> -->
+            <button class="btn ab-pos btn-orange" @click="onSearchCompany">
+              <svg id="White_search_icon" data-name="White search icon" xmlns="http://www.w3.org/2000/svg" width="13.049" height="13.048" viewBox="0 0 13.049 13.048">
+                  <path id="Path_99" data-name="Path 99" d="M23.076,23.074a.816.816,0,0,1,1.154,0l3.14,3.14a.816.816,0,0,1-1.153,1.154l-3.14-3.14a.816.816,0,0,1,0-1.154Z" transform="translate(-14.56 -14.558)" fill="#fff" fill-rule="evenodd"/>
+                  <path id="Path_100" data-name="Path 100" d="M5.3,9.786A4.485,4.485,0,1,0,.816,5.3,4.485,4.485,0,0,0,5.3,9.786ZM10.6,5.3A5.3,5.3,0,1,1,5.3,0a5.3,5.3,0,0,1,5.3,5.3Z" fill="#fff" fill-rule="evenodd"/>
+              </svg>
+            </button>
+          </form>
+        </div>
       </div>
       <div class="ab-mb-7 mr-2">
         <table>
@@ -232,7 +232,7 @@ export default defineComponent({
     margin: 0 auto;
   }
   .diff-shadow{
-    padding: 1.6% 5.5% 5.5% 5.5%;
+    padding: 1.6% 5.5% 1.5% 5.5%;
   }
 
   .btn-mr-inner{
