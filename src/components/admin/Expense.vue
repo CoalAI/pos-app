@@ -446,6 +446,7 @@ export default defineComponent({
 .nav-tabs{
   position: relative;
   border:none;
+  color: black !important;
 }
 .nav-tabs > button{
 width: 22%;
@@ -492,19 +493,19 @@ font-weight: 500;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 60px;
-  }
-  .page-upper > .right-cont{
-    width: 30%;
-  }
-  .page-upper > .right-cont > .flex-box{
-    align-items: baseline;
-    width: 100%;
-  }
-  .page-upper > .right-cont > .flex-box > label{
-    margin-right: 10px;
-    font-size: 13px;
-    // font-weight: 500;
-  }
+}
+.page-upper > .right-cont{
+  width: 30%;
+}
+.page-upper > .right-cont > .flex-box{
+  align-items: baseline;
+  width: 100%;
+}
+.page-upper > .right-cont > .flex-box > label{
+  margin-right: 10px;
+  font-size: 13px;
+  // font-weight: 500;
+}
 
   // page upper ul designs;
   // normalization
@@ -519,6 +520,7 @@ font-weight: 500;
     border-radius: 20px;
     font-size: 13px;
     font-weight: 500;
+    cursor: pointer;
   }
   // active
   .page-upper > .nav-tabs > .active-li{

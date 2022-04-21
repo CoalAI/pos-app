@@ -24,20 +24,13 @@
         <div>
           <div id="company-type">
             <form class="filter inline" v-if="admin">
-              <div style="margin-right: 5rem;"><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type"> All</div>
-              <div 
-              class="batches-op d-flex"
-              v-for="company in companies"
-              v-bind:key="company.id">
-              <input 
-              type="checkbox"
-              class="mx-1"
-              @change="onCheckChange"                
-              id="company-type" 
-              :value="company.id"
-              name="company-type" 
-              :checked="checkedValue==company.id"/>
-                {{ company.company_name }}
+              <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type2"> All</div>
+              <div class="batches-op d-flex" v-for="company in companies" v-bind:key="company.id">
+                <input type="checkbox" @change="onCheckChange" id="company-type2" 
+                :value="company.id"
+                name="company-type" 
+                :checked="checkedValue==company.id"/>
+                <span id="comp-name">{{ company.company_name }}</span>
               </div>
 
               <!--<input type="checkbox" value="2" @change="onCheckChange" :checked="checkedValue==2"/>
@@ -226,7 +219,7 @@ export default defineComponent({
 }
 
 #company-type {
-  //width: 90%;
+  width: 90%;
   margin-top: 4%;
   margin-left: 8%;
   border-radius:10px;
@@ -237,6 +230,9 @@ export default defineComponent({
   color:white;
   border:none !important;
 }
+#company-type2{
+  margin-right: 4px;
+}
 
 .fr-row {
   font-size: 12px;
@@ -246,19 +242,19 @@ export default defineComponent({
 .header > th{
     text-align: center;
   }
-  .header > th:first-child{
-    border: none;
-    border-radius: 10px 0px 0px 10px;
-  }
-  .header > th:last-child{
-    border: none;
-    border-radius: 0px 10px 10px 0px;
-  }
-  .header {
-    border-radius: 5px;
-    background-color: #0f2634; 
-    color: white;
-  }
+.header > th:first-child{
+  border: none;
+  border-radius: 10px 0px 0px 10px;
+}
+.header > th:last-child{
+  border: none;
+  border-radius: 0px 10px 10px 0px;
+}
+.header {
+  border-radius: 5px;
+  background-color: #0f2634; 
+  color: white;
+}
 .content{
   background-color: white; 
   color: #0f2634;
@@ -337,12 +333,21 @@ export default defineComponent({
     background-color: white;
     cursor:pointer;
   }
-
+.filter{
+  width: 100%;
+}
 .filter label{
   font-size:14px;
   // font-family:seg;
   margin-left:8px;
   margin-bottom:10px;
+}
+.filter > div{
+  display: flex;
+  align-items: center;
+}
+#comp-name{
+  text-transform: capitalize;
 }
 .checkradio{
    appearance: none;

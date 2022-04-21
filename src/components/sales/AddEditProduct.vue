@@ -9,7 +9,7 @@
         <div class="first-row row">
           <div class="left">
             <label class="pd-lbl" for="name">
-              <strong>Name:</strong>
+              <strong><strong id="req_sign">*</strong>Name:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -25,7 +25,7 @@
           </div>
           <div class="right">
             <label class="pd-lbl" for="barcode">
-              <strong>Bar code:</strong>
+              <strong><strong id="req_sign">*</strong>Bar code:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -42,7 +42,7 @@
         </div>
         <div class="second-row row">
           <div class="left">
-            <label class="pd-lbl" for="category">
+            <label class="pd-lbl" for="category" style="padding-left: 5px;">
               <strong>Category:</strong>
             </label>
             <div class="ab-select-container">
@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="pd-lbl" for="unit">
+            <label class="pd-lbl" for="unit" style="padding-left: 7px;">
               <strong>Unit:</strong>
             </label>
             <div class="ab-select-container">
@@ -147,7 +147,7 @@
           </div>          
         </div>
         <div class="fifth-row">
-          <table class="">
+          <table class="nested-table">
             <colgroup>
               <col span="1" style="width: 14%;">
               <col span="1" style="width: 14%;">
@@ -157,12 +157,12 @@
               <col span="1" style="width: 4%;">
             </colgroup>
             <tr class="fr-row header2">
-              <th style="border-radius: 10px 0px 0px 0px; text-align:center">Color</th>
+              <th>Color</th>
               <th>Size</th>
               <th>Price</th>
               <th>Sale Price</th>
               <th>Description</th>
-              <th style="border-radius: 0px 10px 0px 0px; text-align:center"><img :src="del" alt="Delete"></th>
+              <th><img :src="del" alt="Delete"></th>
             </tr>
             <tr v-for="(productVariant, index) in product.productVariants" v-bind:key="productVariant.id" class="fr-row content2">
               <td>
@@ -498,6 +498,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+  #req_sign{
+    color: red;
+  }
   // ab css
   #AddEditProduct {
     padding: 1.65% 26%;
@@ -722,15 +725,55 @@ export default defineComponent({
   font-family: seg;
   vertical-align:text-bottom;
 }
+.nested-table td {
+  background-color: #d4d1cf !important;
+  // border: 1px solid transparent;
+  padding: 3px;
+  text-align: center;
+}
+
+.nested-table th {
+  padding: 3px;
+  // border: 1px solid transparent;
+  text-align: center;
+}
 .header2{
+  // border-radius: 5px;
   background-color: #e43d2a; 
   color: white;
   
+}
+.header2 > th:first-child{
+  border-radius: 10px 0px 0px 0px;
+  border-top: 1px transparent;
+  border-left: 1px transparent;
+  // border-right: 1.1px solid #ddd;
+}
+.header2 > th:last-child{
+  border-radius: 0px 10px 0px 0px;
+  border-top: 1px transparent;
+  border-right: 1px transparent;
+  // border-left: 1.1px solid #ddd;
 }
 .content2{
   background-color: #e3e2e2 !important; 
   color: #0f2634;
   text-align:center;
+}
+tr.content2:last-child > td{
+  border-bottom: 1px transparent;
+}
+tr.content2:last-child > td:first-child{
+  border-radius: 0px 0px 0px 10px;
+  border-top: 1px transparent;
+  border-left: 1px transparent;
+  // border-right: 1.1px solid #ddd;
+}
+tr.content2:last-child > td:last-child{
+  border-radius: 0px 0px 10px 0px;
+  border-top: 1px transparent;
+  border-right: 1px transparent;
+  // border-left: 1.1px solid #ddd;
 }
 .tbl_item_input{
   padding:0 !important;

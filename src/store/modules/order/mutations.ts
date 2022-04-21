@@ -14,6 +14,7 @@ export enum MutationTypes {
   SetProductResults = 'SET_PRODUCT_RESULTS',
   SetRecentProducts = 'SET_RECENT_PRODUCTS',
   SetListOfOrders = 'SET_LIST_OF_ORDERS',
+  SetListOfBatches = 'SET_LIST_OF_BATCHES',
   SetOrderStatuses = 'SET_ORDER_STATUSES',
   SetListOfProducts = 'SET_LIST_OF_PRODUCTS',
   SetSingleProduct = 'SET_SINGLE_PRODUCT',
@@ -40,6 +41,7 @@ export type Mutations = {
   [MutationTypes.SetProductResults](state: State, productResults: Product[]): void;
   [MutationTypes.SetRecentProducts](state: State, recentProducts: Product[]): void;
   [MutationTypes.SetListOfOrders](state: State, orders: Order[]): void;
+  [MutationTypes.SetListOfBatches](state: State, batches: Batch[]): void;
   [MutationTypes.SetOrderStatuses](state: State, statuses: {status: string}[]): void;
   [MutationTypes.SetListOfProducts](state: State, products: Product[]): void;
   [MutationTypes.SetSingleProduct](state: State, product: Product): void;
@@ -114,6 +116,9 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetOrdersCount](state: State, count: number) {
     state.totalCounts.orders = count;
+  },
+  [MutationTypes.SetListOfBatches](state: State, batches: Batch[]) {
+    state.listOfBatches = batches;
   },
   [MutationTypes.SetBatchesCount](state: State, count: number) {
     state.totalCounts.batches = count;
