@@ -9,7 +9,7 @@
       <div v-if="!userId">
         <div class="first-row row">
           <div class="left">
-            <label class="" for="first_name">
+            <label class="" for="first_name" style="padding-left: 7px;">
               <strong>First Name:</strong>
             </label>
             <div class="ab-input-container">
@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="" for="last_name">
+            <label class="" for="last_name" style="padding-left: 7px;">
               <strong>Last Name:</strong>
             </label>
             <div class="ab-input-container">
@@ -37,7 +37,7 @@
         </div>
         <div class="second-row row">
           <div class="left">
-            <label class="" for="email">
+            <label class="" for="email" style="padding-left: 7px;">
               <strong>Email:</strong>
             </label>
             <div class="ab-input-container">
@@ -52,7 +52,7 @@
           </div>
           <div v-if="!userId" class="right">
             <label class="" for="thisusername">
-              <strong>Username:</strong>
+              <strong><strong id="req_sign">*</strong>Username:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -70,7 +70,7 @@
         <div class="third-row row">
           <div v-if="!userId" class="left">
             <label class="" for="thisuserpassword">
-              <strong>Password:</strong>
+              <strong><strong id="req_sign">*</strong>Password:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -87,7 +87,7 @@
           </div>
           <div v-if="!userId" class="right">
             <label class="" for="confirmpassword">
-              <strong>Confirm Password:</strong>
+              <strong><strong id="req_sign">*</strong>Confirm Password:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -103,7 +103,7 @@
         </div>
         <div class="forth-row row">
           <div class="left">
-            <label class="" for="in_stock">
+            <label class="" for="in_stock" style="padding-left: 7px;">
               <strong>Active:</strong>
             </label>
             <div class="ab-input-container">
@@ -117,7 +117,7 @@
             </div>
           </div>
           <div class="right">
-            <label class="" for="role">
+            <label class="" for="role" style="padding-left: 7px;">
               <strong>Role:</strong>
             </label>
 
@@ -133,7 +133,7 @@
         <div class="fifth-row row">
           <div v-if="!userId" class="left">
             <label class="" for="companies">
-              <strong>Company:</strong>
+              <strong><strong id="req_sign">*</strong>Company:</strong>
             </label>
 
             <div class="ab-select-container">
@@ -149,7 +149,7 @@
           </div>
           <div class="right">
             <label class="" for="contact_number">
-              <strong>Contact Number:</strong>
+              <strong><strong id="req_sign">*</strong>Contact Number:</strong>
             </label>
             <div class="ab-input-container">
               <input
@@ -567,14 +567,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditUser {
-    // padding: 2.65% 30%;
-    padding: 2.65% 26%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    margin-top: 3%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    // margin-top: 3%;
+    padding: 1.65% 26%;
   }
   .diff-shadow{
     padding: 1.65% 6.56%;
@@ -582,7 +575,7 @@ export default defineComponent({
   .diff-shadow > h2{
     text-align: center;
     color: $primary-color;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
   }
   
 
@@ -603,6 +596,9 @@ export default defineComponent({
   // }
 
   // ab-css
+  #req_sign{
+    color: red;
+  }
   .row{
     display: flex;
     justify-content: space-between;
@@ -661,7 +657,6 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 48px;
     border: 1.5px solid $primary-color !important;
-    width:8rem;
   }
   .ab_orange_hover:hover{
     border: 1.5px solid $primary-color;

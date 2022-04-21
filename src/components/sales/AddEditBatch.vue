@@ -266,8 +266,7 @@ export default defineComponent({
 <style lang="scss" scoped>
   #AddEditBatch {
     // padding: 2.65% 30%;
-    padding: 2.65% 25%;
-    margin-top: 3%;
+    padding: 1.65% 25%;
   }
   .diff-shadow{
     // padding: 1.65% 7.56%;
@@ -276,7 +275,7 @@ export default defineComponent({
   .diff-shadow > h2{
     text-align: center;
     color: $primary-color;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
   }
 
   // .pad-label {
@@ -370,7 +369,6 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 48px;
     border: 1.5px solid $primary-color !important;
-    width: 8rem;
   }
   .ab_orange_hover:hover{
     border: 1.5px solid $primary-color;
@@ -398,16 +396,5 @@ export default defineComponent({
     font-size: 17px;
     margin-right: 3px;
   }
-  @media Screen and (max-width: 1497px){
-    #AddEditBatch {
-    padding: 2.65% 21%;
-    margin-top: 3%;
-  }
-  }
-  @media Screen and (max-width: 1247px){
-    #AddEditBatch {
-    padding: 2.65% 19%;
-    margin-top: 3%;
-  }
-  }
+ 
 </style>
