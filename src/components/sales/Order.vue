@@ -215,19 +215,20 @@
                     </tr>
                     <tr>
                       <td>{{ itemVariant.sale_price }}</td>
-                      <td v-if="sumQuantity(itemVariant) > 0">
+                      <td v-show="sumQuantity(itemVariant) > 0">
                         {{ sumQuantity(itemVariant) }}
                       </td>
-                      <td v-else class="out-of-stock">Out of Stock</td>
+                     
                       <td>{{ itemVariant.size }}</td>
                     </tr>
+                    <tr v-show="sumQuantity(itemVariant) <= 0" class="out-of-stock">Out of Stock</tr>
                   </table>
                 </div>
               </li>
             </ul>
           </div>
           <div class="box1-tab">
-            <table style="width: 100% ">
+            <table class="orderTable">
               <colgroup>
                 <col span="1" style="width: 1%" />
                 <col span="1" style="width: 1%" />
@@ -240,14 +241,7 @@
                 <col span="1" style="width: 1%" />
               </colgroup>
 
-              <tr
-                style="
-                  background-color: #0f2636;
-                  color: white;
-                  font-size: 12px;
-                  align-content: center;
-                " class="header"
-              >
+              <tr>
                 <th style="border-radius: 8px 0px 0px 8px">Sr No.</th>
                 <th>Bar Code</th>
                 <th>Name</th>
@@ -1814,6 +1808,7 @@ export default defineComponent({
   grid-template-columns: 1.2fr 5fr;
   gap: 0.1em 0.1em;
   font-family: seg;
+  margin-top: 5px;
 }
 .table-container-left {
   display: grid;
@@ -1889,6 +1884,9 @@ export default defineComponent({
 
 .out-of-stock {
   color: $red-color;
+  padding-top: 0px !important;
+  text-align: center;
+  font-size: 10px;
 }
 
 .mr-all {
@@ -2222,6 +2220,19 @@ td {
     border: none;
     border-radius: 0px 10px 10px 0px;
   }
+.orderTable{
+  width: 100%;
+  float:right;
+  border-collapse:collapse;
+}
+.orderTable th {
+  background-color:#0f2636;
+  color:white;
+  font-size:12px;
+  text-align: center;
+  border: none !important;
+  border-right: 1px solid !important;
+}
 @media screen and (max-width:1200px ){
   .col-3{
     max-width: 35% !important;
@@ -2230,7 +2241,10 @@ td {
     max-width: 25% !important;
     flex: 0 0 25% !important;
   }
-  
+  .col-6{
+    max-width: 56% !important;
+    flex: 0 0 56% !important;
+  }
   .split-container {
     margin-left: 2vw;
 }
