@@ -1201,7 +1201,7 @@ export default defineComponent({
         )
         // eslint-disable-next-line
         .sort((x: any, y: any) => +new Date(x.created) - +new Date(y.created));
-
+        this.productBatchSelect = this.productBatchSelect.sort((a, b) => a > b?1:-1);
       const batchId =
         this.filteredBatches.length > 0
           ? (this.filteredBatches[0] as Batch).id
