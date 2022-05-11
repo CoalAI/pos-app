@@ -52,10 +52,10 @@
       </thead>
       <tbody>
        <tr v-for="data in inventory" :key="data.id">
-          <td>{{data.batch.product_variant.product.name}}</td>
-          <td>{{data.batch.product_variant.product.category}}</td>
-          <td>{{parseInt(data.quantity)}}</td>
-          <td>{{data.quantity * data.batch.product_variant.price}}</td>
+          <td v-if="data.quantity != 0">{{data.batch.product_variant.product.name}}</td>
+          <td v-if="data.quantity != 0">{{showcategoryName(categories, data.batch.product_variant.product.category).name}}</td>
+          <td v-if="data.quantity != 0">{{parseInt(data.quantity)}}</td>
+          <td v-if="data.quantity != 0">{{data.quantity * data.batch.product_variant.price}}</td>
         </tr>
       </tbody>
     </table>
@@ -83,6 +83,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import { Category } from '@/store/models/product'
 import Paginator from '@/components/common-components/Paginator.vue';
 
 export default defineComponent({
@@ -133,6 +134,14 @@ export default defineComponent({
          company: this.company,
         // search: this.search,
         page: pageNo,
+      });
+    },
+    showcategoryName: function(categories: Category[], id: number) {
+      return categories.find(function(data) {
+          console.log(data.name)
+          if(data.id === id){
+              return data.name
+          }
       });
     },
   },
