@@ -518,7 +518,7 @@ export default defineComponent({
       this.user.lastName = user.last_name ? user.last_name : '';
       this.user.email = user.email ? user.email : '';
       this.user.userName = user.username ? user.username : '';
-      this.user.active = user.is_active ? user.is_active : true;
+      this.user.active = user.is_active ? user.is_active : false;
       this.user.user_type = user.user_type ? user.user_type : '';
       this.user.company = user.company && typeof user.company !== 'number' && user.company.id ? user.company.id : 0;
       this.user.contactNumber = user.contact_number ? user.contact_number : '';
