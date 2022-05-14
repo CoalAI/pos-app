@@ -35,6 +35,7 @@ import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
 import StockStatement from '@/components/analytics/StockStatement.vue';
 import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 import ProfifLossReport from '@/components/analytics/Report.vue';
+import EndOfDay from '@/components/analytics/EndOfDay.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -281,6 +282,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'report',
         name: 'profit-loss-report',
         component: ProfifLossReport,
+      },
+      {
+        path: 'eod',
+        name: 'end-of-day',
+        component: EndOfDay,
       },
     ]
   },

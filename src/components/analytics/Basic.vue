@@ -28,6 +28,11 @@
               <strong>Stock Statement</strong>
             </span>
           </li>
+          <li :class="tab === 'End of Day' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickEndOfDay()">
+            <span>
+              <strong>End of Day</strong>
+            </span>
+          </li>
         </ul>
       </div>
       <div class="route-con">
@@ -71,6 +76,10 @@ export default defineComponent({
     onClickStockStatement(){
       this.tab = 'StockStatement'
       this.$router.push({ name: "StockStatement" });
+    },
+    onClickEndOfDay(){
+      this.tab = 'End of Day'
+      this.$router.push({ name: "end-of-day" });
     },
 
   },
@@ -298,6 +307,10 @@ export default defineComponent({
 }
 .tab5{
   left: 528px;
+  width: 173px !important;
+}
+.tab6{
+  left: 680px;
   width: 173px !important;
 }
 @media Screen and (max-width: 1375px){
