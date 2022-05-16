@@ -22,7 +22,6 @@
         </option>
       </select>
     </div>
-
     <table class="tble-mt">
       <colgroup>
         <col span="1" style="width: 25%" />
@@ -47,35 +46,24 @@
         </tr>
       </tbody>
     </table>
-    
     <div class="d-flex justify-content-between flex-row">
       <div class="p-2"><span> Total Amount: </span>
         <span>{{ salesanalytics.total_orders }}</span></div>
       <div class="p-2"><span> Total Quantity: </span>
         <span>{{ salesanalytics.total_amount }}</span></div>
-      
     </div>
-
-    <!-- commented out as this was not in the mockup -->
-    <!-- <div class="flex-container marginTop">
-    <button class="btn btn-orange" style="width:80px">Print</button>
-  </div>  -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
-
-// import DateRange from "@/components/common-components/DateRange.vue";
 import { ActionTypes } from "@/store/modules/order/actions";
 import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
 
 export default defineComponent({
   name: "EndOfDay",
-  components: {
-    // DateRange,
-  },
+  components: {},
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${
@@ -148,31 +136,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td, th {
-  border: none;
-  text-align: left;
-  padding: 20px;
-}
-
-tr:nth-child(even) {
-  background-color: inherit;
-}
-
-tr:nth-child(odd) input {
-  background-color: inherit;
-}
-.flex-container {
-  display: flex;
-  flex-direction: row-reverse;
-} */
-
-/* ab css */
-/* ab-flex-box */
 .ab-flex-box {
   display: flex;
   align-items: baseline;
