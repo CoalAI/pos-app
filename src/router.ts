@@ -33,6 +33,7 @@ import OrderAnaltyics from '@/components/analytics/Order.vue';
 import FinanceAnaltyics from '@/components/analytics/Finance.vue';
 import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
 import StockStatement from '@/components/analytics/StockStatement.vue';
+import DayTotalPayable from '@/components/analytics/DayTotalPayable.vue';
 import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 import ProfifLossReport from '@/components/analytics/Report.vue';
 
@@ -271,6 +272,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'Stock',
         name: 'StockStatement',
         component: StockStatement,
+      },
+      {
+        path: 'dayTotalPayable',
+        name: 'DayTotalPayable',
+        component: DayTotalPayable,
       },
       {
         path: 'detail',
