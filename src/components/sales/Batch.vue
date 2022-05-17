@@ -82,6 +82,8 @@
         </table>
       </div>
 
+      <Paginator class="mr-2" :count="totalCount" @pageChange="changePage"/>
+
       <!-- The deletion Modal -->
       <Modal v-if="deleteBatchModal">
         <template v-slot:header>
@@ -108,25 +110,7 @@
                   <span>{{batch.expiryDate}}</span>
                 </div>
               </div>
-            </div>
-            <!-- <table id="delete-table" class="mr-2">
-              <tr>
-                <td><strong>Product Name:</strong></td>
-                <td>{{batch.productName}}</td>
-              </tr>
-              <tr>
-                <td><strong>Quantity:</strong></td>
-                <td>{{batch.quantity}}</td>
-              </tr>
-              <tr>
-                <td><strong>Manufactured Date:</strong></td>
-                <td>{{batch.manufacturedDate}}</td>
-              </tr>
-              <tr>
-                <td><strong>Expiry Date:</strong></td>
-                <td>{{batch.expiryDate}}</td>
-              </tr>
-            </table> -->
+            </div>            
           </template>
         </template>
 
@@ -148,12 +132,14 @@ import { mapActions, mapGetters } from 'vuex';
 
 import { ActionTypes } from '@/store/modules/order/actions';
 import Modal from '@/components/common-components/Modal.vue';
+import Paginator from '@/components/common-components/Paginator.vue';
 import { Batch } from '@/store/models/batch';
 
 export default defineComponent({
   name: 'Batch',
   components: {
     Modal,
+    Paginator,
   },
   data() {
     return {
@@ -170,7 +156,8 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      products: 'getListOfProducts'
+      products: 'getListOfProducts',
+      totalCount: 'getTotalCountsBatches'
     })
   },
   // define methods under the `methods` object
@@ -213,38 +200,24 @@ export default defineComponent({
       this.getProducts(this.search);
     },
 
+    changePage(pageNo: number) {
+      this.getBatchesByPage(pageNo);
+    },
     ...mapActions({
       getProducts: ActionTypes.GET_PRODUCTS,
-      deleteBatch: ActionTypes.DELETE_BATCH
+      deleteBatch: ActionTypes.DELETE_BATCH,
+      getbatches: ActionTypes.GET_BATCHES,
+      getBatchesByPage: ActionTypes.GET_BATCHES_BY_PAGE,
     })
   },
   async beforeMount () {
     await this.getProducts('');
+    await this.getbatches('');
   }
 });
 </script>
 
-<style lang="scss" scoped>
-  // .btn-mr{
-  //   margin: 10px;
-  // }
-
-  // .btn-mr-inner{
-  //   margin: 1px 1px 1px 5px;
-  // }
-
-  // .pr-var-mr {
-  //   margin: 10px;
-  // }
-
-  // #delete-table td {
-  //   border: none;
-  // }
-
-  // #delete-table tr:nth-child(even) {
-  //   background-color: $white-color;
-  // }
-
+<style lang="scss" scoped> 
   // ab css
   .btn{
     border-radius: 0;
@@ -254,7 +227,6 @@ export default defineComponent({
     padding: 8px 22px !important;
   }
   .batch-container{
-    // padding: 2.65% 16%;
     max-width: 1140px;
     margin: 0 auto;
   }
@@ -273,18 +245,12 @@ export default defineComponent({
     text-decoration: none;
     text-align: center;
     background-color:#0f2636;
-    // font-family:seg;
     font-size: 12px;
     border-radius: 20px;
-    // width: 135px;
-    // padding:5px;
     padding: 6px 40px;
     cursor: pointer;
     color:$white-color;
-    // border:none;
     border: 1.5px solid #0f2636 !important;
-    // font-weight:bold;
-    // for this page
     width: 135px;
     outline: none;
   }
@@ -311,7 +277,6 @@ export default defineComponent({
     background-color: white;
     color: $primary-color;
     border: 1.5px solid $primary-color;
-    // font-weight: bold;
   }
   .ab-form-pos{
     position: relative;

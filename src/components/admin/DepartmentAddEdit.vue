@@ -8,7 +8,7 @@
         </h2>
         <div class="upper">
           <div class="left">
-          <span class="required">*</span>
+            <span class="required">*</span>
             <label class="" for="company-name" style="margin-right: 20px;">
               <strong>Name:</strong>
             </label>
@@ -224,10 +224,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   #AddEditdepartment {
-    padding: 2.65% 26%;
+    padding: 1.65% 26%;
     // padding-left: 15%;
     // padding-right: 15%;
-    margin-top: 3%;
   }
   .diff-shadow{
     padding: 1.65% 6.56%;
@@ -235,7 +234,7 @@ export default defineComponent({
   .diff-shadow > h2{
     text-align: center;
     color: $primary-color;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
   }
   .upper{
     display: flex;
@@ -293,7 +292,6 @@ export default defineComponent({
     border-radius: 20px;
     padding: 6px 48px;
     border: 1.5px solid $primary-color !important;
-    width: 8rem;
 
   }
   .ab_orange_hover:hover{

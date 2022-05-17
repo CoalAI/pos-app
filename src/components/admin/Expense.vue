@@ -3,7 +3,7 @@
   <div id="expense">
     <!--<div class="diff-shadow">-->
     <div class="diff-shadow">
-      <h3 class="head">Finance</h3>
+      <h2 class="head">Finance</h2>
       <div class="page-upper">
         <ul class="nav nav-tabs">
           <li :class="expenseMethod === 'Received' ? 'active-li ab1' : 'ab1'" @click="expenseMethod = 'Received'">
@@ -436,8 +436,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #expense {
-    padding: 2.65% 23%;
-    margin-top: 3%;
+    padding: 1.65% 24%;
 }
 .diff-shadow{
   padding: 1.65% 3.56%;
@@ -447,6 +446,7 @@ export default defineComponent({
 .nav-tabs{
   position: relative;
   border:none;
+  color: black !important;
 }
 .nav-tabs > button{
 width: 22%;
@@ -493,19 +493,19 @@ font-weight: 500;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 60px;
-  }
-  .page-upper > .right-cont{
-    width: 30%;
-  }
-  .page-upper > .right-cont > .flex-box{
-    align-items: baseline;
-    width: 100%;
-  }
-  .page-upper > .right-cont > .flex-box > label{
-    margin-right: 10px;
-    font-size: 13px;
-    // font-weight: 500;
-  }
+}
+.page-upper > .right-cont{
+  width: 30%;
+}
+.page-upper > .right-cont > .flex-box{
+  align-items: baseline;
+  width: 100%;
+}
+.page-upper > .right-cont > .flex-box > label{
+  margin-right: 10px;
+  font-size: 13px;
+  // font-weight: 500;
+}
 
   // page upper ul designs;
   // normalization
@@ -520,6 +520,7 @@ font-weight: 500;
     border-radius: 20px;
     font-size: 13px;
     font-weight: 500;
+    cursor: pointer;
   }
   // active
   .page-upper > .nav-tabs > .active-li{
@@ -759,11 +760,9 @@ font-weight: 500;
   text-align: center;
   }
   .head{
-    margin-bottom: 15px;
-    font-family:seg;
-    color:#e43d2a;
+    margin-bottom: 28px;
+    color: $primary-color;
     text-align: center;
-    font-weight: bold;
   }
   .blue{
     background-color: #0f2636;
