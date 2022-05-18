@@ -89,7 +89,7 @@ export default defineComponent({
     onClickDayTotalPayable(){
        this.tab = 'dayTotalPayable'
       this.$router.push({ name: "DayTotalPayable" });
-    },
+    }
 
   },
   computed: {
