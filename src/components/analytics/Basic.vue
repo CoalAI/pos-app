@@ -28,6 +28,11 @@
               <strong>Stock Statement</strong>
             </span>
           </li>
+          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()">
+            <span>
+              <strong>Total Receivable</strong>
+            </span>
+          </li>
         </ul>
       </div>
       <div class="route-con">
@@ -72,6 +77,10 @@ export default defineComponent({
       this.tab = 'StockStatement'
       this.$router.push({ name: "StockStatement" });
     },
+    onClickTotalReceivable(){
+      this.tab = 'TotalReceivable'
+      this.$router.push({ name: "TotalReceivable" });
+    }
 
   },
   computed: {
@@ -217,21 +226,18 @@ export default defineComponent({
 .nav-tabs > button{
   position: absolute;
 }
-// .ab1{
-
+// .ab2{
+//   left: 138px;
 // }
-.ab2{
-  left: 138px;
-}
-.ab3{
-  left: 290px;
-}
-.ab4{
-  left: 443px;
-}
-.ab5{
-  left: 599px;
-}
+// .ab3{
+//   left: 290px;
+// }
+// .ab4{
+//   left: 443px;
+// }
+// .ab5{
+//   left: 599px;
+// }
 
 .page-upper{
   display: flex;
@@ -300,6 +306,37 @@ export default defineComponent({
   left: 528px;
   width: 173px !important;
 }
+.tab8{
+  left: 680px;
+  width: 173px !important;
+}
+// by laiqa
+// .tab1{
+//   left: -11px;
+//   width: 118px !important;
+
+// }
+// .tab2{
+//   left: 80px;
+//   width: 118px !important;
+
+// }
+// .tab3{
+//   left: 171px;
+//   width: 149px !important;
+// }
+// .tab4{
+//   left: 294px;
+//   width: 172px !important;
+// }
+// .tab5{
+//   left: 440px;
+//   width: 156px !important;
+// }
+// .tab8{
+//   left: 680px;
+//   width: 156px !important;
+// }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
     width: 62vw;
