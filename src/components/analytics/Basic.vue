@@ -328,33 +328,6 @@ export default defineComponent({
   left: 680px;
   width: 173px !important;
 }
-// by laiqa
-// .tab1{
-//   left: -11px;
-//   width: 118px !important;
-
-// }
-// .tab2{
-//   left: 80px;
-//   width: 118px !important;
-
-// }
-// .tab3{
-//   left: 171px;
-//   width: 149px !important;
-// }
-// .tab4{
-//   left: 294px;
-//   width: 172px !important;
-// }
-// .tab5{
-//   left: 440px;
-//   width: 156px !important;
-// }
-// .tab8{
-//   left: 680px;
-//   width: 156px !important;
-// }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
     width: 62vw;
