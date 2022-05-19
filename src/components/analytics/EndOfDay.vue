@@ -48,9 +48,9 @@
     </table>
     <div class="d-flex justify-content-between flex-row">
       <div class="p-2"><span> Total Amount: </span>
-        <span>{{ salesanalytics.total_orders }}</span></div>
-      <div class="p-2"><span> Total Quantity: </span>
         <span>{{ salesanalytics.total_amount }}</span></div>
+      <div class="p-2"><span> Total Quantity: </span>
+        <span>{{ salesanalytics.total_quantity }}</span></div>
     </div>
   </div>
 </template>
