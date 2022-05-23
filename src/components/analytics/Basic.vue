@@ -33,6 +33,11 @@
               <strong>Day Total Payable</strong>
             </span>
           </li>
+           <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()">
+            <span>
+              <strong>Comparison</strong>
+            </span>
+          </li>
         </ul>
       </div>
       <div class="route-con">
@@ -78,8 +83,12 @@ export default defineComponent({
       this.$router.push({ name: "StockStatement" });
     },
     onClickDayTotalPayable(){
-       this.tab = 'dayTotalPayable'
+      this.tab = 'dayTotalPayable'
       this.$router.push({ name: "DayTotalPayable" });
+    },
+    onClickComparisonAnalysis(){
+      this.tab = 'comparisonAnalysis'
+      this.$router.push({ name: "ComparisonAnalysis" });
     }
 
   },
@@ -118,7 +127,7 @@ export default defineComponent({
 <style lang="scss" scoped>
   #expense {
     // padding: 2.65% 30%;
-    padding: 1.65% 23%;
+    padding: 1.65% 21%;
     // padding-left: 15%;
     // padding-right: 15%;
     // padding-left: 15%;
@@ -311,21 +320,32 @@ export default defineComponent({
   width: 172px !important;
 }
 .tab5{
-  left: 440px;
-  width: 156px !important;
+  left: 439px;
+  width: 161px !important;
 }
 .tab6{
-  left: 575px;
-  width: 173px !important;
+  left: 573px;
+  width: 165px !important;
+}
+.tab7{
+  left: 711px;
+  width: 132px !important;
 }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
-    width: 62vw;
+    // width: 62vw;
+    width: 70vw;
   }
+  #expense {
+    padding: 1.65% 16%;
+}
 }
 @media Screen and (max-width: 1164px){
   .diff-shadow{
-    width: 72vw;
+    width: 75vw;
   }
+  #expense {
+    padding: 1.65% 13%;
+}
 }
 </style>
