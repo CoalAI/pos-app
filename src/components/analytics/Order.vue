@@ -148,25 +148,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-// table {
-//   border-collapse: collapse;
-//   width: 100%;
-// }
-
-// td, th {
-//   border: none;
-//   text-align: left;
-//   padding: 20px;
-// }
-
-// tr:nth-child(even) {
-//   background-color: inherit;
-// }
-
-// tr:nth-child(odd) input {
-//   background-color: inherit;
-// }
-
 /* ab css */
 .ab-flex-box{
   // display: flex;
@@ -183,9 +164,6 @@ export default defineComponent({
 }
 #select-con > .ab-select-container > select{
   margin-left: 10px;
-  /* padding: 8px 18px;
-  border-radius: 10px;
-  font-size: 12px; */
 }
 .date-container{
   display: flex;
