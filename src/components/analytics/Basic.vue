@@ -3,7 +3,7 @@
     <div class="diff-shadow">
       <div class="page-upper">
         <ul class="nav nav-tabs">
-          <li :class="tab === 'order' ? 'active-li ab1' : 'ab1'" @click="onClickOrder()">
+          <li :class="tab === 'order' ? 'active-li ab1 tab1' : 'ab1 tab1'" @click="onClickOrder()">
             <span>
               <strong>Order</strong>
             </span>
@@ -26,6 +26,11 @@
           <li :class="tab === 'StockStatement' ? 'active-li ab1 tab5' : 'ab1 tab5'" @click="onClickStockStatement()">
             <span>
               <strong>Stock Statement</strong>
+            </span>
+          </li>
+          <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickDayTotalPayable()">
+            <span>
+              <strong>Day Total Payable</strong>
             </span>
           </li>
         </ul>
@@ -72,6 +77,10 @@ export default defineComponent({
       this.tab = 'StockStatement'
       this.$router.push({ name: "StockStatement" });
     },
+    onClickDayTotalPayable(){
+       this.tab = 'dayTotalPayable'
+      this.$router.push({ name: "DayTotalPayable" });
+    }
 
   },
   computed: {
@@ -285,19 +294,28 @@ export default defineComponent({
   text-align: center;
   position: absolute;
 }
+.tab1{
+  left: -11px;
+  width: 118px !important;
+}
 .tab2{
-  left: 114px;
+  left: 80px;
+  width: 118px !important;
 }
 .tab3{
-  left: 233px;
-  width: 168px !important;
+  left: 171px;
+  width: 149px !important;
 }
 .tab4{
-  left: 375px;
-  width: 180px !important;
+  left: 294px;
+  width: 172px !important;
 }
 .tab5{
-  left: 528px;
+  left: 440px;
+  width: 156px !important;
+}
+.tab6{
+  left: 575px;
   width: 173px !important;
 }
 @media Screen and (max-width: 1375px){
