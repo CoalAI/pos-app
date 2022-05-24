@@ -29,31 +29,30 @@
         </div>
       </div>
     </div>
-   
-    <!-- commented out -->
-    <!-- <div class="flex-box">
-      <div class="b" style="margin-left: 10px">
-        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search Analytics</button>
-      </div>
-    </div> -->
-    <!-- <table>
+   <table class="tble-mt">
       <colgroup>
-        <col span="1" style="width: 50%;">
-        <col span="1" style="width: 50%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
       </colgroup>
-      <tr>
-        <td><strong>Total Orders</strong></td>
-        <td>{{analytics.total_orders}}</td>
-      </tr>
-      <tr>
-        <td><strong>Total Amount</strong></td>
-        <td>PKR {{analytics.total_orders_amount}}</td>
-      </tr>
-      <tr>
-        <td><strong>Expense</strong></td>
-        <td>PKR {{analytics.total_expense}}</td>
-      </tr>
-    </table> -->
+      <thead>
+        <tr class="fr-row header">
+          <th scope="col">Invoice Id</th>
+          <th scope="col">Product Name</th>
+          <th scope="col">Total Bill</th>
+          <th scope="col">Order Status</th>
+        </tr>
+      </thead>
+      <tbody>
+       <tr v-for="data in analytics.table_data" :key="data.order__invoice_id">
+          <td>{{data.order__invoice_id}}</td>
+          <td>{{data.batch__product_variant__product__name}}</td>
+          <td>{{data.order__total}}</td>
+          <td>{{data.order__status}}</td>
+        </tr>
+      </tbody>
+    </table>
     <div class="stats">
       <div>
         <span>Total Orders:</span>
@@ -149,25 +148,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td, th {
-  border: none;
-  text-align: left;
-  padding: 20px;
-}
-
-tr:nth-child(even) {
-  background-color: inherit;
-}
-
-tr:nth-child(odd) input {
-  background-color: inherit;
-}
-
 /* ab css */
 .ab-flex-box{
   // display: flex;
@@ -184,9 +164,6 @@ tr:nth-child(odd) input {
 }
 #select-con > .ab-select-container > select{
   margin-left: 10px;
-  /* padding: 8px 18px;
-  border-radius: 10px;
-  font-size: 12px; */
 }
 .date-container{
   display: flex;
@@ -240,5 +217,33 @@ tr:nth-child(odd) input {
 }
 .custom-select{
   width: 35%;
+}
+
+// table designs
+.tble-mt{
+  margin: 20px 0;
+}
+.header > th{
+  text-align: center;
+}
+.header > th:first-child{
+  border: none;
+  border-radius: 10px 0px 0px 10px;
+}
+.header > th:last-child{
+  border: none;
+  border-radius: 0px 10px 10px 0px;
+}
+.header {
+  border-radius: 5px;
+  background-color: #0f2634; 
+  color: white;
+}
+td > .flex-box{
+  justify-content: space-around;
+  align-items: center;
+}
+.fr-row {
+  font-size: 12px;
 }
 </style>
