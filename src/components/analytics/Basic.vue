@@ -126,7 +126,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #expense {
-  padding: 1.65% 23%;
+  max-width: 1163px;
+  margin: 0 auto;
 }
 .diff-shadow{
   padding: 1.65% 3.56%;
