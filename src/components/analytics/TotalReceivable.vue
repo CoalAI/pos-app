@@ -35,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="data in total_pay_rec.amount" :key="data">
+          <tr class="content" v-for="data in total_pay_rec.amount" :key="data">
             <td v-if="data.receivable_amount != 0">{{ data.seller_company }}</td>
             <td v-if="data.receivable_amount != 0">{{ data.seller_company_type }}</td>
             <td v-if="data.receivable_amount != 0">{{ data.receivable_amount }}</td>
@@ -142,6 +142,9 @@ td > .flex-box{
 }
 .fr-row {
   font-size: 12px;
+}
+.content > td{
+  text-align: center;
 }
 .stats{
   margin-top: 20px;
