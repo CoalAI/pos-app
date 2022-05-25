@@ -126,7 +126,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #expense {
-  padding: 1.65% 23%;
+  max-width: 1163px;
+  margin: 0 auto;
 }
 .diff-shadow{
   padding: 1.65% 3.56%;
@@ -245,11 +246,11 @@ export default defineComponent({
   width: 156px !important;
 }
 .tab6{
-  left: 575px;
+  left: 572px;
   width: 173px !important;
 }
 .tab8{
-  left: 680px;
+  left: 720px;
   width: 173px !important;
 }
 @media Screen and (max-width: 1375px){
