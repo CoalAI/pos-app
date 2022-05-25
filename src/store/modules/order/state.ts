@@ -33,6 +33,7 @@ export type State = {
   };
   analytics: any;
   salesanalytics: any;
+  totalpayablereceivable: any;
 };
 
 
@@ -64,4 +65,5 @@ export const state: State = {
   },
   analytics: {},
   salesanalytics: {},
+  totalpayablereceivable: {},
 };
