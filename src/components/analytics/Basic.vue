@@ -3,7 +3,7 @@
     <div class="diff-shadow">
       <div class="page-upper">
         <ul class="nav nav-tabs">
-          <li :class="tab === 'order' ? 'active-li ab1' : 'ab1'" @click="onClickOrder()">
+          <li :class="tab === 'order' ? 'active-li ab1 tab1' : 'ab1 tab1'" @click="onClickOrder()">
             <span>
               <strong>Order</strong>
             </span>
@@ -26,6 +26,16 @@
           <li :class="tab === 'StockStatement' ? 'active-li ab1 tab5' : 'ab1 tab5'" @click="onClickStockStatement()">
             <span>
               <strong>Stock Statement</strong>
+            </span>
+          </li>
+          <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickDayTotalPayable()">
+            <span>
+              <strong>Day Total Payable</strong>
+            </span>
+          </li>
+          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()">
+            <span>
+              <strong>Total Receivable</strong>
             </span>
           </li>
         </ul>
@@ -72,6 +82,14 @@ export default defineComponent({
       this.tab = 'StockStatement'
       this.$router.push({ name: "StockStatement" });
     },
+    onClickTotalReceivable(){
+      this.tab = 'TotalReceivable'
+      this.$router.push({ name: "TotalReceivable" });
+    },
+    onClickDayTotalPayable(){
+       this.tab = 'dayTotalPayable'
+      this.$router.push({ name: "DayTotalPayable" });
+    }
 
   },
   computed: {
@@ -107,78 +125,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  #expense {
-    // padding: 2.65% 30%;
-    padding: 1.65% 23%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    // margin-top: 3%;
-  }
-  .diff-shadow{
-    padding: 1.65% 3.56%;
-  }
-  .route-con{
-    margin: 60px 0 20px 0;
-  }
-  // #expense {
-  //   padding-left: 15%;
-  //   padding-right: 15%;
-  //   margin-top: 3%;
-  // }
-//   .pad-label {
-//     padding: 20px 20px 20px 0px;
-//   }
-//   .w100 {
-//     width: $w150;
-//   }
-//   label {
-//     text-align: left;
-//   }
-//   .full-width {
-//     width: 100%;
-//   }
-//   .checkbox-label {
-//     font-size: $label-font-size;
-//   }
-//   .nav-tabs .nav-link.active {
-//     color: $primary-color;
-//     background-color: #fff;
-//     border-color: #dee2e6 #dee2e6 #fff;
-//   }
-//   .nav-link {
-//     border: 1px solid transparent;
-//     border-top-left-radius: .25rem;
-//     border-top-right-radius: .25rem;
-//   }
-//   .nav-link {
-//     color: #495057;
-//     display: block;
-//     padding: .5rem 1rem;
-//   }
-//   a:visited {
-//     color: #495057;
-//   }
-//   .active a {
-//     color: $primary-color;
-//   }
-//   .grid-container {
-//   display: grid;
-//   grid-template-columns: auto auto auto;
-//   padding: 10px;
-// }
-// .grid-item {
-//   background-color: rgba(255, 255, 255, 0.8);
-//   padding: 20px;
-// }
-//   hr.solid {
-//     border-top: 3px solid #bbb;
-//   }
-//   .btn-grid {
-//     width: $w100;
-//     margin: 2px;
-//   }
+#expense {
+  max-width: 1163px;
+  margin: 0 auto;
+}
+.diff-shadow{
+  padding: 1.65% 3.56%;
+}
+.route-con{
+  margin: 60px 0 20px 0;
+}
 
 
 // ab css
@@ -217,22 +173,6 @@ export default defineComponent({
 .nav-tabs > button{
   position: absolute;
 }
-// .ab1{
-
-// }
-.ab2{
-  left: 138px;
-}
-.ab3{
-  left: 290px;
-}
-.ab4{
-  left: 443px;
-}
-.ab5{
-  left: 599px;
-}
-
 .page-upper{
   display: flex;
   justify-content: space-between;
@@ -285,19 +225,32 @@ export default defineComponent({
   text-align: center;
   position: absolute;
 }
+.tab1{
+  left: -11px;
+  width: 118px !important;
+}
 .tab2{
-  left: 114px;
+  left: 80px;
+  width: 118px !important;
 }
 .tab3{
-  left: 233px;
-  width: 168px !important;
+  left: 171px;
+  width: 149px !important;
 }
 .tab4{
-  left: 375px;
-  width: 180px !important;
+  left: 294px;
+  width: 172px !important;
 }
 .tab5{
-  left: 528px;
+  left: 440px;
+  width: 156px !important;
+}
+.tab6{
+  left: 572px;
+  width: 173px !important;
+}
+.tab8{
+  left: 720px;
   width: 173px !important;
 }
 @media Screen and (max-width: 1375px){

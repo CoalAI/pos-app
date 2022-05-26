@@ -43,7 +43,8 @@ export enum ActionTypes {
   EMPTY_ORDER = "EMPTY_ORDER",
   FETCH_ANALYTICS = "FETCH_ANALYTICS",
   FETCH_SALESANALYTICS = "FETCH_SALESANALYTICS",
-  PRODUCT_QUANTITY = "PRODUCT_QUANTITY"
+  PRODUCT_QUANTITY = "PRODUCT_QUANTITY",
+  TOTAL_PAYABLE_RECEIVABLE = "TOTAL_PAYABLE_RECEIVABLE",
 }
 
 
@@ -101,6 +102,7 @@ export interface Actions {
   [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
   [ActionTypes.FETCH_SALESANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
   [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number}): void;
+  [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -468,6 +470,15 @@ Actions = {
     const response = await serverRequest('get', `inventory/?company=${data.company}&batch__product_variant__product__category=${data.category}`, true, data);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetInventory, response.data.results);
+    }
+  },
+  async [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string) {
+    const response = await serverRequest('get', `total-payable-receivable/${id}/`, true);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetTotalPayableReceivable, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
     }
   },
 };
