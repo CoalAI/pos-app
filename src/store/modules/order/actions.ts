@@ -44,7 +44,7 @@ export enum ActionTypes {
   FETCH_ANALYTICS = "FETCH_ANALYTICS",
   FETCH_SALESANALYTICS = "FETCH_SALESANALYTICS",
   PRODUCT_QUANTITY = "PRODUCT_QUANTITY",
-  FETCH_DAY_PAYABLE = "FETCH_DAY_PAYABLE",
+  TOTAL_PAYABLE_RECEIVABLE = "TOTAL_PAYABLE_RECEIVABLE",
 }
 
 
@@ -102,7 +102,7 @@ export interface Actions {
   [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
   [ActionTypes.FETCH_SALESANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
   [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number}): void;
-  [ActionTypes.FETCH_DAY_PAYABLE]({ commit }: AugmentedActionContext, options: {company: number }): void;
+  [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -472,10 +472,13 @@ Actions = {
       commit(MutationTypes.SetInventory, response.data.results);
     }
   },
-  async [ActionTypes.FETCH_DAY_PAYABLE]({ commit }: AugmentedActionContext, options: {company: number }) {
-    const response = await serverRequest('get', 'total-payable/', true, undefined, options);
+  async [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string) {
+    const response = await serverRequest('get', `total-payable-receivable/${id}/`, true);
     if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetDayPayable, response.data);
+      commit(MutationTypes.SetTotalPayableReceivable, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
     }
   },
 };

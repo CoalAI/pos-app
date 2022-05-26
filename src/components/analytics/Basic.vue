@@ -33,9 +33,14 @@
               <strong>Day Total Payable</strong>
             </span>
           </li>
-           <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()">
+          <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()">
             <span>
               <strong>Comparison</strong>
+            </span>
+          </li>
+          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()">
+            <span>
+              <strong>Total Receivable</strong>
             </span>
           </li>
         </ul>
@@ -81,6 +86,10 @@ export default defineComponent({
     onClickStockStatement(){
       this.tab = 'StockStatement'
       this.$router.push({ name: "StockStatement" });
+    },
+    onClickTotalReceivable(){
+      this.tab = 'TotalReceivable'
+      this.$router.push({ name: "TotalReceivable" });
     },
     onClickDayTotalPayable(){
       this.tab = 'dayTotalPayable'
@@ -140,65 +149,7 @@ export default defineComponent({
   .route-con{
     margin: 60px 0 20px 0;
   }
-  // #expense {
-  //   padding-left: 15%;
-  //   padding-right: 15%;
-  //   margin-top: 3%;
-  // }
-//   .pad-label {
-//     padding: 20px 20px 20px 0px;
-//   }
-//   .w100 {
-//     width: $w150;
-//   }
-//   label {
-//     text-align: left;
-//   }
-//   .full-width {
-//     width: 100%;
-//   }
-//   .checkbox-label {
-//     font-size: $label-font-size;
-//   }
-//   .nav-tabs .nav-link.active {
-//     color: $primary-color;
-//     background-color: #fff;
-//     border-color: #dee2e6 #dee2e6 #fff;
-//   }
-//   .nav-link {
-//     border: 1px solid transparent;
-//     border-top-left-radius: .25rem;
-//     border-top-right-radius: .25rem;
-//   }
-//   .nav-link {
-//     color: #495057;
-//     display: block;
-//     padding: .5rem 1rem;
-//   }
-//   a:visited {
-//     color: #495057;
-//   }
-//   .active a {
-//     color: $primary-color;
-//   }
-//   .grid-container {
-//   display: grid;
-//   grid-template-columns: auto auto auto;
-//   padding: 10px;
-// }
-// .grid-item {
-//   background-color: rgba(255, 255, 255, 0.8);
-//   padding: 20px;
-// }
-//   hr.solid {
-//     border-top: 3px solid #bbb;
-//   }
-//   .btn-grid {
-//     width: $w100;
-//     margin: 2px;
-//   }
-
-
+  
 // ab css
   .nav-tabs{
     position: relative;
@@ -235,22 +186,6 @@ export default defineComponent({
 .nav-tabs > button{
   position: absolute;
 }
-// .ab1{
-
-// }
-.ab2{
-  left: 138px;
-}
-.ab3{
-  left: 290px;
-}
-.ab4{
-  left: 443px;
-}
-.ab5{
-  left: 599px;
-}
-
 .page-upper{
   display: flex;
   justify-content: space-between;
@@ -330,6 +265,10 @@ export default defineComponent({
 .tab7{
   left: 711px;
   width: 132px !important;
+}
+.tab8{
+  left: 716px;
+  width: 145px !important;
 }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
