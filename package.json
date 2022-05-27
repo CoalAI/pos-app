@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "axios": "^0.21.4",
+    "chart.js": "^3.7.1",
     "core-js": "^3.6.5",
     "localforage": "^1.10.0",
     "socket.io-client": "^4.1.2",
     "vue": "^3.0.7",
+    "vue-chart-3": "^3.1.8",
     "vue-debounce": "^2.6.0",
     "vue-router": "^4.0.6",
     "vuex": "^4.0.0"
