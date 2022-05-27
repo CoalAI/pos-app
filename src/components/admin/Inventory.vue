@@ -24,7 +24,7 @@
         <div>
           <div id="company-type">
             <form class="filter inline" v-if="admin">
-              <div><input type ="checkbox" value="" @change="onCheckChange" name="company-type" id="company-type2"> All</div>
+              <div><input type ="checkbox" value="" @change="onCheckAll"  :checked="checkall" name="company-type" id="company-type2"> All</div>
               <div class="batches-op d-flex" v-for="company in companies" v-bind:key="company.id">
                 <input type="checkbox" @change="onCheckChange" id="company-type2" 
                 :value="company.id"
@@ -89,6 +89,22 @@
       </table>
       
     </div> 
+     <div class="analytics">
+    <div>
+      <span>
+        Total Products:
+      </span>
+      <span>
+         <span>{{counts.inventory}}</span>
+      </span>
+    </div>
+    <div>
+      <span>
+        Total Amount:
+      </span>
+      <span>{{inventory.map((item) => parseInt(item.quantity * item.batch.product_variant.price)).reduce((a, b) => a + b, 0)}}</span> 
+    </div>
+  </div>
     <Paginator
       class="mr-2 pager"
       :count="counts.inventory"
@@ -117,6 +133,7 @@ export default defineComponent({
       checkedValue: -1,
       search: "",
       company: "",
+      checkall: true,
     };
   },
   computed: {
@@ -144,6 +161,7 @@ export default defineComponent({
     onCheckChange: async function(e: any){
       this.checkedValue = e.target.value
       console.log(this.checkedValue)
+      this.checkall = false
       await this.fetchInventory({
         company: this.checkedValue,
         search: this.search,
@@ -151,6 +169,17 @@ export default defineComponent({
       
     
     },
+
+    onCheckAll: async function(e: any){
+      this.checkedValue = e.target.value
+      console.log(this.checkedValue)
+      this.checkall = true
+      await this.fetchInventory({
+        company: this.checkedValue,
+        search: this.search,
+      });
+    },
+
     onChangeCompany: async function () {
       await this.fetchInventory({
         company: this.company,
@@ -380,4 +409,20 @@ export default defineComponent({
     margin-top: 0px;
   }
 }
+.analytics{
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+.analytics > div > span:first-child{
+  font-size: 15px;
+  font-weight: 600;
+}
+.analytics > div > span:last-child{
+  font-size: 15px;
+  font-weight: 500;
+  color: #e73b2a;
+}
+
+
 </style>
