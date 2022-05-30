@@ -37,6 +37,7 @@ import TotalReceivable from '@/components/analytics/TotalReceivable.vue';
 import DayTotalPayable from '@/components/analytics/DayTotalPayable.vue';
 import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 import ProfifLossReport from '@/components/analytics/Report.vue';
+import EndOfDay from '@/components/analytics/EndOfDay.vue';
 import ComparisonAnalysis from '@/components/analytics/ComparisonAnalysis.vue';
 
 
@@ -294,6 +295,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'report',
         name: 'profit-loss-report',
         component: ProfifLossReport,
+      },
+      {
+        path: 'eod',
+        name: 'end-of-day',
+        component: EndOfDay,
       },
       {
         path: 'comparisonAnalysis',

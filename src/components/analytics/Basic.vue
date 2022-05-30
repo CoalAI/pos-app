@@ -28,9 +28,15 @@
               <strong>Stock Statement</strong>
             </span>
           </li>
+          
           <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickDayTotalPayable()">
             <span>
               <strong>Day Total Payable</strong>
+            </span>
+          </li>
+          <li :class="tab === 'End of Day' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickEndOfDay()">
+            <span>
+              <strong>End of Day</strong>
             </span>
           </li>
           <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()">
@@ -87,6 +93,10 @@ export default defineComponent({
       this.tab = 'StockStatement'
       this.$router.push({ name: "StockStatement" });
     },
+    onClickEndOfDay(){
+      this.tab = 'End of Day'
+      this.$router.push({ name: "end-of-day" });
+      },
     onClickTotalReceivable(){
       this.tab = 'TotalReceivable'
       this.$router.push({ name: "TotalReceivable" });
@@ -269,6 +279,10 @@ export default defineComponent({
 .tab8{
   left: 716px;
   width: 145px !important;
+}
+.tab7{
+  left: 720px;
+  width: 173px !important;
 }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
