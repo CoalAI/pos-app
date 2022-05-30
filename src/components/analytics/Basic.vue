@@ -28,9 +28,20 @@
               <strong>Stock Statement</strong>
             </span>
           </li>
+          
           <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickDayTotalPayable()">
             <span>
               <strong>Day Total Payable</strong>
+            </span>
+          </li>
+          <li :class="tab === 'End of Day' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickEndOfDay()">
+            <span>
+              <strong>End of Day</strong>
+            </span>
+          </li>
+          <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()">
+            <span>
+              <strong>Comparison</strong>
             </span>
           </li>
           <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()">
@@ -82,13 +93,21 @@ export default defineComponent({
       this.tab = 'StockStatement'
       this.$router.push({ name: "StockStatement" });
     },
+    onClickEndOfDay(){
+      this.tab = 'End of Day'
+      this.$router.push({ name: "end-of-day" });
+      },
     onClickTotalReceivable(){
       this.tab = 'TotalReceivable'
       this.$router.push({ name: "TotalReceivable" });
     },
     onClickDayTotalPayable(){
-       this.tab = 'dayTotalPayable'
+      this.tab = 'dayTotalPayable'
       this.$router.push({ name: "DayTotalPayable" });
+    },
+    onClickComparisonAnalysis(){
+      this.tab = 'comparisonAnalysis'
+      this.$router.push({ name: "ComparisonAnalysis" });
     }
 
   },
@@ -125,17 +144,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-#expense {
-  padding: 1.65% 23%;
-}
-.diff-shadow{
-  padding: 1.65% 3.56%;
-}
-.route-con{
-  margin: 60px 0 20px 0;
-}
-
-
+  #expense {
+    // padding: 2.65% 30%;
+    padding: 1.65% 21%;
+    // padding-left: 15%;
+    // padding-right: 15%;
+    // padding-left: 15%;
+    // padding-right: 15%;
+    // margin-top: 3%;
+  }
+  .diff-shadow{
+    padding: 1.65% 3.56%;
+  }
+  .route-con{
+    margin: 60px 0 20px 0;
+  }
+  
 // ab css
   .nav-tabs{
     position: relative;
@@ -241,25 +265,40 @@ export default defineComponent({
   width: 172px !important;
 }
 .tab5{
-  left: 440px;
-  width: 156px !important;
+  left: 439px;
+  width: 161px !important;
 }
 .tab6{
-  left: 575px;
-  width: 173px !important;
+  left: 573px;
+  width: 165px !important;
+}
+.tab7{
+  left: 711px;
+  width: 132px !important;
 }
 .tab8{
-  left: 680px;
+  left: 716px;
+  width: 145px !important;
+}
+.tab7{
+  left: 720px;
   width: 173px !important;
 }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
-    width: 62vw;
+    // width: 62vw;
+    width: 70vw;
   }
+  #expense {
+    padding: 1.65% 16%;
+}
 }
 @media Screen and (max-width: 1164px){
   .diff-shadow{
-    width: 72vw;
+    width: 75vw;
   }
+  #expense {
+    padding: 1.65% 13%;
+}
 }
 </style>

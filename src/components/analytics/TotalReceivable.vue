@@ -35,17 +35,17 @@
           </tr>
         </thead>
         <tbody>
-        <tr v-if="single_company">
-          <td>{{ single_company.company_type }}</td>
-            <td>{{ single_company.company_name }}</td>
-            <td>{{ single_company.credit }}</td>
+          <tr class="content" v-for="data in total_pay_rec.amount" :key="data">
+            <td v-if="data.receivable_amount != 0">{{ data.seller_company }}</td>
+            <td v-if="data.receivable_amount != 0">{{ data.seller_company_type }}</td>
+            <td v-if="data.receivable_amount != 0">{{ data.receivable_amount }}</td>
           </tr> 
         </tbody>
       </table>
     <div class="stats">
       <div>
         <span>Total Amount:</span>
-        <span>{{ single_company.credit }}</span>
+        <span>{{ total_pay_rec.total_receivable_amount }}</span>
       </div>
     </div>
   </div>
@@ -54,6 +54,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import { mapGetters, mapActions } from 'vuex';
+import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 
 
@@ -73,6 +74,7 @@ export default defineComponent({
       userdata: 'getUser',
       companies: 'getCompanies',
       singlecompany: 'getSignleCompany',
+      total_pay_rec: 'getTotalpayablereceivable'
 
     }),
     admin(){
@@ -91,10 +93,10 @@ export default defineComponent({
     ...mapActions({
       fetchUser: AuthActionTypes.USER_DATA,
       fetchCompanies: AuthActionTypes.FETCH_COMPANIES,
+      fetchTotalpayablereceivable: ActionTypes.TOTAL_PAYABLE_RECEIVABLE,
     }),
     async fetchAnalyticsBtn() {
-      this.single_company = await this.singlecompany(this.company);
-      console.log(this.single_company)
+      await this.fetchTotalpayablereceivable(this.company)
     },
   },
   async mounted() {
@@ -140,6 +142,9 @@ td > .flex-box{
 }
 .fr-row {
   font-size: 12px;
+}
+.content > td{
+  text-align: center;
 }
 .stats{
   margin-top: 20px;
