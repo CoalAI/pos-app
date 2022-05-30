@@ -87,7 +87,22 @@
           </td>
         </tr>
       </table>
-      
+      <div class="analytics">
+        <div>
+          <span>
+            Total Products:
+          </span>
+          <span>
+              <span>{{counts.inventory}}</span>
+          </span>
+        </div>
+        <div>
+          <span>
+            Total Amount:
+          </span>
+          <span v-if="inventoryTotal">{{inventoryTotal}}</span> 
+        </div>
+      </div>
     </div> 
     <Paginator
       class="mr-2 pager"
@@ -135,6 +150,7 @@ export default defineComponent({
 
     ...mapGetters({
       inventory: "getInventory",
+      inventoryTotal: "getInventoryTotalAmount",
       companies: "getInventoryCompanies",
       counts: "getTotalCountsOrderModule",
       userdata: "getUser",
