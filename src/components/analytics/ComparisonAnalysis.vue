@@ -11,13 +11,13 @@
         v-model="company"
         :disabled="!admin"
       >
-        <option class="batches-op" v-for="company_type in companies_types" v-bind:key="company_type.id" v-bind:value="company_type.id">
+        <option class="batches-op" v-for="company_type in companies_types" v-bind:key="company_type.id" v-bind:value="company_type.name">
           {{company_type.name}}
         </option>
       </select>
       
       <div class="b">
-        <button class="btn btn-orange" @click="showChart()">Search</button>
+        <button class="btn btn-orange" @click="fetchAnalyticsComparisonBtn()">Search</button>
       </div>
      
     </div>
@@ -45,13 +45,9 @@ export default defineComponent({
   },
    setup() {
     const testData = {
-      labels: ['Retail1', 'Retail2', 'Retail3', 'Retail4', 'Retail5'],
-    // labels: this.companies,
       datasets: [
         {
-          data: [30, 40, 60, 70, 5],
-          backgroundColor: ['#77CEFF', '#0079AF', '#123E6B', '#97B0C4', '#A5C8ED'],
-          labels: ['Retail1', 'Retail2', 'Retail3', 'Retail4', 'Retail5'],
+          data: [{x:'Sales', y:20}, {x:'Revenue', y:10}]
         },
       ],
     };
@@ -61,11 +57,12 @@ export default defineComponent({
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-
+    
     return {
       startDate: "2022-01-01",
       endDate: "2022-05-20",
       company: 0,
+      company_type: '',
       companies_types: [
         {name: 'FACTORY', value:'factory'},
         {name: 'STORE', value:'store'},
@@ -81,9 +78,13 @@ export default defineComponent({
       salesanalytics: 'getSalesanalytics',
       // companies: 'getInventoryCompanies',
       userdata: 'getUser',
+      comparisonAnalysis: 'getComparisonanalysis'
     }),
   },
   methods: { 
+    ...mapActions({
+      getComparisonAnalysis: ActionTypes.FETCH_COMPARISON_ANALYSIS,
+    }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
       const allowedCompanies = ['PARENT', 'STORE'];
@@ -94,6 +95,12 @@ export default defineComponent({
       }
       return false;
     },
+    async fetchAnalyticsComparisonBtn() {
+      await this.getComparisonAnalysis({
+        company_type: this.company,
+      });
+      console.log('button clicked');
+    }
   },
 })
 </script>
