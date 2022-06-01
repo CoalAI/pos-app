@@ -200,7 +200,7 @@ export default defineComponent({
 
     changePage: async function (pageNo: number) {
       await this.fetchInventory({
-        company: this.company,
+        company: this.checkedValue,
         search: this.search,
         page: pageNo,
       });
