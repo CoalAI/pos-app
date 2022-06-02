@@ -267,7 +267,7 @@ export default defineComponent({
   width: 132px !important;
 }
 .tab8{
-  left: 716px;
+  left: 816px;
   width: 145px !important;
 }
 @media Screen and (max-width: 1375px){
