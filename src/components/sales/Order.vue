@@ -207,22 +207,36 @@
                   class="shadow-box mr-all"
                   @click="selectProduct(item.id, itemVariant.id)"
                 >
-                  <table class="pr-s-r-table">
-                    <tr>
-                      <td>{{ item.name }}</td>
-                      <td>{{ item.bar_code }}</td>
-                      <td>{{ itemVariant.color }}</td>
-                    </tr>
-                    <tr>
-                      <td>{{ itemVariant.sale_price }}</td>
-                      <td v-show="sumQuantity(itemVariant) > 0">
-                        {{ sumQuantity(itemVariant) }}
-                      </td>
-                     
-                      <td>{{ itemVariant.size }}</td>
-                    </tr>
-                    <tr v-show="sumQuantity(itemVariant) <= 0" class="out-of-stock">Out of Stock</tr>
-                  </table>
+                  <div>
+                    <div class="ab-flex">
+                      <p><b>Name:</b></p>
+                      <p><b>{{ item.name }}</b></p>
+                    </div>
+                    <div class="ab-flex">
+                      <p><b>Bar Code:</b></p>
+                      <p><b>{{ item.bar_code }}</b></p>
+                    </div>
+                    <div class="ab-flex">
+                      <p><b>Color:</b></p>
+                      <p><b>{{ itemVariant.color }}</b></p>
+                    </div>
+
+                    <div class="ab-flex">
+                      <p><b>Sale Price:</b></p>
+                      <p><b>{{ itemVariant.sale_price }}</b></p>
+                    </div>
+                    <div class="ab-flex" v-show="sumQuantity(itemVariant) > 0">
+                      <p><b>Quantity</b></p>
+                      <p v-show="sumQuantity(itemVariant) > 0"><b>{{ sumQuantity(itemVariant) }}</b></p>
+                    </div>
+                    <div class="ab-flex">
+                      <p><b>Size:</b></p>
+                      <p><b>{{ itemVariant.size }}</b></p>
+                    </div>
+                    <div v-show="sumQuantity(itemVariant) <= 0" class="out-of-stock">
+                      <p>Out of Stock</p>
+                    </div>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -1656,6 +1670,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+//ab css
+.ab-flex{
+  display:flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+//ab end css
+
 .focuschange {
   outline: none !important;
   border-left: 5px solid red;
@@ -1900,10 +1922,16 @@ export default defineComponent({
 /*.box-22 {
   margin-left: 70px;
 }*/
-
-/*li > div:hover {
+li > div.shadow-box{
+  padding: 0 4px;
+  border: 2px solid transparent;
+}
+li > div:hover {
   border: 2px solid $primary-color;
-}*/
+}
+div.ab-flex > p:last-child{
+  margin-left: 3px;
+}
 
 .order_item_input {
   margin: 0 !important;
