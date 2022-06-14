@@ -382,6 +382,7 @@ Actions = {
     if(isAxiosResponse(response)) {
       commit(MutationTypes.SetInventoryCount, response.data.count)
       commit(MutationTypes.SetInventory, response.data.results)
+      commit(MutationTypes.SetInventoryTotalAmount, response.data.total)
     }
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
