@@ -66,7 +66,6 @@ export type Mutations = {
   [MutationTypes.SetTotalPayableReceivable](state: State, value: any): void;
   [MutationTypes.SetComparisonAnalysis](state: State, value: any): void;
   [MutationTypes.SetInventoryTotalAmount](state: State, value: number): void;
-
 }
 
 export const mutations: MutationTree<State> & Mutations = {
