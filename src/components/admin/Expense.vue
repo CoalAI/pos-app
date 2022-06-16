@@ -117,7 +117,41 @@
           </div>
         </div>
       </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit' || expenseMethod === 'Received'">
+       <template v-if="expenseMethod === 'Expense'">
+        <!-- {{userdata}} -->
+        <div class="first-row row">
+          <div class="left">
+            <label for="products" style="padding-left: 8px">
+              <strong>Payee:</strong>
+            </label>
+            <div class="ab-select-container">
+              <select
+                id="user-dropdown"
+                name="user-dropdown"
+                class="custom-select" 
+                v-model="transaction.payee"
+              >
+                <option :value="-1">SELF</option>
+              </select>
+            </div>
+          </div>
+          <div class="right">
+            <label for="balance">
+              <strong>Balance:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="balance"
+                type="text"
+                placeholder="00"
+                v-model="userdata.company.balance"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit' || expenseMethod === 'Received' || expenseMethod == 'Expense'">
         
         <div class="second-row row">
           <div class="left">
@@ -406,6 +440,11 @@ export default defineComponent({
           this.transaction.payee = this.userdata.id;
           this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
         } else if (this.expenseMethod === 'Debit') {
+          this.transaction.payor = this.userdata.id;
+          this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+          this.transaction.amount = (-parseFloat(this.transaction.amount)).toString();
+        } 
+        else if (this.expenseMethod === 'Expense') {
           this.transaction.payor = this.userdata.id;
           this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
           this.transaction.amount = (-parseFloat(this.transaction.amount)).toString();
