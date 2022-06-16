@@ -3,19 +3,19 @@
     <label class="labelCmp" for="start_date">
       <strong>Company:</strong>
     </label>
-    <div class="ab-select-container">
-      <select
-        id="company-type"
-        name="company-type"
-        class="custom-select"
-        v-model="company"
-        @change="fetchAnalyticsBtn"
-        :disabled="!admin"
-      >
-        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-          {{company.company_name}}
-        </option>
-      </select>
+    <select
+      id="company-type"
+      name="company-type"
+      class="custom-select"
+      v-model="company"
+      :disabled="!admin"
+    >
+      <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+        {{company.company_name}}
+      </option>
+    </select>
+    <div class="b">
+        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
     </div>
   </div>
   <div id="print">
@@ -357,5 +357,12 @@ html {
 }
 .custom-select{
   width: 35%;
+}
+
+.b{
+  text-align: right;
+  padding: 7px;
+  margin-left: 1rem;
+  width: 7rem;
 }
 </style>

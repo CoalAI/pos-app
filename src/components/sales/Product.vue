@@ -53,7 +53,7 @@
                 <td>{{ index + 1 }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.bar_code }}</td>
-                <td v-if="product.category">{{ getCategoryName(product.category) }}</td><td v-else class="text-center">-</td>
+                <td v-if="product.category">{{product.category.name}}</td><td v-else class="text-center">-</td>
                 <td v-if="product.token">Yes</td><td v-else>No</td>
                 <td>
                   <table class="nested-table ">

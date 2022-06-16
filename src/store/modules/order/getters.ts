@@ -24,6 +24,7 @@ export interface Getters {
   // eslint-disable-next-line
   getSignleProduct(state: State, id: number): any;
   getInventory(state: State): Inventory[];
+  getInventoryTotalAmount(state: State): number;
   getListOfRequests(state: State): Request[];
   getUnits(state: State): Unit[];
   getCategories(state: State): Category[];
@@ -73,6 +74,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getInventory: (state: State) => {
     return state.inventory;
+  },
+  getInventoryTotalAmount: (state: State) => {
+    return state.totalinventoryamount;
   },
   getListOfRequests: (state: State) => {
     return state.listofRequests
