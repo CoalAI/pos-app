@@ -14,78 +14,103 @@
             @change="fetchAnalyticsBtn"
             :disabled="!admin"
           >
-            <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-              {{company.company_name}}
+            <option
+              class="batches-op"
+              v-for="company in companies"
+              v-bind:key="company.id"
+              v-bind:value="company.id"
+            >
+              {{ company.company_name }}
             </option>
           </select>
         </div>
       </div>
       <div class="d-flex">
         <div class="date-container">
-          <DateRange @dateRangeChange="setRange"  />
+          <DateRange @dateRangeChange="setRange" />
         </div>
         <div class="b">
-          <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
+          <button class="btn btn-orange" @click="fetchAnalyticsBtn">
+            Search
+          </button>
         </div>
       </div>
     </div>
-   <table class="tble-mt">
-      <colgroup>
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
+    <div id="print">
+      <table class="tble-mt">
+        <colgroup>
+        <col span="1" style="width: 25%" />
+        <col span="1" style="width: 25%" />
+        <col span="1" style="width: 25%" />
+        <col span="1" style="width: 25%" />
       </colgroup>
-      <thead>
-        <tr class="fr-row header">
-          <th scope="col">Invoice Id</th>
-          <th scope="col">Product Name</th>
-          <th scope="col">Total Bill</th>
-          <th scope="col">Order Status</th>
-        </tr>
-      </thead>
-      <tbody>
-       <tr v-for="data in analytics.table_data" :key="data.order__invoice_id">
-          <td>{{data.order__invoice_id}}</td>
-          <td>{{data.batch__product_variant__product__name}}</td>
-          <td>{{data.order__total}}</td>
-          <td>{{data.order__status}}</td>
-        </tr>
-      </tbody>
-    </table>
+        <thead>
+          <tr class="fr-row header">
+            <th scope="col">Invoice Id</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Total Bill</th>
+            <th scope="col">Order Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="data in analytics.table_data"
+            :key="data.order__invoice_id"
+          >
+            <td>{{ data.order__invoice_id }}</td>
+            <td>{{ data.batch__product_variant__product__name }}</td>
+            <td>{{ data.order__total }}</td>
+            <td>{{ data.order__status }}</td>
+          </tr>
+        </tbody>
+      </table>
     <div class="stats">
       <div>
         <span>Total Orders:</span>
-        <span>{{analytics.total_orders}}</span>
+        <span>{{ analytics.total_orders }}</span>
       </div>
       <div>
         <span>Total Amount:</span>
-        <span>{{analytics.total_orders_amount}}</span>
+        <span>{{ analytics.total_orders_amount }}</span>
       </div>
       <div>
         <span>Expenses:</span>
-        <span>{{analytics.total_expense}}</span>
+        <span>{{ analytics.total_expense }}</span>
       </div>
+    </div>
+    </div>
+    <div>
+
+    <button
+      class="btn-orange btn mt-5"
+      @click="printPage()"
+      :disabled="submitOrderButton"
+      ref="submitandprint"
+    >
+      Print Details
+    </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
-import { mapActions, mapGetters } from 'vuex';
+import { defineComponent } from "vue";
+import { mapActions, mapGetters } from "vuex";
 
-import DateRange from '@/components/common-components/DateRange.vue';
-import { ActionTypes } from '@/store/modules/order/actions';
-import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import DateRange from "@/components/common-components/DateRange.vue";
+import { ActionTypes } from "@/store/modules/order/actions";
+import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
 
 export default defineComponent({
-  name: 'OrderAnaltyics',
+  name: "OrderAnaltyics",
   components: {
     DateRange,
   },
   data() {
     const date = new Date();
-    const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    const dateStr = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
     return {
       startDate: dateStr,
       endDate: dateStr,
@@ -94,28 +119,33 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters({
-      analytics: 'getAnalytics',
-      companies: 'getInventoryCompanies',
-      userdata: 'getUser',
+      analytics: "getAnalytics",
+      companies: "getInventoryCompanies",
+      userdata: "getUser",
     }),
-    admin(){
-      const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
-      const allowedCompanies = ['PARENT', 'STORE'];
-      if(this.userdata != null && allowedRoles.includes(this.userdata.user_type)
-        && allowedCompanies.includes(this.userdata.company.company_type) 
-      ){
+    admin() {
+      const allowedRoles = ["SUPER_ADMIN", "ADMIN"];
+      const allowedCompanies = ["PARENT", "STORE"];
+      if (
+        this.userdata != null &&
+        allowedRoles.includes(this.userdata.user_type) &&
+        allowedCompanies.includes(this.userdata.company.company_type)
+      ) {
         return true;
       }
       return false;
     },
-    dateValidation: function(): string | null {
-      if(this.startDate !== undefined && this.endDate !== undefined && 
-        this.startDate !=='' && this.endDate !== '' &&
+    dateValidation: function (): string | null {
+      if (
+        this.startDate !== undefined &&
+        this.endDate !== undefined &&
+        this.startDate !== "" &&
+        this.endDate !== "" &&
         Date.parse(this.startDate) <= Date.parse(this.endDate)
-      ){
+      ) {
         return null;
       }
-      return 'invalid date range';
+      return "invalid date range";
     },
   },
   methods: {
@@ -124,7 +154,7 @@ export default defineComponent({
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       fetchUser: AuthActionTypes.USER_DATA,
     }),
-    setRange(range: null | {startDate: Date; endDate: Date}) {
+    setRange(range: null | { startDate: Date; endDate: Date }) {
       if (range !== null) {
         this.startDate = range.startDate.toString();
         this.endDate = range.endDate.toString();
@@ -136,7 +166,166 @@ export default defineComponent({
         end_date: this.endDate,
         company: this.company,
       });
-    }
+    },
+    getElementTag: function (tag: keyof HTMLElementTagNameMap): string {
+      const html: string[] = [];
+      const elements = document.getElementsByTagName(tag);
+      for (let index = 0; index < elements.length; index++) {
+        html.push(elements[index].outerHTML);
+      }
+      return html.join("\r\n");
+    },
+
+    getHtmlContents: function () {
+      const printContents = document.getElementById("print");
+      return printContents && printContents.innerHTML
+        ? printContents.innerHTML
+        : "";
+    },
+
+    printPage: function () {
+      let styles = "",
+        links = "";
+      styles = `
+			<style lang="scss" scoped>	
+				th:first-child {
+    border-radius: 10px 0px 0px 10px;
+}
+h1 {
+    text-align: center;
+}
+
+.header > th {
+    text-align: center;
+}
+
+td, th {
+    border: 1px solid;
+    border-color: #ddd;
+    text-align: left;
+    padding: 8px;
+}
+th {
+    text-align: inherit;
+}
+th {
+    display: table-cell;
+    vertical-align: inherit;
+    font-weight: bold;
+    text-align: -internal-center;
+}
+
+.fr-row {
+    font-size: 12px;
+}
+
+.header {
+    border-radius: 5px;
+    background-color: #0f2634;
+    color: white;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table {
+    border-collapse: collapse;
+}
+user agent stylesheet
+table {
+    border-collapse: separate;
+    text-indent: initial;
+    border-spacing: 2px;
+}
+
+#app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    font-size: 100%;
+}
+body {
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    background-color: #fff;
+}
+
+html {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -ms-overflow-style: scrollbar;
+    -webkit-tap-highlight-color: transparent;
+}
+.stats{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+			</style>
+			`;
+      // links = this.getElementTag('link');
+      links = "";
+      const printContents = this.getHtmlContents();
+      console.log(printContents, "printContents");
+      this.printContent(printContents, styles, links);
+      // this.checkToken();
+    },
+    printContent: function (
+      htmlcontent: string,
+      styles: string,
+      links: string
+    ) {
+      const endscripttag = "/script";
+      const popupWin = window.open(
+        "",
+        "_blank",
+        "top=0,left=0,height=auto,width=auto,focused=false"
+      );
+
+      if (popupWin) {
+        popupWin.document.open();
+        popupWin.document.write(`
+        <html>
+          <head>
+          <title></title>
+          ${styles}
+          ${links}
+          </head>
+          <body>
+          <h1>Order Analytics</h1>
+          ${htmlcontent}
+          <script defer>
+            function triggerPrint(event) {
+            window.removeEventListener('load', triggerPrint, false);
+            setTimeout(function() {
+              closeWindow(window.print());
+            }, 100);
+            }
+            function closeWindow(){
+              window.close();
+            }
+            window.addEventListener('load', triggerPrint, false);
+          <${endscripttag}>
+          </body>
+        </html>`);
+        popupWin.document.close();
+      }
+    },
   },
   async mounted() {
     await this.fetchUser();
@@ -144,102 +333,101 @@ export default defineComponent({
     await this.fetchAnalyticsBtn();
     this.company = this.userdata.company.id;
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>
 /* ab css */
-.ab-flex-box{
+.ab-flex-box {
   // display: flex;
   align-items: baseline;
 }
 
 /* upper left designs */
-#select-con{
+#select-con {
   display: flex;
   align-items: baseline;
 }
-#select-con > .ab-select-container{
+#select-con > .ab-select-container {
   width: 100%;
 }
-#select-con > .ab-select-container > select{
+#select-con > .ab-select-container > select {
   margin-left: 10px;
 }
-.date-container{
+.date-container {
   display: flex;
 }
 
-
 /* btn search  */
-.b{
+.b {
   text-align: right;
   padding: 7px;
   margin-left: 1rem;
   width: 7rem;
 }
-.btn-blue{
+.btn-blue {
   text-decoration: none;
   text-align: center;
-  background-color:#0f2636;
+  background-color: #0f2636;
   font-size: 12px;
   border-radius: 20px;
   padding: 6px 40px;
   cursor: pointer;
-  color:$white-color;
+  color: $white-color;
   border: 1.5px solid #0f2636 !important;
 }
-.btn-blue:hover{
+.btn-blue:hover {
   color: #0f2636;
   background-color: white;
   border: 1.5px solid #0f2636;
 }
 
 // stats designs
-.stats{
+.stats {
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
   margin-left: 1rem;
   margin-right: 1rem;
 }
-.stats > div > span:first-child{
+.stats > div > span:first-child {
   font-size: 15px;
   font-weight: 600;
   margin-right: 2px;
 }
-.stats > div > span:last-child{
+.stats > div > span:last-child {
   font-size: 15px;
   font-weight: 550;
   color: #e73b2a;
 }
-.labelCmp{
+.labelCmp {
   padding: 20px;
 }
-.custom-select{
+.custom-select {
   width: 35%;
 }
 
 // table designs
-.tble-mt{
+.tble-mt {
   margin: 20px 0;
 }
-.header > th{
+.header > th {
   text-align: center;
 }
-.header > th:first-child{
+.header > th:first-child {
   border: none;
   border-radius: 10px 0px 0px 10px;
 }
-.header > th:last-child{
+.header > th:last-child {
   border: none;
   border-radius: 0px 10px 10px 0px;
 }
 .header {
   border-radius: 5px;
-  background-color: #0f2634; 
+  background-color: #0f2634;
   color: white;
 }
-td > .flex-box{
+td > .flex-box {
   justify-content: space-around;
   align-items: center;
 }

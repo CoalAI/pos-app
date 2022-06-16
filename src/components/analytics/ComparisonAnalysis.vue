@@ -35,6 +35,14 @@
         style="height: 322px; width: 691px"
       />
     </div>
+    <button
+            class="btn-red block"
+            @click="printBill()"
+            :disabled="submitOrderButton"
+            ref="submitandprint"
+          >
+            Submit and Print</button
+          >
   </div>
 </template>
 
@@ -89,6 +97,7 @@ export default defineComponent({
         { name: "PARENT", value: "parent" },
         { name: "WALK_IN_CUSTOMER", value: "walk_in_customer" },
       ],
+      printDelay: 100,
     };
   },
   computed: {
@@ -147,6 +156,62 @@ export default defineComponent({
           },
         ],
       };
+    },
+    getElementTag: function(tag: keyof HTMLElementTagNameMap): string {
+			const html: string[] = [];
+			const elements = document.getElementsByTagName(tag);
+			for (let index = 0; index < elements.length; index++) {
+				html.push(elements[index].outerHTML);
+			}
+			return html.join('\r\n');
+		},
+
+		getHtmlContents: function() {
+			const printContents = document.getElementById("expense");
+			return printContents && printContents.innerHTML?printContents.innerHTML:'';
+		},
+
+		printBill: function() {
+			let styles = '', links = '';
+			styles = ``;
+			// links = this.getElementTag('link');
+			links = '';
+			const printContents = this.getHtmlContents();
+      this.printContent(printContents, styles, links);
+      // this.checkToken();
+		},
+    printContent: function(htmlcontent: string, styles: string, links: string) {
+
+      const endscripttag = "/script"
+      const popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto,focused=false");
+        
+      if (popupWin) {
+        popupWin.document.open()
+        popupWin.document.write(`
+        <html>
+          <head>
+          <title></title>
+          ${styles}
+          ${links}
+          </head>
+          <body>
+          ${htmlcontent}
+          <script defer>
+            function triggerPrint(event) {
+            window.removeEventListener('load', triggerPrint, false);
+            setTimeout(function() {
+              closeWindow(window.print());
+            }, ${this.printDelay});
+            }
+            function closeWindow(){
+              window.close();
+            }
+            window.addEventListener('load', triggerPrint, false);
+          <${endscripttag}>
+          </body>
+        </html>`);
+        popupWin.document.close();
+      }
     },
   },
 });
