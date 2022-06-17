@@ -13,6 +13,7 @@ export type State = {
     transactions: Transaction[];
     expense: Transaction;
     notifications: Notification[];
+    journal_entry_status: string;
     error: any;
     totalCounts: {
       users: number;
@@ -32,6 +33,7 @@ export const state: State = {
   transactions: [],
   expense: {},
   notifications: [],
+  journal_entry_status: '',
   error: {},
   totalCounts: {
     users: 0,

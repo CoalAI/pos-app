@@ -380,6 +380,7 @@ export default defineComponent({
       getVendors: AuthActionTypes.FETCH_VENDORS,
       createRequest: OrderActionTypes.CREATE_REQUEST,
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
+      createJournalEntry: AuthActionTypes.CREATE_JOURNAL_ENTRY
     }),
     table_to_array: function(){
       const table: any = document.querySelector('#journal-entry-table tbody')
@@ -392,15 +393,18 @@ export default defineComponent({
               const index: any = table_header[j].innerHTML
               rowData[index] = tableRow.cells[j].innerHTML
           } 
-          data.push(rowData); 
+          data.push(rowData)
       } 
-      alert(JSON.stringify(data))
-      return data; 
+      const final_data = {'transaction_list': data}
+      return final_data; 
     },
-    submitData: function(){
+    submitData: async function(){
       // if (this.journal_entry_validation()){
       // }
-      this.table_to_array()
+      const tbldata = this.table_to_array()
+      if (this.expenseMethod === 'Journal Entry') {
+        await this.createJournalEntry(tbldata).finally(() => this.loader = false)
+      }
     },
     amound_validation: function(){
       if (this.transaction.amount === '') {
