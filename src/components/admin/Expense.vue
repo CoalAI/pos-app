@@ -439,7 +439,10 @@ export default defineComponent({
         if (this.expenseMethod === 'Received') {
           this.transaction.payee = this.userdata.id;
           this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
-        } else if (this.expenseMethod === 'Debit') {
+        } else if(this.expenseMethod === 'Credit') {
+          this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+          this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
+        }else if (this.expenseMethod === 'Debit') {
           this.transaction.payor = this.userdata.id;
           this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
           this.transaction.amount = (-parseFloat(this.transaction.amount)).toString();
