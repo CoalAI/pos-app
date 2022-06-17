@@ -257,16 +257,24 @@
                 class="shadow-box mr-all"
                 @click="selectProduct(item.id, itemVariant.id)"
               >
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.bar_code }}</td>
-                  </tr>
-                  <tr>
-                    <td>{{ itemVariant.price }}</td>
-                    <td>{{ itemVariant.size }}</td>
-                  </tr>
-                </table>
+                <div>
+                   <div class="ab-flex">
+                     <p><b>Name:</b></p>
+                     <p><b>{{ item.name }}</b></p>
+                   </div>
+                   <div class="ab-flex">
+                     <p><b>Bar Code:</b></p>
+                     <p><b>{{ item.bar_code }}</b></p>
+                   </div>
+                   <div class="ab-flex">
+                     <p><b>Price</b></p>
+                     <p><b>{{ itemVariant.price }}</b></p>
+                   </div>
+                   <div class="ab-flex">
+                     <p><b>Size:</b></p>
+                     <p><b>{{ itemVariant.size }}</b></p>
+                   </div>
+                 </div>
               </div>
             </li>
           </ul>
@@ -1958,9 +1966,11 @@ td{
   font-weight: normal;
   padding-left: 2px;
 }
-
+li > div.shadow-box {
+  border: 2px solid transparent;
+}
 li > div:hover {
-  border: 2px solid $primary-color;
+  border: 2px solid $primary-color !important;
 }
 
 .order_item_input {
@@ -2035,6 +2045,19 @@ float-right{
     border: 1.5px solid #0f2636 !important;
     width:8rem;
   }
+//ab-css
+.ab-flex{
+   display:flex;
+   justify-content: space-between;
+   font-size: 12px;
+ }
+ li > div.shadow-box{
+   padding: 0 4px;
+   border: 2px solid transparent;
+ }
+ div.ab-flex > p:last-child{
+   margin-left: 3px;
+ }
 @media screen and (max-width:1216px ){
   .split-container{
     margin-left: 2vw;
