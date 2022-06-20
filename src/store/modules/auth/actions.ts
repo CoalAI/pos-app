@@ -216,7 +216,7 @@ Actions = {
   async [ActionTypes.CREATE_JOURNAL_ENTRY]({ commit }: AugmentedActionContext, data: any) {
     const response = await serverRequest('post', `journal-entry/`, true, data);
     if(isAxiosResponse(response)) {
-      commit(MutationTypes.SetJournalEntryStatus, response.data)
+      commit(MutationTypes.SetJournalEntryStatus, response.statusText)
     }
     if(isAxiosError(response)) {
       commit(MutationTypes.SetJournalEntryStatus, {})

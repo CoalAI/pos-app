@@ -190,7 +190,6 @@
                   <span>{{item?.username}}  {{item?.company?.company_name}}</span>
                 </option>
               </select>
-              <span v-if="payor_required_err" class="form-error">{{ payor_required_err }}</span>
             </div>
           </div>
           <div class="right">
@@ -203,7 +202,7 @@
                 name="user-dropdown"
                 v-model="transaction.payee"
               >
-                <option :value="-1">Select</option>
+                <option :value="-1">SELF</option>
                 <option disabled>--- username - company ---</option>
                 <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
                   <span>{{item?.username}} -  {{item?.company?.company_name}}</span>
@@ -215,7 +214,7 @@
                   </option>
                 </template>
               </select>
-              <span v-if="payee_required_err" class="form-error">{{ payee_required_err }}</span>
+              <span v-if="payor_payee_same_error" class="form-error">{{ payor_payee_same_error }}</span>
             </div>
           </div>
         </div>
@@ -228,13 +227,14 @@
               <select
                 id="user-dropdown"
                 name="user-dropdown"                
-                v-model="company.name"
+                v-model="company"
               >
                 <option disabled>--- department ---</option>
-                <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.company_name">
+                <option class="batches-op" v-for="company in companies" v-bind:key="company.id" :value="[company.id, company.company_name]">
                   {{company.company_name}}
                 </option>
               </select>
+              <span v-if="departmentrequired_error" class="form-error">{{ departmentrequired_error }}</span>
             </div>
           </div>
           <div class="right">
@@ -258,12 +258,14 @@
              @click="addDept">Add</button>
         </div>
         <table id="journal-entry-table">
+          <span v-if="no_data_table_error" class="form-error">{{ no_data_table_error }}</span>
           <thead>
             <tr class="fr-row header">
               
               <th style="border-radius: 10px 0px 0px 10px" scope="col">Method</th>
               <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payor</th>
               <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payee</th>
+              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Dept Id</th>
               <th style="border-radius: 0px 0px 0px 0px" scope="col">Dept Name</th>
               <th style="border-radius: 0px 10px 10px 0px" scope="col">Amount</th>
             </tr>
@@ -273,6 +275,7 @@
               <td v-if="a.method != ''">{{a.method}}</td>
               <td style="display: none;" v-if="a.payor != -1">{{a.payor}}</td>
               <td style="display: none;" v-if="a.payee != -1">{{a.payee}}</td>
+              <td style="display: none;" v-if="a.dept_id != -1">{{a.dept_id}}</td>
               <td v-if="a.dept != ''">{{a.dept}}</td>
               <td v-if="a.amount != ''">{{a.amount}}</td>
             </tr>
@@ -315,9 +318,10 @@ export default defineComponent({
       payment_type: 'cash',
       numberallowd_error: '',
       amountrequired_error: '',
-      payor_required_err: '',
-      payee_required_err: '',
       descriptionrequired_error: '',
+      departmentrequired_error: '',
+      payor_payee_same_error: '',
+      no_data_table_error: '',
       expenseMethod: 'Received',
       transaction: {
         payor:-1,
@@ -340,12 +344,22 @@ export default defineComponent({
         method: '',
         payor: -1,
         payee: -1,
+        dept_id: -1,
         amount:'',
         dept:''
       }],
-      company:{
-        name:''
-      }
+      clear_table: function(){
+        this.table = [{
+          method: '',
+          payor: -1,
+          payee: -1,
+          dept_id: -1,
+          amount:'',
+          dept:''
+        }]
+        this.company = []
+      },
+      company:[],
     }
   },
   computed: {
@@ -370,6 +384,7 @@ export default defineComponent({
       expense: 'getExpense',
       vendors: 'getListOfVendors',
       companies: 'getInventoryCompanies',
+      je_status: 'getJournalEntryStatus',
     })
   },
   methods: {
@@ -391,19 +406,24 @@ export default defineComponent({
           const rowData: any = {}; 
           for (let j=0; j<tableRow.cells.length; j++) {
               const index: any = table_header[j].innerHTML
-              rowData[index] = tableRow.cells[j].innerHTML
+              rowData[index.toLowerCase().replace(/\s+/g, '')] = tableRow.cells[j].innerHTML
           } 
           data.push(rowData)
       } 
-      const final_data = {'transaction_list': data}
-      return final_data; 
+      return data; 
     },
     submitData: async function(){
-      // if (this.journal_entry_validation()){
-      // }
       const tbldata = this.table_to_array()
-      if (this.expenseMethod === 'Journal Entry') {
+      if (this.expenseMethod === 'Journal Entry' && tbldata.length != 0) {
+        this.no_data_table_error = ''
+        this.loader = true
         await this.createJournalEntry(tbldata).finally(() => this.loader = false)
+        this.create_expense = this.je_status === 'Created'
+        this.clear_table()
+        this.transaction.clear()
+      }
+      else{
+        this.no_data_table_error = 'No data in the table'
       }
     },
     amound_validation: function(){
@@ -416,31 +436,6 @@ export default defineComponent({
         return true
       }
     },
-    payor_validation: function(){
-      if (this.transaction.payor == -1) {
-        this.payor_required_err = 'Payor is required';
-        console.log("chickle backal")
-        return false
-      }
-      else{
-        console.log("chickle backal")
-        this.payor_required_err = ''
-        return true
-      }
-    },
-    payee_validation: function(){
-      if (this.transaction.payee == -1) {
-        console.log("chickle backal")
-        this.payee_required_err = 'Payee is required';
-        return false
-      }
-      else{
-        console.log("chickle backal")
-        this.payee_required_err = ''
-        return true
-      }
-    },
-    
     numbers_allowed_validation: function(){      
       if (this.transaction.amount !== '' && this.transaction.amount !== undefined) {
         const value = parseFloat(this.transaction.amount);
@@ -476,8 +471,29 @@ export default defineComponent({
         return false
       }
     },
+    je_department_validation: function(){
+      console.log(this.company)
+      if (this.company.length === 0){
+        this.departmentrequired_error = "Department is required"
+        return false
+      }
+      else {
+        this.departmentrequired_error = ''
+        return true
+      }
+    },
+    je_payor_payee_validation: function(){
+      if(this.transaction.payor === this.transaction.payee){
+        this.payor_payee_same_error = "Payor and Payee should not be same"
+        return false
+      }
+      else{
+        this.payor_payee_same_error = ''
+        return true
+      }
+    },
     journal_entry_validation: function(){
-      if(this.payor_validation() && this.payee_validation() && this.amound_validation()){
+      if(this.je_department_validation() && this.amound_validation() && this.je_payor_payee_validation()){
         return true
       }
       else{
@@ -504,13 +520,14 @@ export default defineComponent({
       }
     },
     addDept: async function(){
-      // if(this.amound_validation() && this.journal_e_payor_validation() && this.journal_e_payee_validation()){
       if(this.journal_entry_validation()){
         this.table.push({method:this.payment_type,
-                        payor:this.transaction.payor,
-                        payee:this.transaction.payee,
+                        payor:this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor,
+                        payee:this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee,
+                        dept_id:this.company[0],
                         amount:this.transaction.amount,
-                        dept:this.company.name})
+                        dept:this.company[1]})
+        this.no_data_table_error = ''
       }
     },
   },
