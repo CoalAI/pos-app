@@ -70,20 +70,20 @@
           <template v-for="(transaction,index) in transactions" :key="transaction.id">
             <tr class="fr-row content">
               <td>{{index+1}}</td>
-              <td>{{transaction.transaction_id}}</td>
+              <td>{{transaction.transaction_id ? transaction.transaction_id : '-'}}</td>
               <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
               <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
-              <td>{{transaction.payment_service}}</td>
-              <td>{{transaction.description}}</td>
+              <td>{{transaction.payment_service ? transaction.payment_service : '-' }}</td>
+              <td>{{transaction.description ? transaction.description : '-'}}</td>
               <template v-if="transaction.amount > 0">
                 <td>{{trimNumber(transaction.amount)}}</td>
-                <td></td>
+                <td> - </td>
               </template>
               <template v-else>
-                <td></td>
-                <td>{{trimNumber(transaction.amount * -1)}}</td>
+                <td> - </td>
+                <td>{{trimNumber(transaction.amount * -1) ? transaction.ammount : '-'}}</td>
               </template>
-              <td>{{trimNumber(transaction.amount)}}</td>
+              <td>{{trimNumber(transaction.amount) }}</td>
               <td>{{transaction.created.split('T')[0]}}</td>
             </tr>
           </template>
