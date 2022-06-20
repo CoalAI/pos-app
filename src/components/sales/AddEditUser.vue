@@ -223,7 +223,7 @@
           </div>
         </div>
         <div class="third-row row">
-          <div v-if="!userId" class="left">
+          <div v-if="!userId  || (userId && user_type=='ADMIN')" class="left">
             <label class="" for="thisuserpassword">
               <strong>Password:</strong>
             </label>
@@ -240,7 +240,7 @@
               <ErrorField v-if="fieldErrors.password" :errorField="fieldErrors.password"></ErrorField>
             </div>
           </div>
-          <div v-if="!userId" class="right">
+          <div v-if="!userId  || (userId && user_type=='ADMIN')" class="right">
             <label class="" for="confirmpassword">
               <strong>Confirm Password:</strong>
             </label>
@@ -363,7 +363,8 @@ export default defineComponent({
         contactNumber: '',
         user_type: 'SALES_STAFF',
         company: 0
-      }
+      },
+      user_type: "",
     }
   },
   computed: {
@@ -380,7 +381,7 @@ export default defineComponent({
 
     passwordValidation: function () {
       let errorMessage = null;
-      if (!this.userId) {
+      if (!this.userId || (this.userId && this.user_type=='ADMIN')) {
         const re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
         if (this.user.password.length != 0 && !re.test(this.user.password)) {
           errorMessage = "Minimum eight characters, at least one letter, one number and one special character (@$!%*#?&)"
@@ -391,7 +392,7 @@ export default defineComponent({
 
     ConfirmPasswordValidation: function () {
       let errorMessage = null;
-      if (!this.userId) {
+      if (!this.userId || (this.userId && this.user_type=='ADMIN')) {
         if (this.user.confirmPassword.length != 0 && this.user.password && this.user.password !== this.user.confirmPassword) {
           errorMessage = "Confirm Password does not matches with password"
         }
@@ -419,6 +420,7 @@ export default defineComponent({
       roles: 'getRoles',
       companies: 'getCompaniesFilterVendor',
       fieldErrors: 'getAuthFieldError',
+      userdata: 'getUser',
     })
   },
   methods: {
@@ -430,7 +432,7 @@ export default defineComponent({
       else {
         this.ab_error_message = ""
       }
-      if (this.user.password.length <= 0) {
+      if (this.user.password.length <= 0 ) {
         this.ps_error_message = "Password is required"
       }
       else {
@@ -484,10 +486,11 @@ export default defineComponent({
         is_active: this.user.active,
         is_staff: true,
         user_type: this.user.user_type,
-        contact_number: this.user.contactNumber
+        contact_number: this.user.contactNumber,
       }
 
       if (this.userId) {
+        
         if (this.contactNumberValidation === null && this.num_error_message === ""){
           user.id = userIdNumber;
           await this.updateUser(user);
@@ -495,6 +498,24 @@ export default defineComponent({
             this.$router.push({name: 'User'});
           } else {
             window.scrollTo(0,0);
+          }
+          if(this.user_type=='ADMIN' &&  this.user.password != "" ){
+            user.password = this.user.password;
+            console.log("password", this.user.password)
+            await this.updateUser(user);
+            if (Object.keys(this.fieldErrors).length === 0) {
+              this.$router.push({name: 'User'});
+            } else {
+              window.scrollTo(0,0);
+            }
+          }
+          else{
+            await this.updateUser(user);
+            if (Object.keys(this.fieldErrors).length === 0) {
+              this.$router.push({name: 'User'});
+            } else {
+              window.scrollTo(0,0);
+            }
           }
         }
       } 
@@ -562,6 +583,10 @@ export default defineComponent({
   async unmounted () {
     await this.setFieldError({});
   },
+  mounted () {
+    this.user_type = this.userdata['user_type'];
+    console.log('user_type', this.user_type)
+  }
 });
 </script>
 
