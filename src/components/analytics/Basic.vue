@@ -112,46 +112,14 @@ export default defineComponent({
 
   },
   computed: {
-    // dateValidation: function(): string | null {
-    //   if(this.startDate !== undefined && this.endDate !== undefined && 
-    //     this.startDate !=='' && this.endDate !== '' &&
-    //     Date.parse(this.startDate) <= Date.parse(this.endDate)
-    //   ){
-    //     return null;
-    //   }
-
-    //   return 'invalid date range';
-    // },
   },
-  // methods: {
-  //   ...mapActions({
-  //     fetchAnalytics: ActionTypes.FETCH_ANALYTICS
-  //   }),
-  //   async fetchAnalyticsBtn() {
-  //     await this.fetchAnalytics({
-  //       start_date: this.startDate,
-  //       end_date: this.endDate,
-  //     });
-  //   },
-  // },
-  // async mounted() {
-  //   await this.fetchAnalytics({
-  //     start_date: this.startDate,
-  //     end_date: this.endDate,
-  //   });
-  // }
+ 
 });
 </script>
 
 <style lang="scss" scoped>
   #expense {
-    // padding: 2.65% 30%;
     padding: 1.65% 21%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    // padding-left: 15%;
-    // padding-right: 15%;
-    // margin-top: 3%;
   }
   .diff-shadow{
     padding: 1.65% 3.56%;
@@ -170,7 +138,6 @@ export default defineComponent({
   padding: 0.5rem 1rem;
   background-color: #f5f2f2;
   border-radius: 20px;
-  // color: white;
   font-size: 13px;
   border: none;
   outline: none;
@@ -211,7 +178,6 @@ export default defineComponent({
 .page-upper > .right-cont > .flex-box > label{
   margin-right: 10px;
   font-size: 13px;
-  // font-weight: 500;
 }
 .page-upper > .right-cont > .flex-box > .ab-select-container{
   flex-grow: 1;
@@ -286,7 +252,6 @@ export default defineComponent({
 }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
-    // width: 62vw;
     width: 70vw;
   }
   #expense {

@@ -160,7 +160,6 @@ export default defineComponent({
   methods: {
     onCheckChange: async function(e: any){
       this.checkedValue = e.target.value
-      console.log(this.checkedValue)
       this.checkall = false
       await this.fetchInventory({
         company: this.checkedValue,
@@ -172,7 +171,6 @@ export default defineComponent({
 
     onCheckAll: async function(e: any){
       this.checkedValue = e.target.value
-      console.log(this.checkedValue)
       this.checkall = true
       await this.fetchInventory({
         company: this.checkedValue,
