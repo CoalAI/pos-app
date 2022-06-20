@@ -459,6 +459,7 @@ export default defineComponent({
       else{
         this.no_data_table_error = 'No data in the table'
       }
+      await this.fetchUserData();
     },
     amound_validation: function(){
       if (this.transaction.amount === '') {
