@@ -712,6 +712,27 @@
         </div>
       </template>
     </Modal>
+    <Modal v-else-if="orderoffline" type="scrollable">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <OfflineOrderBill/>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button
+            @click="handleOrderStatus()"
+            class="btn btn-orange btn-mr"
+            v-focus
+          >
+            New Order
+          </button>
+        </div>
+      </template>
+    </Modal>
     <p class="coaldev-name ">Created by CoalDev</p>
   </div>
 </template>
@@ -729,12 +750,14 @@ import { User } from "@/store/models/user";
 import { OrderItem } from "@/store/models/orderItem";
 import { Product, ProductVariant } from "@/store/models/product";
 import offlineStoreService from "@/utils/offline-store/index";
+import OfflineOrderBill from "../sales/OfflineOrderBill.vue";
 
 export default defineComponent({
   name: "ZeroOrder",
   components: {
     Modal,
     OrderBill,
+    OfflineOrderBill,
   },
   data() {
     const today = new Date().toDateString();
@@ -743,6 +766,7 @@ export default defineComponent({
     const vendor: User = {};
 
     return {
+      orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID: "",
@@ -1322,7 +1346,9 @@ export default defineComponent({
         internal_order: true,
       };
       if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true)
+        offlineStoreService.setsyncOrder(true);
+        this.orderoffline = true;
+        console.log(this.product.name);
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;

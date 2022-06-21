@@ -4,7 +4,7 @@ import { Order } from '@/store/models/order';
 import StoreInstance from './table';
 import localForage from 'localforage';
 import serverRequest from '@/utils/request'
-
+import { OrderItem } from '@/store/models/orderItem';
 class OfflineStore {
 
   private productStore: StoreInstance;
@@ -13,7 +13,9 @@ class OfflineStore {
   private customerStore: StoreInstance;
   private orderStore: LocalForage;
   private syncOrder: LocalForage;
-
+  private latestOrder: Order;
+  private productname: string;
+  private productsize: string;
 
   // constants
   private CURENT_INVOICE = 'current-invoice';
@@ -25,12 +27,14 @@ class OfflineStore {
 
   constructor(pageSize: number) {
     this.productStore = new StoreInstance('product', 'product/', true, pageSize, 'bar_code');
-    this.loggedInUserStore = new StoreInstance('user', 'user-data/', true, pageSize, 'user-data');
+    this.loggedInUserStore = new StoreInstance('user', 'user-data/', true, pageSize, 'username');
     this.invoiceIdStore = new StoreInstance('invoice-id', 'invoice-id/', true, pageSize, 'start-invoice-id');
     this.customerStore = new StoreInstance('customers', 'user/', true, pageSize, 'username');
     this.orderStore = localForage.createInstance({name: "order"});
     this.syncOrder = localForage.createInstance({name: "syncOrder"});
-
+    this.latestOrder = {};
+    this.productname = "";
+    this.productsize = "";
   }
 
   async initialize() {
@@ -45,10 +49,25 @@ class OfflineStore {
 
   async initializeStore() {
     await this.productStore.fetchData();
+    const userData =  await this.loggedInUserStore.fetchRecordsPerPage();
+    await this.loggedInUserStore.setItem(this.USER_DATA, userData.results[0]);
   }
 
   async intializeSync(){
     this.syncOrder.setItem("bool", false);
+  }
+
+  async setproductinfo(name: string, size: string){
+    this.productname = name;
+    this.productsize = size;
+  }
+
+  async getproductname(){
+    return this.productname;
+  }
+
+  async getproductsize(){
+    return this.productsize;
   }
 
   async getProductByBarCode(barCode: string) {
@@ -82,6 +101,18 @@ class OfflineStore {
     let user = undefined;
     try {
       user = (await this.loggedInUserStore.getItem(this.USER_DATA)) as User;
+    } catch (error) {
+      console.log(error);
+    }
+    return user;
+  }
+
+  async getUserName(){
+    let user = undefined;
+    try {
+      user = (await this.loggedInUserStore.getItem(this.USER_DATA)) as User;
+      user = user.first_name + ' ' + user.last_name;
+      console.log(user);
     } catch (error) {
       console.log(error);
     }
@@ -145,6 +176,7 @@ class OfflineStore {
   }
 
   async setOrder(order: Order) {
+    this.latestOrder = order;
     let product = undefined;
     let max = 0;
     const length= this.orderStore.length();
@@ -167,6 +199,10 @@ class OfflineStore {
         }
       }
     }
+  }
+
+  getLatestOrder(){
+    return this.latestOrder;
   }
 
 
