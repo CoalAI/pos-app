@@ -87,7 +87,22 @@
           </td>
         </tr>
       </table>
-      
+      <div class="analytics">
+        <div>
+          <span>
+            Total Products:
+          </span>
+          <span>
+              <span>{{counts.inventory}}</span>
+          </span>
+        </div>
+        <div>
+          <span>
+            Total Amount:
+          </span>
+          <span v-if="inventoryTotal">{{inventoryTotal}}</span> 
+        </div>
+      </div>
     </div> 
      <div class="analytics">
     <div>
@@ -152,6 +167,7 @@ export default defineComponent({
 
     ...mapGetters({
       inventory: "getInventory",
+      inventoryTotal: "getInventoryTotalAmount",
       companies: "getInventoryCompanies",
       counts: "getTotalCountsOrderModule",
       userdata: "getUser",
@@ -198,7 +214,7 @@ export default defineComponent({
 
     changePage: async function (pageNo: number) {
       await this.fetchInventory({
-        company: this.company,
+        company: this.checkedValue,
         search: this.search,
         page: pageNo,
       });

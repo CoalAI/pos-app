@@ -13,7 +13,9 @@
               <strong>Inventory</strong>
             </span>
           </li>
-          <li :class="tab === 'detail' ? 'active-li ab1 tab3' : 'ab1 tab3'" @click="onClickDetails()">
+
+          <li :class="tab === 'detail' ? 'active-li ab1 tab3' : 'ab1 tab3'" @click="onClickDetails()" 
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Operator Sales</strong>
             </span>
@@ -23,28 +25,33 @@
               <strong>Profit/Loss Report</strong>
             </span>
           </li>
-          <li :class="tab === 'StockStatement' ? 'active-li ab1 tab5' : 'ab1 tab5'" @click="onClickStockStatement()">
+          <li :class="tab === 'StockStatement' ? 'active-li ab1 tab5' : 'ab1 tab5'" @click="onClickStockStatement()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Stock Statement</strong>
             </span>
           </li>
           
-          <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickDayTotalPayable()">
+          <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickDayTotalPayable()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Day Total Payable</strong>
             </span>
           </li>
-          <li :class="tab === 'End of Day' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickEndOfDay()">
+          <li :class="tab === 'End of Day' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickEndOfDay()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>End of Day</strong>
             </span>
           </li>
-          <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()">
+          <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Comparison</strong>
             </span>
           </li>
-          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()">
+          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Total Receivable</strong>
             </span>
@@ -69,8 +76,13 @@ export default defineComponent({
     const path = window.location.pathname;
     return {
       tab: path.split('/')[2],
-
+      user_type: "",
     }
+  },
+  computed: {
+     ...mapGetters({
+      userdata: 'getUser',
+    })
   },
   methods: {
     onClickOrder(){
@@ -111,9 +123,9 @@ export default defineComponent({
     }
 
   },
-  computed: {
-  },
- 
+  mounted () {
+    this.user_type = this.userdata['user_type'];
+  }
 });
 </script>
 
@@ -252,6 +264,7 @@ export default defineComponent({
 }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
+    // width: 62vw;
     width: 70vw;
   }
   #expense {

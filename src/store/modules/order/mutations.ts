@@ -34,6 +34,7 @@ export enum MutationTypes {
   SetAnalytics = "SET_ANALYTICS",
   SetSalesanalytics = "SET_SALESANALYTICS",
   SetTotalPayableReceivable = 'SET_TOTAL_PAYABLE_RECEIVABLE',
+  SetInventoryTotalAmount = 'SET_INVENTORY_TOTAL_AMOUNT',
 }
 
 export type Mutations = {
@@ -62,6 +63,8 @@ export type Mutations = {
   [MutationTypes.SetAnalytics](state: State, value: any): void;
   [MutationTypes.SetSalesanalytics](state: State, value: any): void;
   [MutationTypes.SetTotalPayableReceivable](state: State, value: any): void;
+  [MutationTypes.SetInventoryTotalAmount](state: State, value: number): void;
+
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -94,6 +97,9 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetInventory](state, inventory) {
     state.inventory = inventory;
+  },
+  [MutationTypes.SetInventoryTotalAmount](state, value) {
+    state.totalinventoryamount = value;
   },
   [MutationTypes.SetListOfRequests](state: State, requests: Request[]) {
     state.listofRequests = requests;
