@@ -44,16 +44,22 @@
               <strong>End of Day</strong>
             </span>
           </li>
-          <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickComparisonAnalysis()"
+          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
+            <span>
+              <strong>Total Receivable</strong>
+            </span>
+          </li>
+          <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab9' : 'ab1 tab9'" @click="onClickComparisonAnalysis()"
           v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Comparison</strong>
             </span>
           </li>
-          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab8' : 'ab1 tab8'" @click="onClickTotalReceivable()"
+          <li :class="tab === 'comparisonExpenseSales' ? 'active-li ab1 tab10' : 'ab1 tab10'" @click="onClickComparisonExpenseSales()"
           v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
-              <strong>Total Receivable</strong>
+              <strong>Comparison E/S</strong>
             </span>
           </li>
         </ul>
@@ -120,7 +126,11 @@ export default defineComponent({
     onClickComparisonAnalysis(){
       this.tab = 'comparisonAnalysis'
       this.$router.push({ name: "ComparisonAnalysis" });
-    }
+    },
+    onClickComparisonExpenseSales(){
+      this.tab = 'comparisonExpenseSales'
+      this.$router.push({ name: "ComparisonExpenseSales" });
+    },
 
   },
   mounted () {
@@ -263,12 +273,16 @@ export default defineComponent({
   width: 132px !important;
 }
 .tab8{
-  left: 716px;
-  width: 145px !important;
+  left: 820px;
+  width: 131px !important;
 }
-.tab7{
-  left: 720px;
-  width: 173px !important;
+.tab9{
+  left: 920px;
+  width: 98px !important;
+}
+.tab10{
+  left: 1000px;
+  width: 130px !important;
 }
 @media Screen and (max-width: 1375px){
   .diff-shadow{
