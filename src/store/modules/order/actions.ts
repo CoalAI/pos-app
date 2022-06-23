@@ -46,6 +46,7 @@ export enum ActionTypes {
   PRODUCT_QUANTITY = "PRODUCT_QUANTITY",
   TOTAL_PAYABLE_RECEIVABLE = "TOTAL_PAYABLE_RECEIVABLE",
   FETCH_COMPARISON_ANALYSIS = "FETCH_COMPARISON_ANALYSIS",
+  FETCH_EXPENSE_SALES = "FETCH_EXPENSE_SALES",
 }
 
 
@@ -105,6 +106,7 @@ export interface Actions {
   [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number}): void;
   [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.FETCH_COMPARISON_ANALYSIS]({ commit }: AugmentedActionContext, options: { company_type: string }): void;
+  [ActionTypes.FETCH_EXPENSE_SALES]({ commit }: AugmentedActionContext, company: number): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -484,13 +486,22 @@ Actions = {
       commit('setError', response.message, {root: true});
     }
   },
+
   async [ActionTypes.FETCH_COMPARISON_ANALYSIS]({ commit }: AugmentedActionContext, options: {company_type: string}) {
     const response = await serverRequest('get', `comparison-analysis/`, true, undefined, options);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetComparisonAnalysis, response.data);
+
+  async [ActionTypes.FETCH_EXPENSE_SALES]({ commit }: AugmentedActionContext, company: number) {
+    const response = await serverRequest('get', 'comparison-analysis-expense-sales/', true, undefined, {'company': company});
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetExpenseSales, response.data);
+      console.log(response.data)
+      console.log("done")
     }
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }
   }
+  },
 };

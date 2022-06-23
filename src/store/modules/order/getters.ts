@@ -38,6 +38,7 @@ export interface Getters {
   getSalesanalytics(state: State): any;
   getTotalpayablereceivable(state: State): any;
   getComparisonanalysis(state: State): any;
+  getExpenseSales(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -101,4 +102,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getSalesanalytics: (state: State) => state.salesanalytics,
   getTotalpayablereceivable: (state: State) => state.totalpayablereceivable,
   getComparisonanalysis: (state: State) => state.comparisonanalysis,
+  getExpenseSales: (state: State) => state.expensesales,
 };

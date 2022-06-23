@@ -39,6 +39,7 @@ import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 import ProfifLossReport from '@/components/analytics/Report.vue';
 import EndOfDay from '@/components/analytics/EndOfDay.vue';
 import ComparisonAnalysis from '@/components/analytics/ComparisonAnalysis.vue';
+import ComparisonExpenseSales from '@/components/analytics/ComparisonExpenseSales.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -305,6 +306,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'comparisonAnalysis',
         name: 'ComparisonAnalysis',
         component: ComparisonAnalysis,
+      },
+      {
+        path: 'comparisonExpenseSales',
+        name: 'ComparisonExpenseSales',
+        component: ComparisonExpenseSales,
       },
     ]
   },
