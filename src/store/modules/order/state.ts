@@ -32,6 +32,7 @@ export type State = {
     requests: number;
   };
   analytics: any;
+  expensesales: any;
   salesanalytics: any;
   totalpayablereceivable: any;
   totalinventoryamount: number;
@@ -65,6 +66,7 @@ export const state: State = {
     requests: 0,
   },
   analytics: {},
+  expensesales: {},
   salesanalytics: {},
   totalpayablereceivable: {},
   totalinventoryamount: 0,
