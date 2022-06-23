@@ -37,7 +37,7 @@
     </div>
     <button
             class="btn-red block"
-            @click="printBill()"
+            @click="printDiv('expense', 'Comparison Analysis')"
             :disabled="submitOrderButton"
             ref="submitandprint"
           >
@@ -54,6 +54,7 @@ import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
 import { BarChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { store } from "@/store";
+import printDiv from '@/utils/print';
 Chart.register(...registerables);
 
 export default defineComponent({
@@ -157,62 +158,10 @@ export default defineComponent({
         ],
       };
     },
-    getElementTag: function(tag: keyof HTMLElementTagNameMap): string {
-			const html: string[] = [];
-			const elements = document.getElementsByTagName(tag);
-			for (let index = 0; index < elements.length; index++) {
-				html.push(elements[index].outerHTML);
-			}
-			return html.join('\r\n');
-		},
-
-		getHtmlContents: function() {
-			const printContents = document.getElementById("expense");
-			return printContents && printContents.innerHTML?printContents.innerHTML:'';
-		},
-
-		printBill: function() {
-			let styles = '', links = '';
-			styles = ``;
-			// links = this.getElementTag('link');
-			links = '';
-			const printContents = this.getHtmlContents();
-      this.printContent(printContents, styles, links);
-      // this.checkToken();
-		},
-    printContent: function(htmlcontent: string, styles: string, links: string) {
-
-      const endscripttag = "/script"
-      const popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto,focused=false");
-        
-      if (popupWin) {
-        popupWin.document.open()
-        popupWin.document.write(`
-        <html>
-          <head>
-          <title></title>
-          ${styles}
-          ${links}
-          </head>
-          <body>
-          ${htmlcontent}
-          <script defer>
-            function triggerPrint(event) {
-            window.removeEventListener('load', triggerPrint, false);
-            setTimeout(function() {
-              closeWindow(window.print());
-            }, ${this.printDelay});
-            }
-            function closeWindow(){
-              window.close();
-            }
-            window.addEventListener('load', triggerPrint, false);
-          <${endscripttag}>
-          </body>
-        </html>`);
-        popupWin.document.close();
-      }
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title);
     },
+    
   },
 });
 </script>

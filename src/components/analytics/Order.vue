@@ -83,7 +83,7 @@
 
     <button
       class="btn-orange btn mt-5"
-      @click="printPage()"
+      @click="printDiv('print', 'Order Analytics')"
       :disabled="submitOrderButton"
       ref="submitandprint"
     >
@@ -100,6 +100,7 @@ import { mapActions, mapGetters } from "vuex";
 import DateRange from "@/components/common-components/DateRange.vue";
 import { ActionTypes } from "@/store/modules/order/actions";
 import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
+import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: "OrderAnaltyics",
@@ -167,164 +168,8 @@ export default defineComponent({
         company: this.company,
       });
     },
-    getElementTag: function (tag: keyof HTMLElementTagNameMap): string {
-      const html: string[] = [];
-      const elements = document.getElementsByTagName(tag);
-      for (let index = 0; index < elements.length; index++) {
-        html.push(elements[index].outerHTML);
-      }
-      return html.join("\r\n");
-    },
-
-    getHtmlContents: function () {
-      const printContents = document.getElementById("print");
-      return printContents && printContents.innerHTML
-        ? printContents.innerHTML
-        : "";
-    },
-
-    printPage: function () {
-      let styles = "",
-        links = "";
-      styles = `
-			<style lang="scss" scoped>	
-				th:first-child {
-    border-radius: 10px 0px 0px 10px;
-}
-h1 {
-    text-align: center;
-}
-
-.header > th {
-    text-align: center;
-}
-
-td, th {
-    border: 1px solid;
-    border-color: #ddd;
-    text-align: left;
-    padding: 8px;
-}
-th {
-    text-align: inherit;
-}
-th {
-    display: table-cell;
-    vertical-align: inherit;
-    font-weight: bold;
-    text-align: -internal-center;
-}
-
-.fr-row {
-    font-size: 12px;
-}
-
-.header {
-    border-radius: 5px;
-    background-color: #0f2634;
-    color: white;
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-table {
-    border-collapse: collapse;
-}
-user agent stylesheet
-table {
-    border-collapse: separate;
-    text-indent: initial;
-    border-spacing: 2px;
-}
-
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-    margin: 0;
-    font-size: 100%;
-}
-body {
-    margin: 0;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    text-align: left;
-    background-color: #fff;
-}
-
-html {
-    font-family: sans-serif;
-    line-height: 1.15;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    -ms-overflow-style: scrollbar;
-    -webkit-tap-highlight-color: transparent;
-}
-.stats{
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
-
-			</style>
-			`;
-      // links = this.getElementTag('link');
-      links = "";
-      const printContents = this.getHtmlContents();
-      console.log(printContents, "printContents");
-      this.printContent(printContents, styles, links);
-      // this.checkToken();
-    },
-    printContent: function (
-      htmlcontent: string,
-      styles: string,
-      links: string
-    ) {
-      const endscripttag = "/script";
-      const popupWin = window.open(
-        "",
-        "_blank",
-        "top=0,left=0,height=auto,width=auto,focused=false"
-      );
-
-      if (popupWin) {
-        popupWin.document.open();
-        popupWin.document.write(`
-        <html>
-          <head>
-          <title></title>
-          ${styles}
-          ${links}
-          </head>
-          <body>
-          <h1>Order Analytics</h1>
-          ${htmlcontent}
-          <script defer>
-            function triggerPrint(event) {
-            window.removeEventListener('load', triggerPrint, false);
-            setTimeout(function() {
-              closeWindow(window.print());
-            }, 100);
-            }
-            function closeWindow(){
-              window.close();
-            }
-            window.addEventListener('load', triggerPrint, false);
-          <${endscripttag}>
-          </body>
-        </html>`);
-        popupWin.document.close();
-      }
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title);
     },
   },
   async mounted() {
