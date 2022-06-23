@@ -117,7 +117,41 @@
           </div>
         </div>
       </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit' || expenseMethod === 'Received'">
+       <template v-if="expenseMethod === 'Expense'">
+        <!-- {{userdata}} -->
+        <div class="first-row row">
+          <div class="left">
+            <label for="products" style="padding-left: 8px">
+              <strong>Payee:</strong>
+            </label>
+            <div class="ab-select-container">
+              <select
+                id="user-dropdown"
+                name="user-dropdown"
+                class="custom-select" 
+                v-model="transaction.payee"
+              >
+                <option :value="-1">SELF</option>
+              </select>
+            </div>
+          </div>
+          <div class="right">
+            <label for="balance">
+              <strong>Balance:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="balance"
+                type="text"
+                placeholder="00"
+                v-model="userdata.company.balance"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit' || expenseMethod === 'Received' || expenseMethod == 'Expense'">
         
         <div class="second-row row">
           <div class="left">
@@ -162,6 +196,16 @@
         </div>
       </template>
       <template v-if="expenseMethod === 'Journal Entry'">
+        <div class="ab-flex">
+          <div>
+            <input type="radio" v-model="payment_type" value="cash" id="cash-radio" :checked="radio_check" @change="custom_range=false">
+            <label for="cash-radio">Cash</label>
+          </div>
+          <div>
+            <input type="radio" v-model="payment_type" value="credit" id="credit-radio" :checked="!radio_check" @change="custom_range=true">
+            <label for="credit-radio">Credit</label>
+          </div>
+        </div>
         <div class="first-row row">
           <div class="left">
             <label for="products">
@@ -204,6 +248,7 @@
                   </option>
                 </template>
               </select>
+              <span v-if="payor_payee_same_error" class="form-error">{{ payor_payee_same_error }}</span>
             </div>
           </div>
         </div>
@@ -216,13 +261,14 @@
               <select
                 id="user-dropdown"
                 name="user-dropdown"                
-                v-model="company.name"
+                v-model="company"
               >
                 <option disabled>--- department ---</option>
-                <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.company_name">
+                <option class="batches-op" v-for="company in companies" v-bind:key="company.id" :value="[company.id, company.company_name]">
                   {{company.company_name}}
                 </option>
               </select>
+              <span v-if="departmentrequired_error" class="form-error">{{ departmentrequired_error }}</span>
             </div>
           </div>
           <div class="right">
@@ -242,25 +288,39 @@
         </div>
         <div style="text-align: right; padding-bottom: 20px">
           <button
+            class="ab_btn btn-blue clr-t"
+             @click="clear_table">Clear Table</button>
+          <button
             class="ab_btn btn-orange"
              @click="addDept">Add</button>
         </div>
-        <table>
+        <table id="journal-entry-table">
+          <span v-if="no_data_table_error" class="form-error">{{ no_data_table_error }}</span>
           <thead>
             <tr class="fr-row header">
-              <th style="border-radius: 10px 0px 0px 10px" scope="col">Dept Name</th>
+              
+              <th style="border-radius: 10px 0px 0px 10px" scope="col">Method</th>
+              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payor</th>
+              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payee</th>
+              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Dept Id</th>
+              <th style="border-radius: 0px 0px 0px 0px" scope="col">Dept Name</th>
               <th style="border-radius: 0px 10px 10px 0px" scope="col">Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="a in table" :key="a.id" class="fr-row content">
-              <td>{{a.dept}}</td>
-              <td>{{a.amount}}</td>
+              <td v-if="a.method != ''">{{a.method}}</td>
+              <td style="display: none;" v-if="a.payor != -1">{{a.payor}}</td>
+              <td style="display: none;" v-if="a.payee != -1">{{a.payee}}</td>
+              <td style="display: none;" v-if="a.dept_id != -1">{{a.dept_id}}</td>
+              <td v-if="a.dept != ''">{{a.dept}}</td>
+              <td v-if="a.amount != ''">{{a.amount}}</td>
             </tr>
           </tbody>
         </table>
         <div style="text-align: center; padding-top:20px">
-          <button
+          <button 
+            @click="submitData"
             class="btn-blue"
             style="width: 150px">Submit</button>
         </div>
@@ -280,7 +340,7 @@ import { Transaction } from '@/store/models/transaction';
 import Alert from '@/components/common-components/Alert.vue'
 import Loader from '@/components/common-components/Loader.vue'
 import { User } from '@/store/models/user';
-import { Request } from '@/store/models/request';
+// import { Request } from '@/store/models/request';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 
 export default defineComponent({
@@ -291,9 +351,14 @@ export default defineComponent({
   },
   data() {
     return {
+      radio_check: true,
+      payment_type: 'cash',
       numberallowd_error: '',
       amountrequired_error: '',
       descriptionrequired_error: '',
+      departmentrequired_error: '',
+      payor_payee_same_error: '',
+      no_data_table_error: '',
       expenseMethod: 'Received',
       transaction: {
         payor:-1,
@@ -313,12 +378,25 @@ export default defineComponent({
       loader: false,
       dept:'',
       table:[{
+        method: '',
+        payor: -1,
+        payee: -1,
+        dept_id: -1,
         amount:'',
         dept:''
       }],
-      company:{
-        name:''
-      }
+      clear_table: function(){
+        this.table = [{
+          method: '',
+          payor: -1,
+          payee: -1,
+          dept_id: -1,
+          amount:'',
+          dept:''
+        }]
+        this.company = []
+      },
+      company:[],
     }
   },
   computed: {
@@ -343,6 +421,7 @@ export default defineComponent({
       expense: 'getExpense',
       vendors: 'getListOfVendors',
       companies: 'getInventoryCompanies',
+      je_status: 'getJournalEntryStatus',
     })
   },
   methods: {
@@ -353,7 +432,38 @@ export default defineComponent({
       getVendors: AuthActionTypes.FETCH_VENDORS,
       createRequest: OrderActionTypes.CREATE_REQUEST,
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
+      createJournalEntry: AuthActionTypes.CREATE_JOURNAL_ENTRY
     }),
+    table_to_array: function(){
+      const table: any = document.querySelector('#journal-entry-table tbody')
+      const table_header: any = document.querySelectorAll('#journal-entry-table thead th')
+      const data = [];
+      for (let i=1; i<table.rows.length; i++) { 
+          const tableRow = table.rows[i]; 
+          const rowData: any = {}; 
+          for (let j=0; j<tableRow.cells.length; j++) {
+              const index: any = table_header[j].innerHTML
+              rowData[index.toLowerCase().replace(/\s+/g, '')] = tableRow.cells[j].innerHTML
+          } 
+          data.push(rowData)
+      } 
+      return data; 
+    },
+    submitData: async function(){
+      const tbldata = this.table_to_array()
+      if (this.expenseMethod === 'Journal Entry' && tbldata.length != 0) {
+        this.no_data_table_error = ''
+        this.loader = true
+        await this.createJournalEntry(tbldata).finally(() => this.loader = false)
+        this.create_expense = this.je_status === 'Created'
+        this.clear_table()
+        this.transaction.clear()
+      }
+      else{
+        this.no_data_table_error = 'No data in the table'
+      }
+      await this.fetchUserData();
+    },
     amound_validation: function(){
       if (this.transaction.amount === '') {
         this.amountrequired_error = 'Amount is required';
@@ -399,13 +509,50 @@ export default defineComponent({
         return false
       }
     },
+    je_department_validation: function(){
+      console.log(this.company)
+      if (this.company.length === 0){
+        this.departmentrequired_error = "Department is required"
+        return false
+      }
+      else {
+        this.departmentrequired_error = ''
+        return true
+      }
+    },
+    je_payor_payee_validation: function(){
+      if(this.transaction.payor === this.transaction.payee){
+        this.payor_payee_same_error = "Payor and Payee should not be same"
+        return false
+      }
+      else{
+        this.payor_payee_same_error = ''
+        return true
+      }
+    },
+    journal_entry_validation: function(){
+      if(this.je_department_validation() && this.amound_validation() && this.je_payor_payee_validation()){
+        return true
+      }
+      else{
+        return false
+      }
+    },
     addExpense: async function(){
       if(this.allValidation()){
 
         if (this.expenseMethod === 'Received') {
           this.transaction.payee = this.userdata.id;
           this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
-        } else if (this.expenseMethod === 'Debit') {
+        } else if(this.expenseMethod === 'Credit') {
+          this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+          this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
+        }else if (this.expenseMethod === 'Debit') {
+          this.transaction.payor = this.userdata.id;
+          this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+          this.transaction.amount = (-parseFloat(this.transaction.amount)).toString();
+        } 
+        else if (this.expenseMethod === 'Expense') {
           this.transaction.payor = this.userdata.id;
           this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
           this.transaction.amount = (-parseFloat(this.transaction.amount)).toString();
@@ -419,8 +566,14 @@ export default defineComponent({
       }
     },
     addDept: async function(){
-      if(this.amound_validation()){
-        this.table.push({amount:this.transaction.amount,dept:this.company.name})
+      if(this.journal_entry_validation()){
+        this.table.push({method:this.payment_type,
+                        payor:this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor,
+                        payee:this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee,
+                        dept_id:this.company[0],
+                        amount:this.transaction.amount,
+                        dept:this.company[1]})
+        this.no_data_table_error = ''
       }
     },
   },
@@ -440,6 +593,43 @@ export default defineComponent({
 }
 .diff-shadow{
   padding: 1.65% 3.56%;
+}
+// ab flex box
+.ab-flex{
+  display: flex;
+}
+.ab-flex > div:first-child{
+  margin-right: 20px;
+}
+.ab-flex > div > label{
+  margin: 0;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+//input radio css
+.ab-flex > div > input[type='radio'] {
+  -webkit-appearance:none;
+  width:15px;
+  height:15px;
+  border:1px solid darkgray;
+  border-radius:50%;
+  outline:none;
+  box-shadow:0 0 1px 0px gray inset;
+}
+.ab-flex > div > input[type='radio']:hover {
+    box-shadow:0 0 1px 0px orange inset;
+}
+.ab-flex > div > input[type='radio']:before {
+    content:'';
+    display:block;
+    width:60%;
+    height:60%;
+    margin: 20% auto;    
+    border-radius:50%;    
+}
+.ab-flex > div > input[type='radio']:checked:before {
+    background:$primary-color;
 }
 
 // ab css
@@ -797,5 +987,9 @@ font-weight: 500;
 .content{
   background-color: white; 
   color: #0f2634;
+}
+.clr-t{
+  padding: 4px 20px;
+  margin-right: 5px;
 }
 </style>
