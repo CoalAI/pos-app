@@ -14,6 +14,7 @@ export enum MutationTypes {
   SetCompanies = "SET_COMPANIES",
   SetTransactions = "SET_TRANSACTIONS",
   SetExpense = "SET_EXPENSE",
+  SetJournalEntryStatus = 'SET_JOURNAL_ENTRY_STATUS',
   SetError = "SET_AUTH_ERROR",
   AppendNotification = "APPEND_NOTIFICATION",
   AppendUser = "APPEND_USER",
@@ -72,6 +73,9 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetExpense](state: State, transaction: Transaction) {
     state.expense = transaction
+  },
+  [MutationTypes.SetJournalEntryStatus](state: State, je_status: string) {
+    state.journal_entry_status = je_status
   },
   [MutationTypes.SetError](state: State, error: any) {
     state.error = error;

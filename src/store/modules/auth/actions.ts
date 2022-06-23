@@ -21,6 +21,7 @@ export enum ActionTypes {
   GET_USERS_BY_TYPES = "GET_USERS_BY_TYPES",
   GET_CUSTOMER_USERS = "GET_CUSTOMER_USERS",
   CREATE_EXPENSE = "CREATE_EXPENSE",
+  CREATE_JOURNAL_ENTRY = "CREATE_JOURNAL_ENTRY",
   FETCH_TYPES = "FETCH_TYPES",
   FETCH_COMPANIES = "FETCH_COMPANIES",
   FETCH_ALL_COMPANIES = "FETCH_ALL_COMPANIES",
@@ -54,6 +55,7 @@ export interface Actions {
   [ActionTypes.GET_USERS_BY_TYPES]({ commit }: AugmentedActionContext, user_types: string[]): void;
   [ActionTypes.GET_CUSTOMER_USERS]({ commit}: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}): void;
   [ActionTypes.CREATE_EXPENSE]({ commit }: AugmentedActionContext, transaction: Transaction): void;
+  [ActionTypes.CREATE_JOURNAL_ENTRY]({ commit }: AugmentedActionContext, data: any): void;
   [ActionTypes.FETCH_TYPES]({ commit }: AugmentedActionContext): void;
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string; page?: number}): void;
   [ActionTypes.FETCH_ALL_COMPANIES]({ commit }: AugmentedActionContext, company: Company): void;
@@ -208,6 +210,16 @@ Actions = {
     }
     if(isAxiosError(response)) {
       commit(MutationTypes.SetExpense, {})
+      commit('setError', response.message , {root: true});
+    }
+  },
+  async [ActionTypes.CREATE_JOURNAL_ENTRY]({ commit }: AugmentedActionContext, data: any) {
+    const response = await serverRequest('post', `journal-entry/`, true, data);
+    if(isAxiosResponse(response)) {
+      commit(MutationTypes.SetJournalEntryStatus, response.statusText)
+    }
+    if(isAxiosError(response)) {
+      commit(MutationTypes.SetJournalEntryStatus, {})
       commit('setError', response.message , {root: true});
     }
   },

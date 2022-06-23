@@ -104,6 +104,22 @@
         </div>
       </div>
     </div> 
+     <div class="analytics">
+    <div>
+      <span>
+        Total Products:
+      </span>
+      <span>
+         <span>{{counts.inventory}}</span>
+      </span>
+    </div>
+    <div>
+      <span>
+        Total Amount:
+      </span>
+      <span>{{inventory.map((item) => parseInt(item.quantity * item.batch.product_variant.price)).reduce((a, b) => a + b, 0)}}</span> 
+    </div>
+  </div>
     <Paginator
       class="mr-2 pager"
       :count="counts.inventory"
@@ -160,7 +176,6 @@ export default defineComponent({
   methods: {
     onCheckChange: async function(e: any){
       this.checkedValue = e.target.value
-      console.log(this.checkedValue)
       this.checkall = false
       await this.fetchInventory({
         company: this.checkedValue,
@@ -172,7 +187,6 @@ export default defineComponent({
 
     onCheckAll: async function(e: any){
       this.checkedValue = e.target.value
-      console.log(this.checkedValue)
       this.checkall = true
       await this.fetchInventory({
         company: this.checkedValue,
