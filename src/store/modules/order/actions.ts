@@ -491,6 +491,11 @@ Actions = {
     const response = await serverRequest('get', `comparison-analysis/`, true, undefined, options);
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetComparisonAnalysis, response.data);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
 
   async [ActionTypes.FETCH_EXPENSE_SALES]({ commit }: AugmentedActionContext, company: number) {
     const response = await serverRequest('get', 'comparison-analysis-expense-sales/', true, undefined, {'company': company});
@@ -503,5 +508,4 @@ Actions = {
       commit('setError', response.message, {root: true});
     }
   }
-  },
 };
