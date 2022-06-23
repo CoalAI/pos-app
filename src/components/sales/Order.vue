@@ -1591,7 +1591,7 @@ export default defineComponent({
     handleOrderStatus: async function () {
       this.changeOrderStatus("");
       this.clearProduct();
-      await this.searchProductByBarcode(""); //this statement will clear the search results from action
+      // await this.searchProductByBarcode(""); //this statement will clear the search results from action
       this.orderItems = [];
       this.cashReceived = "";
       this.totalDiscount = "";
