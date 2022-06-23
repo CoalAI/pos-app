@@ -37,7 +37,7 @@
     </div>
     <button
             class="btn-red block"
-            @click="printDiv('expense', 'Comparison Analysis')"
+            
             :disabled="submitOrderButton"
             ref="submitandprint"
           >
@@ -54,7 +54,7 @@ import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
 import { BarChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { store } from "@/store";
-import printDiv from '@/utils/print';
+import printBill from '@/utils/print';
 Chart.register(...registerables);
 
 export default defineComponent({
@@ -158,8 +158,8 @@ export default defineComponent({
         ],
       };
     },
-    printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+    printBill(div_id: string, title: string) {
+      printBill(div_id, title);
     },
     
   },
