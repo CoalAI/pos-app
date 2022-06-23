@@ -288,6 +288,9 @@
         </div>
         <div style="text-align: right; padding-bottom: 20px">
           <button
+            class="ab_btn btn-blue clr-t"
+             @click="clear_table">Clear Table</button>
+          <button
             class="ab_btn btn-orange"
              @click="addDept">Add</button>
         </div>
@@ -984,5 +987,9 @@ font-weight: 500;
 .content{
   background-color: white; 
   color: #0f2634;
+}
+.clr-t{
+  padding: 4px 20px;
+  margin-right: 5px;
 }
 </style>
