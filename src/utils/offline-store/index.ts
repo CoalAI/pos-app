@@ -14,8 +14,6 @@ class OfflineStore {
   private orderStore: LocalForage;
   private syncOrder: LocalForage;
   private latestOrder: Order;
-  private productname: string;
-  private productsize: string;
 
   // constants
   private CURENT_INVOICE = 'current-invoice';
@@ -33,8 +31,6 @@ class OfflineStore {
     this.orderStore = localForage.createInstance({name: "order"});
     this.syncOrder = localForage.createInstance({name: "syncOrder"});
     this.latestOrder = {};
-    this.productname = "";
-    this.productsize = "";
   }
 
   async initialize() {
@@ -57,18 +53,6 @@ class OfflineStore {
     this.syncOrder.setItem("bool", false);
   }
 
-  async setproductinfo(name: string, size: string){
-    this.productname = name;
-    this.productsize = size;
-  }
-
-  async getproductname(){
-    return this.productname;
-  }
-
-  async getproductsize(){
-    return this.productsize;
-  }
 
   async getProductByBarCode(barCode: string) {
     let product = undefined;
@@ -101,18 +85,6 @@ class OfflineStore {
     let user = undefined;
     try {
       user = (await this.loggedInUserStore.getItem(this.USER_DATA)) as User;
-    } catch (error) {
-      console.log(error);
-    }
-    return user;
-  }
-
-  async getUserName(){
-    let user = undefined;
-    try {
-      user = (await this.loggedInUserStore.getItem(this.USER_DATA)) as User;
-      user = user.first_name + ' ' + user.last_name;
-      console.log(user);
     } catch (error) {
       console.log(error);
     }
@@ -224,7 +196,6 @@ class OfflineStore {
         }
         else if(product.includes("to")){
           const order = await this.orderStore.getItem(product) as Order;
-          console.log(order)
           await serverRequest('post', 'order/', true, order);
         }
       }

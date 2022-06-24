@@ -36,14 +36,13 @@
 				<tr>
 					<th>Sr#</th>
 					<th>Item's Name</th>
-					<th>Size</th>
 					<th>Qty</th>
 					<th>Rate</th>
 					<th>Amount</th>
 				</tr>
 				<tr v-for="(orderItem, index) in order.order_item" v-bind:key="orderItem.id">
 					<td>{{ index+1 }}</td>
-					<td>{{orderItem}}</td>
+					<td>{{product_name[index]}}</td>
 					<td>{{ trimNumber(orderItem.quantity) }}</td>
 					<td>{{ trimNumber(orderItem.price) }}</td>
 					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
@@ -95,10 +94,6 @@
 		</div>
 
 		<div id="footer-section" style="width:80mm">
-			<p>
-				<span>Operator: </span>
-				<span>{{operator}}</span>
-			</p>
 			<p class="text-center" style="font-size: 14px;"><strong>Thanks for Visiting</strong></p>
 			<p class="text-center" style="font-size: 14px;"><strong>Powered by CoalDev</strong></p>
 		</div>
@@ -118,7 +113,6 @@ export default defineComponent({
 		return{
 			printDelay: 200,
 			order: offlineStoreService.getLatestOrder(),
-			operator: offlineStoreService.getUserName(),
 		}
   },
   methods:{
@@ -256,17 +250,6 @@ export default defineComponent({
 			return (parseFloat(price)*parseFloat(quantity)).toFixed(2);
 		},
 
-		getProductName: function(orderItem: any) {
-			return orderItem.batch.product_variant.product.name;
-		},
-
-		getProductSize: function(orderItem: any) {
-			return orderItem.batch.product_variant.size;
-		},
-
-
-
-
 		trimNumber: function(value: string) {
 			return parseFloat(value).toFixed(2);
 
@@ -338,11 +321,10 @@ export default defineComponent({
 			}
 		},
 
-
 	},
 	props:{
-		orderId: {
-			default: 0,
+		product_name: {
+			default: [""],
 		},
     print: {
       default: true,
@@ -353,7 +335,6 @@ export default defineComponent({
       this.printBill();
     }
 	},
-	
 });
 </script>
 

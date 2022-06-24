@@ -718,7 +718,7 @@
       </template>
 
       <template v-slot:body>
-        <OfflineOrderBill/>
+        <OfflineOrderBill :product_name="productName"/>
       </template>
 
       <template v-slot:footer>
@@ -764,6 +764,7 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     const vendor: User = {};
+    const productName: string[] = [];
 
     return {
       orderoffline: false,
@@ -813,6 +814,7 @@ export default defineComponent({
       showErrorBuyer: false,
       showErrorVenCont: false,
       showErrorVenComp: false,
+      productName: productName,
     };
   },
   computed: {
@@ -1259,6 +1261,10 @@ export default defineComponent({
         discount: discount.toString(),
         totalPrice,
       };
+      if(!navigator.onLine){
+        this.productName.push(this.product.name);
+        console.log(this.productName[0])
+      }
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
@@ -1314,7 +1320,6 @@ export default defineComponent({
                   quantity: singleOrderItem.batch.quantity,
                   product_variant: singleOrderItem.batch.product_variant?.toString(),
                 } as Batch;
-                console.log("batchh", batch);
                 singleOrderItem.order_batch = batch;
                 singleOrderItem.batch = undefined;
                 
@@ -1348,7 +1353,6 @@ export default defineComponent({
       if(!navigator.onLine){
         offlineStoreService.setsyncOrder(true);
         this.orderoffline = true;
-        console.log(this.product.name);
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
@@ -1609,6 +1613,7 @@ export default defineComponent({
         offlineStoreService.Order();
         offlineStoreService.setsyncOrder(false);
       }
+      return check;
     },
 
     ...mapActions({
