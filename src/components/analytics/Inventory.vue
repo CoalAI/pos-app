@@ -113,8 +113,8 @@ export default defineComponent({
         company: this.company,
       });
     },
-    printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+    printDiv(div_id: string, title: string, style?: string) {
+      printDiv(div_id, title, style);
     },
   },
   async mounted() {
