@@ -35,6 +35,8 @@
         <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
       </div>
     </div>
+    <div id="print">
+
     <table class="tble-mt">
       <colgroup>
         <col span="1" style="width: 25%;">
@@ -70,9 +72,19 @@
         <span>{{inventory.map((item) => parseInt(item.quantity * item.batch.product_variant.price)).reduce((a, b) => a + b, 0)}}</span>
       </div>
     </div>
+    </div>
     
     <div class="flex-container marginTop">
-      <button class="btn btn-orange" style="width:80px;margin-right:7px">Print</button>
+      <!-- <button class="btn btn-orange">Print</button> -->
+      <button
+      class="btn-orange btn mt-5"
+     @click="printDiv('print', 'Stock Statement')"
+      :disabled="submitOrderButton"
+      style="width:80px;margin-right:7px"
+      ref="submitandprint"
+    >
+      Print
+    </button>
     </div> 
   </div>
 </template>
@@ -85,6 +97,7 @@ import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Category } from '@/store/models/product'
 import Paginator from '@/components/common-components/Paginator.vue';
+import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: 'OperatorSalesDetail',
@@ -143,6 +156,9 @@ export default defineComponent({
               return data.name
           }
       });
+    },
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title);
     },
   },
   async mounted() {

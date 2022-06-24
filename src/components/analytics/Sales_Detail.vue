@@ -22,35 +22,45 @@
       <div class="b">
         <button class="btn btn-orange" @click="fetchSalesanalyticsBtn">Search</button>
       </div>
-    </div> 
-    <table class="tble-mt">
-      <colgroup>
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-    </colgroup>
-    <thead>
-      <tr class="fr-row header">
-        <th scope="col">User Name</th>
-        <th scope="col">User Type</th>
-        <th scope="col">Total Orders</th>
-        <th scope="col">Total Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="data in salesanalytics.result" :key="data">
-        <td>{{data.username}}</td>
-        <td>{{data.user_type}}</td>
-        <td>{{data.order_count}}</td>
-        <td>{{data.total_amount}}</td>
-      </tr>
-    </tbody>
-  </table>
-  <!-- commented out as this was not in the mockup -->
-  <!-- <div class="flex-container marginTop">
-    <button class="btn btn-orange" style="width:80px">Print</button>
-  </div>  -->
+    </div>
+     <div id="print">
+      <table class="tble-mt">
+        <colgroup>
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+      </colgroup>
+      <thead>
+        <tr class="fr-row header">
+          <th scope="col">User Name</th>
+          <th scope="col">User Type</th>
+          <th scope="col">Total Orders</th>
+          <th scope="col">Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="data in salesanalytics.result" :key="data">
+          <td>{{data.username}}</td>
+          <td>{{data.user_type}}</td>
+          <td>{{data.order_count}}</td>
+          <td>{{data.total_amount}}</td>
+        </tr>
+      </tbody>
+      </table>
+     </div>
+  </div>
+  <div class="flex-container marginTop">
+
+    <button
+      class="btn-orange btn mt-5"
+      
+      @click="printDiv('print', 'Operator Sales Detail')"
+      :disabled="submitOrderButton"
+      ref="submitandprint"
+    >
+      Print Details
+    </button>
   </div>
 </template>
 
@@ -61,6 +71,7 @@ import { mapActions, mapGetters } from 'vuex';
 import DateRange from '@/components/common-components/DateRange.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: 'OperatorSalesDetail',
@@ -120,7 +131,10 @@ export default defineComponent({
         end_date: this.endDate,
         company: this.company,
       });
-    }
+    },
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title);
+    },
   },
   async mounted() {
     await this.fetchUser();

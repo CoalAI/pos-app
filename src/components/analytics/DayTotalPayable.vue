@@ -20,7 +20,7 @@
         <button class="btn btn-orange" @click="fetchTotalPayableBtn(companies, company)">Search</button>
       </div>
     </div>
-    
+    <div id="print">
     <table class="tble-mt">
       <colgroup>
         <col span="1" style="width: 25%;">
@@ -52,6 +52,15 @@
       </div>
     </div>
   </div>
+  </div>
+  <button
+      class="btn-orange btn mt-5"
+      @click="printDiv('print', 'Day Total Payable')"
+      :disabled="submitOrderButton"
+      ref="submitandprint"
+    >
+      Print Details
+    </button>
 </template>
 
 <script lang="ts">
@@ -59,6 +68,7 @@ import {defineComponent} from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: 'DayTotalPayable',
@@ -97,6 +107,16 @@ export default defineComponent({
    
     async fetchTotalPayableBtn() {
        await this.fetchTotalpayablereceivable(this.company);
+    },
+    // async fetchSalesanalyticsBtn() {
+    //   await this.fetchSalesanalytics({
+    //     start_date: this.startDate,
+    //     end_date: this.endDate,
+    //     company: this.company,
+    //   });
+    //     },
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title);
     },
   },
   async mounted() {

@@ -21,32 +21,46 @@
           <button class="btn btn-orange" @click="fetchAnalyticsBtn(companies, company)">Search</button>
       </div>
     </div>
-    <table class="tble-mt">
-        <colgroup>
-          <col span="1" style="width: 33%;">
-          <col span="1" style="width: 33%;">
-          <col span="1" style="width: 34%;">
-        </colgroup>
-        <thead>
-          <tr class="fr-row header">
-            <th scope="col">Department Name</th>
-            <th scope="col">Department Type</th>
-            <th scope="col">Receivable Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="content" v-for="data in total_pay_rec.amount" :key="data">
-            <td v-if="data.receivable_amount != 0">{{ data.seller_company }}</td>
-            <td v-if="data.receivable_amount != 0">{{ data.seller_company_type }}</td>
-            <td v-if="data.receivable_amount != 0">{{ data.receivable_amount }}</td>
-          </tr> 
-        </tbody>
-      </table>
-    <div class="stats">
-      <div>
-        <span>Total Amount:</span>
-        <span>{{ total_pay_rec.total_receivable_amount }}</span>
+    <div id="print">
+      <table class="tble-mt">
+          <colgroup>
+            <col span="1" style="width: 33%;">
+            <col span="1" style="width: 33%;">
+            <col span="1" style="width: 34%;">
+          </colgroup>
+          <thead>
+            <tr class="fr-row header">
+              <th scope="col">Department Name</th>
+              <th scope="col">Department Type</th>
+              <th scope="col">Receivable Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="content" v-for="data in total_pay_rec.amount" :key="data">
+              <td v-if="data.receivable_amount != 0">{{ data.seller_company }}</td>
+              <td v-if="data.receivable_amount != 0">{{ data.seller_company_type }}</td>
+              <td v-if="data.receivable_amount != 0">{{ data.receivable_amount }}</td>
+            </tr> 
+          </tbody>
+        </table>
+      <div class="stats">
+        <div>
+          <span>Total Amount:</span>
+          <span>{{ total_pay_rec.total_receivable_amount }}</span>
+        </div>
       </div>
+    </div>
+    <div class="flex-container marginTop">
+      <!-- <button class="btn btn-orange">Print</button> -->
+      <button
+      class="btn-orange btn mt-5"
+      @click="printDiv('print', 'Total Receivable')"
+      :disabled="submitOrderButton"
+      style="width:80px;margin-right:7px"
+      ref="submitandprint"
+    >
+      Print
+    </button>
     </div>
   </div>
 </template>
@@ -56,7 +70,7 @@ import {defineComponent} from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
-
+import printDiv from '@/utils/print';
 
 
 export default defineComponent({
@@ -97,6 +111,9 @@ export default defineComponent({
     }),
     async fetchAnalyticsBtn() {
       await this.fetchTotalpayablereceivable(this.company)
+    },
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title);
     },
   },
   async mounted() {
