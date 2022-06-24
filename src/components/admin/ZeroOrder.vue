@@ -720,6 +720,27 @@
         </div>
       </template>
     </Modal>
+    <Modal v-else-if="orderoffline" type="scrollable">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <OfflineOrderBill :product_name="productName"/>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button
+            @click="handleOrderStatus()"
+            class="btn btn-orange btn-mr"
+            v-focus
+          >
+            New Order
+          </button>
+        </div>
+      </template>
+    </Modal>
     <p class="coaldev-name ">Created by CoalDev</p>
   </div>
 </template>
@@ -737,20 +758,24 @@ import { User } from "@/store/models/user";
 import { OrderItem } from "@/store/models/orderItem";
 import { Product, ProductVariant } from "@/store/models/product";
 import offlineStoreService from "@/utils/offline-store/index";
+import OfflineOrderBill from "../sales/OfflineOrderBill.vue";
 
 export default defineComponent({
   name: "ZeroOrder",
   components: {
     Modal,
     OrderBill,
+    OfflineOrderBill,
   },
   data() {
     const today = new Date().toDateString();
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     const vendor: User = {};
+    const productName: string[] = [];
 
     return {
+      orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID: "",
@@ -797,6 +822,7 @@ export default defineComponent({
       showErrorBuyer: false,
       showErrorVenCont: false,
       showErrorVenComp: false,
+      productName: productName,
     };
   },
   computed: {
@@ -1243,6 +1269,9 @@ export default defineComponent({
         discount: discount.toString(),
         totalPrice,
       };
+      if(!navigator.onLine){
+        this.productName.push(this.product.name);
+      }
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
@@ -1298,7 +1327,6 @@ export default defineComponent({
                   quantity: singleOrderItem.batch.quantity,
                   product_variant: singleOrderItem.batch.product_variant?.toString(),
                 } as Batch;
-                console.log("batchh", batch);
                 singleOrderItem.order_batch = batch;
                 singleOrderItem.batch = undefined;
                 
@@ -1330,7 +1358,8 @@ export default defineComponent({
         internal_order: true,
       };
       if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true)
+        offlineStoreService.setsyncOrder(true);
+        this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
