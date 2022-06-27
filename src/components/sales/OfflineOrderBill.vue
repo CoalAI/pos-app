@@ -106,7 +106,7 @@ import { ActionTypes } from '@/store/modules/order/actions';
 import { defineComponent } from 'vue';
 import {mapActions, mapGetters } from 'vuex';
 import offlineStoreService from "@/utils/offline-store/index";
-
+import printDiv from '@/utils/print';
 export default defineComponent({
   name: 'OfflineOrderBill',
   data(){
@@ -116,26 +116,16 @@ export default defineComponent({
 		}
   },
   methods:{
-		getElementTag: function(tag: keyof HTMLElementTagNameMap): string {
-			const html: string[] = [];
-			const elements = document.getElementsByTagName(tag);
-			for (let index = 0; index < elements.length; index++) {
-				html.push(elements[index].outerHTML);
-			}
-			return html.join('\r\n');
+		printDiv(div_id: string, title: string, style?: string) {
+			printDiv(div_id, title, style);
 		},
-
-		getHtmlContents: function() {
-			const printContents = document.getElementById("bill-preview");
-			return printContents && printContents.innerHTML?printContents.innerHTML:'';
-		},
+		
 
 		printBill: function() {
-			let styles = '', links = '';
-			styles = `
+			const styles = `
 			<style lang="scss" scoped>	
 				@page {
-					size: 80mm;
+					size: 180mm;
 					margin: 0
 				}
 				@body {
@@ -233,9 +223,7 @@ export default defineComponent({
 				}
 			</style>
 			`;
-			links = this.getElementTag('link');
-			const printContents = this.getHtmlContents();
-      this.printContent(printContents, styles, links);
+			printDiv("bill-preview","", styles);
 		},
 
 		getCurrentTime(){
@@ -254,40 +242,6 @@ export default defineComponent({
 			return parseFloat(value).toFixed(2);
 
 		},
-
-    printContent: function(htmlcontent: string, styles: string, links: string) {
-
-      const endscripttag = "/script"
-      const popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto,focused=false");
-        
-      if (popupWin) {
-        popupWin.document.open()
-        popupWin.document.write(`
-        <html>
-          <head>
-          <title></title>
-          ${styles}
-          ${links}
-          </head>
-          <body>
-          ${htmlcontent}
-          <script defer>
-            function triggerPrint(event) {
-            window.removeEventListener('load', triggerPrint, false);
-            setTimeout(function() {
-              closeWindow(window.print());
-            }, ${this.printDelay});
-            }
-            function closeWindow(){
-              window.close();
-            }
-            window.addEventListener('load', triggerPrint, false);
-          <${endscripttag}>
-          </body>
-        </html>`);
-        popupWin.document.close();
-      }
-    },
 
 
     sleep: function (ms: number) {
