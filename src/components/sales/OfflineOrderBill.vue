@@ -116,11 +116,7 @@ export default defineComponent({
 		}
   },
   methods:{
-		printDiv(div_id: string, title: string, style?: string) {
-			printDiv(div_id, title, style);
-		},
-		
-
+	
 		printBill: function() {
 			const styles = `
 			<style lang="scss" scoped>	
