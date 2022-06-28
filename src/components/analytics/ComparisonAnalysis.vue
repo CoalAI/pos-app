@@ -27,8 +27,9 @@
         </button>
       </div>
     </div>
-    <div class="container d-flex">
-      <div class="profit">Profit</div>
+    <div class="container d-flex" id="print">
+      <img src="" alt="graph" id="graph-img">
+      <div class="profit"></div>
       <BarChart
         :chartData="chartData"
         :options="options"
@@ -36,12 +37,12 @@
       />
     </div>
     <button
-            class="btn-red block"
-            
+            class="btn-orange btn mt-5"
+            @click="printBill('print','Comparison Analysis')"
             :disabled="submitOrderButton"
             ref="submitandprint"
           >
-            Submit and Print</button
+            Print</button
           >
   </div>
 </template>
@@ -144,6 +145,12 @@ export default defineComponent({
       };
     },
     printBill(div_id: string, title: string) {
+      const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
+      const img = canvas.toDataURL('image/png')
+      const graph_div = document.getElementById('bar-chart') as HTMLBodyElement
+      const graph_img = document.getElementById('graph-img') as HTMLImageElement
+      graph_img.src = img
+      console.log(img)
       printBill(div_id, title);
     },
     
@@ -238,5 +245,8 @@ td > .flex-box {
   transform: rotate(-90deg);
   height: 0%;
   margin-top: 9rem;
+}
+#graph-img {
+  display: none;
 }
 </style>
