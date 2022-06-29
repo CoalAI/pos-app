@@ -47,6 +47,8 @@ export enum ActionTypes {
   TOTAL_PAYABLE_RECEIVABLE = "TOTAL_PAYABLE_RECEIVABLE",
   FETCH_COMPARISON_ANALYSIS = "FETCH_COMPARISON_ANALYSIS",
   FETCH_EXPENSE_SALES = "FETCH_EXPENSE_SALES",
+  UPDATE_LOGO_IMAGE = "UPDATE_LOGO_IMAGE",
+  FETCH_LOGO_IMAGE = "FETCH_LOGO_IMAGE"
 }
 
 
@@ -107,6 +109,8 @@ export interface Actions {
   [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.FETCH_COMPARISON_ANALYSIS]({ commit }: AugmentedActionContext, options: { company_type: string }): void;
   [ActionTypes.FETCH_EXPENSE_SALES]({ commit }: AugmentedActionContext, company: number): void;
+  [ActionTypes.UPDATE_LOGO_IMAGE]({ commit }: AugmentedActionContext, data: {}): void;
+  [ActionTypes.FETCH_LOGO_IMAGE]({ commit }: AugmentedActionContext, data: {}): void;
 }
 
 export const actions: ActionTree<State, IRootState> &
@@ -507,5 +511,23 @@ Actions = {
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }
-  }
+  },
+  async [ActionTypes.UPDATE_LOGO_IMAGE]({ commit }: AugmentedActionContext, data: {}) {
+    const response = await serverRequest('patch', 'update-company-logo/', true, data);
+    if (isAxiosResponse(response)) {
+      console.log(response.data)
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
+  async [ActionTypes.FETCH_LOGO_IMAGE]({ commit }: AugmentedActionContext) {
+    const response = await serverRequest('get', 'update-company-logo/', true);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetLogoImgage, response.data.image_url);
+    }
+    if(isAxiosError(response)) {
+      commit('setError', response.message, {root: true});
+    }
+  },
 };

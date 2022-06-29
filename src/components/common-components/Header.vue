@@ -2,10 +2,10 @@
   <div class="container-fluid">
     <div class="logo">
       <router-link v-if="salesStaff" to="/">
-        <img class="logo-img-head" src="../../assets/rohi_logo.jpg" alt="coaldev">
+        <img class="logo-img-head" :src="logoimg ? logoimg : src_img" alt="coaldev">
       </router-link>
       <router-link v-else-if="admin" to="/admin/order">
-        <img class="logo-img-head" src="../../assets/rohi_logo.jpg" alt="coaldev">
+        <img class="logo-img-head" :src="logoimg" alt="coaldev">
       </router-link>
       <!--<img class="logo-img-head" :src="logo" alt="coaldev">-->
     </div>
@@ -208,6 +208,7 @@ export default defineComponent({
   data () {
     return{
       logo: require('../../assets/login-top-logo.svg'),
+      src_img: require('@/assets/rohi_logo.png'),
       toggle:false,
       animated:false,
       order: require('../../assets/new-order.svg'),
@@ -237,6 +238,7 @@ export default defineComponent({
       orders: 'getListOfOrders',
       messages: 'getNotifications',
       online: 'getNetworkStatus',
+      logoimg: 'getLogoImg',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -337,6 +339,7 @@ export default defineComponent({
 
     ...mapActions({
       getuserdate: ActionTypes.USER_DATA,
+      fetchlogo: OrderActionTypes.FETCH_LOGO_IMAGE,
       fetchOrders: OrderActionTypes.FETCH_ORDERS,
     }),
 
@@ -358,6 +361,7 @@ export default defineComponent({
   },
   beforeMount: async function() {
     await this.getuserdate();
+    await this.fetchlogo();
     this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
   },
 });

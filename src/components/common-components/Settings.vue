@@ -16,39 +16,27 @@
       </ul>
       <div class="cl-container" v-if="tab ==='changeLogo'">
         <div class="logo-img-container">
-          <img id="logo_img" :src="src_img" alt="">
+          <img id="logo_img" :src="logoimg ? logoimg : img_file" alt="">
         </div>
-        <form class="changelogo-form">
+        <form class="changelogo-form" enctype="multipart/form-data">
           <label for="logo-input">Upload Image</label>
-          <input type="file" id="logo-input" @change="loadImage">
+          <input type="file" name="image_url" id="logo-input" @change="loadImage">
         </form>
-        <div class="ab_btn_container">
-          <div>
-            <button class="btn ab_orange_hover btn-orange">
-              <span>Set as Logo Image</span>
-            </button>
+          <div class="ab_btn_container">
+            <div>
+              <button class="btn ab_orange_hover btn-orange" @click="sendFormData">
+                <span>Set as Logo Image</span>
+              </button>
+            </div>
+            <div>
+              <router-link 
+                to="/departments"
+                class="btn ab_blue_hover btn-blue"
+              >Cancel</router-link>
+            </div>
           </div>
-          <div>
-            <router-link 
-              to="/departments"
-              class="btn ab_blue_hover btn-blue"
-            >Cancel</router-link>
-          </div>
-        </div>
       </div> 
       <div v-else-if="tab === 'changeHeaderColor'">
-        <!-- <div class="flex-box">
-          <label class="pad-label w100" for="font-size">
-              <strong>Font Size:</strong>
-            </label>
-            <input
-              id="font-size"
-              name="font-size"
-              type="text"
-              placeholder="Font size"
-              value="100%"
-            />
-        </div> -->
         <div class="flex-box">
           <label class="pad-label w100" for="primary-color">
             <strong>Primary Color:</strong>
@@ -91,22 +79,44 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapActions, mapGetters } from 'vuex';
+import { ActionTypes } from '@/store/modules/order/actions';
+import axios from 'axios'
 
 export default defineComponent({
     name: 'Settings',
     data() {
       return {
         tab: 'changeLogo',
-        src_img: require('@/assets/rohi_logo.png')
+        img_file: require('@/assets/rohi_logo.png'),
+        selected_file: '',
       }
     },
+    computed: {
+      ...mapGetters({
+        logoimg: 'getLogoImg'
+      })
+    },
     methods: {
+       ...mapActions({
+      updateLogo: ActionTypes.UPDATE_LOGO_IMAGE,
+      fetchlogo: ActionTypes.FETCH_LOGO_IMAGE,
+      }),
       loadImage(event: any) {
-        this.src_img = URL.createObjectURL(event.target.files[0])
+        this.img_file = URL.createObjectURL(event.target.files[0])
+        this.selected_file = event.target.files[0]
+      },
+      sendFormData: async function() {
+        const formData = new FormData();
+        formData.append('image_url', this.selected_file);
+        await this.updateLogo(formData)
+
+        await this.fetchlogo()
       }
-
+    },
+    async beforeMount () {
+      await this.fetchlogo()
     }
-
 })
 </script>
 
