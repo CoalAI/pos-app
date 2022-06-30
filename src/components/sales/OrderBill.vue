@@ -118,6 +118,7 @@ import { OrderItem } from '@/store/models/orderItem';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { defineComponent } from 'vue';
 import {mapActions, mapGetters } from 'vuex';
+import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: 'OrderBill',
@@ -128,82 +129,68 @@ export default defineComponent({
 		}
   },
   methods:{
-		getElementTag: function(tag: keyof HTMLElementTagNameMap): string {
-			const html: string[] = [];
-			const elements = document.getElementsByTagName(tag);
-			for (let index = 0; index < elements.length; index++) {
-				html.push(elements[index].outerHTML);
-			}
-			return html.join('\r\n');
-		},
-
-		getHtmlContents: function() {
-			const printContents = document.getElementById("bill-preview");
-			return printContents && printContents.innerHTML?printContents.innerHTML:'';
-		},
-
+		
 		printBill: function() {
-			let styles = '', links = '';
-			styles = `
-			<style lang="scss" scoped>	
+			const styles = `
+				<style lang="scss" scoped>	
 				@page {
-					size: 80mm;
-					margin: 0
+				size: 180mm;
+				margin: 0
 				}
 				@body {
-					margin-left: 5%;
+				margin-left: 5%;
 				}
 				.company-info{
-					display: flex;
-					flex-wrap: nowrap;
-					flex-direction: column;
-					align-content: center;
-					justify-content: center;
-					align-items: center;
-					font-size: 12px;
+				display: flex;
+				flex-wrap: nowrap;
+				flex-direction: column;
+				align-content: center;
+				justify-content: center;
+				align-items: center;
+				font-size: 12px;
 				}
 
 				.maindiv-print {
-					padding: 4px;
-					max-width: 800px;
+				padding: 4px;
+				max-width: 800px;
 				}
 
 				#header-section {
-					display: grid;
-					grid-template-columns: 1fr 2fr;
-					grid-template-rows: 1fr;
-					gap: 0.1em 0.1em;
-					width:80mm;
+				display: grid;
+				grid-template-columns: 1fr 2fr;
+				grid-template-rows: 1fr;
+				gap: 0.1em 0.1em;
+				width:80mm;
 				}
 
 				#date-section {
-					display: grid;
-					grid-template-columns: 1fr 2fr;
-					grid-template-rows: 1fr;
-					gap: 0.1em 0.1em;
-					width:80mm;
+				display: grid;
+				grid-template-columns: 1fr 2fr;
+				grid-template-rows: 1fr;
+				gap: 0.1em 0.1em;
+				width:80mm;
 				}
 
 				#order-items-section table {
-					border-collapse: separate !important;
-					width: 80mm;
+				border-collapse: separate !important;
+				width: 80mm;
 				}
 
 				#order-items-section th {
-					border: 1px solid;
-					border-color: black;
-					text-align: center;
-					padding: 1px;
+				border: 1px solid;
+				border-color: black;
+				text-align: center;
+				padding: 1px;
 				}
 
 				#order-items-section td {
-					border: none;
-					text-align: center;
-					padding: 1px;
+				border: none;
+				text-align: center;
+				padding: 1px;
 				}
 
 				#order-items-section tr:nth-child(even) {
-					background-color: white;
+				background-color: white;
 				}
 
 				#totals-section {
@@ -213,42 +200,40 @@ export default defineComponent({
 				}
 
 				#totals-section p {
-					text-align: right;
+				text-align: right;
 				}
 
 				#totals-section td {
-					border: none;
-					text-align: right;
-					padding: 1px;
+				border: none;
+				text-align: right;
+				padding: 1px;
 				}
 
 				#totals-section tr:nth-child(even) {
-					background-color: white;
+				background-color: white;
 				}
 
 				.mb-5 {
-					border-bottom: 2px solid black;
-					padding-bottom: 5px;
+				border-bottom: 2px solid black;
+				padding-bottom: 5px;
 				}
 
 				.pt-5 {
-					padding-top: 5px;
+				padding-top: 5px;
 				}
 
 				.img-responsive{
-					max-width: 100%;
-					height: auto;
+				max-width: 100%;
+				height: auto;
 				}
 
 				.text-center{
-					text-align: center
+				text-align: center
 				}
-			</style>
-			`;
-			links = this.getElementTag('link');
-			const printContents = this.getHtmlContents();
-      this.printContent(printContents, styles, links);
-      this.checkToken();
+				</style>
+				`;
+			printDiv("bill-preview", "", styles);
+			this.checkToken();
 		},
 
 		getCurrentTime(date: Date){
@@ -288,40 +273,6 @@ export default defineComponent({
 
 		},
 
-    printContent: function(htmlcontent: string, styles: string, links: string) {
-
-      const endscripttag = "/script"
-      const popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto,focused=false");
-        
-      if (popupWin) {
-        popupWin.document.open()
-        popupWin.document.write(`
-        <html>
-          <head>
-          <title></title>
-          ${styles}
-          ${links}
-          </head>
-          <body>
-          ${htmlcontent}
-          <script defer>
-            function triggerPrint(event) {
-            window.removeEventListener('load', triggerPrint, false);
-            setTimeout(function() {
-              closeWindow(window.print());
-            }, ${this.printDelay});
-            }
-            function closeWindow(){
-              window.close();
-            }
-            window.addEventListener('load', triggerPrint, false);
-          <${endscripttag}>
-          </body>
-        </html>`);
-        popupWin.document.close();
-      }
-    },
-
     checkToken: function () {
       if (this.order.order_item) {
         for (const orderItem of this.order.order_item) {
@@ -342,8 +293,7 @@ export default defineComponent({
       orderItem.batch.product_variant.product &&
       typeof orderItem.batch.product_variant.product !== 'number' &&
         orderItem.batch.product_variant.product.name) {
-          let styles = '', links = '';
-        styles = `
+        const styles = `
         <style>
         @page {
           size: 80mm;
@@ -424,7 +374,6 @@ export default defineComponent({
         }
         </style>
         `;
-        links = this.getElementTag('link');
         const printContents = `
         <div id="TokenPreview">
           <p class="text-center" style="font-size: 20px; text-align: center;"><strong>Rohi Sweets & Bakers</strong></p>
@@ -460,7 +409,7 @@ export default defineComponent({
           </div>
         </div>
         `;
-        this.printContent(printContents, styles, links);
+        printDiv(printContents,"", styles);
       }
     },
 
@@ -522,7 +471,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>	
 	@page {
-		size: 80mm;
 		margin: 0
 	}
 	.company-info{

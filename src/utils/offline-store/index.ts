@@ -4,7 +4,7 @@ import { Order } from '@/store/models/order';
 import StoreInstance from './table';
 import localForage from 'localforage';
 import serverRequest from '@/utils/request'
-
+import { OrderItem } from '@/store/models/orderItem';
 class OfflineStore {
 
   private productStore: StoreInstance;
@@ -13,7 +13,7 @@ class OfflineStore {
   private customerStore: StoreInstance;
   private orderStore: LocalForage;
   private syncOrder: LocalForage;
-
+  private latestOrder: Order;
 
   // constants
   private CURENT_INVOICE = 'current-invoice';
@@ -25,12 +25,12 @@ class OfflineStore {
 
   constructor(pageSize: number) {
     this.productStore = new StoreInstance('product', 'product/', true, pageSize, 'bar_code');
-    this.loggedInUserStore = new StoreInstance('user', 'user-data/', true, pageSize, 'user-data');
+    this.loggedInUserStore = new StoreInstance('user', 'user-data/', true, pageSize, 'username');
     this.invoiceIdStore = new StoreInstance('invoice-id', 'invoice-id/', true, pageSize, 'start-invoice-id');
     this.customerStore = new StoreInstance('customers', 'user/', true, pageSize, 'username');
     this.orderStore = localForage.createInstance({name: "order"});
     this.syncOrder = localForage.createInstance({name: "syncOrder"});
-
+    this.latestOrder = {};
   }
 
   async initialize() {
@@ -45,11 +45,14 @@ class OfflineStore {
 
   async initializeStore() {
     await this.productStore.fetchData();
+    const userData =  await this.loggedInUserStore.fetchRecordsPerPage();
+    await this.loggedInUserStore.setItem(this.USER_DATA, userData.results[0]);
   }
 
   async intializeSync(){
     this.syncOrder.setItem("bool", false);
   }
+
 
   async getProductByBarCode(barCode: string) {
     let product = undefined;
@@ -145,6 +148,7 @@ class OfflineStore {
   }
 
   async setOrder(order: Order) {
+    this.latestOrder = order;
     let product = undefined;
     let max = 0;
     const length= this.orderStore.length();
@@ -169,6 +173,10 @@ class OfflineStore {
     }
   }
 
+  getLatestOrder(){
+    return this.latestOrder;
+  }
+
 
   setsyncOrder(sync: boolean){
     this.syncOrder.setItem("bool", sync);
@@ -188,7 +196,6 @@ class OfflineStore {
         }
         else if(product.includes("to")){
           const order = await this.orderStore.getItem(product) as Order;
-          console.log(order)
           await serverRequest('post', 'order/', true, order);
         }
       }
