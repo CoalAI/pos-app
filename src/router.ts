@@ -33,8 +33,13 @@ import OrderAnaltyics from '@/components/analytics/Order.vue';
 import FinanceAnaltyics from '@/components/analytics/Finance.vue';
 import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
 import StockStatement from '@/components/analytics/StockStatement.vue';
+import TotalReceivable from '@/components/analytics/TotalReceivable.vue';
+import DayTotalPayable from '@/components/analytics/DayTotalPayable.vue';
 import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 import ProfifLossReport from '@/components/analytics/Report.vue';
+import EndOfDay from '@/components/analytics/EndOfDay.vue';
+import ComparisonAnalysis from '@/components/analytics/ComparisonAnalysis.vue';
+import ComparisonExpenseSales from '@/components/analytics/ComparisonExpenseSales.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -273,6 +278,16 @@ const routes: Array<RouteRecordRaw> = [
         component: StockStatement,
       },
       {
+        path: 'TotalReceivable',
+        name: 'TotalReceivable',
+        component: TotalReceivable,
+      },
+      {
+        path: 'dayTotalPayable',
+        name: 'DayTotalPayable',
+        component: DayTotalPayable,
+      },
+      {
         path: 'detail',
         name: 'operator-sales-detail',
         component: OperatorSalesDetail,
@@ -281,6 +296,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'report',
         name: 'profit-loss-report',
         component: ProfifLossReport,
+      },
+      {
+        path: 'eod',
+        name: 'end-of-day',
+        component: EndOfDay,
+      },
+      {
+        path: 'comparisonAnalysis',
+        name: 'ComparisonAnalysis',
+        component: ComparisonAnalysis,
+      },
+      {
+        path: 'comparisonExpenseSales',
+        name: 'ComparisonExpenseSales',
+        component: ComparisonExpenseSales,
       },
     ]
   },

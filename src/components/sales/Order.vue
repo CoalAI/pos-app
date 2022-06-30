@@ -207,22 +207,36 @@
                   class="shadow-box mr-all"
                   @click="selectProduct(item.id, itemVariant.id)"
                 >
-                  <table class="pr-s-r-table">
-                    <tr>
-                      <td>{{ item.name }}</td>
-                      <td>{{ item.bar_code }}</td>
-                      <td>{{ itemVariant.color }}</td>
-                    </tr>
-                    <tr>
-                      <td>{{ itemVariant.sale_price }}</td>
-                      <td v-show="sumQuantity(itemVariant) > 0">
-                        {{ sumQuantity(itemVariant) }}
-                      </td>
-                     
-                      <td>{{ itemVariant.size }}</td>
-                    </tr>
-                    <tr v-show="sumQuantity(itemVariant) <= 0" class="out-of-stock">Out of Stock</tr>
-                  </table>
+                  <div>
+                     <div class="ab-flex">
+                       <p><b>Name:</b></p>
+                       <p><b>{{ item.name }}</b></p>
+                     </div>
+                     <div class="ab-flex">
+                       <p><b>Bar Code:</b></p>
+                       <p><b>{{ item.bar_code }}</b></p>
+                     </div>
+                     <div class="ab-flex">
+                       <p><b>Color:</b></p>
+                       <p><b>{{ itemVariant.color }}</b></p>
+                     </div>
+
+                     <div class="ab-flex">
+                       <p><b>Sale Price:</b></p>
+                       <p><b>{{ itemVariant.sale_price }}</b></p>
+                     </div>
+                     <div class="ab-flex" v-show="sumQuantity(itemVariant) > 0">
+                       <p><b>Quantity</b></p>
+                       <p v-show="sumQuantity(itemVariant) > 0"><b>{{ sumQuantity(itemVariant) }}</b></p>
+                     </div>
+                     <div class="ab-flex">
+                       <p><b>Size:</b></p>
+                       <p><b>{{ itemVariant.size }}</b></p>
+                     </div>
+                     <div v-show="sumQuantity(itemVariant) <= 0" class="out-of-stock">
+                       <p>Out of Stock</p>
+                     </div>
+                   </div>
                 </div>
               </li>
             </ul>
@@ -734,6 +748,27 @@
         </div>
       </template>
     </Modal>
+    <Modal v-else-if="orderoffline" type="scrollable">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <OfflineOrderBill :product_name="productName"/>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button
+            @click="handleOrderStatus()"
+            class="btn btn-orange btn-mr"
+            v-focus
+          >
+            New Order
+          </button>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -752,6 +787,7 @@ import ErrorField from "@/components/common-components/ErrorField.vue";
 import OrderBill from "@/components/sales/OrderBill.vue";
 import { Inventory } from "@/store/models/company";
 import offlineStoreService from "@/utils/offline-store/index";
+import OfflineOrderBill from "../sales/OfflineOrderBill.vue";
 
 export default defineComponent({
   name: "Order",
@@ -759,13 +795,16 @@ export default defineComponent({
     Modal,
     ErrorField,
     OrderBill,
+    OfflineOrderBill,
   },
 
   data() {
     const today = new Date().toDateString();
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
+    const productName: string[] = [];
     return {
+      orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID: "",
@@ -816,6 +855,7 @@ export default defineComponent({
       deduct_balance: false,
       return_order: false,
       print: true,
+      productName: productName,
     };
   },
   computed: {
@@ -1345,6 +1385,9 @@ export default defineComponent({
             ).toFixed(0)
           ),
         };
+        if(!navigator.onLine){
+          this.productName.push(this.product.name);
+        }
         this.orderItems.push(SingleOrderItem);
       });
 
@@ -1405,7 +1448,8 @@ export default defineComponent({
       }
 
       if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true)
+        offlineStoreService.setsyncOrder(true);
+        this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
@@ -1656,6 +1700,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+//ab css
+ .ab-flex{
+   display:flex;
+   justify-content: space-between;
+   font-size: 12px;
+ }
+ //ab end css
+
 .focuschange {
   outline: none !important;
   border-left: 5px solid red;
@@ -1897,13 +1949,16 @@ export default defineComponent({
   margin-left: 10px;
 }
 
-/*.box-22 {
-  margin-left: 70px;
-}*/
-
-/*li > div:hover {
+li > div.shadow-box{
+  padding: 0 4px;
+  border: 2px solid transparent;
+}
+li > div:hover {
   border: 2px solid $primary-color;
-}*/
+}
+div.ab-flex > p:last-child{
+  margin-left: 3px;
+}
 
 .order_item_input {
   margin: 0 !important;

@@ -24,6 +24,7 @@ export interface Getters {
   // eslint-disable-next-line
   getSignleProduct(state: State, id: number): any;
   getInventory(state: State): Inventory[];
+  getInventoryTotalAmount(state: State): number;
   getListOfRequests(state: State): Request[];
   getUnits(state: State): Unit[];
   getCategories(state: State): Category[];
@@ -35,6 +36,9 @@ export interface Getters {
   getTotalCountsBatches(state: State): any;
   getAnalytics(state: State): any;
   getSalesanalytics(state: State): any;
+  getTotalpayablereceivable(state: State): any;
+  getComparisonanalysis(state: State): any;
+  getExpenseSales(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -72,6 +76,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getInventory: (state: State) => {
     return state.inventory;
   },
+  getInventoryTotalAmount: (state: State) => {
+    return state.totalinventoryamount;
+  },
   getListOfRequests: (state: State) => {
     return state.listofRequests
   },
@@ -93,4 +100,7 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getTotalCountsBatches: (state: State) => state.totalCounts.batches,
   getAnalytics: (state: State) => state.analytics,
   getSalesanalytics: (state: State) => state.salesanalytics,
+  getTotalpayablereceivable: (state: State) => state.totalpayablereceivable,
+  getComparisonanalysis: (state: State) => state.comparisonanalysis,
+  getExpenseSales: (state: State) => state.expensesales,
 };

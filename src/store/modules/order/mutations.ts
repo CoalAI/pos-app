@@ -32,7 +32,11 @@ export enum MutationTypes {
   SetInventoryCount = "SET_INVENTORY_COUNT",
   SetRequestsCount = "SET_REQUESTS_COUNT",
   SetAnalytics = "SET_ANALYTICS",
+  SetExpenseSales = "SET_EXPENSE_SALES",
   SetSalesanalytics = "SET_SALESANALYTICS",
+  SetTotalPayableReceivable = 'SET_TOTAL_PAYABLE_RECEIVABLE',
+  SetComparisonAnalysis = 'SET_COMPARISON_ANALYSIS',
+  SetInventoryTotalAmount = 'SET_INVENTORY_TOTAL_AMOUNT',
 }
 
 export type Mutations = {
@@ -59,7 +63,11 @@ export type Mutations = {
   [MutationTypes.SetRequestsCount](state: State, count: number): void;
   [MutationTypes.SetInventoryCount](state: State, count: number): void;
   [MutationTypes.SetAnalytics](state: State, value: any): void;
+  [MutationTypes.SetExpenseSales](state: State, value: any): void;
   [MutationTypes.SetSalesanalytics](state: State, value: any): void;
+  [MutationTypes.SetTotalPayableReceivable](state: State, value: any): void;
+  [MutationTypes.SetComparisonAnalysis](state: State, value: any): void;
+  [MutationTypes.SetInventoryTotalAmount](state: State, value: number): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -92,6 +100,9 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetInventory](state, inventory) {
     state.inventory = inventory;
+  },
+  [MutationTypes.SetInventoryTotalAmount](state, value) {
+    state.totalinventoryamount = value;
   },
   [MutationTypes.SetListOfRequests](state: State, requests: Request[]) {
     state.listofRequests = requests;
@@ -132,7 +143,16 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.SetAnalytics](state: State, value: any) {
     state.analytics = value;
   },
+  [MutationTypes.SetExpenseSales](state: State, value: any) {
+    state.expensesales = value;
+  },
   [MutationTypes.SetSalesanalytics](state: State, value: any) {
     state.salesanalytics = value;
   },
+  [MutationTypes.SetTotalPayableReceivable](state: State, value: any){
+    state.totalpayablereceivable = value;
+  },
+  [MutationTypes.SetComparisonAnalysis](state: State, value: any){
+    state.comparisonanalysis = value;
+  }
 }

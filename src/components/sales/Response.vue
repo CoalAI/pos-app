@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-        <div v-else-if="tab === 'Order'" class="right-cont">
+        <div v-else-if="tab === 'Order'" class="right-cont-order">
           <div class="flex-box"> 
             <label class="">
               <strong>Status filter:</strong>
@@ -52,13 +52,29 @@
               <select
               class="transtype custom-select"
               v-model="orderStatus"
-              @change="onOrderStatusChangeFilter"
               >
                 <option value="">Select:</option>
                 <option v-for="item in statuses" v-bind:key="item.status" v-bind:value="item.status">
                 {{item.status}}
                 </option>
               </select>
+            </div>
+            <label class="">
+              <strong>Company filter:</strong>
+            </label>
+            <div class="ab-select-container">
+              <select
+              class="transtype custom-select"
+              v-model="company"
+              >
+                <option value="">Select:</option>
+                <option v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+                {{company.company_name}}
+                </option>
+              </select>
+            </div>
+            <div class="b" >
+              <button class="btn btn-orange" @click="onOrderStatusChangeFilter">Search</button>
             </div>
           </div>
         </div>
@@ -339,6 +355,7 @@ export default defineComponent({
       tab: 'Request',
       orderStatus: '',
       selected_order: 0,
+      company: '',
     }
   },
   computed: {
@@ -348,6 +365,7 @@ export default defineComponent({
       orders: 'getListOfOrders',
       statuses: 'getOrderStatuses',
       counts: 'getTotalCountsOrderModule',
+      companies: 'getInventoryCompanies',
     }),
   },
   methods:{
@@ -421,8 +439,8 @@ export default defineComponent({
     onOrderStatusChangeFilter: async function (Event?: Event, pageNo?: number) {
       if (this.user) {
         let filter = {};
-        if (this.user.company.company_type == 'RETIAL') filter = {buyer__company: this.user.company.id, status: this.orderStatus, page: pageNo?pageNo:1};
-        else if (this.user.company.company_type == 'STORE') filter = {seller__company: this.user.company.id, status: this.orderStatus, page: pageNo?pageNo:1};
+        if (this.user.company.company_type == 'RETIAL') filter = {buyer__company: this.user.company.id, seller__company: this.company, status: this.orderStatus, page: pageNo?pageNo:1};
+        else if (this.user.company.company_type == 'STORE') filter = {seller__company: this.user.company.id, buyer__company: this.company, status: this.orderStatus, page: pageNo?pageNo:1};
         await this.fetchOrders(filter);
       }
     },
@@ -494,6 +512,7 @@ export default defineComponent({
       fetchOrderStatuses: OrderActionTypes.FETCH_ORDER_STATUSES,
       updateOrderStatus: OrderActionTypes.UPDATE_ORDER,
       createTransaction: AuthActionTypes.CREATE_EXPENSE,
+      fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
     })
   },
   async beforeMount () {
@@ -501,6 +520,7 @@ export default defineComponent({
     await this.onChangeStatusFilter();
     await this.fetchOrderStatuses();
     await this.onOrderStatusChangeFilter();
+    await this.fetchCompanies();
   }
 });
 </script>
@@ -583,6 +603,7 @@ export default defineComponent({
   .page-upper > .right-cont{
     width: 30%;
   }
+
   .page-upper > .right-cont > .flex-box{
     align-items: baseline;
     width: 100%;
@@ -594,6 +615,24 @@ export default defineComponent({
   }
   .page-upper > .right-cont > .flex-box > .ab-select-container{
     flex-grow: 1;
+  }
+
+  .page-upper > .right-cont-order{
+    width: 60%;
+  }
+
+  .page-upper > .right-cont-order > .flex-box{
+    align-items: baseline;
+    width: 100%;
+  }
+  .page-upper > .right-cont-order > .flex-box > label{
+    margin-right: 10px;
+    font-size: 13px;
+    // font-weight: 500;
+  }
+  .page-upper > .right-cont-order > .flex-box > .ab-select-container{
+    flex-grow: 1;
+    margin-right: 10px;
   }
 
   // page upper ul designs;
@@ -678,5 +717,13 @@ export default defineComponent({
     border-radius: 10px;
     padding: 1em 4rem;
     box-shadow: 1px 1px 5px -1px rgb(0 0 0 / 75%);
+}
+
+.b{
+  text-align: right;
+  text-align: right;
+  padding: 7px;
+  margin-left: 1rem;
+  width: 7rem;
 }
 </style>
