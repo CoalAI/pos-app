@@ -150,7 +150,6 @@ export default defineComponent({
       const graph_div = document.getElementById('bar-chart') as HTMLBodyElement
       const graph_img = document.getElementById('graph-img') as HTMLImageElement
       graph_img.src = img
-      console.log(img)
       printBill(div_id, title);
     },
     
