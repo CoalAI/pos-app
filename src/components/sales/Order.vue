@@ -748,6 +748,27 @@
         </div>
       </template>
     </Modal>
+    <Modal v-else-if="orderoffline" type="scrollable">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <OfflineOrderBill :product_name="productName"/>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button
+            @click="handleOrderStatus()"
+            class="btn btn-orange btn-mr"
+            v-focus
+          >
+            New Order
+          </button>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -766,6 +787,7 @@ import ErrorField from "@/components/common-components/ErrorField.vue";
 import OrderBill from "@/components/sales/OrderBill.vue";
 import { Inventory } from "@/store/models/company";
 import offlineStoreService from "@/utils/offline-store/index";
+import OfflineOrderBill from "../sales/OfflineOrderBill.vue";
 
 export default defineComponent({
   name: "Order",
@@ -773,13 +795,16 @@ export default defineComponent({
     Modal,
     ErrorField,
     OrderBill,
+    OfflineOrderBill,
   },
 
   data() {
     const today = new Date().toDateString();
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
+    const productName: string[] = [];
     return {
+      orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID: "",
@@ -830,6 +855,7 @@ export default defineComponent({
       deduct_balance: false,
       return_order: false,
       print: true,
+      productName: productName,
     };
   },
   computed: {
@@ -1359,6 +1385,9 @@ export default defineComponent({
             ).toFixed(0)
           ),
         };
+        if(!navigator.onLine){
+          this.productName.push(this.product.name);
+        }
         this.orderItems.push(SingleOrderItem);
       });
 
@@ -1419,7 +1448,8 @@ export default defineComponent({
       }
 
       if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true)
+        offlineStoreService.setsyncOrder(true);
+        this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
@@ -1591,7 +1621,7 @@ export default defineComponent({
     handleOrderStatus: async function () {
       this.changeOrderStatus("");
       this.clearProduct();
-      // await this.searchProductByBarcode(""); //this statement will clear the search results from action
+      await this.searchProductByBarcode(""); //this statement will clear the search results from action
       this.orderItems = [];
       this.cashReceived = "";
       this.totalDiscount = "";
