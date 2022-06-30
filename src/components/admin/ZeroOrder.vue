@@ -257,16 +257,24 @@
                 class="shadow-box mr-all"
                 @click="selectProduct(item.id, itemVariant.id)"
               >
-                <table class="pr-s-r-table">
-                  <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.bar_code }}</td>
-                  </tr>
-                  <tr>
-                    <td>{{ itemVariant.price }}</td>
-                    <td>{{ itemVariant.size }}</td>
-                  </tr>
-                </table>
+                <div>
+                   <div class="ab-flex">
+                     <p><b>Name:</b></p>
+                     <p><b>{{ item.name }}</b></p>
+                   </div>
+                   <div class="ab-flex">
+                     <p><b>Bar Code:</b></p>
+                     <p><b>{{ item.bar_code }}</b></p>
+                   </div>
+                   <div class="ab-flex">
+                     <p><b>Price</b></p>
+                     <p><b>{{ itemVariant.price }}</b></p>
+                   </div>
+                   <div class="ab-flex">
+                     <p><b>Size:</b></p>
+                     <p><b>{{ itemVariant.size }}</b></p>
+                   </div>
+                 </div>
               </div>
             </li>
           </ul>
@@ -712,6 +720,27 @@
         </div>
       </template>
     </Modal>
+    <Modal v-else-if="orderoffline" type="scrollable">
+      <template v-slot:header>
+        <h2>Order Status</h2>
+      </template>
+
+      <template v-slot:body>
+        <OfflineOrderBill :product_name="productName"/>
+      </template>
+
+      <template v-slot:footer>
+        <div class="flex-box">
+          <button
+            @click="handleOrderStatus()"
+            class="btn btn-orange btn-mr"
+            v-focus
+          >
+            New Order
+          </button>
+        </div>
+      </template>
+    </Modal>
     <p class="coaldev-name ">Created by CoalDev</p>
   </div>
 </template>
@@ -729,20 +758,24 @@ import { User } from "@/store/models/user";
 import { OrderItem } from "@/store/models/orderItem";
 import { Product, ProductVariant } from "@/store/models/product";
 import offlineStoreService from "@/utils/offline-store/index";
+import OfflineOrderBill from "../sales/OfflineOrderBill.vue";
 
 export default defineComponent({
   name: "ZeroOrder",
   components: {
     Modal,
     OrderBill,
+    OfflineOrderBill,
   },
   data() {
     const today = new Date().toDateString();
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     const vendor: User = {};
+    const productName: string[] = [];
 
     return {
+      orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
       focusedID: "",
@@ -789,6 +822,7 @@ export default defineComponent({
       showErrorBuyer: false,
       showErrorVenCont: false,
       showErrorVenComp: false,
+      productName: productName,
     };
   },
   computed: {
@@ -1235,6 +1269,9 @@ export default defineComponent({
         discount: discount.toString(),
         totalPrice,
       };
+      if(!navigator.onLine){
+        this.productName.push(this.product.name);
+      }
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
@@ -1290,7 +1327,6 @@ export default defineComponent({
                   quantity: singleOrderItem.batch.quantity,
                   product_variant: singleOrderItem.batch.product_variant?.toString(),
                 } as Batch;
-                console.log("batchh", batch);
                 singleOrderItem.order_batch = batch;
                 singleOrderItem.batch = undefined;
                 
@@ -1322,7 +1358,8 @@ export default defineComponent({
         internal_order: true,
       };
       if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true)
+        offlineStoreService.setsyncOrder(true);
+        this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
@@ -1958,9 +1995,11 @@ td{
   font-weight: normal;
   padding-left: 2px;
 }
-
+li > div.shadow-box {
+  border: 2px solid transparent;
+}
 li > div:hover {
-  border: 2px solid $primary-color;
+  border: 2px solid $primary-color !important;
 }
 
 .order_item_input {
@@ -2035,6 +2074,19 @@ float-right{
     border: 1.5px solid #0f2636 !important;
     width:8rem;
   }
+//ab-css
+.ab-flex{
+   display:flex;
+   justify-content: space-between;
+   font-size: 12px;
+ }
+ li > div.shadow-box{
+   padding: 0 4px;
+   border: 2px solid transparent;
+ }
+ div.ab-flex > p:last-child{
+   margin-left: 3px;
+ }
 @media screen and (max-width:1216px ){
   .split-container{
     margin-left: 2vw;

@@ -47,6 +47,7 @@
         <h4>Total Amount Given: {{analytics.purchasing_orders_amount}}</h4>
       </div>
     </div> -->
+    <div id="print">
     <div class="stats">
       <div class="stat-row">
         <div>
@@ -73,7 +74,16 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
+  <button
+      class="btn-orange btn mt-5"
+      @click="printDiv('print', 'Profit Loss Report')"
+      :disabled="submitOrderButton"
+      ref="submitandprint"
+    >
+      Print Details
+    </button>
 </template>
 
 <script lang="ts">
@@ -83,7 +93,7 @@ import { mapActions, mapGetters } from 'vuex';
 import DateRange from '@/components/common-components/DateRange.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
-
+import printDiv from '@/utils/print';
 export default defineComponent({
   name: 'ProfitLossReport',
   components: {
@@ -142,7 +152,10 @@ export default defineComponent({
         end_date: this.endDate,
         company: this.company,
       });
-    }
+    },
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title);
+    },
   },
   async mounted() {
     await this.fetchUser();

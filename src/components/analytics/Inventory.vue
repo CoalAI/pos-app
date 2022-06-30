@@ -3,57 +3,66 @@
     <label class="labelCmp" for="start_date">
       <strong>Company:</strong>
     </label>
-    <div class="ab-select-container">
-      <select
-        id="company-type"
-        name="company-type"
-        class="custom-select"
-        v-model="company"
-        @change="fetchAnalyticsBtn"
-        :disabled="!admin"
-      >
-        <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
-          {{company.company_name}}
-        </option>
-      </select>
+    <select
+      id="company-type"
+      name="company-type"
+      class="custom-select"
+      v-model="company"
+      :disabled="!admin"
+    >
+      <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
+        {{company.company_name}}
+      </option>
+    </select>
+    <div class="b">
+        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
     </div>
   </div>
-
-  <table class="tble-mt">
-    <colgroup>
-      <col span="1" style="width: 35%;">
-      <col span="1" style="width: 35%;">
-      <col span="1" style="width: 35%;">
-    </colgroup>
-    <thead>
-      <tr class="fr-row header">
-        <th scope="col">Category</th>
-        <th scope="col">Total Products</th>
-        <th scope="col">Total Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="fr-row content" v-for="(item, key) in analytics.category_stats" :key="key">
-        <td>{{key}}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.total_amount}}</td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="analytics">
-    <div>
-      <span>
-        Net Products:
-      </span>
-      <span>{{analytics.unique_products_count}}</span>
-    </div>
-    <div>
-      <span>
-        Net Amount:
-      </span>
-      <span>{{analytics.total_inventory_amount}}</span> 
+  <div id="print">
+    <table class="tble-mt">
+      <colgroup>
+        <col span="1" style="width: 35%;">
+        <col span="1" style="width: 35%;">
+        <col span="1" style="width: 35%;">
+      </colgroup>
+      <thead>
+        <tr class="fr-row header">
+          <th scope="col">Category</th>
+          <th scope="col">Total Products</th>
+          <th scope="col">Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="fr-row content" v-for="(item, key) in analytics.category_stats" :key="key">
+          <td>{{key}}</td>
+          <td>{{item.quantity}}</td>
+          <td>{{item.total_amount}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="analytics">
+      <div>
+        <span>
+          Net Products:
+        </span>
+        <span>{{analytics.unique_products_count}}</span>
+      </div>
+      <div>
+        <span>
+          Net Amount:
+        </span>
+        <span>{{analytics.total_inventory_amount}}</span> 
+      </div>
     </div>
   </div>
+  <button
+      class="btn-orange btn mt-5"
+      @click="printDiv('print', 'Inventory')"
+      :disabled="submitOrderButton"
+      ref="submitandprint"
+    >
+      Print Details
+    </button>
 </template>
 
 <script lang="ts">
@@ -61,6 +70,7 @@ import {defineComponent} from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
+import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: 'InventoryAnaltyics',
@@ -102,7 +112,10 @@ export default defineComponent({
         end_date: this.endDate,
         company: this.company,
       });
-    }
+    },
+    printDiv(div_id: string, title: string, style?: string) {
+      printDiv(div_id, title, style);
+    },
   },
   async mounted() {
     await this.fetchUser();
@@ -189,5 +202,12 @@ export default defineComponent({
 }
 .custom-select{
   width: 35%;
+}
+
+.b{
+  text-align: right;
+  padding: 7px;
+  margin-left: 1rem;
+  width: 7rem;
 }
 </style>
