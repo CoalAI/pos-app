@@ -16,7 +16,7 @@
       </ul>
       <div class="cl-container" v-if="tab ==='changeLogo'">
         <div class="logo-img-container">
-          <img id="logo_img" :src="logoimg ? logoimg : img_file" alt="">
+          <img id="logo_img" :src="logoimg && f_time ? logoimg : img_file" alt="">
         </div>
         <form class="changelogo-form" enctype="multipart/form-data">
           <label for="logo-input">Upload Image</label>
@@ -90,6 +90,7 @@ export default defineComponent({
         tab: 'changeLogo',
         img_file: require('@/assets/rohi_logo.png'),
         selected_file: '',
+        f_time: true,
       }
     },
     computed: {
@@ -105,6 +106,7 @@ export default defineComponent({
       loadImage(event: any) {
         this.img_file = URL.createObjectURL(event.target.files[0])
         this.selected_file = event.target.files[0]
+        this.f_time = false
       },
       sendFormData: async function() {
         const formData = new FormData();
