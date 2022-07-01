@@ -34,7 +34,7 @@
       </div>
     </div>-->
     <div class="b menu-cont">
-        <router-link class="btn-grid btn-mr" to="/admin/order" v-if="salesStaff" v-show="!showActiveOrder" target="_blank" @click="activeOrder()">
+        <router-link class="btn-grid btn-mr" to="/" v-if="salesStaff" v-show="!showActiveOrder" target="_blank" @click="activeOrder()">
         <img :src="order" class="block-align">NEW ORDER</router-link>
         <router-link class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
         <img :src="order" class="block-align">NEW ORDER</router-link>
