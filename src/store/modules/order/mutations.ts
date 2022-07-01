@@ -37,6 +37,7 @@ export enum MutationTypes {
   SetTotalPayableReceivable = 'SET_TOTAL_PAYABLE_RECEIVABLE',
   SetComparisonAnalysis = 'SET_COMPARISON_ANALYSIS',
   SetInventoryTotalAmount = 'SET_INVENTORY_TOTAL_AMOUNT',
+  SetLogoImgage = 'SET_LOGO_IMAGE',
 }
 
 export type Mutations = {
@@ -68,6 +69,7 @@ export type Mutations = {
   [MutationTypes.SetTotalPayableReceivable](state: State, value: any): void;
   [MutationTypes.SetComparisonAnalysis](state: State, value: any): void;
   [MutationTypes.SetInventoryTotalAmount](state: State, value: number): void;
+  [MutationTypes.SetLogoImgage](state: State, value: string): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -154,5 +156,8 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetComparisonAnalysis](state: State, value: any){
     state.comparisonanalysis = value;
+  },
+  [MutationTypes.SetLogoImgage](state: State, value: string){
+    state.logoimage = value;
   }
 }
