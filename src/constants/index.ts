@@ -25,6 +25,9 @@ border-radius: 10px 0px 0px 10px;
 .pagination {
 display: none;
 }
+.no_print {
+display: none;
+}
 h1 {
 text-align: center;
 }
