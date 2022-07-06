@@ -163,6 +163,15 @@
             </div>
           </div>
         </div>
+        <div class="cl-container">
+          <div class="logo-img-container">
+            <img id="logo_img" :src="img_file" alt="">
+          </div>
+          <form class="changelogo-form" enctype="multipart/form-data">
+            <label for="logo-input">Upload Image</label>
+            <input type="file" name="image_url" id="logo-input" @change="loadImage">
+          </form>
+        </div>
       </div>
       <div v-if="userId">
         <div class="first-row row">
@@ -305,6 +314,15 @@
             <ErrorField v-if="fieldErrors.company" :errorField="fieldErrors.company"></ErrorField>
           </div>
         </div>
+        <div class="cl-container">
+          <div class="logo-img-container">
+            <img id="logo_img" :src="user.user_profilepic && f_time ? user.user_profilepic : img_file" alt="">
+          </div>
+          <form class="changelogo-form" enctype="multipart/form-data">
+            <label for="logo-input">Upload Image</label>
+            <input type="file" name="image_url" id="logo-input" @change="loadImage">
+          </form>
+        </div>
       </div>
 
       <div class="ab_btn_container">
@@ -347,6 +365,8 @@ export default defineComponent({
   },
   data () {
     return {
+      img_file: require('@/assets/rohi_logo.png'),
+      f_time: true,
       ab_error_message: '',
       ps_error_message: '',
       cp_error_message: '',
@@ -362,7 +382,8 @@ export default defineComponent({
         active: true,
         contactNumber: '',
         user_type: 'SALES_STAFF',
-        company: 0
+        company: 0,
+        user_profilepic: '',
       },
       user_type: "",
     }
@@ -471,6 +492,28 @@ export default defineComponent({
         return false
       }
     },
+    loadImage(event: any) {
+      this.img_file = URL.createObjectURL(event.target.files[0])
+      this.user.user_profilepic = event.target.files[0]
+      this.f_time = false    
+    },
+    isUrl(url: any) {
+      const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/ // eslint-disable-line
+      return regexp.test(url);
+    },
+    fillformData(){
+      const formData = new FormData();
+      formData.append('username', this.user.userName);
+      formData.append('first_name', this.user.firstName);
+      formData.append('last_name', this.user.lastName);
+      formData.append('email', this.user.email);
+      formData.append('is_active', JSON.stringify(this.user.active));
+      formData.append('user_type', this.user.user_type);
+      formData.append('company', JSON.stringify(this.user.company));
+      formData.append('contact_number', this.user.contactNumber);
+      formData.append('user_profilepic', this.user.user_profilepic);
+      return formData
+    },
     addUpdateUser: async function () {
       let userIdNumber = 0;
       if (this.userId) {
@@ -487,13 +530,19 @@ export default defineComponent({
         is_staff: true,
         user_type: this.user.user_type,
         contact_number: this.user.contactNumber,
+        user_profilepic: this.user.user_profilepic
       }
-
+      const userformData = this.fillformData()
+      
       if (this.userId) {
         
         if (this.contactNumberValidation === null && this.num_error_message === ""){
           user.id = userIdNumber;
-          await this.updateUser(user);
+          userformData.append('id', JSON.stringify(userIdNumber));
+          if (this.isUrl(userformData.get('user_profilepic'))){
+            userformData.delete('user_profilepic')
+          } 
+          await this.updateUser({'updUser': userformData, 'id': user.id});
           if (Object.keys(this.fieldErrors).length === 0) {
             this.$router.push({name: 'User'});
           } else {
@@ -501,8 +550,7 @@ export default defineComponent({
           }
           if(this.user_type=='ADMIN' &&  this.user.password != "" ){
             user.password = this.user.password;
-            console.log("password", this.user.password)
-            await this.updateUser(user);
+            await this.updateUser({'updUser': userformData, 'id': user.id});
             if (Object.keys(this.fieldErrors).length === 0) {
               this.$router.push({name: 'User'});
             } else {
@@ -510,7 +558,7 @@ export default defineComponent({
             }
           }
           else{
-            await this.updateUser(user);
+            await this.updateUser({'updUser': userformData, 'id': user.id});
             if (Object.keys(this.fieldErrors).length === 0) {
               this.$router.push({name: 'User'});
             } else {
@@ -524,7 +572,7 @@ export default defineComponent({
           {
             user.company = this.user.company,
             user.password = this.user.password;
-            await this.registerUser(user);
+            await this.registerUser(userformData);
             if (Object.keys(this.fieldErrors).length === 0) {
               this.$router.push({name: 'User'});
             } else {
@@ -543,6 +591,7 @@ export default defineComponent({
       this.user.user_type = user.user_type ? user.user_type : '';
       this.user.company = user.company && typeof user.company !== 'number' && user.company.id ? user.company.id : 0;
       this.user.contactNumber = user.contact_number ? user.contact_number : '';
+      this.user.user_profilepic = user.user_profilepic ? user.user_profilepic : '';
     },
 
     validEmail: function (email: string): boolean {
@@ -585,7 +634,6 @@ export default defineComponent({
   },
   mounted () {
     this.user_type = this.userdata['user_type'];
-    console.log('user_type', this.user_type)
   }
 });
 </script>
@@ -703,4 +751,41 @@ export default defineComponent({
   .ab_btn_container a{
     color:white;
   }
+
+  .cl-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 90%;
+  }
+  // logo image
+  #logo_img{
+    width: 200px;
+    height: 200px;  
+    border-radius: 50%;
+    object-fit: contain;
+    border: 2px solid #0b2532;
+    padding: 5px;
+    box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.233);
+  }
+  // form styles
+  .changelogo-form > label:first-child{
+    border: 1px solid transparent;
+    color: white;
+    background: #0b2532;
+    padding: 5px 15px;
+    margin: 10px 30px 0 0;
+    border-radius: 20px;
+    cursor:pointer;
+    
+  }
+  .changelogo-form > label:hover{
+    border: 1px solid #0b2532;
+    background-color: white;
+    color: #0b2532;
+  }
+  .changelogo-form > input[type=file]{
+    display: none;
+  }
+
 </style>

@@ -47,7 +47,7 @@ export interface Actions {
   [ActionTypes.FETCH_TOEKN]({ commit }: AugmentedActionContext): void;
   [ActionTypes.LOGIN_USER]({ commit }: AugmentedActionContext, credentials: Credentials): void;
   [ActionTypes.REGISTER_USER]({ commit }: AugmentedActionContext, user: User): void;
-  [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User): void;
+  [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, data: {updUser: User; id: number}): void;
   [ActionTypes.LOGOUT_USER]({ commit }: AugmentedActionContext): void;
   [ActionTypes.USER_DATA]({ commit }: AugmentedActionContext): void;
   [ActionTypes.GET_USERS]({ commit }: AugmentedActionContext, options?: {search?: string; company?: number; contact_number?: string; page?: number}): void;
@@ -106,8 +106,8 @@ Actions = {
       }
     }
   },
-  async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, updUser: User) {
-    const response = await serverRequest('patch', `user/${updUser.id}/`, true, updUser);
+  async [ActionTypes.UPDATE_USER]({ commit }: AugmentedActionContext, data: {updUser: User; id: number}) {
+    const response = await serverRequest('patch', `user/${data.id}/`, true, data.updUser);
     if(isAxiosError(response)) {
       commit('setError', response.message, {root: true});
     }
