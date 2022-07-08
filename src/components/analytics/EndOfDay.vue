@@ -22,6 +22,7 @@
         </option>
       </select>
     </div>
+    <div id='print'>
     <table class="tble-mt">
       <colgroup>
         <col span="1" style="width: 25%" />
@@ -52,7 +53,16 @@
       <div class="p-2"><span> Total Quantity: </span>
         <span>{{ salesanalytics.total_quantity }}</span></div>
     </div>
+    </div>
   </div>
+  <button
+      class="btn-orange btn mt-5"
+      @click="printDiv('print', 'Inventory')"
+      :disabled="submitOrderButton"
+      ref="submitandprint"
+    >
+      Print Details
+    </button>
 </template>
 
 <script lang="ts">
@@ -60,6 +70,7 @@ import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { ActionTypes } from "@/store/modules/order/actions";
 import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
+import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: "EndOfDay",
@@ -124,6 +135,9 @@ export default defineComponent({
         end_date: this.endDate,
         company: this.company,
       });
+    },
+    printDiv(div_id: string, title: string, style?: string) {
+      printDiv(div_id, title, style);
     },
   },
   async mounted() {

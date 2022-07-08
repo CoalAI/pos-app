@@ -2,10 +2,10 @@
   <div class="container-fluid">
     <div class="logo">
       <router-link v-if="salesStaff" to="/">
-        <img class="logo-img-head" src="../../assets/rohi_logo.jpg" alt="coaldev">
+        <img class="logo-img-head" :src="logoimg ? logoimg : src_img" alt="coaldev">
       </router-link>
       <router-link v-else-if="admin" to="/admin/order">
-        <img class="logo-img-head" src="../../assets/rohi_logo.jpg" alt="coaldev">
+        <img class="logo-img-head" :src="logoimg" alt="coaldev">
       </router-link>
       <!--<img class="logo-img-head" :src="logo" alt="coaldev">-->
     </div>
@@ -34,7 +34,7 @@
       </div>
     </div>-->
     <div class="b menu-cont">
-        <router-link class="btn-grid btn-mr" to="/admin/order" v-if="salesStaff" v-show="!showActiveOrder" target="_blank" @click="activeOrder()">
+        <router-link class="btn-grid btn-mr" to="/" v-if="salesStaff" v-show="!showActiveOrder" target="_blank" @click="activeOrder()">
         <img :src="order" class="block-align">NEW ORDER</router-link>
         <router-link class="no btn-grid btn-mr" href="/admin/order" v-else-if="admin" target="_blank">
         <img :src="order" class="block-align">NEW ORDER</router-link>
@@ -104,10 +104,15 @@
       </div>
     </div>-->
     <div class="name user-name">
-      <img src="../../assets/login-user.png" width="50" height="50" alt="user" class="user" >
-      <div class="white-color">
-        <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
-        <strong v-else >{{ userdata.username }}</strong>
+      <div class="dropdown">
+        <img :src="userdata.user_profilepic ? userdata.user_profilepic : login_user_png" @click="toggleClass" width="50" height="50" alt="user" class="user">
+        <div class="white-color">
+          <strong v-if="userdata.first_name" >{{ userdata.first_name }} {{ userdata.last_name }}</strong>
+          <strong v-else >{{ userdata.username }}</strong>
+        </div>
+        <div id="mydropdown" class="dropdown-content" :class="{active: show}">
+          <router-link v-show="admin" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
+        </div>
       </div>
       <!--<div class="flex-box">
         <div class="notification" @click="notificationPanel = !notificationPanel">
@@ -208,8 +213,11 @@ export default defineComponent({
   data () {
     return{
       logo: require('../../assets/login-top-logo.svg'),
+      src_img: require('@/assets/rohi_logo.png'),
       toggle:false,
+      show:false,
       animated:false,
+      login_user_png: require('@/assets/login-user.png'),
       order: require('../../assets/new-order.svg'),
       inventory: require('../../assets/inventory.svg'),
       users: require('../../assets/users.svg'),
@@ -237,6 +245,7 @@ export default defineComponent({
       orders: 'getListOfOrders',
       messages: 'getNotifications',
       online: 'getNetworkStatus',
+      logoimg: 'getLogoImg',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -283,6 +292,9 @@ export default defineComponent({
     animate(){
       this.animated = true
       this.toggle = !this.toggle
+    },
+    toggleClass: function(){
+      this.show = !this.show
     },
     clear: function () {
       this.orderSearch = '';
@@ -337,6 +349,7 @@ export default defineComponent({
 
     ...mapActions({
       getuserdate: ActionTypes.USER_DATA,
+      fetchlogo: OrderActionTypes.FETCH_LOGO_IMAGE,
       fetchOrders: OrderActionTypes.FETCH_ORDERS,
     }),
 
@@ -358,6 +371,7 @@ export default defineComponent({
   },
   beforeMount: async function() {
     await this.getuserdate();
+    await this.fetchlogo();
     this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
   },
 });
@@ -596,6 +610,7 @@ export default defineComponent({
     height:50px;
     margin-right:auto;
     margin-left: auto;
+    cursor: pointer;
   }
   .lg-btn{
     color: white;
@@ -670,4 +685,43 @@ export default defineComponent({
     height: 30px;
     margin-bottom:5px;
   }
+  //dropdown styles
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  left: -9px;
+  // background-color: #f1f1f1;
+  // min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 6px 16px;
+  font-size: 12px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {
+  background-color: #ddd;
+  color: #0b2532;
+  border-bottom: 1px solid #0b2532; 
+}
+.dropdown > .active{
+  display: block;
+}
+.dropdown-content > .btn-grid.router-link-active, .dropdown-content > .btn-grid.btn-grid.router-link-exact-active{
+  outline:none;
+  color: black;
+  border-bottom: 1px solid #0b2532 !important;
+  background-color: white;
+}
 </style>

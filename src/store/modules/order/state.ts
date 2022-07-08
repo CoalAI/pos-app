@@ -37,6 +37,7 @@ export type State = {
   totalpayablereceivable: any;
   comparisonanalysis: any;
   totalinventoryamount: number;
+  logoimage: string;
 };
 
 
@@ -72,4 +73,5 @@ export const state: State = {
   totalpayablereceivable: {},
   comparisonanalysis: {},
   totalinventoryamount: 0,
+  logoimage: '',
 };

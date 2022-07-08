@@ -1500,6 +1500,9 @@ export default defineComponent({
       await this.fetchInvoiceID();
       await this.getUsers("ADMIN");
       await this.getVendors("");
+      if(!navigator.onLine){
+        this.orderoffline = false;
+      }
     },
 
     changeProductPrice: function () {
