@@ -129,7 +129,7 @@ export default defineComponent({
       });
       const data = JSON.parse(JSON.stringify(store.getters.getAnalytics.category_stats));
       const graph_data=[]
-      for (let key in data) {
+      for (const key in data) {
           graph_data.push({x:key,y:data[key].quantity})
       }
       this.chartData = {
