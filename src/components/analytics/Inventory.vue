@@ -54,6 +54,13 @@
         <span>{{analytics.total_inventory_amount}}</span> 
       </div>
     </div>
+  <div class="no_print">
+    <BarChart
+        :chartData="chartData"
+        style="height: 322px; width: 691px"
+      />
+  </div>
+      <img src="" alt="graph" id="graph-img">
   </div>
   <button
       class="btn-orange btn mt-5"
@@ -71,9 +78,16 @@ import { mapGetters, mapActions } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import printDiv from '@/utils/print';
+import { BarChart } from "vue-chart-3";
+import { Chart, registerables } from "chart.js";
+import { store } from "@/store";
+import chartConfig from "@/constants";
 
 export default defineComponent({
   name: 'InventoryAnaltyics',
+   components: {
+    BarChart,
+  },
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
@@ -81,6 +95,7 @@ export default defineComponent({
       startDate: dateStr,
       endDate: dateStr,
       company: 0,
+      chartData: {},
     };
   },
   computed: {
@@ -112,8 +127,33 @@ export default defineComponent({
         end_date: this.endDate,
         company: this.company,
       });
+      const data = JSON.parse(JSON.stringify(store.getters.getAnalytics.category_stats));
+      const graph_data=[]
+      for (const key in data) {
+          graph_data.push({x:key,y:data[key].quantity})
+      }
+      this.chartData = {
+        labels: [],
+        datasets: [
+          {
+            label: "Category",
+            data: graph_data,
+            backgroundColor: chartConfig.backgroundColor,
+            borderColor: chartConfig.borderColor,
+          },
+        ],
+        options: {
+    parsing: {
+        key: 'index.quantity',
+    }
+}
+      };
     },
     printDiv(div_id: string, title: string, style?: string) {
+      const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
+      const img = canvas.toDataURL('image/png')
+      const graph_img = document.getElementById('graph-img') as HTMLImageElement
+      graph_img.src = img
       printDiv(div_id, title, style);
     },
   },
@@ -209,5 +249,8 @@ export default defineComponent({
   padding: 7px;
   margin-left: 1rem;
   width: 7rem;
+}
+#graph-img {
+  display: none;
 }
 </style>

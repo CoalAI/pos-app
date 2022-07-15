@@ -13,6 +13,7 @@ export interface User extends DatesInterface {
   groups?: any;
   user_permissions?: any;
   company?: number | Company;
+  user_profilepic?: string; 
   user_type?: string;
   contact_number?: string;
   credit?: number;
