@@ -112,6 +112,8 @@
         </div>
         <div id="mydropdown" class="dropdown-content" :class="{active: show}">
           <router-link v-show="admin" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
+          <router-link v-show="admin" :to="{name: 'order-analytics'}" class="u btn-grid btn-mr">Reports</router-link>
+          <div v-show="admin" @click="logout" class="u btn-grid btn-mr">Logout</div>
         </div>
       </div>
       <!--<div class="flex-box">
