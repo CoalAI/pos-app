@@ -38,6 +38,7 @@ export type State = {
   comparisonanalysis: any;
   totalinventoryamount: number;
   logoimage: string;
+  header_color: string;
 };
 
 
@@ -74,4 +75,5 @@ export const state: State = {
   comparisonanalysis: {},
   totalinventoryamount: 0,
   logoimage: '',
+  header_color: '',
 };

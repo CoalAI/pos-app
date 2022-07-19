@@ -39,29 +39,18 @@
       <div v-else-if="tab === 'changeHeaderColor'">
         <div class="flex-box">
           <label class="pad-label w100" for="primary-color">
-            <strong>Primary Color:</strong>
+            <strong>Header Color:</strong>
           </label>
           <input
             id="primary-color"
             name="primary-color"
             type="color"
-            value="#e73b2a"
-          />
-        </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="header-color">
-            <strong>Header Color:</strong>
-          </label>
-          <input
-            id="header-color"
-            name="header-color"
-            type="color"
-            value="#423144"
+            v-model="header_color"
           />
         </div>
         <div class="ab_btn_container">
           <div>
-            <button class="btn ab_orange_hover btn-orange">
+            <button class="btn ab_orange_hover btn-orange" @click="changeColor">
               <span>Change Header Color</span>
             </button>
           </div>
@@ -81,7 +70,8 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
-import axios from 'axios'
+import { MutationTypes } from "@/store/modules/order/mutations";
+
 
 export default defineComponent({
     name: 'Settings',
@@ -91,6 +81,7 @@ export default defineComponent({
         img_file: require('@/assets/rohi_logo.png'),
         selected_file: '',
         f_time: true,
+        header_color: '#e73b2a',
       }
     },
     computed: {
@@ -114,7 +105,15 @@ export default defineComponent({
         await this.updateLogo(formData)
 
         await this.fetchlogo()
-      }
+      },
+      changeColor(){
+        const cookiedate = new Date();
+        cookiedate.setFullYear(cookiedate.getFullYear() + 10);
+        const expires = "expires=" + cookiedate.toUTCString();
+        document.cookie =
+          "HeaderColor=" + this.header_color + ";" + expires + ";path=/";
+        this.$store.commit(MutationTypes.SetHeaderColor, this.header_color)
+      },
     },
     async beforeMount () {
       await this.fetchlogo()
