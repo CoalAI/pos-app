@@ -3,7 +3,7 @@
     <div class="diff-shadow">
       <div class="page-upper">
         <ul class="nav nav-tabs">
-          <li :class="tab === 'order' ? 'active-li ab1 tab1' : 'ab1 tab1'" @click="onClickOrder()">
+          <!-- <li :class="tab === 'order' ? 'active-li ab1 tab1' : 'ab1 tab1'" @click="onClickOrder()">
             <span>
               <strong>Order</strong>
             </span>
@@ -19,30 +19,46 @@
             <span>
               <strong>Operator Sales</strong>
             </span>
+          </li> -->
+          <li :class="tab === 'report' ? 'active-li ab1 tab1' : 'ab1 tab1'" @click="onClickReport()">
+            <span>
+              <strong>Profit/Loss Report</strong>
+            </span>
           </li>
-          <li :class="tab === 'StockStatement' ? 'active-li ab1 tab4' : 'ab1 tab4'" @click="onClickStockStatement()"
+          <!-- <li :class="tab === 'StockStatement' ? 'active-li ab1 tab2' : 'ab1 tab2'" @click="onClickStockStatement()"
           v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Stock Statement</strong>
             </span>
           </li>
-          
-          <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab5' : 'ab1 tab5'" @click="onClickDayTotalPayable()"
+          <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab3' : 'ab1 tab3'" @click="onClickDayTotalPayable()"
           v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Day Total Payable</strong>
             </span>
           </li>
-          <li :class="tab === 'End of Day' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickEndOfDay()"
+          <li :class="tab === 'End of Day' ? 'active-li ab1 tab4' : 'ab1 tab4'" @click="onClickEndOfDay()"
           v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>End of Day</strong>
             </span>
           </li>
-          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickTotalReceivable()"
+          <li :class="tab === 'TotalReceivable' ? 'active-li ab1 tab5' : 'ab1 tab5'" @click="onClickTotalReceivable()"
           v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
               <strong>Total Receivable</strong>
+            </span>
+          </li> -->
+          <li :class="tab === 'comparisonAnalysis' ? 'active-li ab1 tab2' : 'ab1 tab2'" @click="onClickComparisonAnalysis()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
+            <span>
+              <strong>Comparison</strong>
+            </span>
+          </li>
+          <li :class="tab === 'comparisonExpenseSales' ? 'active-li ab1 tab3' : 'ab1 tab3'" @click="onClickComparisonExpenseSales()"
+          v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
+            <span>
+              <strong>Comparison E/S</strong>
             </span>
           </li>
         </ul>
