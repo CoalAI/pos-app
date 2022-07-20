@@ -44,29 +44,18 @@
       <div v-else-if="tab === 'changeHeaderColor'">
         <div class="flex-box">
           <label class="pad-label w100" for="primary-color">
-            <strong>Primary Color:</strong>
+            <strong>Header Color:</strong>
           </label>
           <input
             id="primary-color"
             name="primary-color"
             type="color"
-            value="#e73b2a"
-          />
-        </div>
-        <div class="flex-box">
-          <label class="pad-label w100" for="header-color">
-            <strong>Header Color:</strong>
-          </label>
-          <input
-            id="header-color"
-            name="header-color"
-            type="color"
-            value="#423144"
+            v-model="header_color"
           />
         </div>
         <div class="ab_btn_container">
           <div>
-            <button class="btn ab_orange_hover btn-orange">
+            <button class="btn ab_orange_hover btn-orange" @click="changeColor">
               <span>Change Header Color</span>
             </button>
           </div>
@@ -154,6 +143,8 @@ import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes} from '@/store/modules/auth/actions';
 import { Company } from '@/store/models/company';
 import axios from 'axios'
+import { MutationTypes } from "@/store/modules/order/mutations";
+
 
 export default defineComponent({
     name: 'Settings',
@@ -172,6 +163,7 @@ export default defineComponent({
         companyId: "",
         showErrorName: false,
         user_type : "",
+        header_color: '#e73b2a',
       }
     },
     computed: {
@@ -260,7 +252,15 @@ export default defineComponent({
         await this.updateLogo(formData)
 
         await this.fetchlogo()
-      }
+      },
+      changeColor(){
+        const cookiedate = new Date();
+        cookiedate.setFullYear(cookiedate.getFullYear() + 10);
+        const expires = "expires=" + cookiedate.toUTCString();
+        document.cookie =
+          "HeaderColor=" + this.header_color + ";" + expires + ";path=/";
+        this.$store.commit(MutationTypes.SetHeaderColor, this.header_color)
+      },
     },
   async beforeMount () {
     await this.fetchlogo();
@@ -270,22 +270,21 @@ export default defineComponent({
     this.companyId = this.userdata['company'].id;
     this.user_type = this.userdata['user_type'];
 
-     if (this.companyId) {
-    await this.getCompaniesList({
-      company_type: '',
-      search: ''
-    });
-    const company_id = parseInt(this.companyId);
-    const company = isNaN(company_id) ? undefined : this.$store.getters.getSignleCompany(company_id);
-    if (company) {
-      this.loadData(company);
+    if (this.companyId) {
+      await this.getCompaniesList({
+        company_type: '',
+        search: ''
+      });
+      const company_id = parseInt(this.companyId);
+      const company = isNaN(company_id) ? undefined : this.$store.getters.getSignleCompany(company_id);
+      if (company) {
+        this.loadData(company);
+      }
+      else {
+        // Show 404 page on screen
+        this.$router.push({name: 'notFound'});
+      }
     }
-    else {
-      // Show 404 page on screen
-      this.$router.push({name: 'notFound'});
-    }
-  }
-
   },
 })
 </script>

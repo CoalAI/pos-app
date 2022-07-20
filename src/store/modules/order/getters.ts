@@ -40,6 +40,7 @@ export interface Getters {
   getComparisonanalysis(state: State): any;
   getExpenseSales(state: State): any;
   getLogoImg(state: State): any;
+  getHeaderCol(state: State): any;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -105,4 +106,5 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getComparisonanalysis: (state: State) => state.comparisonanalysis,
   getExpenseSales: (state: State) => state.expensesales,
   getLogoImg: (state: State) => state.logoimage,
+  getHeaderCol: (state: State) => state.header_color,
 };
