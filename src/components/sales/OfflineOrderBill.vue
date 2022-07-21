@@ -1,6 +1,5 @@
 <template>
   <div id="bill-preview" class="maindiv-print">
-	offline
 		<div id="header-section">
 			<div>
 				<img class="img-responsive" :src="logoimg ? logoimg : src_img" alt="Rohi">
