@@ -205,7 +205,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/settings',
     name: "Settings",
     component: Settings,
-    beforeEnter: superAdmin,
+    beforeEnter: manager,
   },
   { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:pathMatch(.*)*', redirect: '/404' },

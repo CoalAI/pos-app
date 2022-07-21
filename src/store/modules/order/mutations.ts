@@ -38,6 +38,7 @@ export enum MutationTypes {
   SetComparisonAnalysis = 'SET_COMPARISON_ANALYSIS',
   SetInventoryTotalAmount = 'SET_INVENTORY_TOTAL_AMOUNT',
   SetLogoImgage = 'SET_LOGO_IMAGE',
+  SetHeaderColor = 'SET_HEADER_COLOR'
 }
 
 export type Mutations = {
@@ -70,6 +71,7 @@ export type Mutations = {
   [MutationTypes.SetComparisonAnalysis](state: State, value: any): void;
   [MutationTypes.SetInventoryTotalAmount](state: State, value: number): void;
   [MutationTypes.SetLogoImgage](state: State, value: string): void;
+  [MutationTypes.SetHeaderColor](state: State, value: string): void;
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -159,5 +161,8 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationTypes.SetLogoImgage](state: State, value: string){
     state.logoimage = value;
+  },
+  [MutationTypes.SetHeaderColor](state: State, value: string){
+    state.header_color = value;
   }
 }

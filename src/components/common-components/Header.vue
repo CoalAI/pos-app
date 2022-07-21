@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" :style="{backgroundColor: header_color}">
     <div class="logo">
       <router-link v-if="salesStaff" to="/">
         <img class="logo-img-head" :src="logoimg ? logoimg : src_img" alt="coaldev">
@@ -111,7 +111,7 @@
           <strong v-else >{{ userdata.username }}</strong>
         </div>
         <div id="mydropdown" class="dropdown-content" :class="{active: show}">
-          <router-link v-show="admin" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
+          <router-link v-if="manager" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
           <router-link v-show="superadmin" :to="{name: 'reports'}" class="u btn-grid btn-mr">Reports</router-link>
           <a @click="logout" class="u btn-grid btn-mr">Logout</a>
         </div>
@@ -209,6 +209,8 @@ import { ActionTypes } from '@/store/modules/auth/actions';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 import offlineStoreService from '@/utils/offline-store';
 import { Notification } from '@/store/models/notification';
+import { MutationTypes } from "@/store/modules/order/mutations";
+
 
 export default defineComponent({
   name: 'Header',
@@ -248,6 +250,7 @@ export default defineComponent({
       messages: 'getNotifications',
       online: 'getNetworkStatus',
       logoimg: 'getLogoImg',
+      header_color: 'getHeaderCol'
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -365,6 +368,16 @@ export default defineComponent({
       });
       this.showResult = true;
     },
+    getCookie(name: string) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2){
+        const cok_str = parts.pop()
+        if (cok_str){
+          return cok_str.split(';').shift()
+        }
+      }
+    },
 
     async logout() {
       await offlineStoreService.clear();
@@ -375,6 +388,8 @@ export default defineComponent({
     await this.getuserdate();
     await this.fetchlogo();
     this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
+    const headrclr = await this.getCookie("HeaderColor") || "#e73b2a"
+    this.$store.commit(MutationTypes.SetHeaderColor, headrclr)
   },
 });
 </script>
