@@ -2,12 +2,12 @@
   <div id="bill-preview" class="maindiv-print">
 		<div id="header-section">
 			<div>
-				<img class="img-responsive" src="../../assets/rohi_logo.jpg" alt="Rohi">
+				<img class="img-responsive" :src="logoimg ? logoimg : src_img" alt="Rohi">
 			</div>
 			<div class="company-info">
-				<p class="mb-5 pb-5" style="font-size: 16px;"><strong>Rohi Bakers &amp; Restaurant</strong></p>
-				<p class="text-center">Bypass Road Khanpur</p>
-				<p class="text-center">068-5955051</p>
+				<p class="mb-5 pb-5" style="font-size: 16px;"><strong>{{user.company.company_name}}</strong></p>
+				<p class="text-center">{{user.company.address}}</p>
+				<p class="text-center">{{user.company.contact_number}}</p>
 				<!-- <p class="text-center">Sales Invoice</p>
 				<span class="text-center" style="border: 1px solid black; padding: 2px;">{{order.invoice_id}}</span> -->
 			</div>
@@ -124,6 +124,7 @@ export default defineComponent({
   name: 'OrderBill',
   data(){
 		return{
+			src_img: require('@/assets/rohi_logo.png'),
 			printDelay: 200,
 			tokenPrinting: false
 		}
@@ -438,9 +439,12 @@ export default defineComponent({
 		...mapGetters({
 			order: 'getOrder',
 			operator: 'getUser',
+			logoimg: 'getLogoImg',
+
 		})
 	},
 	props:{
+		user: {},
 		orderId: {
 			default: 0,
 		},
