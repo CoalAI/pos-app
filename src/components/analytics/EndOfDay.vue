@@ -55,14 +55,17 @@
     </div>
     </div>
   </div>
-  <button
+  <div class="flex-container">
+    <button
       class="btn-orange btn mt-5"
       @click="printDiv('print', 'Inventory')"
       :disabled="submitOrderButton"
       ref="submitandprint"
+      style="width:80px;margin-right:7px"
     >
-      Print Details
+      Print
     </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -214,5 +217,9 @@ td > .flex-box {
 }
 .custom-select {
   width: 28%;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

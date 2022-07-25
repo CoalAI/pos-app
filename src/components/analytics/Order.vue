@@ -81,14 +81,17 @@
     </div>
     <div>
 
-    <button
-      class="btn-orange btn mt-5"
-      @click="printDiv('print', 'Order Analytics')"
-      :disabled="submitOrderButton"
-      ref="submitandprint"
-    >
-      Print Details
-    </button>
+    <div class="flex-container">
+      <button
+        class="btn-orange btn mt-5"
+        @click="printDiv('print', 'Order Analytics')"
+        :disabled="submitOrderButton"
+        ref="submitandprint"
+        style="width:80px;margin-right:7px"
+      >
+        Print
+      </button>
+    </div>
     </div>
   </div>
 </template>
@@ -278,5 +281,9 @@ td > .flex-box {
 }
 .fr-row {
   font-size: 12px;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>
