@@ -53,7 +53,8 @@
                   v-model="product.category"
                   ref="batches"
                 >
-                  <option value="0">Select Category</option>
+                  <!--<option value="0">Select Category</option>-->
+                  <option value="0">Others</option>
                   <option v-for="category in categories" :key="category.id" :value="category.id">
                     {{ category.name }}
                   </option>
