@@ -32,10 +32,10 @@
             </span>
           </li>
           
-          <li :class="tab === 'dayTotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickDayTotalPayable()"
+          <li :class="tab === 'TotalPayable' ? 'active-li ab1 tab6' : 'ab1 tab6'" @click="onClickTotalPayable()"
           v-if="user_type=='SUPER_ADMIN' || user_type=='ADMIN'">
             <span>
-              <strong>Day Total Payable</strong>
+              <strong>Total Payable</strong>
             </span>
           </li>
           <li :class="tab === 'End of Day' ? 'active-li ab1 tab7' : 'ab1 tab7'" @click="onClickEndOfDay()"
@@ -119,9 +119,9 @@ export default defineComponent({
       this.tab = 'TotalReceivable'
       this.$router.push({ name: "TotalReceivable" });
     },
-    onClickDayTotalPayable(){
-      this.tab = 'dayTotalPayable'
-      this.$router.push({ name: "DayTotalPayable" });
+    onClickTotalPayable(){
+      this.tab = 'TotalPayable'
+      this.$router.push({ name: "TotalPayable" });
     },
     onClickComparisonAnalysis(){
       this.tab = 'comparisonAnalysis'

@@ -111,7 +111,7 @@
           <strong v-else >{{ userdata.username }}</strong>
         </div>
         <div id="mydropdown" class="dropdown-content" :class="{active: show}">
-          <router-link v-show="admin" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
+          <router-link v-if="manager" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
         </div>
       </div>
       <!--<div class="flex-box">
@@ -215,11 +215,11 @@ export default defineComponent({
   data () {
     return{
       logo: require('../../assets/login-top-logo.svg'),
-      src_img: require('@/assets/rohi_logo.png'),
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       toggle:false,
       show:false,
       animated:false,
-      login_user_png: require('@/assets/login-user.png'),
+      login_user_png: require('@/assets/DefaultProfileAvatar-01.png'),
       order: require('../../assets/new-order.svg'),
       inventory: require('../../assets/inventory.svg'),
       users: require('../../assets/users.svg'),
@@ -387,7 +387,6 @@ export default defineComponent({
     await this.fetchlogo();
     this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
     const headrclr = await this.getCookie("HeaderColor") || "#e73b2a"
-    alert(headrclr)
     this.$store.commit(MutationTypes.SetHeaderColor, headrclr)
   },
 });

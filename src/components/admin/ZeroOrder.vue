@@ -705,7 +705,7 @@
       </template>
 
       <template v-slot:body>
-        <OrderBill :orderId="order_response.id" :customer="customer" />
+        <OrderBill :orderId="order_response.id" :customer="customer" :user="userdata" />
       </template>
 
       <template v-slot:footer>
@@ -726,7 +726,7 @@
       </template>
 
       <template v-slot:body>
-        <OfflineOrderBill :product_name="productName"/>
+        <OfflineOrderBill :product_name="productName" :user="userdata" />
       </template>
 
       <template v-slot:footer>
