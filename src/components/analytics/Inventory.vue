@@ -79,14 +79,17 @@
   </div>
       <img src="" alt="graph" id="graph-img">
   </div>
-  <button
+  <div class="flex-container">
+    <button
       class="btn-orange btn mt-5"
       @click="printDiv('print', 'Inventory')"
       :disabled="submitOrderButton"
       ref="submitandprint"
+      style="width:80px;margin-right:7px"
     >
-      Print Details
+      Print
     </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -156,8 +159,8 @@ export default defineComponent({
           {
             label: "Category",
             data: graph_data,
-            backgroundColor: chartConfig.backgroundColor,
-            borderColor: chartConfig.borderColor,
+            backgroundColor: ['#f46a9b', '#00bfa0', '#0bb4ff', '#e60049', '#b33dc6'],
+            borderColor: ['#f46a9b', '#00bfa0', '#0bb4ff', '#e60049', '#b33dc6'],
           },
         ],
         options: {
@@ -379,5 +382,9 @@ export default defineComponent({
 }
 #graph-img {
   display: none;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

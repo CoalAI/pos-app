@@ -90,14 +90,17 @@
       </div>
     </div>
   </div>
-  <button
-      class="btn-orange btn mt-5"
-      @click="printDiv('print', 'Profit Loss Report')"
-      :disabled="submitOrderButton"
-      ref="submitandprint"
-    >
-      Print Details
+  <div class="flex-container">
+    <button
+        class="btn-orange btn mt-5"
+        @click="printDiv('print', 'Profit Loss Report')"
+        :disabled="submitOrderButton"
+        ref="submitandprint"
+        style="width:80px;margin-right:7px"
+      >
+        Print
     </button>
+  </div>
 </template>
 
 <script lang="ts">
