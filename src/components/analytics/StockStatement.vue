@@ -119,6 +119,7 @@ export default defineComponent({
   },
   data() {
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       company: 0,
       category:0,
     };

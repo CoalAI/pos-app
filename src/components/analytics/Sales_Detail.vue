@@ -99,6 +99,7 @@ export default defineComponent({
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       startDate: dateStr,
       endDate: dateStr,
       company: 0,

@@ -22,6 +22,20 @@
      
     </div>
     <div class="container d-flex" id="print">
+      <div id="header-section" style="display: none;">
+        <div>
+          <img class="img-responsive" :src="logoimg ? logoimg : src_img" alt="Rohi">
+        </div>
+        <div class="company-info">
+          <p class="mb-5 pb-5" style="font-size: 16px;"><strong>{{userdata.company.company_name}}</strong></p>
+          <p class="text-center">{{userdata.company.address}}</p>
+          <p class="text-center">{{userdata.company.contact_number}}</p>
+        </div>
+      </div>
+      <div id="date-section" class="mb-5 pt-5" style="display: none;">
+        <p class="text-center">{{getCurrentTime()}}</p>
+        <p class="text-center">{{getCurrentDate()}}</p>
+      </div>
       <img src="" alt="graph" id="graph-img">
       
       <BarChart :chartData="chartData" :options="options" style="height: 322px;width: 691px;"/>
@@ -58,6 +72,7 @@ export default defineComponent({
   },
   data() {
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       company: 0,
       chartData: {},
       options: {
@@ -88,6 +103,7 @@ export default defineComponent({
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
       expensesales: 'getExpenseSales',
+      logoimg: 'getLogoImg',
     }),
   },
   methods: { 
@@ -130,14 +146,140 @@ export default defineComponent({
       await this.fetchexpensesales(this.company);
       this.fillChartData()
     },
-
+    getCurrentTime(){
+			return new Date().toLocaleTimeString();
+		},
+		getCurrentDate(){
+			const current = new Date()
+      return current.toLocaleDateString()
+		},
     printBill(div_id: string, title: string) {
-       const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
+      const styles = `
+				<style lang="scss" scoped>	
+				@page {
+				size: 180mm;
+				margin: 0
+				}
+
+				@body {
+				margin-left: 5%;
+				}
+
+        .maindiv-print {
+				padding: 4px;
+				max-width: 800px;
+				}
+
+        .mb-5 {
+				border-bottom: 2px solid black;
+				padding-bottom: 5px;
+				}
+
+        .pt-5 {
+				padding-top: 5px;
+				}
+
+        #date-section {
+				display: grid !important;
+				grid-template-columns: 1fr 2fr;
+				grid-template-rows: 1fr;
+				gap: 0.1em 0.1em;
+				width:80mm;
+				}
+
+				.company-info{
+				display: flex;
+				flex-wrap: nowrap;
+				flex-direction: column;
+				align-content: center;
+				justify-content: center;
+				align-items: center;
+				font-size: 12px;
+				}
+
+				#header-section {
+				display: grid !important;
+				grid-template-columns: 1fr 2fr;
+				grid-template-rows: 1fr;
+				gap: 0.1em 0.1em;
+				width:80mm;
+				}
+
+				#order-items-section th {
+				border: 1px solid;
+				border-color: black;
+				text-align: center;
+				padding: 1px;
+				}
+				.img-responsive{
+				max-width: 100%;
+				height: auto;
+				}
+
+				.text-center{
+				text-align: center
+				}
+        .tble-mt {
+          text-align: center;
+          margin: 20px 0;
+        }
+        .header > th {
+          text-align: center;
+        }
+        .header > th:first-child {
+          border: none;
+          border-radius: 10px 0px 0px 10px;
+        }
+        .header > th:last-child {
+          border: none;
+          border-radius: 0px 10px 10px 0px;
+        }
+        .header {
+          border-radius: 5px;
+          background-color: #0f2634;
+          color: white;
+        }
+        td > .flex-box {
+          justify-content: space-around;
+          align-items: center;
+        }
+        .fr-row {
+          font-size: 12px;
+        }
+        .stats {
+          margin-top: 20px;
+          display: flex;
+          justify-content: space-between;
+          margin-left: 1rem;
+          margin-right: 1rem;
+        }
+        .stats > div > span:first-child {
+          font-size: 15px;
+          font-weight: 600;
+          margin-right: 2px;
+        }
+        .stats > div > span:last-child {
+          font-size: 15px;
+          font-weight: 550;
+          color: #e73b2a;
+        }
+        .labelCmp {
+          padding: 20px;
+        }
+        .custom-select {
+          width: 35%;
+        }
+        .pagination{
+          display: none !important;
+        }
+        </style>
+        `;
+      const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
       const img = canvas.toDataURL('image/png')
       const graph_div = document.getElementById('bar-chart') as HTMLBodyElement
       const graph_img = document.getElementById('graph-img') as HTMLImageElement
       graph_img.src = img
-      printBill(div_id, title);
+      printBill(div_id, title, styles);
     },
   },
   async mounted() {
