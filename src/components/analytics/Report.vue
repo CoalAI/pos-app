@@ -48,32 +48,33 @@
       </div>
     </div> -->
     <div id="print">
-    <div class="stats">
-      <div class="stat-row">
-        <div>
-          <span>Total Orders Received:</span>
-          <span>{{analytics.total_orders}}</span>
+      <PrintHeader />
+      <div class="stats">
+        <div class="stat-row">
+          <div>
+            <span>Total Orders Received:</span>
+            <span>{{analytics.total_orders}}</span>
+          </div>
+          <div>
+            <span>Total Amount:</span>
+            <span>{{analytics.total_orders_amount}}</span>
+          </div>
+          <div>
+            <span>Total Order Given:</span>
+            <span>{{analytics.purchasing_orders}}</span>
+          </div>
         </div>
-        <div>
-          <span>Total Amount:</span>
-          <span>{{analytics.total_orders_amount}}</span>
-        </div>
-        <div>
-          <span>Total Order Given:</span>
-          <span>{{analytics.purchasing_orders}}</span>
+        <div class="stat-row-2">
+          <div>
+            <span>Expense:</span>
+            <span>{{analytics.total_expense}}</span>
+          </div>
+          <div>
+            <span>ExpenseTotal Amount Given:</span>
+            <span>{{analytics.purchasing_orders_amount}}</span>
+          </div>
         </div>
       </div>
-      <div class="stat-row-2">
-        <div>
-          <span>Expense:</span>
-          <span>{{analytics.total_expense}}</span>
-        </div>
-        <div>
-          <span>ExpenseTotal Amount Given:</span>
-          <span>{{analytics.purchasing_orders_amount}}</span>
-        </div>
-      </div>
-    </div>
     </div>
   </div>
   <div class="flex-container">
@@ -97,15 +98,20 @@ import DateRange from '@/components/common-components/DateRange.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import printDiv from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles1 as styles} from '@/constants/analytics_print'
+
 export default defineComponent({
   name: 'ProfitLossReport',
   components: {
     DateRange,
+    PrintHeader,
   },
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       startDate: dateStr,
       endDate: dateStr,
       company: 0,
@@ -116,6 +122,8 @@ export default defineComponent({
       analytics: 'getAnalytics',
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
+      logoimg: 'getLogoImg',
+
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -157,7 +165,7 @@ export default defineComponent({
       });
     },
     printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {

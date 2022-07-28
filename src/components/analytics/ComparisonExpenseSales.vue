@@ -22,6 +22,7 @@
      
     </div>
     <div class="container d-flex" id="print">
+      <PrintHeader />
       <img src="" alt="graph" id="graph-img">
       
       <BarChart :chartData="chartData" :options="options" style="height: 322px;width: 691px;"/>
@@ -47,17 +48,21 @@ import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { BarChart } from 'vue-chart-3';
 import { Chart, registerables } from "chart.js";
-import printBill from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles2 as styles} from '@/constants/analytics_print'
+import printDiv from '@/utils/print';
 
 Chart.register(...registerables);
 
 export default defineComponent({
   name: 'ComparisonExpenseSales',
   components: {
-      BarChart 
+      BarChart,
+      PrintHeader,
   },
   data() {
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       company: 0,
       chartData: {},
       options: {
@@ -88,6 +93,7 @@ export default defineComponent({
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
       expensesales: 'getExpenseSales',
+      logoimg: 'getLogoImg',
     }),
   },
   methods: { 
@@ -130,14 +136,13 @@ export default defineComponent({
       await this.fetchexpensesales(this.company);
       this.fillChartData()
     },
-
-    printBill(div_id: string, title: string) {
-       const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
+    printDiv(div_id: string, title: string) {
+      const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
       const img = canvas.toDataURL('image/png')
       const graph_div = document.getElementById('bar-chart') as HTMLBodyElement
       const graph_img = document.getElementById('graph-img') as HTMLImageElement
       graph_img.src = img
-      printBill(div_id, title);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {
