@@ -277,6 +277,7 @@ export default defineComponent({
       });
       const company_id = parseInt(this.companyId);
       const company = isNaN(company_id) ? undefined : this.$store.getters.getSignleCompany(company_id);
+      console.log('company', this.$store.getters.getSignleCompany(company_id))
       if (company) {
         this.loadData(company);
       }

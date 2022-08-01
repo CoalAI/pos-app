@@ -53,14 +53,18 @@
     </div>
   </div>
   </div>
-  <button
+  <div class="flex-container">
+    <button
       class="btn-orange btn mt-5"
-      @click="printDiv('print', 'Day Total Payable')"
+      @click="printDiv('print', 'Total Payable')"
       :disabled="submitOrderButton"
       ref="submitandprint"
+      style="width:80px;margin-right:7px"
     >
-      Print Details
+      Print
     </button>
+    
+  </div>
 </template>
 
 <script lang="ts">
@@ -71,7 +75,7 @@ import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import printDiv from '@/utils/print';
 
 export default defineComponent({
-  name: 'DayTotalPayable',
+  name: 'TotalPayable',
   components: {
   },
   data() {
@@ -209,5 +213,9 @@ td > .flex-box{
     font-size: 15px;
     font-weight: 550;
     color: #e73b2a;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

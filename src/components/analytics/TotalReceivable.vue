@@ -50,14 +50,14 @@
         </div>
       </div>
     </div>
-    <div class="flex-container marginTop">
+    <div class="flex-container">
       <!-- <button class="btn btn-orange">Print</button> -->
       <button
-      class="btn-orange btn mt-5"
-      @click="printDiv('print', 'Total Receivable')"
-      :disabled="submitOrderButton"
-      style="width:80px;margin-right:7px"
-      ref="submitandprint"
+        class="btn-orange btn mt-5"
+        @click="printDiv('print', 'Total Receivable')"
+        :disabled="submitOrderButton"
+        style="width:80px;margin-right:7px"
+        ref="submitandprint"
     >
       Print
     </button>
@@ -178,5 +178,9 @@ td > .flex-box{
   font-size: 15px;
   font-weight: 550;
   color: #e73b2a;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

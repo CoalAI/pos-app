@@ -36,14 +36,17 @@
         style="height: 322px; width: 691px"
       />
     </div>
-    <button
-            class="btn-orange btn mt-5"
-            @click="printBill('print','Comparison Analysis')"
-            :disabled="submitOrderButton"
-            ref="submitandprint"
-          >
-            Print</button
-          >
+    <div class="flex-container">
+      <button
+        class="btn-orange btn mt-5"
+        @click="printBill('print','Comparison Analysis')"
+        :disabled="submitOrderButton"
+        ref="submitandprint"
+        style="width:80px;margin-right:7px"
+      >
+        Print
+      </button>
+    </div>
   </div>
 </template>
 
@@ -70,6 +73,7 @@ export default defineComponent({
         {
           data: JSON.parse(JSON.stringify(store.getters.getComparisonanalysis)),
         },
+        
       ],
     };
     const options = {
@@ -94,11 +98,7 @@ export default defineComponent({
       company_type: "",
       companies_types: [
         { name: "FACTORY", value: "factory" },
-        { name: "STORE", value: "store" },
         { name: "RETIAL", value: "retial" },
-        { name: "VENDOR", value: "vendor" },
-        { name: "PARENT", value: "parent" },
-        { name: "WALK_IN_CUSTOMER", value: "walk_in_customer" },
       ],
       printDelay: 100,
     };
@@ -138,8 +138,8 @@ export default defineComponent({
             data: JSON.parse(
               JSON.stringify(store.getters.getComparisonanalysis)
             ),
-            backgroundColor: chartConfig.backgroundColor,
-            borderColor: chartConfig.borderColor,
+            backgroundColor: ['#27aeef', '#b33dc6', '#f46a9b', '#e60049'],
+            borderColor: ['#27aeef', '#b33dc6', '#f46a9b', '#e60049'],
           },
         ],
       };
@@ -248,5 +248,9 @@ td > .flex-box {
 }
 #graph-img {
   display: none;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

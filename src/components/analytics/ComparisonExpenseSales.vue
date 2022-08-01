@@ -21,8 +21,21 @@
       </div>
      
     </div>
-    <div class="container d-flex">
-        <BarChart :chartData="chartData" :options="options" style="height: 322px;width: 691px;"/>
+    <div class="container d-flex" id="print">
+      <img src="" alt="graph" id="graph-img">
+      
+      <BarChart :chartData="chartData" :options="options" style="height: 322px;width: 691px;"/>
+    </div>
+    <div class="flex-container">
+      <button
+          class="btn-orange btn mt-5"
+          @click="printBill('print', 'Comparison Expense Sales')"
+          :disabled="submitOrderButton"
+          ref="submitandprint"
+          style="width:80px;margin-right:7px"
+        >
+          Print
+      </button>
     </div>
   </div>
 </template>
@@ -34,6 +47,7 @@ import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { BarChart } from 'vue-chart-3';
 import { Chart, registerables } from "chart.js";
+import printBill from '@/utils/print';
 
 Chart.register(...registerables);
 
@@ -100,31 +114,30 @@ export default defineComponent({
           {
             label: "Sale",
             data: [this.expensesales['total_sales']],
-            backgroundColor: [
-              "rgb(143,188,143)"
-            ],
-            borderColor: [
-              "rgb(60,179,113)",
-            ],
+            backgroundColor: ['#edbf33', '#b33dc6', '#ef9b20', '#ea5545', '#0bb4ff'],
+            borderColor: ['#edbf33', '#b33dc6', '#ef9b20', '#ea5545', '#0bb4ff'],
           },
           {
             label: "Expense",
             data: [-(this.expensesales['total_expense'])],
-            backgroundColor: [
-              "rgb(255, 127, 127)",
-            ],
-            borderColor: [
-              "rgb(255,0,0)",
-            ],
+            backgroundColor: ['#0bb4ff', '#50e991', '#e6d800', '#9b19f5', '#e60049'],
+            borderColor: ['#0bb4ff','#50e991', '#e6d800', '#9b19f5', '#e60049'],
           },
         ],
       };
     },
     async fetchAnalyticsComparisonBtn() {
-      console.log(this.company)
-
       await this.fetchexpensesales(this.company);
       this.fillChartData()
+    },
+
+    printBill(div_id: string, title: string) {
+       const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
+      const img = canvas.toDataURL('image/png')
+      const graph_div = document.getElementById('bar-chart') as HTMLBodyElement
+      const graph_img = document.getElementById('graph-img') as HTMLImageElement
+      graph_img.src = img
+      printBill(div_id, title);
     },
   },
   async mounted() {
@@ -225,5 +238,12 @@ td > .flex-box{
   transform: rotate(-90deg);
   height: 0%;
   margin-top: 9rem;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
+}
+#graph-img {
+  display: none;
 }
 </style>
