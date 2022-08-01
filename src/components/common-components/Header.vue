@@ -112,6 +112,8 @@
         </div>
         <div id="mydropdown" class="dropdown-content" :class="{active: show}">
           <router-link v-if="manager" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
+          <router-link v-show="superadmin" :to="{name: 'reports'}" class="u btn-grid btn-mr">Reports</router-link>
+          <a @click="logout" class="u btn-grid btn-mr">Logout</a>
         </div>
       </div>
       <!--<div class="flex-box">
@@ -714,21 +716,22 @@ export default defineComponent({
   // min-width: 160px;
   overflow: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  border-bottom: 1px solid #f1f1f1;
   z-index: 1;
 }
 
 .dropdown-content a {
   color: white;
-  padding: 6px 16px;
+  padding:2px 16px;
   font-size: 12px;
   text-decoration: none;
   display: block;
 }
 
 .dropdown a:hover {
-  background-color: #ddd;
+  background-color: white;
   color: #0b2532;
-  border-bottom: 1px solid #0b2532; 
+  border-bottom: 2px solid #e73b2a;
 }
 .dropdown > .active{
   display: block;
