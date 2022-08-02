@@ -49,11 +49,16 @@
                 v-model="transaction.payor"
               >
                 <option :value="-1">SELF</option>
-                <option disabled>---User---</option>
-                <option class="batches-op" v-for="item in creditUsers"
-                  v-bind:key="item.id" v-bind:value="item.id">
-                  <span>{{item?.username}}  {{item?.company?.company_name}}</span>
+                <option disabled>--- username - company ---</option>
+                <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+                  <span>{{item?.username}} -  {{item?.company?.company_name}}</span>
                 </option>
+                <template v-if="userdata.company.company_type == 'STORE'">
+                  <option disabled>--- vendor - phone - company ---</option>
+                  <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+                    <span>{{item.first_name}} - {{item.username}} -  {{item?.company?.company_name}}</span>
+                  </option>
+                </template>
               </select>
             </div>
           </div>
@@ -218,11 +223,16 @@
                 v-model="transaction.payor"
               >
                 <option :value="-1">SELF</option>
-                <option disabled>---User---</option>
-                <option class="batches-op" v-for="item in creditUsers"
-                  v-bind:key="item.id" v-bind:value="item.id">
-                  <span>{{item?.username}}  {{item?.company?.company_name}}</span>
+                <option disabled>--- username - company ---</option>
+                <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+                  <span>{{item?.username}} -  {{item?.company?.company_name}}</span>
                 </option>
+                <template v-if="userdata.company.company_type == 'STORE'">
+                  <option disabled>--- vendor - phone - company ---</option>
+                  <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
+                    <span>{{item.first_name}} - {{item.username}} -  {{item?.company?.company_name}}</span>
+                  </option>
+                </template>
               </select>
             </div>
           </div>
