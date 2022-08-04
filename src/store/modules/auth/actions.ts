@@ -323,7 +323,8 @@ Actions = {
     if (search_criteria && search_criteria.start_date && search_criteria.end_date) {
       response = await serverRequest('get', 'transaction/', true, undefined, search_criteria);
     } else {
-      const now = new Date().toLocaleDateString()
+      const date = new Date()
+      const now = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
       response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: 1});
     }
     if (isAxiosResponse(response)) {
