@@ -754,7 +754,7 @@
       </template>
 
       <template v-slot:body>
-        <OfflineOrderBill :product_name="productName"/>
+        <OfflineOrderBill :product_name="productName" :user="userdata"/>
       </template>
 
       <template v-slot:footer>
@@ -1628,6 +1628,9 @@ export default defineComponent({
       this.paymentMethod = "cash";
       this.cancelModal = false;
       await this.fetchInvoiceID();
+      if(!navigator.onLine){
+        this.orderoffline = false;
+      }
     },
 
     changeProductPrice: function () {
@@ -1690,7 +1693,7 @@ export default defineComponent({
         item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`
     );
     await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
-    await offlineStoreService.initializeStore();
+    await offlineStoreService.initialize();
   },
   async unmounted() {
     await this.setFieldError({});

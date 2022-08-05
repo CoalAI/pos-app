@@ -1648,7 +1648,7 @@ export default defineComponent({
       search: "",
     });
     this.buyer = this.userdata.id;
-    await offlineStoreService.initializeStore();
+    await offlineStoreService.initialize();
   },
 });
 </script>
