@@ -30,6 +30,6 @@ export interface Product extends DatesInterface {
   bar_code?: string;
   total_quantity?: string;
   token?: boolean;
-  category?: number;
+  category?: null | Category;
   product_variant?: ProductVariant[];
 }
