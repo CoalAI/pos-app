@@ -43,12 +43,6 @@ class OfflineStore {
     await this.customerStore.fetchData();
   }
 
-  async initializeStore() {
-    await this.productStore.fetchData();
-    const userData =  await this.loggedInUserStore.fetchRecordsPerPage();
-    await this.loggedInUserStore.setItem(this.USER_DATA, userData.results[0]);
-  }
-
   async intializeSync(){
     this.syncOrder.setItem("bool", false);
   }

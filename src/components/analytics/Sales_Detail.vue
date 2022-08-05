@@ -24,6 +24,7 @@
       </div>
     </div>
      <div id="print">
+      <PrintHeader />
       <table class="tble-mt">
         <colgroup>
           <col span="1" style="width: 25%;">
@@ -50,16 +51,16 @@
       </table>
      </div>
   </div>
-  <div class="flex-container marginTop">
+  <div class="flex-container">
 
     <button
       class="btn-orange btn mt-5"
-      
       @click="printDiv('print', 'Operator Sales Detail')"
       :disabled="submitOrderButton"
       ref="submitandprint"
+      style="width:80px;margin-right:7px"
     >
-      Print Details
+      Print
     </button>
   </div>
 </template>
@@ -72,16 +73,20 @@ import DateRange from '@/components/common-components/DateRange.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import printDiv from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles1 as styles} from '@/constants/analytics_print'
 
 export default defineComponent({
   name: 'OperatorSalesDetail',
   components: {
     DateRange,
+    PrintHeader,
   },
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       startDate: dateStr,
       endDate: dateStr,
       company: 0,
@@ -92,6 +97,7 @@ export default defineComponent({
       salesanalytics: 'getSalesanalytics',
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
+      logoimg: 'getLogoImg',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -133,7 +139,7 @@ export default defineComponent({
       });
     },
     printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {
@@ -235,5 +241,9 @@ td > .flex-box{
 }
 .custom-select{
   width:28%;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

@@ -34,12 +34,13 @@ import FinanceAnaltyics from '@/components/analytics/Finance.vue';
 import InventoryAnaltyics from '@/components/analytics/Inventory.vue';
 import StockStatement from '@/components/analytics/StockStatement.vue';
 import TotalReceivable from '@/components/analytics/TotalReceivable.vue';
-import DayTotalPayable from '@/components/analytics/DayTotalPayable.vue';
+import TotalPayable from '@/components/analytics/TotalPayable.vue';
 import OperatorSalesDetail from '@/components/analytics/Sales_Detail.vue';
 import ProfifLossReport from '@/components/analytics/Report.vue';
 import EndOfDay from '@/components/analytics/EndOfDay.vue';
 import ComparisonAnalysis from '@/components/analytics/ComparisonAnalysis.vue';
 import ComparisonExpenseSales from '@/components/analytics/ComparisonExpenseSales.vue';
+import Reports from '@/components/reports/Basic.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -204,7 +205,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/settings',
     name: "Settings",
     component: Settings,
-    beforeEnter: superAdmin,
+    beforeEnter: manager,
   },
   { path: '/404', name: 'notFound', component: NotFound },  
   { path: '/:pathMatch(.*)*', redirect: '/404' },
@@ -283,9 +284,9 @@ const routes: Array<RouteRecordRaw> = [
         component: TotalReceivable,
       },
       {
-        path: 'dayTotalPayable',
-        name: 'DayTotalPayable',
-        component: DayTotalPayable,
+        path: 'TotalPayable',
+        name: 'TotalPayable',
+        component: TotalPayable,
       },
       {
         path: 'detail',
@@ -314,7 +315,30 @@ const routes: Array<RouteRecordRaw> = [
       },
     ]
   },
-  
+  {
+    path: '/reports',
+    name: "reports",
+    component: Reports,
+    beforeEnter: manager,
+    children: [
+      {
+        path: 'report',
+        name: 'profit-loss-report',
+        component: ProfifLossReport,
+      },
+      {
+        path: 'comparisonAnalysis',
+        name: 'ComparisonAnalysis',
+        component: ComparisonAnalysis,
+      },
+      {
+        path: 'comparisonExpenseSales',
+        name: 'ComparisonExpenseSales',
+        component: ComparisonExpenseSales,
+      },
+    ]
+  },
+   
 ];
 
 const router = createRouter({

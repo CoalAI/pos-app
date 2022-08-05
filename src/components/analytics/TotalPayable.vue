@@ -21,46 +21,51 @@
       </div>
     </div>
     <div id="print">
-    <table class="tble-mt">
-      <colgroup>
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-    </colgroup>
-    <thead>
-      <tr class="fr-row header">
-        <th scope="col">Department Name</th>
-        <th scope="col">Department Type</th>
-        <th scope="col">Payable Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="data in total_pay_rec.amount" :key="data">
-        <td v-if="data.payable_amount != 0">{{ data.seller_company }}</td>
-        <td v-if="data.payable_amount != 0">{{ data.seller_company_type }}</td>
-        <td v-if="data.payable_amount != 0">{{ data.payable_amount }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="stats">
-     <div>
-        
-      </div>
-      <div>
-        <span>Total Amount:</span>
-        <span>{{total_pay_rec.payable_amount}}</span>
+      <PrintHeader />
+      <table class="tble-mt">
+        <colgroup>
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+        </colgroup>
+        <thead>
+          <tr class="fr-row header">
+            <th scope="col">Department Name</th>
+            <th scope="col">Department Type</th>
+            <th scope="col">Payable Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="data in total_pay_rec.amount" :key="data">
+            <td v-if="data.payable_amount != 0">{{ data.seller_company }}</td>
+            <td v-if="data.payable_amount != 0">{{ data.seller_company_type }}</td>
+            <td v-if="data.payable_amount != 0">{{ data.payable_amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="stats">
+        <div>
+            
+        </div>
+        <div>
+          <span>Total Amount:</span>
+          <span>{{total_pay_rec.total_payable_amount}}</span>
+        </div>
       </div>
     </div>
   </div>
-  </div>
-  <button
+  <div class="flex-container">
+    <button
       class="btn-orange btn mt-5"
-      @click="printDiv('print', 'Day Total Payable')"
+      @click="printDiv('print', 'Total Payable')"
       :disabled="submitOrderButton"
       ref="submitandprint"
+      style="width:80px;margin-right:7px"
     >
-      Print Details
+      Print
     </button>
+    
+  </div>
 </template>
 
 <script lang="ts">
@@ -69,13 +74,17 @@ import { mapActions, mapGetters } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import printDiv from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles1 as styles} from '@/constants/analytics_print'
 
 export default defineComponent({
-  name: 'DayTotalPayable',
+  name: 'TotalPayable',
   components: {
+    PrintHeader,
   },
   data() {
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       single_company: "",
       company: 0,
     };
@@ -86,6 +95,7 @@ export default defineComponent({
       companies: 'getCompanies',
       userdata: 'getUser',
       singlecompany: 'getSignleCompany',
+      logoimg: 'getLogoImg',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -108,6 +118,13 @@ export default defineComponent({
     async fetchTotalPayableBtn() {
        await this.fetchTotalpayablereceivable(this.company);
     },
+    getCurrentTime(){
+			return new Date().toLocaleTimeString();
+		},
+		getCurrentDate(){
+			const current = new Date()
+      return current.toLocaleDateString()
+		},
     // async fetchSalesanalyticsBtn() {
     //   await this.fetchSalesanalytics({
     //     start_date: this.startDate,
@@ -116,7 +133,7 @@ export default defineComponent({
     //   });
     //     },
     printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {
@@ -209,5 +226,9 @@ td > .flex-box{
     font-size: 15px;
     font-weight: 550;
     color: #e73b2a;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>
