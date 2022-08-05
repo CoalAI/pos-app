@@ -211,6 +211,21 @@
           <span class="checkmark"></span>
         </label>
       </div>
+      <div>
+        <div class="mr-1">
+          <input
+            class="q-i"
+            type="checkbox"
+            id="return_order"
+            name="return_order"
+            v-bind:checked="return_order"
+          />
+          <span><label class="pd-t-ex"><strong>Return Order</strong></label></span>
+        </div>
+        <span v-if="validateReturnOrder" class="form-error">{{
+          validateReturnOrder
+        }}</span>
+      </div>
         <div class="ap-e mr-2 d-flex">
           <button class="btn-blue ap" @click="clearProduct">
             Clear Product
@@ -823,6 +838,7 @@ export default defineComponent({
       showErrorVenCont: false,
       showErrorVenComp: false,
       productName: productName,
+      return_order: false,
     };
   },
   computed: {
@@ -967,7 +983,8 @@ export default defineComponent({
       if (
         this.productNameValidation === null &&
         this.productBarCodeValidation === null &&
-        this.productQuantityValidation === null
+        this.productQuantityValidation === null &&
+        this.validateReturnOrder === null
       ) {
         disable = false;
       }
@@ -996,7 +1013,7 @@ export default defineComponent({
 
     orderCashReceivedValidation: function () {
       let errorMessage = null;
-      if (this.cashReceived !== undefined && this.cashReceived !== "") {
+      if (this.return_order && this.cashReceived !== undefined && this.cashReceived !== "") {
         const value = parseFloat(this.cashReceived);
         if (isNaN(value)) {
           errorMessage = "Only numbers are allowed";
@@ -1089,6 +1106,14 @@ export default defineComponent({
           errorMessage = "Buyer is required";
         }
       return errorMessage;
+    },
+    validateReturnOrder: function () {
+      let error_message = null;
+      if (this.return_order && parseFloat(this.product.quantity) >= 0) {
+        error_message = "quantity should be in negative for return order!";
+      }
+
+      return error_message;
     },
     ...mapGetters({
       productResult: "getProductResults",
@@ -1357,6 +1382,9 @@ export default defineComponent({
         invoice_id: this.invoiceID,
         internal_order: true,
       };
+      if (this.return_order) {
+        singleOrder.status = "RETURNED";
+      }
       if(!navigator.onLine){
         offlineStoreService.setsyncOrder(true);
         this.orderoffline = true;
@@ -2116,5 +2144,11 @@ float-right{
   .p-contact{
     padding-right: 38px;
   }
+}
+.pd-t-ex {
+  padding: 0px 0px 0px 5px;
+  font-size: 11px;
+  font-family: seg;
+  color: #0f2636;
 }
 </style>

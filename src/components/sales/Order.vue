@@ -1697,7 +1697,6 @@ export default defineComponent({
   },
   async unmounted() {
     await this.setFieldError({});
-    this.handleOrderStatus();
   },
 });
 </script>
