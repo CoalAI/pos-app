@@ -40,6 +40,7 @@ import ProfifLossReport from '@/components/analytics/Report.vue';
 import EndOfDay from '@/components/analytics/EndOfDay.vue';
 import ComparisonAnalysis from '@/components/analytics/ComparisonAnalysis.vue';
 import ComparisonExpenseSales from '@/components/analytics/ComparisonExpenseSales.vue';
+import Reports from '@/components/reports/Basic.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -314,7 +315,30 @@ const routes: Array<RouteRecordRaw> = [
       },
     ]
   },
-  
+  {
+    path: '/reports',
+    name: "reports",
+    component: Reports,
+    beforeEnter: manager,
+    children: [
+      {
+        path: 'report',
+        name: 'profit-loss-report',
+        component: ProfifLossReport,
+      },
+      {
+        path: 'comparisonAnalysis',
+        name: 'ComparisonAnalysis',
+        component: ComparisonAnalysis,
+      },
+      {
+        path: 'comparisonExpenseSales',
+        name: 'ComparisonExpenseSales',
+        component: ComparisonExpenseSales,
+      },
+    ]
+  },
+   
 ];
 
 const router = createRouter({
