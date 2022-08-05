@@ -219,7 +219,6 @@
             id="return_order"
             name="return_order"
             v-bind:checked="return_order"
-            @change="return_order = !return_order"
           />
           <span><label class="pd-t-ex"><strong>Return Order</strong></label></span>
         </div>
