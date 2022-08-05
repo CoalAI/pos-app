@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="page-upper-right">
-          <div class="pur_1">
+          <div v-if="custom_range" class="cus pur_1">
             <label class="" for="start_date">
               Start:
             </label>
@@ -26,7 +26,7 @@
               <span v-if="date_validation_error" class="form-error">{{date_validation_error}}</span>
             </div>
           </div>
-          <div class="pur_2">
+          <div v-if="custom_range" class="cus pur_2">
             <label class="" for="end_date">
               End:
             </label>
@@ -38,6 +38,9 @@
                 @change=dateValidation
               />
             </div>
+          </div>
+          <div class="b">
+            <button class="btn btn-orange" @click="fetchTrans">Search</button>
           </div>
         </div>
       </div>
@@ -314,7 +317,7 @@ export default defineComponent({
   .page-upper-right{
     display: flex;
   }
-  .page-upper-right > div{
+  .page-upper-right > .cus{
     display: flex;
     align-items: baseline;
     width: 50%;
@@ -385,5 +388,8 @@ export default defineComponent({
     border-radius: 10px;
     padding: 1em 4rem;
     box-shadow: 1px 1px 5px -1px rgb(0 0 0 / 75%);
-}
+  }
+  .b{
+    margin: 0 10px;
+  }
 </style>
