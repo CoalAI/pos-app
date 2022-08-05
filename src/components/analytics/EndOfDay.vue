@@ -23,46 +23,50 @@
       </select>
     </div>
     <div id='print'>
-    <table class="tble-mt">
-      <colgroup>
-        <col span="1" style="width: 25%" />
-        <col span="1" style="width: 25%" />
-        <col span="1" style="width: 25%" />
-        <col span="1" style="width: 25%" />
-      </colgroup>
-      <thead>
-        <tr class="fr-row header">
-          <th scope="col">User Name</th>
-          <th scope="col">User Type</th>
-          <th scope="col">Total Orders</th>
-          <th scope="col">Total Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="data in salesanalytics.result" :key="data">
-          <td>{{ data.username }}</td>
-          <td>{{ data.user_type }}</td>
-          <td>{{ data.order_count }}</td>
-          <td>{{ data.total_amount }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="d-flex justify-content-between flex-row">
-      <div class="p-2"><span> Total Amount: </span>
-        <span>{{ salesanalytics.total_amount }}</span></div>
-      <div class="p-2"><span> Total Quantity: </span>
-        <span>{{ salesanalytics.total_quantity }}</span></div>
-    </div>
+      <PrintHeader />
+      <table class="tble-mt">
+        <colgroup>
+          <col span="1" style="width: 25%" />
+          <col span="1" style="width: 25%" />
+          <col span="1" style="width: 25%" />
+          <col span="1" style="width: 25%" />
+        </colgroup>
+        <thead>
+          <tr class="fr-row header">
+            <th scope="col">User Name</th>
+            <th scope="col">User Type</th>
+            <th scope="col">Total Orders</th>
+            <th scope="col">Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="data in salesanalytics.result" :key="data">
+            <td>{{ data.username }}</td>
+            <td>{{ data.user_type }}</td>
+            <td>{{ data.order_count }}</td>
+            <td>{{ data.total_amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-between flex-row stats">
+        <div class="p-2"><span> Total Amount: </span>
+          <span>{{ salesanalytics.total_amount }}</span></div>
+        <div class="p-2"><span> Total Quantity: </span>
+          <span>{{ salesanalytics.total_quantity }}</span></div>
+      </div>
     </div>
   </div>
-  <button
+  <div class="flex-container">
+    <button
       class="btn-orange btn mt-5"
       @click="printDiv('print', 'Inventory')"
       :disabled="submitOrderButton"
       ref="submitandprint"
+      style="width:80px;margin-right:7px"
     >
-      Print Details
+      Print
     </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -70,17 +74,22 @@ import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { ActionTypes } from "@/store/modules/order/actions";
 import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles1 as styles} from '@/constants/analytics_print'
 import printDiv from '@/utils/print';
 
 export default defineComponent({
   name: "EndOfDay",
-  components: {},
+  components: {
+    PrintHeader,
+  },
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${
       date.getMonth() + 1
     }-${date.getDate()}`;
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       startDate: dateStr,
       endDate: dateStr,
       company: 0,
@@ -91,6 +100,7 @@ export default defineComponent({
       salesanalytics: "getSalesanalytics",
       companies: "getInventoryCompanies",
       userdata: "getUser",
+      logoimg: 'getLogoImg',
     }),
     admin() {
       const allowedRoles = ["SUPER_ADMIN", "ADMIN"];
@@ -136,8 +146,8 @@ export default defineComponent({
         company: this.company,
       });
     },
-    printDiv(div_id: string, title: string, style?: string) {
-      printDiv(div_id, title, style);
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {
@@ -214,5 +224,9 @@ td > .flex-box {
 }
 .custom-select {
   width: 28%;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

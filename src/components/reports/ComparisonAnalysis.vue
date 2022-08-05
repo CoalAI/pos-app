@@ -28,7 +28,6 @@
       </div>
     </div>
     <div class="container d-flex" id="print">
-      <PrintHeader />
       <img src="" alt="graph" id="graph-img">
       <div class="profit"></div>
       <BarChart
@@ -37,17 +36,14 @@
         style="height: 322px; width: 691px"
       />
     </div>
-    <div class="flex-container">
-      <button
-        class="btn-orange btn mt-5"
-        @click="printDiv('print','Comparison Analysis')"
-        :disabled="submitOrderButton"
-        ref="submitandprint"
-        style="width:80px;margin-right:7px"
-      >
-        Print
-      </button>
-    </div>
+    <button
+            class="btn-orange btn mt-5"
+            @click="printBill('print','Comparison Analysis')"
+            :disabled="submitOrderButton"
+            ref="submitandprint"
+          >
+            Print</button
+          >
   </div>
 </template>
 
@@ -59,9 +55,7 @@ import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
 import { BarChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { store } from "@/store";
-import printDiv from '@/utils/print';
-import PrintHeader from '@/components/common-components/PrintHeader.vue'
-import {styles2 as styles} from '@/constants/analytics_print'
+import printBill from '@/utils/print';
 import chartConfig from "@/constants";
 Chart.register(...registerables);
 
@@ -69,7 +63,6 @@ export default defineComponent({
   name: "ComparisonAnalysis",
   components: {
     BarChart,
-    PrintHeader,
   },
   setup() {
     const testData = {
@@ -77,7 +70,6 @@ export default defineComponent({
         {
           data: JSON.parse(JSON.stringify(store.getters.getComparisonanalysis)),
         },
-        
       ],
     };
     const options = {
@@ -95,7 +87,6 @@ export default defineComponent({
     }-${date.getDate()}`;
 
     return {
-      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       chartData: {},
       startDate: "2022-01-01",
       endDate: "2022-05-20",
@@ -103,7 +94,11 @@ export default defineComponent({
       company_type: "",
       companies_types: [
         { name: "FACTORY", value: "factory" },
+        { name: "STORE", value: "store" },
         { name: "RETIAL", value: "retial" },
+        { name: "VENDOR", value: "vendor" },
+        { name: "PARENT", value: "parent" },
+        { name: "WALK_IN_CUSTOMER", value: "walk_in_customer" },
       ],
       printDelay: 100,
     };
@@ -113,7 +108,6 @@ export default defineComponent({
       salesanalytics: "getSalesanalytics",
       userdata: "getUser",
       comparisonAnalysis: "getComparisonanalysis",
-      logoimg: 'getLogoImg',
     }),
   },
   methods: {
@@ -144,20 +138,20 @@ export default defineComponent({
             data: JSON.parse(
               JSON.stringify(store.getters.getComparisonanalysis)
             ),
-            backgroundColor: ['#27aeef', '#b33dc6', '#f46a9b', '#e60049'],
-            borderColor: ['#27aeef', '#b33dc6', '#f46a9b', '#e60049'],
+            backgroundColor: chartConfig.backgroundColor,
+            borderColor: chartConfig.borderColor,
           },
         ],
       };
     },
-    printDiv(div_id: string, title: string) {
+    printBill(div_id: string, title: string) {
       const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
       const img = canvas.toDataURL('image/png')
       const graph_div = document.getElementById('bar-chart') as HTMLBodyElement
       const graph_img = document.getElementById('graph-img') as HTMLImageElement
       graph_img.src = img
       console.log(img)
-      printDiv(div_id, title, styles);
+      printBill(div_id, title);
     },
     
   },
@@ -254,9 +248,5 @@ td > .flex-box {
 }
 #graph-img {
   display: none;
-}
-.flex-container {
-  display: flex;
-  flex-direction: row-reverse;
 }
 </style>

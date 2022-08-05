@@ -36,8 +36,9 @@
         </div>
       </div>
     </div>
-    <div id="print">
-      <table class="tble-mt">
+    <div id="print" class="maindiv-print">
+      <PrintHeader />
+      <table class="tble-mt mb-5">
         <colgroup>
         <col span="1" style="width: 25%" />
         <col span="1" style="width: 25%" />
@@ -81,14 +82,17 @@
     </div>
     <div>
 
-    <button
-      class="btn-orange btn mt-5"
-      @click="printDiv('print', 'Order Analytics')"
-      :disabled="submitOrderButton"
-      ref="submitandprint"
-    >
-      Print Details
-    </button>
+    <div class="flex-container">
+      <button
+        class="btn-orange btn mt-5"
+        @click="printDiv('print', 'Order Analytics')"
+        :disabled="submitOrderButton"
+        ref="submitandprint"
+        style="width:80px;margin-right:7px"
+      >
+        Print
+      </button>
+    </div>
     </div>
   </div>
 </template>
@@ -101,11 +105,14 @@ import DateRange from "@/components/common-components/DateRange.vue";
 import { ActionTypes } from "@/store/modules/order/actions";
 import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
 import printDiv from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles1 as styles} from '@/constants/analytics_print'
 
 export default defineComponent({
   name: "OrderAnaltyics",
   components: {
     DateRange,
+    PrintHeader,
   },
   data() {
     const date = new Date();
@@ -113,6 +120,7 @@ export default defineComponent({
       date.getMonth() + 1
     }-${date.getDate()}`;
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       startDate: dateStr,
       endDate: dateStr,
       company: 0,
@@ -123,6 +131,7 @@ export default defineComponent({
       analytics: "getAnalytics",
       companies: "getInventoryCompanies",
       userdata: "getUser",
+      logoimg: 'getLogoImg',
     }),
     admin() {
       const allowedRoles = ["SUPER_ADMIN", "ADMIN"];
@@ -169,7 +178,7 @@ export default defineComponent({
       });
     },
     printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {
@@ -254,6 +263,7 @@ export default defineComponent({
 
 // table designs
 .tble-mt {
+  text-align: center;
   margin: 20px 0;
 }
 .header > th {
@@ -278,5 +288,9 @@ td > .flex-box {
 }
 .fr-row {
   font-size: 12px;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

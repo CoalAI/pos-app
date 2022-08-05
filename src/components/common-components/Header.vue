@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" :style="{backgroundColor: header_color}">
     <div class="logo">
       <router-link v-if="salesStaff" to="/">
         <img class="logo-img-head" :src="logoimg ? logoimg : src_img" alt="coaldev">
@@ -111,7 +111,9 @@
           <strong v-else >{{ userdata.username }}</strong>
         </div>
         <div id="mydropdown" class="dropdown-content" :class="{active: show}">
-          <router-link v-show="admin" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
+          <router-link v-if="manager" to="/settings" class="u btn-grid btn-mr">Settings</router-link>
+          <router-link v-show="superadmin" :to="{name: 'reports'}" class="u btn-grid btn-mr">Reports</router-link>
+          <a @click="logout" class="u btn-grid btn-mr">Logout</a>
         </div>
       </div>
       <!--<div class="flex-box">
@@ -153,10 +155,6 @@
     </div>
   </div>
   <div>
-  </div>
-  <div class="logout">
-    <button class="lg-btn" v-show="toggle" :class="{'fadeInRight animated': animated}" @click="logout" @animationend="animated = false">Logout</button>
-    <button class="btn-lo" @click="animate"><img :src="log"></button>
   </div>
 
   <div class="s">
@@ -207,17 +205,19 @@ import { ActionTypes } from '@/store/modules/auth/actions';
 import { ActionTypes as OrderActionTypes } from '@/store/modules/order/actions';
 import offlineStoreService from '@/utils/offline-store';
 import { Notification } from '@/store/models/notification';
+import { MutationTypes } from "@/store/modules/order/mutations";
+
 
 export default defineComponent({
   name: 'Header',
   data () {
     return{
       logo: require('../../assets/login-top-logo.svg'),
-      src_img: require('@/assets/rohi_logo.png'),
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       toggle:false,
       show:false,
       animated:false,
-      login_user_png: require('@/assets/login-user.png'),
+      login_user_png: require('@/assets/DefaultProfileAvatar-01.png'),
       order: require('../../assets/new-order.svg'),
       inventory: require('../../assets/inventory.svg'),
       users: require('../../assets/users.svg'),
@@ -246,6 +246,7 @@ export default defineComponent({
       messages: 'getNotifications',
       online: 'getNetworkStatus',
       logoimg: 'getLogoImg',
+      header_color: 'getHeaderCol'
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -363,6 +364,16 @@ export default defineComponent({
       });
       this.showResult = true;
     },
+    getCookie(name: string) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2){
+        const cok_str = parts.pop()
+        if (cok_str){
+          return cok_str.split(';').shift()
+        }
+      }
+    },
 
     async logout() {
       await offlineStoreService.clear();
@@ -373,6 +384,8 @@ export default defineComponent({
     await this.getuserdate();
     await this.fetchlogo();
     this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
+    const headrclr = await this.getCookie("HeaderColor") || "#e73b2a"
+    this.$store.commit(MutationTypes.SetHeaderColor, headrclr)
   },
 });
 </script>
@@ -699,21 +712,22 @@ export default defineComponent({
   // min-width: 160px;
   overflow: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  border-bottom: 1px solid #f1f1f1;
   z-index: 1;
 }
 
 .dropdown-content a {
   color: white;
-  padding: 6px 16px;
+  padding:2px 16px;
   font-size: 12px;
   text-decoration: none;
   display: block;
 }
 
 .dropdown a:hover {
-  background-color: #ddd;
+  background-color: white;
   color: #0b2532;
-  border-bottom: 1px solid #0b2532; 
+  border-bottom: 2px solid #e73b2a;
 }
 .dropdown > .active{
   display: block;

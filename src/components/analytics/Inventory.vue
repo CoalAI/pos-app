@@ -19,6 +19,11 @@
     </div>
   </div>
   <div id="print">
+    <PrintHeader />
+    <div id="date-section" class="mb-5 pt-5" style="display: none;">
+      <p class="text-center">{{getCurrentTime()}}</p>
+      <p class="text-center">{{getCurrentDate()}}</p>
+    </div>
     <table class="tble-mt">
       <colgroup>
         <col span="1" style="width: 35%;">
@@ -62,14 +67,17 @@
   </div>
       <img src="" alt="graph" id="graph-img">
   </div>
-  <button
+  <div class="flex-container">
+    <button
       class="btn-orange btn mt-5"
       @click="printDiv('print', 'Inventory')"
       :disabled="submitOrderButton"
       ref="submitandprint"
+      style="width:80px;margin-right:7px"
     >
-      Print Details
+      Print
     </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -80,6 +88,8 @@ import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import printDiv from '@/utils/print';
 import { BarChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles2 as styles} from '@/constants/analytics_print'
 import { store } from "@/store";
 import chartConfig from "@/constants";
 
@@ -87,11 +97,13 @@ export default defineComponent({
   name: 'InventoryAnaltyics',
    components: {
     BarChart,
+    PrintHeader,
   },
   data() {
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       startDate: dateStr,
       endDate: dateStr,
       company: 0,
@@ -103,6 +115,7 @@ export default defineComponent({
       analytics: 'getAnalytics',
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
+      logoimg: 'getLogoImg',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -138,8 +151,8 @@ export default defineComponent({
           {
             label: "Category",
             data: graph_data,
-            backgroundColor: chartConfig.backgroundColor,
-            borderColor: chartConfig.borderColor,
+            backgroundColor: ['#f46a9b', '#00bfa0', '#0bb4ff', '#e60049', '#b33dc6'],
+            borderColor: ['#f46a9b', '#00bfa0', '#0bb4ff', '#e60049', '#b33dc6'],
           },
         ],
         options: {
@@ -149,12 +162,20 @@ export default defineComponent({
 }
       };
     },
-    printDiv(div_id: string, title: string, style?: string) {
+    getCurrentTime(){
+			return new Date().toLocaleTimeString();
+		},
+
+		getCurrentDate(){
+			const current = new Date()
+      return current.toLocaleDateString()
+		},
+    printDiv(div_id: string, title: string) {
       const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
       const img = canvas.toDataURL('image/png')
       const graph_img = document.getElementById('graph-img') as HTMLImageElement
       graph_img.src = img
-      printDiv(div_id, title, style);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {
@@ -252,5 +273,9 @@ export default defineComponent({
 }
 #graph-img {
   display: none;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row-reverse;
 }
 </style>

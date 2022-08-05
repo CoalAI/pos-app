@@ -53,7 +53,8 @@
                   v-model="product.category"
                   ref="batches"
                 >
-                  <option value="0">Select Category</option>
+                  <!--<option value="0">Select Category</option>-->
+                  <option value="0">Others</option>
                   <option v-for="category in categories" :key="category.id" :value="category.id">
                     {{ category.name }}
                   </option>
@@ -247,7 +248,7 @@
 <script lang="ts">
 import { defineComponent, onUnmounted } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import { Product, ProductVariant, Unit } from '@/store/models/product';
+import { Product, ProductVariant, Unit, Category } from '@/store/models/product';
 import { ActionTypes } from '@/store/modules/order/actions';
 import ErrorField from '@/components/common-components/ErrorField.vue';
 
@@ -275,7 +276,7 @@ export default defineComponent({
       product: {
         name: '',
         barcode: '',
-        category: 0,
+        category: '',
         unit: '',
         token: false,
         productVariants: productVariants
@@ -429,7 +430,6 @@ export default defineComponent({
         name: this.product.name,
         bar_code: this.product.barcode,
         token: this.product.token,
-        category: this.product.category !== 0 ? this.product.category : undefined,
         product_variant: unproxiedProductVariants
       };
 
@@ -442,6 +442,18 @@ export default defineComponent({
             id: currentUnit.id,
             name: currentUnit.name
           } as Unit;
+        }
+      }
+
+      currentProduct.category = null;
+      const categoryID = parseFloat(this.product.category);
+      if (!isNaN(categoryID)) {
+        const currentCategory = this.categories.find((categoryItem: Category) => categoryItem.id === categoryID);
+        if (currentCategory) {
+          currentProduct.category = {
+            id: currentCategory.id,
+            name: currentCategory.name
+          } as Category;
         }
       }
 
@@ -469,7 +481,7 @@ export default defineComponent({
       this.product.unit = product.unit && typeof product.unit !== 'number' && product.unit.id ? product.unit.id.toString() : '';
       this.product.token = product.token ? product.token : false;
       this.product.productVariants = product.product_variant ? product.product_variant : [];
-      this.product.category = product.category ? product.category : 0;
+      this.product.category = product.category && typeof product.category !== 'number' && product.category.id ? product.category.id.toString() : '';
     },
 
     ...mapActions({
