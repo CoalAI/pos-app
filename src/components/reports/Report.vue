@@ -29,24 +29,6 @@
         </div>
       </div>
       </div>
-    <!-- commnet out -->
-    <!-- <div class="flex-box">
-      <DateRange @dateRangeChange="setRange"  />
-      <div class="b" style="margin-left: 10px">
-        <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
-      </div>
-    </div> -->
-    <!-- <div class="row">
-      <div class="column">
-        <h4>Total Order Received: {{analytics.total_orders}}</h4>
-        <h4>Total Amount Received: {{analytics.total_orders_amount}}</h4>
-      </div>
-      <div class="column">
-        <h4>Total Order Given: {{analytics.purchasing_orders}}</h4>
-        <h4>Expense: {{analytics.total_expense}}</h4>
-        <h4>Total Amount Given: {{analytics.purchasing_orders_amount}}</h4>
-      </div>
-    </div> -->
     <div id="print">
     <div class="stats">
       <div class="stat-row">
