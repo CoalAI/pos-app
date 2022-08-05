@@ -46,14 +46,14 @@
       <div class="stats">
         <div>
             
-          </div>
-          <div>
-            <span>Total Amount:</span>
-            <span>{{total_pay_rec.payable_amount}}</span>
-          </div>
+        </div>
+        <div>
+          <span>Total Amount:</span>
+          <span>{{total_pay_rec.total_payable_amount}}</span>
         </div>
       </div>
     </div>
+  </div>
   <div class="flex-container">
     <button
       class="btn-orange btn mt-5"
