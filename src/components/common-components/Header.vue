@@ -156,10 +156,6 @@
   </div>
   <div>
   </div>
-  <div class="logout">
-    <button class="lg-btn" v-show="toggle" :class="{'fadeInRight animated': animated}" @click="logout" @animationend="animated = false">Logout</button>
-    <button class="btn-lo" @click="animate"><img :src="log"></button>
-  </div>
 
   <div class="s">
       <div class="flex-box search-bar">
