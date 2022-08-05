@@ -36,31 +36,31 @@
       </div>
     </div>
     <div id="print">
-
-    <table class="tble-mt">
-      <colgroup>
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-      </colgroup>
-      <thead>
-        <tr class="fr-row header">
-          <th scope="col">Product Name</th>
-          <th scope="col">Product Category</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-       <tr v-for="data in inventory" :key="data.id">
-          <td v-if="data.quantity != 0">{{data.batch.product_variant.product.name}}</td>
-          <td v-if="data.quantity != 0">{{showcategoryName(categories, data.batch.product_variant.product.category).name}}</td>
-          <td v-if="data.quantity != 0">{{parseInt(data.quantity)}}</td>
-          <td v-if="data.quantity != 0">{{data.quantity * data.batch.product_variant.price}}</td>
-        </tr>
-      </tbody>
-    </table>
+      <PrintHeader />
+      <table class="tble-mt">
+        <colgroup>
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 25%;">
+        </colgroup>
+        <thead>
+          <tr class="fr-row header">
+            <th scope="col">Product Name</th>
+            <th scope="col">Product Category</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr v-for="data in inventory" :key="data.id">
+            <td v-if="data.quantity != 0">{{data.batch.product_variant.product.name}}</td>
+            <td v-if="data.quantity != 0">{{showcategoryName(categories, data.batch.product_variant.product.category).name}}</td>
+            <td v-if="data.quantity != 0">{{parseInt(data.quantity)}}</td>
+            <td v-if="data.quantity != 0">{{data.quantity * data.batch.product_variant.price}}</td>
+          </tr>
+        </tbody>
+      </table>
     <Paginator :count="counts.inventory" @pageChange="changePage"/>
     <div class="stats">
       <div>
@@ -98,14 +98,18 @@ import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import { Category } from '@/store/models/product'
 import Paginator from '@/components/common-components/Paginator.vue';
 import printDiv from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles1 as styles} from '@/constants/analytics_print'
 
 export default defineComponent({
   name: 'OperatorSalesDetail',
   components: {
     Paginator,
+    PrintHeader,
   },
   data() {
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       company: 0,
       category:0,
     };
@@ -117,6 +121,7 @@ export default defineComponent({
       userdata: 'getUser',
       categories: 'getCategories',
       counts: 'getTotalCounts',
+      logoimg: 'getLogoImg',
     }),
     admin(){
       const allowedRoles = ['SUPER_ADMIN', 'ADMIN'];
@@ -158,7 +163,7 @@ export default defineComponent({
       });
     },
     printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {

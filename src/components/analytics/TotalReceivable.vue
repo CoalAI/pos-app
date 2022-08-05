@@ -22,6 +22,7 @@
       </div>
     </div>
     <div id="print">
+      <PrintHeader />
       <table class="tble-mt">
           <colgroup>
             <col span="1" style="width: 33%;">
@@ -71,14 +72,18 @@ import { mapGetters, mapActions } from 'vuex';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { ActionTypes as AuthActionTypes } from '@/store/modules/auth/actions';
 import printDiv from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles1 as styles} from '@/constants/analytics_print'
 
 
 export default defineComponent({
   name: 'TotalReceivable',
   components: {
+    PrintHeader,
   },
   data() {
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       company: 0,
       single_company: "",
     }
@@ -88,7 +93,8 @@ export default defineComponent({
       userdata: 'getUser',
       companies: 'getCompanies',
       singlecompany: 'getSignleCompany',
-      total_pay_rec: 'getTotalpayablereceivable'
+      total_pay_rec: 'getTotalpayablereceivable',
+      logoimg: 'getLogoImg',
 
     }),
     admin(){
@@ -113,7 +119,7 @@ export default defineComponent({
       await this.fetchTotalpayablereceivable(this.company)
     },
     printDiv(div_id: string, title: string) {
-      printDiv(div_id, title);
+      printDiv(div_id, title, styles);
     },
   },
   async mounted() {

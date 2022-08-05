@@ -28,6 +28,7 @@
       </div>
     </div>
     <div class="container d-flex" id="print">
+      <PrintHeader />
       <img src="" alt="graph" id="graph-img">
       <div class="profit"></div>
       <BarChart
@@ -39,7 +40,7 @@
     <div class="flex-container">
       <button
         class="btn-orange btn mt-5"
-        @click="printBill('print','Comparison Analysis')"
+        @click="printDiv('print','Comparison Analysis')"
         :disabled="submitOrderButton"
         ref="submitandprint"
         style="width:80px;margin-right:7px"
@@ -58,7 +59,9 @@ import { ActionTypes as AuthActionTypes } from "@/store/modules/auth/actions";
 import { BarChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { store } from "@/store";
-import printBill from '@/utils/print';
+import printDiv from '@/utils/print';
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
+import {styles2 as styles} from '@/constants/analytics_print'
 import chartConfig from "@/constants";
 Chart.register(...registerables);
 
@@ -66,6 +69,7 @@ export default defineComponent({
   name: "ComparisonAnalysis",
   components: {
     BarChart,
+    PrintHeader,
   },
   setup() {
     const testData = {
@@ -91,6 +95,7 @@ export default defineComponent({
     }-${date.getDate()}`;
 
     return {
+      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
       chartData: {},
       startDate: "2022-01-01",
       endDate: "2022-05-20",
@@ -108,6 +113,7 @@ export default defineComponent({
       salesanalytics: "getSalesanalytics",
       userdata: "getUser",
       comparisonAnalysis: "getComparisonanalysis",
+      logoimg: 'getLogoImg',
     }),
   },
   methods: {
@@ -144,14 +150,14 @@ export default defineComponent({
         ],
       };
     },
-    printBill(div_id: string, title: string) {
+    printDiv(div_id: string, title: string) {
       const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
       const img = canvas.toDataURL('image/png')
       const graph_div = document.getElementById('bar-chart') as HTMLBodyElement
       const graph_img = document.getElementById('graph-img') as HTMLImageElement
       graph_img.src = img
       console.log(img)
-      printBill(div_id, title);
+      printDiv(div_id, title, styles);
     },
     
   },
