@@ -213,11 +213,11 @@ export default defineComponent({
   data () {
     return{
       logo: require('../../assets/login-top-logo.svg'),
-      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
+      src_img: require('../../assets/DefoultLogoAvatar-01.png'),
       toggle:false,
       show:false,
       animated:false,
-      login_user_png: require('@/assets/DefaultProfileAvatar-01.png'),
+      login_user_png: require('../../assets/DefaultProfileAvatar-01.png'),
       order: require('../../assets/new-order.svg'),
       inventory: require('../../assets/inventory.svg'),
       users: require('../../assets/users.svg'),
