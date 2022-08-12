@@ -383,7 +383,7 @@ export default defineComponent({
   beforeMount: async function() {
     await this.getuserdate();
     await this.fetchlogo();
-    this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
+    // this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
     const headrclr = await this.getCookie("HeaderColor") || "#e73b2a"
     this.$store.commit(MutationTypes.SetHeaderColor, headrclr)
   },
