@@ -420,7 +420,7 @@ export default defineComponent({
     //grid-area: s;
     width:30%;
     margin: 0 auto;
-    margin-top:30px !important;
+    margin-top:50px !important;
   }
   .name {
     grid-area: name;
