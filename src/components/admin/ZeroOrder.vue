@@ -211,6 +211,7 @@
           <span class="checkmark"></span>
         </label>
       </div>
+      <!--
       <div>
         <div class="mr-1">
           <input
@@ -226,6 +227,7 @@
           validateReturnOrder
         }}</span>
       </div>
+      -->
         <div class="ap-e mr-2 d-flex">
           <button class="btn-blue ap" @click="clearProduct">
             Clear Product
@@ -566,6 +568,7 @@
           <button
             class="btn-red mr-l2"
             @click="submitOrder"
+            :disabled="submitOrderButton"
           >
             Submit and Print
           </button>
@@ -1303,7 +1306,6 @@ export default defineComponent({
     },
 
     submitOrder: async function () {
-      this.submitOrderBtnDisable = true;
       this.showErrorSeller = true;
       if(this.orderType === "from"){
         this.showErrorSeller = true;
