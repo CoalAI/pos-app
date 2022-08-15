@@ -93,5 +93,10 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getNotifications: (state: State) => state.notifications.reverse(),
   getTotalCounts: (state: State) => state.totalCounts,
   getInventoryCompanies: (state: State) => state.companies.filter((item: Company) => item.company_type && item.company_type !== 'VENDOR'),
-  getJournalEntryStatus: (state: State) => state.journal_entry_status
+  getJournalEntryStatus: (state: State) => state.journal_entry_status,
+  getUserBalance: (state: State, getters) => (id: number) => {
+    const user = getters.getSignleUser(id)
+    const payor_balance = user.company.balance
+    return payor_balance
+  }
 };

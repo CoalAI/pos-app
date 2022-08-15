@@ -47,7 +47,7 @@
                 name="user-dropdown"
                 class="custom-select"
                 v-model="transaction.payor"
-                @change="getCompanyBalance()"
+                @change="payorChange()"
               >
                 <option :value="-1">SELF</option>
                 <option disabled>--- username - company ---</option>
@@ -101,7 +101,7 @@
                 name="user-dropdown"
                 class="custom-select" 
                 v-model="transaction.payee"
-                @change="getPayeeBalance()"
+                @change="payeeChange()"
               >
                 <option :value="-1">SELF</option>
                 <option disabled>--- username - company ---</option>
@@ -483,7 +483,7 @@ export default defineComponent({
     ...mapGetters({
       users: 'getListOfUsers',
       userdata: 'getUser',
-      singleuser: 'getSignleUser',
+      company_balance: 'getUserBalance',
       expense: 'getExpense',
       vendors: 'getListOfVendors',
       companies: 'getInventoryCompanies',
@@ -500,15 +500,11 @@ export default defineComponent({
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       createJournalEntry: AuthActionTypes.CREATE_JOURNAL_ENTRY
     }),
-    getCompanyBalance: function(){
-      const user = this.singleuser(this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor)
-      this.payor_balance = user.company.balance
-      return user.company.balance
+    payorChange: function(){
+      this.payor_balance = this.company_balance(this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor)
     },
-    getPayeeBalance: function(){
-      const user = this.singleuser(this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee)
-      this.payee_balance = user.company.balance
-      return user.company.balance
+    payeeChange: function(){
+      this.payee_balance = this.company_balance(this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee)
     },
     table_to_array: function(){
       const table: any = document.querySelector('#journal-entry-table tbody')
