@@ -33,6 +33,7 @@ export interface Getters {
   getTotalCounts(state: State): any;
   getInventoryCompanies(state: State): Company[];
   getJournalEntryStatus(state: State): string;
+  getCompany(state: State): Company;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -83,6 +84,7 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     const company = state.companies.find((item: Company) => item.id && item.id === id);
     return company;
   },
+  getCompany: (state: State) => state.company,
   getSignleVendor: (state: State) => (id: number) => {
     const vendor = state.ListOfVendors.find((item: User) => item.id && item.id === id);
     return vendor;
