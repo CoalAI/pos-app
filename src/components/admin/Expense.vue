@@ -636,6 +636,7 @@ export default defineComponent({
         this.transaction.clear();
         await this.fetchUserData();
         await this.fetchUsers();
+        await this.getVendors();
       }
     },
     addDept: async function(){
