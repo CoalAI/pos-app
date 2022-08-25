@@ -98,7 +98,14 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getJournalEntryStatus: (state: State) => state.journal_entry_status,
   getUserBalance: (state: State, getters) => (id: number) => {
     const user = getters.getSignleUser(id)
-    const payor_balance = user.company.balance
-    return payor_balance
+    if (user) {
+      const payor_balance = user.company.balance
+      return payor_balance
+    }
+    else {
+      const vendor = getters.getSignleVendor(id)
+      const payor_balance = vendor.company.balance
+      return payor_balance
+    }
   }
 };
