@@ -1695,7 +1695,6 @@ export default defineComponent({
     }),
   },
   async beforeMount() {
-    this.syncOrder();
     await this.fetchInvoiceID();
     await this.getUsers("ADMIN");
     await this.getVendors("");
@@ -1704,7 +1703,10 @@ export default defineComponent({
       search: "",
     });
     this.buyer = this.userdata.id;
-    await offlineStoreService.initialize();
+    if(navigator.onLine){
+      await this.syncOrder();
+      await offlineStoreService.initialize()
+    }
   },
 });
 </script>
