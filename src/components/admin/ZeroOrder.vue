@@ -191,7 +191,7 @@
             type="radio"
             name="order_type"
             value="from"
-            :disabled="orderTypeValidation"
+            :disabled="orderTypeValidation || return_order"
             v-model="orderType"
             @change="orderTypeChange"
           />
@@ -204,6 +204,7 @@
             type="radio"
             name="order_type"
             value="to"
+            :checked="return_order"
             :disabled="orderTypeValidation"
             v-model="orderType"
             @change="orderTypeChange"
@@ -219,7 +220,7 @@
             type="checkbox"
             id="return_order"
             name="return_order"
-            v-bind:checked="return_order"
+            @change="returnOrderChange"
           />
           <span><label class="pd-t-ex"><strong>Return Order</strong></label></span>
         </div>
@@ -465,6 +466,22 @@
                   >- {{ user.company.company_name }}</span
                 >
               </option>
+              <template v-if="return_order">
+                <option disabled>----VENDORS----</option>
+              <option
+                v-for="vendor in vendors"
+                v-bind:key="vendor.id"
+                v-bind:value="vendor.id"
+              >
+                <span v-if="vendor.first_name && vendor.last_name"
+                  >{{ vendor.first_name }} {{ vendor.last_name }}</span
+                >
+                <span v-else>{{ vendor.username }}</span>
+                <span v-if="vendor.company && vendor.company.company_name"
+                  >- {{ vendor.company.company_name }}</span
+                >
+              </option>
+              </template>
             </select>
             <br/>
             <span v-if="buyerValidation" class="form-error">{{buyerValidation}}</span>
@@ -1162,6 +1179,15 @@ export default defineComponent({
         this.buyer = this.userdata.id;
       }
     },
+    returnOrderChange: function () {
+      this.return_order = !this.return_order
+      if (this.return_order) {
+        this.orderType = "to"
+        this.orderTypeChange();
+      } else {
+        console.log("not return order")
+      }
+    } ,
 
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = "";

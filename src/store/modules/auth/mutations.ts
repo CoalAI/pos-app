@@ -11,6 +11,7 @@ export enum MutationTypes {
   SetListOfUsers = "SET_LIST_OF_USERS",
   SetListOfVendors = "SET_LIST_OF_VENDORS",
   SetTypes = "SET_TYPES",
+  SetCompany = "SET_COMPANY",
   SetCompanies = "SET_COMPANIES",
   SetTransactions = "SET_TRANSACTIONS",
   SetExpense = "SET_EXPENSE",
@@ -32,6 +33,7 @@ export type Mutations = {
   [MutationTypes.SetListOfVendors](state: State, vendors: User[]): void;
   // eslint-disable-next-line
   [MutationTypes.SetTypes](state: State, types: any[]): void;
+  [MutationTypes.SetCompany](state: State, company: Company): void;
   [MutationTypes.SetCompanies](state: State, companies: Company[]): void;
   [MutationTypes.SetTransactions](state: State, transactions: Transaction[]): void;
   [MutationTypes.SetExpense](state: State, transactions: Transaction): void;
@@ -64,6 +66,9 @@ export const mutations: MutationTree<State> & Mutations = {
   // eslint-disable-next-line
   [MutationTypes.SetTypes](state: State, types: any[]) {
     state.types = types;
+  },
+  [MutationTypes.SetCompany](state: State, company: Company) {
+    state.company = company;
   },
   [MutationTypes.SetCompanies](state: State, companies: Company[]) {
     state.companies = companies;
