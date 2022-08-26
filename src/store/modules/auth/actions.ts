@@ -117,7 +117,7 @@ Actions = {
     commit(MutationTypes.SetToken, '');
   },
   async [ActionTypes.USER_DATA]({ commit, rootGetters }: AugmentedActionContext) {
-    if (rootGetters.getOfflineMode) {
+    if (!navigator.onLine) {
       const userData = await offlineStoreService.getUserData();
       if (userData) {
         commit(MutationTypes.SetUser, userData);
@@ -177,7 +177,7 @@ Actions = {
     }
   },
   async [ActionTypes.GET_CUSTOMER_USERS]({ commit, rootGetters }: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
-    if (rootGetters.getOfflineMode) {
+    if (!navigator.onLine) {
       let customers: User[] = [];
       if (options && options.user_type) {
         if (options.user_type === 'REGULAR_CUSTOMER') {

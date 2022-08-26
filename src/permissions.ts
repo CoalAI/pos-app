@@ -115,7 +115,7 @@ export async function manager(to: RouteLocationNormalized, from: RouteLocationNo
 }
 
 export async function checkConnection(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext) {
-  if (to.name === 'Order' || to.name === 'Connection') {
+  if (to.name === 'Order' || to.name === 'Connection' || to.name === 'AdminOrder') {
     next();
   } else {
     const online = navigator.onLine;
