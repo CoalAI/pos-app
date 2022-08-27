@@ -23,6 +23,7 @@ export enum ActionTypes {
   CREATE_EXPENSE = "CREATE_EXPENSE",
   CREATE_JOURNAL_ENTRY = "CREATE_JOURNAL_ENTRY",
   FETCH_TYPES = "FETCH_TYPES",
+  FETCH_COMPANY = "FETCH_COMPANY",
   FETCH_COMPANIES = "FETCH_COMPANIES",
   FETCH_ALL_COMPANIES = "FETCH_ALL_COMPANIES",
   CREATE_COMPANY = "CREATE_COMPANY",
@@ -60,6 +61,7 @@ export interface Actions {
   [ActionTypes.FETCH_COMPANIES]({ commit }: AugmentedActionContext, options: {company_type?: string; search?: string; page?: number}): void;
   [ActionTypes.FETCH_ALL_COMPANIES]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.CREATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
+  [ActionTypes.FETCH_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company): void;
   [ActionTypes.DELETE_COMPANY]({ commit }: AugmentedActionContext, companyID: number): void;
   [ActionTypes.FETCH_VENDORS]({ commit }: AugmentedActionContext, options: {search?: string; page?: number}): void;
@@ -117,7 +119,7 @@ Actions = {
     commit(MutationTypes.SetToken, '');
   },
   async [ActionTypes.USER_DATA]({ commit, rootGetters }: AugmentedActionContext) {
-    if (rootGetters.getOfflineMode) {
+    if (!navigator.onLine) {
       const userData = await offlineStoreService.getUserData();
       if (userData) {
         commit(MutationTypes.SetUser, userData);
@@ -177,7 +179,7 @@ Actions = {
     }
   },
   async [ActionTypes.GET_CUSTOMER_USERS]({ commit, rootGetters }: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
-    if (rootGetters.getOfflineMode) {
+    if (!navigator.onLine) {
       let customers: User[] = [];
       if (options && options.user_type) {
         if (options.user_type === 'REGULAR_CUSTOMER') {
@@ -285,6 +287,15 @@ Actions = {
         }
       }
       commit('setError', error_message, {root: true});
+    }
+  },
+  async [ActionTypes.FETCH_COMPANY]({ commit }: AugmentedActionContext, companyID: number) {
+    const response = await serverRequest('get', `company/${companyID}/`, true);
+    if (isAxiosResponse(response)) {
+      commit(MutationTypes.SetCompany, response.data)
+    }
+    if(isAxiosError(response)) {
+      commit('setError', `Failed to get company with id: ${companyID}!`, {root: true});
     }
   },
   async [ActionTypes.UPDATE_COMPANY]({ commit }: AugmentedActionContext, company: Company) {

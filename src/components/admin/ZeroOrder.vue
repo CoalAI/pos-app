@@ -191,7 +191,7 @@
             type="radio"
             name="order_type"
             value="from"
-            :disabled="orderTypeValidation"
+            :disabled="orderTypeValidation || return_order"
             v-model="orderType"
             @change="orderTypeChange"
           />
@@ -204,6 +204,7 @@
             type="radio"
             name="order_type"
             value="to"
+            :checked="return_order"
             :disabled="orderTypeValidation"
             v-model="orderType"
             @change="orderTypeChange"
@@ -211,7 +212,7 @@
           <span class="checkmark"></span>
         </label>
       </div>
-      <!--
+      
       <div>
         <div class="mr-1">
           <input
@@ -219,7 +220,7 @@
             type="checkbox"
             id="return_order"
             name="return_order"
-            v-bind:checked="return_order"
+            @change="returnOrderChange"
           />
           <span><label class="pd-t-ex"><strong>Return Order</strong></label></span>
         </div>
@@ -227,7 +228,7 @@
           validateReturnOrder
         }}</span>
       </div>
-      -->
+     
         <div class="ap-e mr-2 d-flex">
           <button class="btn-blue ap" @click="clearProduct">
             Clear Product
@@ -450,21 +451,40 @@
               class="custom-select text-box-long"
               id="BuyerID"
               v-model="buyer"
+              @change="buyerVendorCheck"
             >
               <option disabled value="0">Select a buyer</option>
-              <option
-                v-for="user in users"
-                v-bind:key="user.id"
-                v-bind:value="user.id"
-              >
-                <span v-if="user.first_name && user.last_name"
-                  >{{ user.first_name }} {{ user.last_name }}</span
+              <template v-if="!return_order">
+                <option
+                  v-for="user in users"
+                  v-bind:key="user.id"
+                  v-bind:value="user.id"
                 >
-                <span v-else>{{ user.username }}</span>
-                <span v-if="user.company && user.company.company_name"
-                  >- {{ user.company.company_name }}</span
+                  <span v-if="user.first_name && user.last_name"
+                    >{{ user.first_name }} {{ user.last_name }}</span
+                  >
+                  <span v-else>{{ user.username }}</span>
+                  <span v-if="user.company && user.company.company_name"
+                    >- {{ user.company.company_name }}</span
+                  >
+                </option>
+              </template>
+              <template v-if="return_order">
+                <option disabled>----VENDORS----</option>
+              <option
+                v-for="vendor in vendors"
+                v-bind:key="vendor.id"
+                v-bind:value="vendor.id"
+              >
+                <span v-if="vendor.first_name && vendor.last_name"
+                  >{{ vendor.first_name }} {{ vendor.last_name }}</span
+                >
+                <span v-else>{{ vendor.username }}</span>
+                <span v-if="vendor.company && vendor.company.company_name"
+                  >- {{ vendor.company.company_name }}</span
                 >
               </option>
+              </template>
             </select>
             <br/>
             <span v-if="buyerValidation" class="form-error">{{buyerValidation}}</span>
@@ -1162,6 +1182,16 @@ export default defineComponent({
         this.buyer = this.userdata.id;
       }
     },
+    returnOrderChange: function () {
+      this.return_order = !this.return_order
+      if (this.return_order) {
+        this.orderType = "to"
+        this.orderTypeChange();
+      } else {
+        this.orderType = "from"
+        this.orderTypeChange();
+      }
+    },
 
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = "";
@@ -1566,6 +1596,13 @@ export default defineComponent({
         );
       }
     },
+    buyerVendorCheck: function () {
+      if (this.buyer) {
+        this.vendorUser = this.vendors.find(
+          (item: User) => item.id === this.buyer
+        );
+      }
+    },
 
     addVendor: async function () {
       this.showErrorVenCont = true;
@@ -1669,7 +1706,6 @@ export default defineComponent({
     }),
   },
   async beforeMount() {
-    this.syncOrder();
     await this.fetchInvoiceID();
     await this.getUsers("ADMIN");
     await this.getVendors("");
@@ -1678,7 +1714,10 @@ export default defineComponent({
       search: "",
     });
     this.buyer = this.userdata.id;
-    await offlineStoreService.initialize();
+    if(navigator.onLine){
+      await this.syncOrder();
+      await offlineStoreService.initialize()
+    }
   },
 });
 </script>

@@ -1684,7 +1684,6 @@ export default defineComponent({
     }),
   },
   async beforeMount() {
-    this.syncOrder();
     await this.fetchInvoiceID();
     await this.getUsersByType({ user_type: "WALK_IN_CUSTOMER" });
     this.walkinCustomer = this.customers.find(
@@ -1693,7 +1692,10 @@ export default defineComponent({
         item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`
     );
     await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
-    await offlineStoreService.initialize();
+    if(navigator.onLine){
+      await this.syncOrder();
+      await offlineStoreService.initialize();
+    }
   },
   async unmounted() {
     await this.setFieldError({});
