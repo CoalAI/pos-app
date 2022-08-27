@@ -212,7 +212,7 @@
           <span class="checkmark"></span>
         </label>
       </div>
-      <!--
+      
       <div>
         <div class="mr-1">
           <input
@@ -228,7 +228,7 @@
           validateReturnOrder
         }}</span>
       </div>
-      -->
+     
         <div class="ap-e mr-2 d-flex">
           <button class="btn-blue ap" @click="clearProduct">
             Clear Product
@@ -451,21 +451,24 @@
               class="custom-select text-box-long"
               id="BuyerID"
               v-model="buyer"
+              @change="buyerVendorCheck"
             >
               <option disabled value="0">Select a buyer</option>
-              <option
-                v-for="user in users"
-                v-bind:key="user.id"
-                v-bind:value="user.id"
-              >
-                <span v-if="user.first_name && user.last_name"
-                  >{{ user.first_name }} {{ user.last_name }}</span
+              <template v-if="!return_order">
+                <option
+                  v-for="user in users"
+                  v-bind:key="user.id"
+                  v-bind:value="user.id"
                 >
-                <span v-else>{{ user.username }}</span>
-                <span v-if="user.company && user.company.company_name"
-                  >- {{ user.company.company_name }}</span
-                >
-              </option>
+                  <span v-if="user.first_name && user.last_name"
+                    >{{ user.first_name }} {{ user.last_name }}</span
+                  >
+                  <span v-else>{{ user.username }}</span>
+                  <span v-if="user.company && user.company.company_name"
+                    >- {{ user.company.company_name }}</span
+                  >
+                </option>
+              </template>
               <template v-if="return_order">
                 <option disabled>----VENDORS----</option>
               <option
@@ -1185,9 +1188,10 @@ export default defineComponent({
         this.orderType = "to"
         this.orderTypeChange();
       } else {
-        console.log("not return order")
+        this.orderType = "from"
+        this.orderTypeChange();
       }
-    } ,
+    },
 
     selectProduct: async function (productId: number, VariantId: number) {
       this.duplicateMessage = "";
@@ -1589,6 +1593,13 @@ export default defineComponent({
       if (this.seller) {
         this.vendorUser = this.vendors.find(
           (item: User) => item.id === this.seller
+        );
+      }
+    },
+    buyerVendorCheck: function () {
+      if (this.buyer) {
+        this.vendorUser = this.vendors.find(
+          (item: User) => item.id === this.buyer
         );
       }
     },
