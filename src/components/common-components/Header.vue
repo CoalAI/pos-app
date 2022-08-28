@@ -213,11 +213,11 @@ export default defineComponent({
   data () {
     return{
       logo: require('../../assets/login-top-logo.svg'),
-      src_img: require('@/assets/DefoultLogoAvatar-01.png'),
+      src_img: require('../../assets/DefoultLogoAvatar-01.png'),
       toggle:false,
       show:false,
       animated:false,
-      login_user_png: require('@/assets/DefaultProfileAvatar-01.png'),
+      login_user_png: require('../../assets/DefaultProfileAvatar-01.png'),
       order: require('../../assets/new-order.svg'),
       inventory: require('../../assets/inventory.svg'),
       users: require('../../assets/users.svg'),
@@ -383,7 +383,7 @@ export default defineComponent({
   beforeMount: async function() {
     await this.getuserdate();
     await this.fetchlogo();
-    this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
+    // this.$socket.emit('client_info', {id: this.userdata.id, company: this.userdata.company.id});
     const headrclr = await this.getCookie("HeaderColor") || "#e73b2a"
     this.$store.commit(MutationTypes.SetHeaderColor, headrclr)
   },
@@ -420,7 +420,7 @@ export default defineComponent({
     //grid-area: s;
     width:30%;
     margin: 0 auto;
-    margin-top:30px !important;
+    margin-top:50px !important;
   }
   .name {
     grid-area: name;

@@ -9,6 +9,7 @@ export type State = {
     ListOfVendors: User[];
     // eslint-disable-next-line
     types: any[];
+    company: Company;
     companies: Company[];
     transactions: Transaction[];
     expense: Transaction;
@@ -29,6 +30,7 @@ export const state: State = {
   listOfUsers: [],
   ListOfVendors: [],
   types: [],
+  company: {},
   companies: [],
   transactions: [],
   expense: {},

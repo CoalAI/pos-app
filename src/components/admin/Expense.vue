@@ -47,6 +47,7 @@
                 name="user-dropdown"
                 class="custom-select"
                 v-model="transaction.payor"
+                @change="payorChange()"
               >
                 <option :value="-1">SELF</option>
                 <option disabled>--- username - company ---</option>
@@ -65,9 +66,18 @@
         
           <div class="right">
             <label for="balance">
-              <strong>Balance:</strong>
+              <strong>Payor Balance:</strong>
             </label>
-            <div class="ab-input-container">
+            <div class="ab-input-container" v-if="transaction.payor != -1 && expenseMethod == 'Received'">
+              <input
+                name="balance"
+                type="text"
+                placeholder="00"
+                v-model="payor_balance"
+                readonly
+              />
+            </div>
+            <div class="ab-input-container" v-else>
               <input
                 name="balance"
                 type="text"
@@ -91,6 +101,7 @@
                 name="user-dropdown"
                 class="custom-select" 
                 v-model="transaction.payee"
+                @change="payeeChange()"
               >
                 <option :value="-1">SELF</option>
                 <option disabled>--- username - company ---</option>
@@ -106,7 +117,21 @@
               </select>
             </div>
           </div>
-          <div class="right">
+          <div class="right" v-if="transaction.payee != -1 && (expenseMethod == 'Credit' || expenseMethod == 'Debit')">
+            <label for="balance">
+              <strong>Payee Balance:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="balance"
+                type="text"
+                placeholder="00"
+                v-model="payee_balance"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="right" v-else>
             <label for="balance">
               <strong>Balance:</strong>
             </label>
@@ -172,6 +197,34 @@
               />
               <span v-if="amountrequired_error" class="form-error">{{ amountrequired_error }}</span><br>
               <span v-if="numberallowd_error" class="form-error">{{ numberallowd_error }}</span>
+            </div>
+          </div>
+          <div class="right" v-if="transaction.payor != -1 && userdata.id != transaction.payor && expenseMethod == 'Received'">
+            <label for="balance">
+              <strong>My Balance:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="balance"
+                type="text"
+                placeholder="00"
+                v-model="userdata.company.balance"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="right" v-if="transaction.payee != -1 && userdata.id != transaction.payee && (expenseMethod == 'Credit' || expenseMethod == 'Debit')">
+            <label for="balance">
+              <strong>My Balance:</strong>
+            </label>
+            <div class="ab-input-container">
+              <input
+                name="balance"
+                type="text"
+                placeholder="00"
+                v-model="userdata.company.balance"
+                readonly
+              />
             </div>
           </div>
         </div>
@@ -370,6 +423,8 @@ export default defineComponent({
       payor_payee_same_error: '',
       no_data_table_error: '',
       expenseMethod: 'Received',
+      payor_balance: 0,
+      payee_balance: 0,
       transaction: {
         payor:-1,
         payee:-1,
@@ -428,6 +483,7 @@ export default defineComponent({
     ...mapGetters({
       users: 'getListOfUsers',
       userdata: 'getUser',
+      company_balance: 'getUserBalance',
       expense: 'getExpense',
       vendors: 'getListOfVendors',
       companies: 'getInventoryCompanies',
@@ -444,6 +500,12 @@ export default defineComponent({
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       createJournalEntry: AuthActionTypes.CREATE_JOURNAL_ENTRY
     }),
+    payorChange: function(){
+      this.payor_balance = this.company_balance(this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor)
+    },
+    payeeChange: function(){
+      this.payee_balance = this.company_balance(this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee)
+    },
     table_to_array: function(){
       const table: any = document.querySelector('#journal-entry-table tbody')
       const table_header: any = document.querySelectorAll('#journal-entry-table thead th')
@@ -556,7 +618,7 @@ export default defineComponent({
           this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
         } else if(this.expenseMethod === 'Credit') {
           this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
-          this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
+          this.transaction.payor = this.userdata.id;
         }else if (this.expenseMethod === 'Debit') {
           this.transaction.payor = this.userdata.id;
           this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
@@ -573,6 +635,8 @@ export default defineComponent({
 
         this.transaction.clear();
         await this.fetchUserData();
+        await this.fetchUsers();
+        await this.getVendors();
       }
     },
     addDept: async function(){

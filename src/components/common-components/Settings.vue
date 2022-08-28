@@ -237,7 +237,7 @@ export default defineComponent({
         updateLogo: OrderActionTypes.UPDATE_LOGO_IMAGE,
         fetchlogo: OrderActionTypes.FETCH_LOGO_IMAGE,
         updateCompany: AuthActionTypes.UPDATE_COMPANY,
-        getCompaniesList: AuthActionTypes.FETCH_COMPANIES,
+        fetchCompany: AuthActionTypes.FETCH_COMPANY,
         fetchTypes: AuthActionTypes.FETCH_TYPES,
         getUserData: AuthActionTypes.USER_DATA,
       }),
@@ -269,21 +269,15 @@ export default defineComponent({
 
     this.companyId = this.userdata['company'].id;
     this.user_type = this.userdata['user_type'];
-
     if (this.companyId) {
-      await this.getCompaniesList({
-        company_type: '',
-        search: ''
-      });
-      const company_id = parseInt(this.companyId);
-      const company = isNaN(company_id) ? undefined : this.$store.getters.getSignleCompany(company_id);
-      console.log('company', this.$store.getters.getSignleCompany(company_id))
-      if (company) {
-        this.loadData(company);
-      }
-      else {
+      await this.fetchCompany(this.companyId);
+      const company = this.$store.getters.getCompany
+      if (Object.keys(company).length === 0 && company.constructor === Object) {
         // Show 404 page on screen
         this.$router.push({name: 'notFound'});
+      }
+      else {
+        this.loadData(company);
       }
     }
   },

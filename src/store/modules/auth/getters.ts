@@ -33,6 +33,7 @@ export interface Getters {
   getTotalCounts(state: State): any;
   getInventoryCompanies(state: State): Company[];
   getJournalEntryStatus(state: State): string;
+  getCompany(state: State): Company;
 }
 
 export const getters: GetterTree<State, IRootState> & Getters = {
@@ -83,6 +84,7 @@ export const getters: GetterTree<State, IRootState> & Getters = {
     const company = state.companies.find((item: Company) => item.id && item.id === id);
     return company;
   },
+  getCompany: (state: State) => state.company,
   getSignleVendor: (state: State) => (id: number) => {
     const vendor = state.ListOfVendors.find((item: User) => item.id && item.id === id);
     return vendor;
@@ -93,5 +95,17 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   getNotifications: (state: State) => state.notifications.reverse(),
   getTotalCounts: (state: State) => state.totalCounts,
   getInventoryCompanies: (state: State) => state.companies.filter((item: Company) => item.company_type && item.company_type !== 'VENDOR'),
-  getJournalEntryStatus: (state: State) => state.journal_entry_status
+  getJournalEntryStatus: (state: State) => state.journal_entry_status,
+  getUserBalance: (state: State, getters) => (id: number) => {
+    const user = getters.getSignleUser(id)
+    if (user) {
+      const payor_balance = user.company.balance
+      return payor_balance
+    }
+    else {
+      const vendor = getters.getSignleVendor(id)
+      const payor_balance = vendor.company.balance
+      return payor_balance
+    }
+  }
 };
