@@ -339,14 +339,16 @@
                     v-bind:key="customer.id"
                     @click="selectCustomer(customer)"
                   >
-                    <span
-                      ><strong>{{
+                    <span>
+                    <strong>{{
                         customer.contact_number
                           ? customer.contact_number
                           : customer.username
                       }}</strong></span
                     >
                     <span>{{ customer.first_name }}</span>
+                    
+                    <!--<span>{{ customer.first_name + " " + customer.last_name}}</span>-->
                   </li>
                 </ul>
               </div>
@@ -1259,8 +1261,8 @@ export default defineComponent({
 
       this.regularCustomer = customer;
       this.showCustDropdown = false;
-      this.customersearch =
-        customer.contact_number === undefined ? "" : customer.contact_number;
+      // this.customersearch = customer.contact_number === undefined ? "" : customer.first_name  + "" + customer.last_name;
+      this.customersearch = customer.contact_number === undefined ? "" :  customer.contact_number;
     },
 
     addNewCustomer: async function () {
@@ -1761,6 +1763,10 @@ export default defineComponent({
   display: grid;
   grid-template-columns: 0.5fr 1fr 0.5fr 0.3fr 0.5fr 1fr;
   grid-template-areas: "bt bt-i e e-i pn pn-i";
+  // grid-template-columns: 0.6fr;
+  // grid-template-areas: 
+  //   "bt bt-i bt-i bt-i"
+  //   "e e-i pn pn-i";
 }
 .bc {
   grid-area: bc;
@@ -1813,8 +1819,11 @@ export default defineComponent({
 }
 
 .payment-method-container {
-  display: inline;
-  margin-left:78px;
+  // display: inline;
+  // margin-left:78px;
+  margin: auto;
+  width: 50%;
+  margin-bottom: 9px;
 }
 
 .pad-label {
@@ -1973,7 +1982,7 @@ option.batches-op {
 
 .search-result-upper {
   position: absolute;
-  width: 24%;
+  width: 40%;
   text-align: left;
   margin-top: -1px;
   z-index: 3;
@@ -2312,6 +2321,10 @@ td {
 .form-container {
   grid-gap: 1.2rem 1.8rem;
 }
+
+.payment-method-container {
+  width: 60%;
+}
 }
 @media screen and (max-width:1029px ){
   .col-3{
@@ -2321,5 +2334,17 @@ td {
     gap: 0rem 0rem !important;
   }
 }
+@media screen  and (max-width: 1416px){
+  .form-container-5{
+    grid-template-columns: 0.6fr;
+    grid-template-areas: 
+    "bt bt-i bt-i bt-i"
+    "e e-i pn pn-i";
+  }
+  .text-box-sm{
+    width: 8vw;
+  }
+}
+
 
 </style>
