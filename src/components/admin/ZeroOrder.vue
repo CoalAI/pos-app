@@ -1418,7 +1418,6 @@ export default defineComponent({
         singleOrder.status = "RETURNED";
       }
       if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true);
         this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
@@ -1684,13 +1683,6 @@ export default defineComponent({
       (this.$refs.scrollContainer as any).scrollTop = liH * this.focusedTile;
     },
 
-    async syncOrder() {
-      const check = await offlineStoreService.getsyncOrder();
-      if(check == true){
-        offlineStoreService.Order();
-        offlineStoreService.setsyncOrder(false);
-      }
-    },
 
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
@@ -1715,7 +1707,7 @@ export default defineComponent({
     });
     this.buyer = this.userdata.id;
     if(navigator.onLine){
-      await this.syncOrder();
+      await offlineStoreService.Order();
       await offlineStoreService.initialize()
     }
   },

@@ -1448,7 +1448,6 @@ export default defineComponent({
       }
 
       if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true);
         this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
@@ -1661,13 +1660,6 @@ export default defineComponent({
       return parseFloat(quan !== undefined ? quan : "0.0").toFixed(4);
     },
 
-    async syncOrder() {
-      const check = await offlineStoreService.getsyncOrder();
-      if(check == true){
-        offlineStoreService.Order();
-        offlineStoreService.setsyncOrder(false);
-      }
-    },
 
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
@@ -1693,7 +1685,7 @@ export default defineComponent({
     );
     await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
     if(navigator.onLine){
-      await this.syncOrder();
+      await offlineStoreService.Order();
       await offlineStoreService.initialize();
     }
   },
