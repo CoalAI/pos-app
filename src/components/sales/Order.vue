@@ -171,7 +171,7 @@
             @click="addOrderItem"
             :disabled="addProductButton"
             ref="addproduct"
-            @keydown="shiftfocusTo('cashreceived')"
+            @keydown="shiftfocusTo($event, 'cashreceived')"
           >
             Add Product
           </button>
@@ -733,6 +733,7 @@
           :orderId="order_response.id"
           :customer="customer"
           :print="print"
+          :user="userdata"
         />
       </template>
 
