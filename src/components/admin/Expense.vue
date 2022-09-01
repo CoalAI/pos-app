@@ -438,7 +438,6 @@ export default defineComponent({
           this.payor = -1;
           this.payee = -1;
           this.amount = '';
-          this.transaction_id = '';
           this.description = '';
         }
       }, 
@@ -493,7 +492,6 @@ export default defineComponent({
       vendors: 'getListOfVendors',
       companies: 'getInventoryCompanies',
       je_status: 'getJournalEntryStatus',
-      get_tid: 'getTransactionID',
     })
   },
   methods: {
@@ -503,7 +501,6 @@ export default defineComponent({
       createExpense: AuthActionTypes.CREATE_EXPENSE,
       getVendors: AuthActionTypes.FETCH_VENDORS,
       createRequest: OrderActionTypes.CREATE_REQUEST,
-      fetchTransactionID: OrderActionTypes.FETCH_TRANSACTION_ID,
       fetchCompanies: AuthActionTypes.FETCH_ALL_COMPANIES,
       createJournalEntry: AuthActionTypes.CREATE_JOURNAL_ENTRY
     }),
@@ -623,7 +620,6 @@ export default defineComponent({
     },
     addExpense: async function(){
       if(this.allValidation()){
-        this.transaction.transaction_id = this.get_tid
         this.transaction.p_s = this.expenseMethod
         if (this.expenseMethod === 'Received') {
           this.transaction.payee = this.userdata.id;
@@ -669,7 +665,6 @@ export default defineComponent({
     await this.getVendors();
     await this.fetchUserData();
     await this.fetchCompanies();
-    await this.fetchTransactionID();
   },
 
 });

@@ -21,7 +21,6 @@ export type State = {
   categories: Category[];
   batch: Batch;
   invoice_id: string;
-  transaction_id: string;
   request: Request;
   error: any;
   productsCount: number;
@@ -59,7 +58,6 @@ export const state: State = {
   categories: [],
   batch: {},
   invoice_id: '',
-  transaction_id: '',
   request: {},
   error: {},
   productsCount: 0,

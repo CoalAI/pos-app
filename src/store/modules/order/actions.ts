@@ -35,7 +35,6 @@ export enum ActionTypes {
   FETCH_INVENTORY = "FETCH_INVENTORY",
   INTERNAL_ORDER = "INTERNAL_ORDER",
   FETCH_INVOICE_ID = "FETCH_INVOICE_ID",
-  FETCH_TRANSACTION_ID = "FETCH_TRANSACTION_ID",
   CREATE_REQUEST = "CREATE_REQUEST",
   FETCH_REQUESTS = "FETCH_REQUESTS",
   UPDATE_REQUEST = "UPDATE_REQUEST",
@@ -98,7 +97,6 @@ export interface Actions {
   [ActionTypes.FETCH_INVENTORY]({ commit }: AugmentedActionContext, data: {company?: number; search?: string; batch_ids?: string; page?: number}): void;
   [ActionTypes.INTERNAL_ORDER]({ commit }: AugmentedActionContext, order: Order): void;
   [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext): void;
-  [ActionTypes.FETCH_TRANSACTION_ID]({ commit }: AugmentedActionContext): void;
   [ActionTypes.CREATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
   [ActionTypes.FETCH_REQUESTS]({ commit }: AugmentedActionContext, options?: {sender__company?: number; receiver__company?: number; status: string; page?: number}): void;
   [ActionTypes.UPDATE_REQUEST]({ commit }: AugmentedActionContext, request: Request): void;
@@ -422,14 +420,6 @@ Actions = {
       const invoiceId = await offlineStoreService.getInvoiceId();
       if (invoiceId) {
         commit(MutationTypes.SetInvoiceID, invoiceId);
-      }
-    }
-  },
-  async [ActionTypes.FETCH_TRANSACTION_ID]({ commit }: AugmentedActionContext) {
-    const response = await serverRequest('get', 'transaction-id/', true, undefined, undefined);
-    if (isAxiosResponse(response)) {
-      if (response.data.results.length > 0 && response.data.results[0].TID) {
-        commit(MutationTypes.SetTransactionID, response.data.results[0].TID);
       }
     }
   },
