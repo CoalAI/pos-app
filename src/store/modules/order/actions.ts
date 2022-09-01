@@ -116,7 +116,7 @@ export interface Actions {
 export const actions: ActionTree<State, IRootState> &
 Actions = {
   async [ActionTypes.SEARCH_PRODUCT_BY_NAME]({ commit }: AugmentedActionContext, name: string) {
-    if(navigator.onLine){
+    if(await offlineStoreService.isInternetConnectionWorking()){
       if (name === '') {
         commit(MutationTypes.SetProductResults, []);
       } else {
@@ -143,7 +143,7 @@ Actions = {
     }
   },
   async [ActionTypes.SEARCH_PRODUCT_BY_BARCODE]({ commit }: AugmentedActionContext, barcode: string) {
-    if (navigator.onLine) {
+    if(await offlineStoreService.isInternetConnectionWorking()){
       const response = await serverRequest('get', 'product/', true, undefined, {bar_code: barcode});
       if (isAxiosResponse(response)) {
         commit(MutationTypes.SetProductResults, response.data.results);
@@ -201,7 +201,7 @@ Actions = {
     }
   },
   async [ActionTypes.CREATE_ORDER]({ commit }: AugmentedActionContext, order: Order) {
-    if(navigator.onLine){
+    if(await offlineStoreService.isInternetConnectionWorking()){
       const response = await serverRequest('post', 'order/', true, order);
       if (isAxiosResponse(response)) {
         const response2 = await serverRequest('get', `order/${response.data.id}`, true);
@@ -409,7 +409,7 @@ Actions = {
     }
   },
   async [ActionTypes.FETCH_INVOICE_ID]({ commit }: AugmentedActionContext) {
-    if (navigator.onLine) {
+    if(await offlineStoreService.isInternetConnectionWorking()){
       const response = await serverRequest('get', 'invoice-id/', true, undefined, undefined);
       if (isAxiosResponse(response)) {
         if (response.data.results.length > 0 && response.data.results[0].InvoiceID) {

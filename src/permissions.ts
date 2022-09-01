@@ -1,7 +1,7 @@
 import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
 import { store } from "./store";
 import { ActionTypes } from "./store/modules/auth/actions";
-
+import offlineStoreService from "@/utils/offline-store/index";
 
 export async function salesStaff(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN'];
@@ -118,7 +118,7 @@ export async function checkConnection(to: RouteLocationNormalized, from: RouteLo
   if (to.name === 'Order' || to.name === 'Connection' || to.name === 'AdminOrder') {
     next();
   } else {
-    const online = navigator.onLine;
+    const online = await offlineStoreService.isInternetConnectionWorking();
     if (!online) {
       next('/connection');
     } else {

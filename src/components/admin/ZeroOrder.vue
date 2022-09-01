@@ -1327,7 +1327,7 @@ export default defineComponent({
         discount: discount.toString(),
         totalPrice,
       };
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.productName.push(this.product.name);
       }
       this.orderItems.push(SingleOrderItem);
@@ -1358,7 +1358,7 @@ export default defineComponent({
         }
       );
 
-      if(navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking()){
         for (const singleOrderItem of unproxiedOrderItems) {
         if (singleOrderItem.batch) {
           if (this.orderType == "from") {
@@ -1417,7 +1417,7 @@ export default defineComponent({
       if (this.return_order) {
         singleOrder.status = "RETURNED";
       }
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
@@ -1559,7 +1559,7 @@ export default defineComponent({
       await this.fetchInvoiceID();
       await this.getUsers("ADMIN");
       await this.getVendors("");
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = false;
       }
     },
@@ -1706,7 +1706,7 @@ export default defineComponent({
       search: "",
     });
     this.buyer = this.userdata.id;
-    if(navigator.onLine){
+    if(await offlineStoreService.isInternetConnectionWorking()){
       await offlineStoreService.Order();
       await offlineStoreService.initialize()
     }

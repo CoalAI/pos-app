@@ -203,6 +203,24 @@ class OfflineStore {
     await this.customerStore.clear();
     await this.orderStore.clear();
   }
+
+  async isInternetConnectionWorking() {
+    if (!navigator.onLine) {
+        return false;
+    }
+    const headers = new Headers();
+    headers.append('cache-control', 'no-cache');
+    headers.append('pragma', 'no-cache');
+    try {
+        await fetch(window.location.origin, { method: 'HEAD', headers });
+        return true;
+    } catch (error) {
+        if (error instanceof TypeError) {
+            return false;
+        }
+        throw error;
+    }
+  }
   
 }
 

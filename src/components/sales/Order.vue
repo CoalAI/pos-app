@@ -1385,9 +1385,7 @@ export default defineComponent({
             ).toFixed(0)
           ),
         };
-        if(!navigator.onLine){
-          this.productName.push(this.product.name);
-        }
+        this.productName.push(this.product.name);
         this.orderItems.push(SingleOrderItem);
       });
 
@@ -1447,7 +1445,7 @@ export default defineComponent({
         singleOrder.status = "RETURNED";
       }
 
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = true;
       }
       await this.createOrder(singleOrder);
@@ -1627,7 +1625,7 @@ export default defineComponent({
       this.paymentMethod = "cash";
       this.cancelModal = false;
       await this.fetchInvoiceID();
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = false;
       }
     },
@@ -1684,7 +1682,7 @@ export default defineComponent({
         item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`
     );
     await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
-    if(navigator.onLine){
+    if(await offlineStoreService.isInternetConnectionWorking()){
       await offlineStoreService.Order();
       await offlineStoreService.initialize();
     }
