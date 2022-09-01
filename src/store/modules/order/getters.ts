@@ -30,6 +30,7 @@ export interface Getters {
   getCategories(state: State): Category[];
   getBatch(state: State): Batch;
   getInvoiceID(state: State): string;
+  getTransactionID(state: State): string;
   getRequest(state: State): Request;
   getFieldError(state: State): any;
   getTotalCountsOrderModule(state: State): any;
@@ -93,6 +94,9 @@ export const getters: GetterTree<State, IRootState> & Getters = {
   },
   getInvoiceID: (state: State) => {
     return state.invoice_id;
+  },
+  getTransactionID: (state: State) => {
+    return state.transaction_id;
   },
   getRequest: (state: State) => {
     return state.request;
