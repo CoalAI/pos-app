@@ -346,9 +346,7 @@
                           : customer.username
                       }}</strong></span
                     >
-                    <span>{{ customer.first_name }}</span>
-                    
-                    <!--<span>{{ customer.first_name + " " + customer.last_name}}</span>-->
+                    <span>{{ customer.first_name + " " + customer.last_name}}</span>
                   </li>
                 </ul>
               </div>
@@ -367,6 +365,7 @@
                       readonly
                       v-bind:value="getFullName"
                     />
+                    <br/>
                     <span v-if="validateRegularCustomer" class="form-error-msg">{{
                       validateRegularCustomer
                     }}</span>
@@ -1261,7 +1260,6 @@ export default defineComponent({
 
       this.regularCustomer = customer;
       this.showCustDropdown = false;
-      // this.customersearch = customer.contact_number === undefined ? "" : customer.first_name  + "" + customer.last_name;
       this.customersearch = customer.contact_number === undefined ? "" :  customer.contact_number;
     },
 
@@ -1984,8 +1982,8 @@ option.batches-op {
 
 .search-result-upper {
   position: absolute;
-  width: 40%;
-  text-align: left;
+  width: 80%;
+  text-align: center;
   margin-top: -1px;
   z-index: 3;
   cursor: default;
@@ -2009,7 +2007,7 @@ option.batches-op {
 .single-search-item {
   display: flex;
   padding: 15px;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .single-search-item:hover {

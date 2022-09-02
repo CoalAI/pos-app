@@ -51,13 +51,19 @@
               >
                 <option :value="-1">SELF</option>
                 <option disabled>--- username - company ---</option>
-                <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+                <option class="batches-op" v-for="item in Users" v-bind:key="item.id" v-bind:value="item.id">
                   <span>{{item?.username}} -  {{item?.company?.company_name}}</span>
                 </option>
                 <template v-if="userdata.company.company_type == 'STORE'">
                   <option disabled>--- vendor - phone - company ---</option>
                   <option class="batches-op" v-for="item in vendors" v-bind:key="item.id" v-bind:value="item.id">
                     <span>{{item.first_name}} - {{item.username}} -  {{item?.company?.company_name}}</span>
+                  </option>
+                </template>
+                <template v-if="userdata.company.company_type == 'STORE' || userdata.company.company_type == 'RETIAL'">
+                  <option disabled>--- customer - phone  ---</option>
+                  <option class="batches-op" v-for="item in customers" v-bind:key="item.id" v-bind:value="item.id">
+                    <span>{{item.first_name}} - {{item.username}}</span>
                   </option>
                 </template>
               </select>
@@ -105,7 +111,7 @@
               >
                 <option :value="-1">SELF</option>
                 <option disabled>--- username - company ---</option>
-                <option class="batches-op" v-for="item in users" v-bind:key="item.id" v-bind:value="item.id">
+                <option class="batches-op" v-for="item in Users" v-bind:key="item.id" v-bind:value="item.id">
                   <span>{{item?.username}} -  {{item?.company?.company_name}}</span>
                 </option>
                 <template v-if="userdata.company.company_type == 'STORE'">
@@ -114,6 +120,13 @@
                     <span>{{item.first_name}} - {{item.username}} -  {{item?.company?.company_name}}</span>
                   </option>
                 </template>
+                <template v-if="userdata.company.company_type == 'STORE' || userdata.company.company_type == 'RETIAL'">
+                  <option disabled>--- customer - phone  ---</option>
+                  <option class="batches-op" v-for="item in customers" v-bind:key="item.id" v-bind:value="item.id">
+                    <span>{{item.first_name}} - {{item.username}}</span>
+                  </option>
+                </template>
+                
               </select>
             </div>
           </div>
@@ -121,7 +134,7 @@
             <label for="balance">
               <strong>Payee Balance:</strong>
             </label>
-            <div class="ab-input-container">
+            <div class="ab-input-container" >
               <input
                 name="balance"
                 type="text"
@@ -130,6 +143,15 @@
                 readonly
               />
             </div>
+          <!--<div clas s="ab-input-container" v-else>
+              <input
+                name="balance"
+                type="text"
+                placeholder="00"
+                v-model="payee_balance"
+                readonly
+              />
+            </div>-->
           </div>
           <div class="right" v-else>
             <label for="balance">
@@ -465,13 +487,30 @@ export default defineComponent({
     }
   },
   computed: {
+    customers: function (): User[] {
+      let users =[]
+       if (this.userdata.company.company_type === 'STORE' || this.userdata.company.company_type === 'RETIAL') {
+        users = this.users.filter((usr: User) => usr && usr.user_type && usr.user_type === 'REGULAR_CUSTOMER');
+       
+       }
+       return users;
+    },
+    Users: function (): User[] {
+      let users =[]
+      if(this.expenseMethod === 'Credit' || this.expenseMethod === 'Debit' || this.expenseMethod === 'Received'){
+        users = this.users.filter((usr: User) => usr && usr.user_type && usr.user_type != 'REGULAR_CUSTOMER');
+      }else{
+        users = this.users;
+      }
+      return users;
+    },
     creditUsers: function (): User[] {
       let users = []
-      if (this.userdata.company.company_type == 'RETIAL') {
-        users = this.users.filter((usr: User) => usr && usr.user_type && usr.user_type == 'REGULAR_CUSTOMER');
-      } else if (this.userdata.company.company_type == 'STORE') {
+      if (this.userdata.company.company_type === 'RETIAL') {
+        users = this.users.filter((usr: User) => usr && usr.user_type && usr.user_type === 'REGULAR_CUSTOMER');
+      } else if (this.userdata.company.company_type === 'STORE') {
         users = this.users.filter((usr: User) => usr && usr.company
-          && typeof usr.company !== 'number' && usr.company.company_type == 'STORE');
+          && typeof usr.company !== 'number' && usr.company.company_type === 'STORE');
         users = [
           ...users,
           ...this.vendors,
@@ -501,10 +540,26 @@ export default defineComponent({
       createJournalEntry: AuthActionTypes.CREATE_JOURNAL_ENTRY
     }),
     payorChange: function(){
+      let cust_users = [];
+      let cust = [];
+      cust_users = this.users.filter((usr: User) => usr && usr.user_type && usr.user_type == 'REGULAR_CUSTOMER');
+      cust = cust_users.filter((usr: User) => usr && usr.id && usr.id == this.transaction.payor);
+      if(cust.length != 0 ){
+         this.payor_balance = cust[0].credit;
+      }else{
       this.payor_balance = this.company_balance(this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor)
+      }
     },
     payeeChange: function(){
-      this.payee_balance = this.company_balance(this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee)
+      let cust_users = [];
+      let cust = [];
+      cust_users = this.users.filter((usr: User) => usr && usr.user_type && usr.user_type == 'REGULAR_CUSTOMER');
+      cust = cust_users.filter((usr: User) => usr && usr.id && usr.id == this.transaction.payee);
+      if(cust.length != 0 ){
+         this.payee_balance = cust[0].credit;
+      }else{
+        this.payee_balance = this.company_balance(this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee);
+      }
     },
     table_to_array: function(){
       const table: any = document.querySelector('#journal-entry-table tbody')
