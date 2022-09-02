@@ -527,7 +527,6 @@ export default defineComponent({
     },
     submitData: async function(){
       const tbldata = this.table_to_array()
-      alert(JSON.stringify(tbldata))
       if (this.expenseMethod === 'JE' && tbldata.length != 0) {
         this.no_data_table_error = ''
         this.loader = true
