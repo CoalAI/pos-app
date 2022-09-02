@@ -349,8 +349,8 @@
                 v-model="company"
               >
                 <option disabled>--- department ---</option>
-                <option class="batches-op" v-for="company in companies" v-bind:key="company.id" :value="[company.id, company.company_name]">
-                  {{company.company_name}}
+                <option class="batches-op" v-for="item in users" v-bind:key="item.id" :value="[item.id, item?.company?.company_name]">
+                  {{item?.username}} -  {{item?.company?.company_name}}
                 </option>
               </select>
               <span v-if="departmentrequired_error" class="form-error">{{ departmentrequired_error }}</span>
@@ -388,7 +388,7 @@
               <th style="border-radius: 10px 0px 0px 10px" scope="col">Method</th>
               <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payor</th>
               <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payee</th>
-              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Dept Id</th>
+              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Dept UserId</th>
               <th style="border-radius: 0px 0px 0px 0px" scope="col">Dept Name</th>
               <th style="border-radius: 0px 10px 10px 0px" scope="col">Amount</th>
             </tr>
@@ -399,7 +399,7 @@
               <td v-if="a.method != ''">{{a.method}}</td>
               <td style="display: none;" v-if="a.payor != -1">{{a.payor}}</td>
               <td style="display: none;" v-if="a.payee != -1">{{a.payee}}</td>
-              <td style="display: none;" v-if="a.dept_id != -1">{{a.dept_id}}</td>
+              <td style="display: none;" v-if="a.dept_user_id != -1">{{a.dept_user_id}}</td>
               <td v-if="a.dept != ''">{{a.dept}}</td>
               <td v-if="a.amount != ''">{{a.amount}}</td>
             </tr>
@@ -470,7 +470,7 @@ export default defineComponent({
         method: '',
         payor: -1,
         payee: -1,
-        dept_id: -1,
+        dept_user_id: -1,
         amount:'',
         dept:'',
         p_s:'',
@@ -480,7 +480,7 @@ export default defineComponent({
           method: '',
           payor: -1,
           payee: -1,
-          dept_id: -1,
+          dept_user_id: -1,
           amount:'',
           dept:'',
           p_s:'',
@@ -706,7 +706,7 @@ export default defineComponent({
         this.table.push({method:this.payment_type,
                         payor:this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor,
                         payee:this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee,
-                        dept_id:this.company[0],
+                        dept_user_id:this.company[0],
                         amount:this.transaction.amount,
                         dept:this.company[1],
                         p_s: this.expenseMethod})
