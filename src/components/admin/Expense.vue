@@ -21,7 +21,7 @@
               <strong>Credit</strong>
             </span>
           </li>
-            <li :class="expenseMethod === 'Journal Entry' ? 'active-li ab1 tab4' : 'ab1 tab4'" @click="expenseMethod = 'Journal Entry'">
+            <li :class="expenseMethod === 'JE' ? 'active-li ab1 tab4' : 'ab1 tab4'" @click="expenseMethod = 'JE'">
             <span>
               <strong>Journal Entry</strong>
             </span>
@@ -35,7 +35,7 @@
       </div>
     
       <!-- <h2>{{expenseMethod}}</h2> -->
-      <template v-if="expenseMethod === 'Received'">
+      <template v-if="expenseMethod === 'Received' || expenseMethod === 'Debit'">
         <div class="first-row row">
           <div class="left">
             <label for="products" style="padding-left: 8px">
@@ -74,7 +74,7 @@
             <label for="balance">
               <strong>Payor Balance:</strong>
             </label>
-            <div class="ab-input-container" v-if="transaction.payor != -1 && expenseMethod == 'Received'">
+            <div class="ab-input-container" v-if="transaction.payor != -1 && (expenseMethod == 'Received' || expenseMethod == 'Debit')">
               <input
                 name="balance"
                 type="text"
@@ -95,7 +95,7 @@
           </div>
         </div>
       </template>
-      <template v-if="expenseMethod === 'Debit' || expenseMethod === 'Credit'">
+      <template v-if="expenseMethod === 'Credit'">
         <div class="first-row row">
           <div class="left">
             <label for="products" style="padding-left: 8px">
@@ -130,7 +130,7 @@
               </select>
             </div>
           </div>
-          <div class="right" v-if="transaction.payee != -1 && (expenseMethod == 'Credit' || expenseMethod == 'Debit')">
+          <div class="right" v-if="transaction.payee != -1 && (expenseMethod == 'Credit')">
             <label for="balance">
               <strong>Payee Balance:</strong>
             </label>
@@ -221,7 +221,7 @@
               <span v-if="numberallowd_error" class="form-error">{{ numberallowd_error }}</span>
             </div>
           </div>
-          <div class="right" v-if="transaction.payor != -1 && userdata.id != transaction.payor && expenseMethod == 'Received'">
+          <div class="right" v-if="transaction.payor != -1 && userdata.id != transaction.payor && (expenseMethod == 'Received' || expenseMethod == 'Debit')">
             <label for="balance">
               <strong>My Balance:</strong>
             </label>
@@ -235,7 +235,7 @@
               />
             </div>
           </div>
-          <div class="right" v-if="transaction.payee != -1 && userdata.id != transaction.payee && (expenseMethod == 'Credit' || expenseMethod == 'Debit')">
+          <div class="right" v-if="transaction.payee != -1 && userdata.id != transaction.payee && (expenseMethod == 'Credit')">
             <label for="balance">
               <strong>My Balance:</strong>
             </label>
@@ -275,7 +275,7 @@
           >Cancel</router-link>
         </div>
       </template>
-      <template v-if="expenseMethod === 'Journal Entry'">
+      <template v-if="expenseMethod === 'JE'">
         <div class="ab-flex">
           <div>
             <input type="radio" v-model="payment_type" value="cash" id="cash-radio" :checked="radio_check" @change="custom_range=false">
@@ -349,8 +349,8 @@
                 v-model="company"
               >
                 <option disabled>--- department ---</option>
-                <option class="batches-op" v-for="company in companies" v-bind:key="company.id" :value="[company.id, company.company_name]">
-                  {{company.company_name}}
+                <option class="batches-op" v-for="item in users" v-bind:key="item.id" :value="[item.id, item?.company?.company_name]">
+                  {{item?.username}} -  {{item?.company?.company_name}}
                 </option>
               </select>
               <span v-if="departmentrequired_error" class="form-error">{{ departmentrequired_error }}</span>
@@ -384,20 +384,22 @@
           <thead>
             <tr class="fr-row header">
               
+              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">p_s</th>
               <th style="border-radius: 10px 0px 0px 10px" scope="col">Method</th>
               <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payor</th>
               <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Payee</th>
-              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Dept Id</th>
+              <th style="border-radius: 10px 0px 0px 10px; display: none;" scope="col">Dept UserId</th>
               <th style="border-radius: 0px 0px 0px 0px" scope="col">Dept Name</th>
               <th style="border-radius: 0px 10px 10px 0px" scope="col">Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="a in table" :key="a.id" class="fr-row content">
+              <td style="display: none;" v-if="a.p_s != ''">{{a.p_s}}</td>
               <td v-if="a.method != ''">{{a.method}}</td>
               <td style="display: none;" v-if="a.payor != -1">{{a.payor}}</td>
               <td style="display: none;" v-if="a.payee != -1">{{a.payee}}</td>
-              <td style="display: none;" v-if="a.dept_id != -1">{{a.dept_id}}</td>
+              <td style="display: none;" v-if="a.dept_user_id != -1">{{a.dept_user_id}}</td>
               <td v-if="a.dept != ''">{{a.dept}}</td>
               <td v-if="a.amount != ''">{{a.amount}}</td>
             </tr>
@@ -453,12 +455,12 @@ export default defineComponent({
         amount:'',
         transaction_id:'',
         description:'',
+        p_s: '',
         clear: function() {
           this.payor = -1;
           this.payee = -1;
           this.amount = '';
-          this.transaction_id = '',
-          this.description = ''
+          this.description = '';
         }
       }, 
       create_expense : false,
@@ -468,18 +470,20 @@ export default defineComponent({
         method: '',
         payor: -1,
         payee: -1,
-        dept_id: -1,
+        dept_user_id: -1,
         amount:'',
-        dept:''
+        dept:'',
+        p_s:'',
       }],
       clear_table: function(){
         this.table = [{
           method: '',
           payor: -1,
           payee: -1,
-          dept_id: -1,
+          dept_user_id: -1,
           amount:'',
-          dept:''
+          dept:'',
+          p_s:'',
         }]
         this.company = []
       },
@@ -578,13 +582,16 @@ export default defineComponent({
     },
     submitData: async function(){
       const tbldata = this.table_to_array()
-      if (this.expenseMethod === 'Journal Entry' && tbldata.length != 0) {
+      if (this.expenseMethod === 'JE' && tbldata.length != 0) {
         this.no_data_table_error = ''
         this.loader = true
         await this.createJournalEntry(tbldata).finally(() => this.loader = false)
         this.create_expense = this.je_status === 'Created'
         this.clear_table()
         this.transaction.clear()
+        await this.fetchUserData();
+        await this.fetchUsers();
+        await this.getVendors();
       }
       else{
         this.no_data_table_error = 'No data in the table'
@@ -667,7 +674,7 @@ export default defineComponent({
     },
     addExpense: async function(){
       if(this.allValidation()){
-
+        this.transaction.p_s = this.expenseMethod
         if (this.expenseMethod === 'Received') {
           this.transaction.payee = this.userdata.id;
           this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
@@ -675,8 +682,8 @@ export default defineComponent({
           this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
           this.transaction.payor = this.userdata.id;
         }else if (this.expenseMethod === 'Debit') {
-          this.transaction.payor = this.userdata.id;
-          this.transaction.payee = this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee;
+          this.transaction.payor = this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor;
+          this.transaction.payee = this.userdata.id;
           this.transaction.amount = (-parseFloat(this.transaction.amount)).toString();
         } 
         else if (this.expenseMethod === 'Expense') {
@@ -699,10 +706,11 @@ export default defineComponent({
         this.table.push({method:this.payment_type,
                         payor:this.transaction.payor === -1 ? this.userdata.id : this.transaction.payor,
                         payee:this.transaction.payee === -1 ? this.userdata.id : this.transaction.payee,
-                        dept_id:this.company[0],
+                        dept_user_id:this.company[0],
                         amount:this.transaction.amount,
-                        dept:this.company[1]})
-        this.no_data_table_error = ''
+                        dept:this.company[1],
+                        p_s: this.expenseMethod})
+        this.no_data_table_error = '';
       }
     },
   },
