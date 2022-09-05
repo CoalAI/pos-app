@@ -1,7 +1,6 @@
 import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
 import { store } from "./store";
 import { ActionTypes } from "./store/modules/auth/actions";
-import offlineStoreService from "@/utils/offline-store/index";
 
 export async function salesStaff(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext){
   const allowedRoles = ['SALES_STAFF','ADMIN','SUPER_ADMIN'];
@@ -114,11 +113,30 @@ export async function manager(to: RouteLocationNormalized, from: RouteLocationNo
   }
 }
 
+async function isInternetConnectionWorking() {
+  if (!navigator.onLine) {
+      return false;
+  }
+  const headers = new Headers();
+  headers.append('cache-control', 'no-cache');
+  headers.append('pragma', 'no-cache');
+  try {
+      await fetch(window.location.origin, { method: 'HEAD', headers });
+      return true;
+  } catch (error) {
+      if (error instanceof TypeError) {
+          return false;
+      }
+      throw error;
+  }
+}
+
 export async function checkConnection(to: RouteLocationNormalized, from: RouteLocationNormalized,next: NavigationGuardNext) {
   if (to.name === 'Order' || to.name === 'Connection' || to.name === 'AdminOrder') {
     next();
   } else {
-    const online = await offlineStoreService.isInternetConnectionWorking();
+    const online = isInternetConnectionWorking();
+    console.log(online);
     if (!online) {
       next('/connection');
     } else {

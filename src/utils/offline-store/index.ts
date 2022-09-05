@@ -3,8 +3,10 @@ import { User } from '@/store/models/user';
 import { Order } from '@/store/models/order';
 import StoreInstance from './table';
 import localForage from 'localforage';
-import serverRequest from '@/utils/request'
+import serverRequest, {  isAxiosResponse } from '../request';
 import { OrderItem } from '@/store/models/orderItem';
+import axios from 'axios';
+
 class OfflineStore {
 
   private productStore: StoreInstance;
@@ -14,6 +16,7 @@ class OfflineStore {
   private orderStore: LocalForage;
   private syncOrder: LocalForage;
   private latestOrder: Order;
+  private orderbill: LocalForage;
 
   // constants
   private CURENT_INVOICE = 'current-invoice';
@@ -31,6 +34,7 @@ class OfflineStore {
     this.orderStore = localForage.createInstance({name: "order"});
     this.syncOrder = localForage.createInstance({name: "syncOrder"});
     this.latestOrder = {};
+    this.orderbill = localForage.createInstance({name: "orderbill"})
   }
 
   async initialize() {
@@ -143,6 +147,7 @@ class OfflineStore {
 
   async setOrder(order: Order) {
     this.latestOrder = order;
+    this.orderbill.setItem("bill", order)
     let product = undefined;
     let max = 0;
     const length= this.orderStore.length();
@@ -183,14 +188,16 @@ class OfflineStore {
   async Order(){
     const length= this.orderStore.length();
       for (let i = 0; i < await length; i++) {
-        const product = await this.orderStore.key(i);
+        const product = await this.orderStore.key(0);
         if(product.includes("from")){
           const order = await this.orderStore.getItem(product) as Order;
           await serverRequest('post', 'orderoffline/', true, order);
+          await this.orderStore.removeItem(product);
         }
         else if(product.includes("to")){
           const order = await this.orderStore.getItem(product) as Order;
           await serverRequest('post', 'order/', true, order);
+          await this.orderStore.removeItem(product);
         }
       }
     await this.orderStore.clear();
@@ -202,6 +209,7 @@ class OfflineStore {
     await this.invoiceIdStore.clear();
     await this.customerStore.clear();
     await this.orderStore.clear();
+    await this.orderbill.clear();
   }
 
   async isInternetConnectionWorking() {

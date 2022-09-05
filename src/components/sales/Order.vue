@@ -755,7 +755,7 @@
       </template>
 
       <template v-slot:body>
-        <OfflineOrderBill :product_name="productName" :user="userdata"/>
+        <OfflineOrderBill :product_name="productName" :user="userdata" :order="latestOrder" :print="print"/>
       </template>
 
       <template v-slot:footer>
@@ -804,7 +804,9 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     const productName: string[] = [];
+
     return {
+      latestOrder: {},
       orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
@@ -1448,6 +1450,7 @@ export default defineComponent({
 
       if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = true;
+        this.latestOrder = singleOrder;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
