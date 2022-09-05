@@ -10,6 +10,7 @@ export interface Transaction extends DatesInterface{
     payee?: number;
     amount?: string | null;
     payment_service?: string | null;
+    p_s?: string | null;
     transaction_id?: string | null;
     description?: string | null;
 }
