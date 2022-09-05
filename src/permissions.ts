@@ -135,7 +135,7 @@ export async function checkConnection(to: RouteLocationNormalized, from: RouteLo
   if (to.name === 'Order' || to.name === 'Connection' || to.name === 'AdminOrder') {
     next();
   } else {
-    const online =  isInternetConnectionWorking();
+    const online = await isInternetConnectionWorking();
     console.log(online);
     if (!online) {
       next('/connection');
