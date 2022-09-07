@@ -756,7 +756,7 @@
       </template>
 
       <template v-slot:body>
-        <OfflineOrderBill :product_name="productName" :user="userdata"/>
+        <OfflineOrderBill :product_name="productName" :user="userdata" :order="latestOrder" :print="print"/>
       </template>
 
       <template v-slot:footer>
@@ -805,7 +805,9 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     const productName: string[] = [];
+
     return {
+      latestOrder: {},
       orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
@@ -1386,9 +1388,7 @@ export default defineComponent({
             ).toFixed(0)
           ),
         };
-        if(!navigator.onLine){
-          this.productName.push(this.product.name);
-        }
+        this.productName.push(this.product.name);
         this.orderItems.push(SingleOrderItem);
       });
 
@@ -1448,9 +1448,9 @@ export default defineComponent({
         singleOrder.status = "RETURNED";
       }
 
-      if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true);
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = true;
+        this.latestOrder = singleOrder;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
@@ -1629,7 +1629,7 @@ export default defineComponent({
       this.paymentMethod = "cash";
       this.cancelModal = false;
       await this.fetchInvoiceID();
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = false;
       }
     },
@@ -1662,13 +1662,6 @@ export default defineComponent({
       return parseFloat(quan !== undefined ? quan : "0.0").toFixed(4);
     },
 
-    async syncOrder() {
-      const check = await offlineStoreService.getsyncOrder();
-      if(check == true){
-        offlineStoreService.Order();
-        offlineStoreService.setsyncOrder(false);
-      }
-    },
 
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
@@ -1693,8 +1686,8 @@ export default defineComponent({
         item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`
     );
     await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
-    if(navigator.onLine){
-      await this.syncOrder();
+    if(await offlineStoreService.isInternetConnectionWorking()){
+      await offlineStoreService.Order();
       await offlineStoreService.initialize();
     }
   },
