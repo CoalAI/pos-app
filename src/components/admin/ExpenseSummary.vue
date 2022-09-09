@@ -37,6 +37,7 @@
                 v-model="to"
                 @change=dateValidation
               />
+              
             </div>
           </div>
           <div class="b">
@@ -221,11 +222,11 @@ export default defineComponent({
 
     changePage: async function (pageNo: number) {
       if(this.custom_range){
-         if (this.date_validation_error === "")
-           await this.getTransactions({start_date:this.from, end_date:this.to, page:pageNo})
+        if (this.date_validation_error === "")
+          await this.getTransactions({start_date:this.from, end_date:this.to, page:pageNo})
       }
       else
-        await this.getTransactions({page:pageNo})
+        await this.getTransactions({page: pageNo})
     },
 
     fetchTrans: async function(){

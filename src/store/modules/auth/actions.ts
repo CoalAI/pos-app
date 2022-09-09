@@ -331,12 +331,21 @@ Actions = {
   },
   async [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string; page?: number}) {
     let response;
-    if (search_criteria && search_criteria.start_date && search_criteria.end_date) {
+    if (search_criteria && (search_criteria.start_date && search_criteria.end_date && search_criteria.page==undefined)) {
+      search_criteria.page=1;
       response = await serverRequest('get', 'transaction/', true, undefined, search_criteria);
-    } else {
+    } else if (search_criteria && search_criteria.page && (search_criteria.start_date && search_criteria.end_date)) {
+      response = await serverRequest('get', 'transaction/', true, undefined, search_criteria);
+    }
+    else if(search_criteria && search_criteria.page &&  (search_criteria.start_date==undefined && search_criteria.end_date==undefined)){
       const date = new Date()
       const now = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: 1});
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: search_criteria.page});
+    }
+    else{
+      const date = new Date()
+      const now = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page:1});
     }
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetTransactionsCount,response.data.count)
