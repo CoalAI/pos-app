@@ -9,11 +9,6 @@
             <li><a href="#" @click="next">&gt;</a></li>
             <!-- <li><a href="#" @click="moveRight">&gt;&gt;</a></li> -->
         </ul>
-        
-        
-        
-        
-        
     </div>
 </template>
 
@@ -32,7 +27,7 @@ export default defineComponent({
             records_per_page : pageSize,
             selected: 1,
             // total_pages: 5,
-            list_max: 5,
+            list_max: 10,
             offset: 1,
         }
     },
