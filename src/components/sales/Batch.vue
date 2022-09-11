@@ -200,8 +200,10 @@ export default defineComponent({
       this.getProducts(this.search);
     },
 
-    changePage(pageNo: number) {
-      this.getBatchesByPage(pageNo);
+    changePage: async function (pageNo: number) {
+      await this.getBatchesByPage({
+        page: pageNo,
+      });
     },
     ...mapActions({
       getProducts: ActionTypes.GET_PRODUCTS,

@@ -207,8 +207,10 @@ export default defineComponent({
       }
     },
 
-    changePage(pageNo: number) {
-      this.getProductsByPage(pageNo);
+    changePage: async function (pageNo: number) {
+      await this.getProductsByPage({
+        page: pageNo,
+      });
     },
 
     ...mapActions({

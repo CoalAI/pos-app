@@ -171,7 +171,7 @@
             @click="addOrderItem"
             :disabled="addProductButton"
             ref="addproduct"
-            @keydown="shiftfocusTo('cashreceived')"
+            @keydown="shiftfocusTo($event, 'cashreceived')"
           >
             Add Product
           </button>
@@ -339,14 +339,14 @@
                     v-bind:key="customer.id"
                     @click="selectCustomer(customer)"
                   >
-                    <span
-                      ><strong>{{
+                    <span>
+                    <strong>{{
                         customer.contact_number
                           ? customer.contact_number
                           : customer.username
                       }}</strong></span
                     >
-                    <span>{{ customer.first_name }}</span>
+                    <span>{{ customer.first_name + " " + customer.last_name}}</span>
                   </li>
                 </ul>
               </div>
@@ -365,6 +365,7 @@
                       readonly
                       v-bind:value="getFullName"
                     />
+                    <br/>
                     <span v-if="validateRegularCustomer" class="form-error-msg">{{
                       validateRegularCustomer
                     }}</span>
@@ -733,6 +734,7 @@
           :orderId="order_response.id"
           :customer="customer"
           :print="print"
+          :user="userdata"
         />
       </template>
 
@@ -754,7 +756,7 @@
       </template>
 
       <template v-slot:body>
-        <OfflineOrderBill :product_name="productName" :user="userdata"/>
+        <OfflineOrderBill :product_name="productName" :user="userdata" :order="latestOrder" :print="print"/>
       </template>
 
       <template v-slot:footer>
@@ -803,7 +805,9 @@ export default defineComponent({
     const orderItems: OrderItem[] = [];
     const batches: Batch[] = [];
     const productName: string[] = [];
+
     return {
+      latestOrder: {},
       orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
@@ -1259,8 +1263,7 @@ export default defineComponent({
 
       this.regularCustomer = customer;
       this.showCustDropdown = false;
-      this.customersearch =
-        customer.contact_number === undefined ? "" : customer.contact_number;
+      this.customersearch = customer.contact_number === undefined ? "" :  customer.contact_number;
     },
 
     addNewCustomer: async function () {
@@ -1385,9 +1388,7 @@ export default defineComponent({
             ).toFixed(0)
           ),
         };
-        if(!navigator.onLine){
-          this.productName.push(this.product.name);
-        }
+        this.productName.push(this.product.name);
         this.orderItems.push(SingleOrderItem);
       });
 
@@ -1447,9 +1448,9 @@ export default defineComponent({
         singleOrder.status = "RETURNED";
       }
 
-      if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true);
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = true;
+        this.latestOrder = singleOrder;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
@@ -1628,7 +1629,7 @@ export default defineComponent({
       this.paymentMethod = "cash";
       this.cancelModal = false;
       await this.fetchInvoiceID();
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = false;
       }
     },
@@ -1661,13 +1662,6 @@ export default defineComponent({
       return parseFloat(quan !== undefined ? quan : "0.0").toFixed(4);
     },
 
-    async syncOrder() {
-      const check = await offlineStoreService.getsyncOrder();
-      if(check == true){
-        offlineStoreService.Order();
-        offlineStoreService.setsyncOrder(false);
-      }
-    },
 
     ...mapActions({
       searchProductByName: ActionTypes.SEARCH_PRODUCT_BY_NAME,
@@ -1692,8 +1686,8 @@ export default defineComponent({
         item.username === `WALK_IN_CUSTOMER_${this.userdata.company.id}`
     );
     await this.getUsersByType({ user_type: "REGULAR_CUSTOMER" });
-    if(navigator.onLine){
-      await this.syncOrder();
+    if(await offlineStoreService.isInternetConnectionWorking()){
+      await offlineStoreService.Order();
       await offlineStoreService.initialize();
     }
   },
@@ -1763,6 +1757,10 @@ export default defineComponent({
   display: grid;
   grid-template-columns: 0.5fr 1fr 0.5fr 0.3fr 0.5fr 1fr;
   grid-template-areas: "bt bt-i e e-i pn pn-i";
+  // grid-template-columns: 0.6fr;
+  // grid-template-areas: 
+  //   "bt bt-i bt-i bt-i"
+  //   "e e-i pn pn-i";
 }
 .bc {
   grid-area: bc;
@@ -1815,8 +1813,11 @@ export default defineComponent({
 }
 
 .payment-method-container {
-  display: inline;
-  margin-left:78px;
+  // display: inline;
+  // margin-left:78px;
+  margin: auto;
+  width: 50%;
+  margin-bottom: 9px;
 }
 
 .pad-label {
@@ -1975,8 +1976,8 @@ option.batches-op {
 
 .search-result-upper {
   position: absolute;
-  width: 24%;
-  text-align: left;
+  width: 80%;
+  text-align: center;
   margin-top: -1px;
   z-index: 3;
   cursor: default;
@@ -2000,7 +2001,7 @@ option.batches-op {
 .single-search-item {
   display: flex;
   padding: 15px;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .single-search-item:hover {
@@ -2314,6 +2315,10 @@ td {
 .form-container {
   grid-gap: 1.2rem 1.8rem;
 }
+
+.payment-method-container {
+  width: 60%;
+}
 }
 @media screen and (max-width:1029px ){
   .col-3{
@@ -2323,5 +2328,17 @@ td {
     gap: 0rem 0rem !important;
   }
 }
+@media screen  and (max-width: 1416px){
+  .form-container-5{
+    grid-template-columns: 0.6fr;
+    grid-template-areas: 
+    "bt bt-i bt-i bt-i"
+    "e e-i pn pn-i";
+  }
+  .text-box-sm{
+    width: 8vw;
+  }
+}
+
 
 </style>

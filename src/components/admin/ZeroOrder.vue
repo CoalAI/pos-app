@@ -764,7 +764,7 @@
       </template>
 
       <template v-slot:body>
-        <OfflineOrderBill :product_name="productName" :user="userdata" />
+        <OfflineOrderBill :product_name="productName" :user="userdata" :order="latestOrder" />
       </template>
 
       <template v-slot:footer>
@@ -813,6 +813,7 @@ export default defineComponent({
     const productName: string[] = [];
 
     return {
+      latestOrder: {},
       orderoffline: false,
       submitOrderBtnDisable: false,
       focusedTile: -1,
@@ -1327,24 +1328,24 @@ export default defineComponent({
         discount: discount.toString(),
         totalPrice,
       };
-      if(!navigator.onLine){
-        this.productName.push(this.product.name);
-      }
+      this.productName.push(this.product.name);
       this.orderItems.push(SingleOrderItem);
       this.clearProduct();
       (this.$refs.barcode as HTMLInputElement & { focus: () => void }).focus();
     },
 
     submitOrder: async function () {
+      this.submitOrderBtnDisable = true;
       this.showErrorSeller = true;
       if(this.orderType === "from"){
         this.showErrorSeller = true;
       }else{
         this.showErrorBuyer = true;
       }
-      
+
       if (this.orderItems.length < 0) return;
       if (this.buyer === 0 || this.seller === 0) return;
+
 
       const unproxiedOrderItems = await this.orderItems.map(
         (singleOrderItem: OrderItem) => {
@@ -1358,7 +1359,7 @@ export default defineComponent({
         }
       );
 
-      if(navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking()){
         for (const singleOrderItem of unproxiedOrderItems) {
         if (singleOrderItem.batch) {
           if (this.orderType == "from") {
@@ -1399,7 +1400,6 @@ export default defineComponent({
         }
       }
       
-      
       const cash = parseFloat(this.cashReceived);
       const discount = parseFloat(this.totalDiscount);
 
@@ -1417,9 +1417,9 @@ export default defineComponent({
       if (this.return_order) {
         singleOrder.status = "RETURNED";
       }
-      if(!navigator.onLine){
-        offlineStoreService.setsyncOrder(true);
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = true;
+        this.latestOrder = singleOrder;
       }
       await this.createOrder(singleOrder);
       this.submitOrderBtnDisable = false;
@@ -1553,14 +1553,13 @@ export default defineComponent({
       this.orderType = "from";
       this.seller = 0;
       this.buyer = this.userdata.id;
-      this.buyer = 0;
       const vendor: User = {};
       this.vendorUser = vendor;
       this.cancelModal = false;
       await this.fetchInvoiceID();
       await this.getUsers("ADMIN");
       await this.getVendors("");
-      if(!navigator.onLine){
+      if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = false;
       }
     },
@@ -1684,13 +1683,6 @@ export default defineComponent({
       (this.$refs.scrollContainer as any).scrollTop = liH * this.focusedTile;
     },
 
-    async syncOrder() {
-      const check = await offlineStoreService.getsyncOrder();
-      if(check == true){
-        offlineStoreService.Order();
-        offlineStoreService.setsyncOrder(false);
-      }
-    },
 
     ...mapActions({
       searchProductByName: OrderActionTypes.SEARCH_PRODUCT_BY_NAME,
@@ -1714,8 +1706,8 @@ export default defineComponent({
       search: "",
     });
     this.buyer = this.userdata.id;
-    if(navigator.onLine){
-      await this.syncOrder();
+    if(await offlineStoreService.isInternetConnectionWorking()){
+      await offlineStoreService.Order();
       await offlineStoreService.initialize()
     }
   },

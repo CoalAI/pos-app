@@ -113,7 +113,6 @@ export default defineComponent({
 		return{
 			src_img: require('@/assets/rohi_logo.png'),
 			printDelay: 200,
-			order: offlineStoreService.getLatestOrder(),
 		}
   },
   methods:{
@@ -285,12 +284,22 @@ export default defineComponent({
     print: {
       default: true,
     },
+	order: {
+		default: {
+			total: "",
+			amount_received: "",
+			total_discount: "",
+			order_item: [],
+			payment_service:""
+		}
+	},
 	},
 	mounted: function () {
     if (this.print) {
       this.printBill();
     }
 	},
+
 });
 </script>
 

@@ -37,6 +37,7 @@
                 v-model="to"
                 @change=dateValidation
               />
+              
             </div>
           </div>
           <div class="b">
@@ -76,7 +77,7 @@
               <td>{{transaction.transaction_id ? transaction.transaction_id : '-'}}</td>
               <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
               <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
-              <td>{{transaction.payment_service ? transaction.payment_service : '-' }}</td>
+              <td>{{transaction.payment_service != null ? transaction.payment_service.service : '-' }}</td>
               <td>{{transaction.description ? transaction.description : '-'}}</td>
               <template v-if="transaction.amount > 0">
                 <td>{{trimNumber(transaction.amount)}}</td>
@@ -221,11 +222,11 @@ export default defineComponent({
 
     changePage: async function (pageNo: number) {
       if(this.custom_range){
-         if (this.date_validation_error === "")
-           await this.getTransactions({start_date:this.from, end_date:this.to, page:pageNo})
+        if (this.date_validation_error === "")
+          await this.getTransactions({start_date:this.from, end_date:this.to, page:pageNo})
       }
       else
-        await this.getTransactions({page:pageNo})
+        await this.getTransactions({page: pageNo})
     },
 
     fetchTrans: async function(){
