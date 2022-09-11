@@ -119,7 +119,7 @@ Actions = {
     commit(MutationTypes.SetToken, '');
   },
   async [ActionTypes.USER_DATA]({ commit, rootGetters }: AugmentedActionContext) {
-    if (!navigator.onLine) {
+    if(await offlineStoreService.isInternetConnectionWorking() === false){
       const userData = await offlineStoreService.getUserData();
       if (userData) {
         commit(MutationTypes.SetUser, userData);
@@ -179,7 +179,7 @@ Actions = {
     }
   },
   async [ActionTypes.GET_CUSTOMER_USERS]({ commit, rootGetters }: AugmentedActionContext, options?: {user_type?: string; search?: string; page?: number}) {
-    if (!navigator.onLine) {
+    if(await offlineStoreService.isInternetConnectionWorking() === false){
       let customers: User[] = [];
       if (options && options.user_type) {
         if (options.user_type === 'REGULAR_CUSTOMER') {
@@ -331,12 +331,21 @@ Actions = {
   },
   async [ActionTypes.FETCH_TRANSACTIONS]({ commit }: AugmentedActionContext, search_criteria: {start_date?: string; end_date?: string; page?: number}) {
     let response;
-    if (search_criteria && search_criteria.start_date && search_criteria.end_date) {
+    if (search_criteria && (search_criteria.start_date && search_criteria.end_date && search_criteria.page==undefined)) {
+      search_criteria.page=1;
       response = await serverRequest('get', 'transaction/', true, undefined, search_criteria);
-    } else {
+    } else if (search_criteria && search_criteria.page && (search_criteria.start_date && search_criteria.end_date)) {
+      response = await serverRequest('get', 'transaction/', true, undefined, search_criteria);
+    }
+    else if(search_criteria && search_criteria.page &&  (search_criteria.start_date==undefined && search_criteria.end_date==undefined)){
       const date = new Date()
       const now = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: 1});
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page: search_criteria.page});
+    }
+    else{
+      const date = new Date()
+      const now = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+      response = await serverRequest('get', 'transaction/', true, undefined, {start_date: now, page:1});
     }
     if (isAxiosResponse(response)) {
       commit(MutationTypes.SetTransactionsCount,response.data.count)
