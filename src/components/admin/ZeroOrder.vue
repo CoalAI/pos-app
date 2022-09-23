@@ -1,7 +1,6 @@
 <template>
   <div id="zero-order">
     <div class="row">
-
     <div class="split-container diff-shadow col-3">
         <label class="td-head"
           ><strong>Date:</strong>
@@ -220,6 +219,7 @@
             type="checkbox"
             id="return_order"
             name="return_order"
+            :checked="return_order"
             @change="returnOrderChange"
           />
           <span><label class="pd-t-ex"><strong>Return Order</strong></label></span>
@@ -454,7 +454,6 @@
               @change="buyerVendorCheck"
             >
               <option disabled value="0">Select a buyer</option>
-              <template v-if="!return_order">
                 <option
                   v-for="user in users"
                   v-bind:key="user.id"
@@ -468,7 +467,6 @@
                     >- {{ user.company.company_name }}</span
                   >
                 </option>
-              </template>
               <template v-if="return_order">
                 <option disabled>----VENDORS----</option>
               <option
@@ -1551,6 +1549,7 @@ export default defineComponent({
       this.cashReceived = "";
       this.totalDiscount = "";
       this.orderType = "from";
+      this.return_order = false;
       this.seller = 0;
       this.buyer = this.userdata.id;
       const vendor: User = {};
