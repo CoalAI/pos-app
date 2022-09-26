@@ -45,94 +45,97 @@
           </div>
         </div>
       </div>
-      <div class="ab-mb-7">
-        <table>
-          <colgroup>
-            <col span="1" style="width: 2%;">
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 7%;">
-            <col span="1" style="width: 7%;">
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 15%;">
-            <col span="1" style="width: 5%;">
-            <col span="1" style="width: 5%;">
-            <col span="1" style="width: 7%;">
-            <col span="1" style="width: 7%;">
-          </colgroup>
-          <tr class="fr-row header">
-            <th>Sr No.</th>
-            <th>Transaction ID</th>
-            <th>Payor</th>
-            <th>Payee</th>           
-            <th>Payment Service</th>
-            <th>Description</th>
-            <th>Credit</th>
-            <th>Debit</th>
-            <th>Amount</th>
-            <th>Date</th>
-          </tr>
-          <template v-for="(transaction,index) in transactions" :key="transaction.id">
-            <tr class="fr-row content">
-              <td>{{index+1}}</td>
-              <td>{{transaction.transaction_id ? transaction.transaction_id : '-'}}</td>
-              <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
-              <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
-              <td>{{transaction.payment_service != null ? transaction.payment_service.service : '-' }}</td>
-              <td>{{transaction.description ? transaction.description : '-'}}</td>
-              <template v-if="transaction.amount > 0">
-                <td>{{trimNumber(transaction.amount)}}</td>
-                <td> - </td>
-              </template>
-              <template v-else>
-                <td> - </td>
-                <td>{{trimNumber(transaction.amount * -1) ? transaction.ammount : '-'}}</td>
-              </template>
-              <td>{{trimNumber(transaction.amount) }}</td>
-              <td>{{transaction.created.split('T')[0]}}</td>
+      <div id="print">
+        <PrintHeader />
+        <div class="ab-mb-7">
+          <table>
+            <colgroup>
+              <col span="1" style="width: 2%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 7%;">
+              <col span="1" style="width: 7%;">
+              <col span="1" style="width: 10%;">
+              <col span="1" style="width: 15%;">
+              <col span="1" style="width: 5%;">
+              <col span="1" style="width: 5%;">
+              <col span="1" style="width: 7%;">
+              <col span="1" style="width: 7%;">
+            </colgroup>
+            <tr class="fr-row header">
+              <th>Sr No.</th>
+              <th>Transaction ID</th>
+              <th>Payor</th>
+              <th>Payee</th>           
+              <th>Payment Service</th>
+              <th>Description</th>
+              <th>Credit</th>
+              <th>Debit</th>
+              <th>Amount</th>
+              <th>Date</th>
             </tr>
-          </template>
-        </table>
+            <template v-for="(transaction,index) in transactions" :key="transaction.id">
+              <tr class="fr-row content">
+                <td>{{index+1}}</td>
+                <td>{{transaction.transaction_id ? transaction.transaction_id : '-'}}</td>
+                <td>{{transaction.payor.username}} - {{transaction.payor.company.company_name}}</td>
+                <td>{{transaction.payee.username}} - {{transaction.payee.company.company_name}}</td>
+                <td>{{transaction.payment_service != null ? transaction.payment_service.service : '-' }}</td>
+                <td>{{transaction.description ? transaction.description : '-'}}</td>
+                <template v-if="transaction.amount > 0">
+                  <td>{{trimNumber(transaction.amount)}}</td>
+                  <td> - </td>
+                </template>
+                <template v-else>
+                  <td> - </td>
+                  <td>{{trimNumber(transaction.amount * -1) ? transaction.ammount : '-'}}</td>
+                </template>
+                <td>{{trimNumber(transaction.amount) }}</td>
+                <td>{{transaction.created.split('T')[0]}}</td>
+              </tr>
+            </template>
+          </table>
+        </div>
+        <div id="Balance-information">
+          <div class="balance-info-1">
+            <label class="" for="balance">
+              <strong>Current Balance:</strong>
+            </label>
+            <div class="ab-input-container">
+              <div>
+                {{getBalance}}
+              </div>
+            </div>
+          </div>
+          <div class="balance-info-2">
+            <label class="" for="Starting-Balance">
+              <strong>Starting Balance:</strong>
+            </label>
+            <div class="ab-input-container">
+              <div>
+                0.0000
+              </div>
+            </div>
+          </div>
+          <div class="balance-info-3">
+            <label class="" for="expense">
+              <strong>Total Expense:</strong>
+            </label>
+            <div class="ab-input-container">
+              <div>
+                {{totalExpense}}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="Balance-information">
-        <div class="balance-info-1">
-          <label class="" for="balance">
-            <strong>Current Balance:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="balance"
-              type="text"
-              :value="getBalance"
-              readonly
-            />
-          </div>
-        </div>
-        <div class="balance-info-2">
-          <label class="" for="Starting-Balance">
-            <strong>Starting Balance:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="Starting-Balance"
-              type="text"
-              value="0.0000"
-              readonly
-            />
-          </div>
-        </div>
-        <div class="balance-info-3">
-          <label class="" for="expense">
-            <strong>Total Expense:</strong>
-          </label>
-          <div class="ab-input-container">
-            <input
-              name="expense"
-              type="text"
-              :value="totalExpense"
-              readonly
-            />
-          </div>
-        </div>
+      <div class="flex-container">
+        <button
+          class="btn-orange btn"
+          @click="printDiv('print', 'Expense Summary')"
+          style="width:80px;margin-right:7px"
+        >
+          Print
+        </button>
       </div>
       <Paginator :count="counts.transactions" @pageChange="changePage"/>
     </div>
@@ -147,6 +150,9 @@ import { Transaction } from '@/store/models/transaction';
 import { User } from '@/store/models/user';
 import { Company } from '@/store/models/company';
 import Paginator from '@/components/common-components/Paginator.vue';
+import printDiv from '@/utils/print';
+import {styles1 as styles} from '@/constants/analytics_print'
+import PrintHeader from '@/components/common-components/PrintHeader.vue'
 
 export default defineComponent({
   name: 'ExpenseSummary',
@@ -201,6 +207,10 @@ export default defineComponent({
     }
   },
   methods:{
+    printDiv(div_id: string, title: string) {
+      printDiv(div_id, title, styles);
+    },
+
     ...mapActions({
        getTransactions : ActionTypes.FETCH_TRANSACTIONS,
        getUserData: ActionTypes.USER_DATA
@@ -244,7 +254,6 @@ export default defineComponent({
 <style lang="scss" scoped>
   #Balance-information {
     display: flex;
-    margin-bottom: 70px;
   }
   #Balance-information > div{
     display: flex;
@@ -257,6 +266,11 @@ export default defineComponent({
   }
   #Balance-information .ab-input-container{
     width: 100px;
+    background-color: #f8fbfd;
+    border-radius: 8px;
+    height: 35px;
+    text-align: center;
+    padding-top: 5px;
   }
 
   // ab css 
@@ -393,4 +407,9 @@ export default defineComponent({
   .b{
     margin: 0 10px;
   }
+  .flex-container {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 70px;
+}
 </style>
