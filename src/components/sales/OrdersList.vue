@@ -110,7 +110,7 @@
             <col span="1" style="width: 7%;">
             <col span="1" style="width: 8%;">
             <col span="1" style="width: 7%;">
-            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 15%;">
             <col span="1" style="width: 25%;">
           </colgroup>
 
@@ -138,7 +138,12 @@
             <td v-if="order.cash_payment">Cash</td><td v-else>Card</td>
             <td v-if="order.amount_discount">Amount</td><td v-else>Percentage</td>
             <td>{{trimDecimalPlaces(order.total_discount)}}</td>
-            <td>{{order.created.split('T')[0]}}</td>
+            <td>
+              <div>
+                <p class="text-center">{{getCurrentDate(order.created)}}</p>
+                <p class="text-center">{{getCurrentTime(order.created)}}</p>
+              </div>
+            </td>
             <td>
               <div class="flex-box">
                 <div>
@@ -163,7 +168,7 @@
       </template>
 
       <template v-slot:body>
-        <OrderBill :orderId="order_response.id"/>
+        <OrderBill :orderId="order_response.id" :user="user"/>
       </template>
 
       <template v-slot:footer>
@@ -213,6 +218,14 @@ export default defineComponent({
     })
   },
   methods: {
+    getCurrentTime(date: Date){
+			return new Date(date).toLocaleTimeString();
+		},
+
+		getCurrentDate(date: Date){
+			return new Date(date).toDateString();
+		},
+
     clearFilters: async function () {
       this.paymentMethod = '';
       this.orderStatus = '';
