@@ -131,7 +131,7 @@
       <div class="flex-container">
         <button
           class="btn-orange btn"
-          @click="printDiv('print', 'Expense Summary')"
+          @click="printDiv('print', 'Expense Summary', styles)"
           style="width:80px;margin-right:7px"
         >
           Print
@@ -158,13 +158,15 @@ export default defineComponent({
   name: 'ExpenseSummary',
   components: {
     Paginator,
+    PrintHeader
   },
   data(){
     return {
       date_validation_error : '',
       custom_range : false,
       from : '',
-      to : ''
+      to : '',
+      styles: styles
     }
   },
   created: async function(){
@@ -207,9 +209,7 @@ export default defineComponent({
     }
   },
   methods:{
-    printDiv(div_id: string, title: string) {
-      printDiv(div_id, title, styles);
-    },
+    printDiv:printDiv,
 
     ...mapActions({
        getTransactions : ActionTypes.FETCH_TRANSACTIONS,
