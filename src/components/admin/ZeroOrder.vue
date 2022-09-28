@@ -1244,7 +1244,7 @@ export default defineComponent({
 
     addOrderItem: async function () {
       this.errorIndication = false;
-      let quantity = parseFloat(this.product.quantity);
+      let quantity = + parseFloat(this.product.quantity).toFixed(4);
       quantity = isNaN(quantity) ? 0 : quantity;
       let price = parseFloat(this.product.buyPrice);
       price = isNaN(price) ? 0 : price;
@@ -1289,7 +1289,7 @@ export default defineComponent({
       if (this.product.discount && discount > 0 && discount < 100) {
         totalPrice = totalPrice * ((100 - discount) / 100);
       }
-
+      totalPrice = + parseFloat(totalPrice.toString()).toFixed(4)
       let batch;
       if (this.orderType === "to") {
         batch = currentVariant.batch
@@ -1313,7 +1313,7 @@ export default defineComponent({
         batch = {
           manufacturing_date: this.product.manufacturedDate.toString(),
           expiry_date: this.product.expiryDate,
-          quantity: this.product.quantity,
+          quantity: quantity.toString(),
           product_variant: this.productVariantId,
         } as Batch;
       }
@@ -1406,7 +1406,7 @@ export default defineComponent({
         buyer: this.buyer,
         seller: this.seller,
         total_discount: isNaN(discount) ? "0" : discount.toString(),
-        total: this.totalAmount.toString(),
+        total: parseFloat(this.totalAmount.toString()).toFixed(4),
         amount_received: isNaN(cash) ? "0" : cash.toString(),
         amount_discount: this.discountMethod === "amount" ? true : false,
         invoice_id: this.invoiceID,
