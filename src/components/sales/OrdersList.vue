@@ -191,6 +191,8 @@ import Modal from '@/components/common-components/Modal.vue';
 import { ActionTypes } from '@/store/modules/order/actions';
 import { isManager } from '@/utils/permission_utils';
 
+import { getCurrentDate, getCurrentTime } from '@/utils/date_func';
+
 export default defineComponent({
   name: 'OrdersList',
   components: {
@@ -218,13 +220,10 @@ export default defineComponent({
     })
   },
   methods: {
-    getCurrentTime(date: Date){
-			return new Date(date).toLocaleTimeString();
-		},
 
-		getCurrentDate(date: Date){
-			return new Date(date).toDateString();
-		},
+    getCurrentDate: getCurrentDate,
+
+    getCurrentTime: getCurrentTime,
 
     clearFilters: async function () {
       this.paymentMethod = '';
