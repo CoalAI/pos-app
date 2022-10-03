@@ -4,14 +4,16 @@
       <label class="labelCmp ls" style=";padding-right:12px">
         <strong>Department:</strong>
       </label>
+     
+      
       <select
         id="company-type"
         name="company-type"
         class="custom-select"
-        style="width: 25%"
         v-model="company"
         :disabled="!admin"
       >
+        <option value="0">Select</option>
         <option class="batches-op" v-for="company in companies" v-bind:key="company.id" v-bind:value="company.id">
           {{company.company_name}}
         </option>
@@ -19,7 +21,7 @@
       <label class="labelCmp ls" style="padding-left:12px;padding-right:12px">
         <strong>Product Category:</strong>
       </label>
-      <select
+      <!-- <select
         id="category-type"
         name="category-type"
         class="custom-select"
@@ -30,7 +32,18 @@
         <option class="batches-op" v-for="category in categories" v-bind:key="category.id" v-bind:value="category.id">
           {{category.name}}
         </option>
-      </select>
+      </select> -->
+      <div>
+        <form class="filter inline">
+          <div><input type ="checkbox" value="" @change="onCheckAll"  :checked="checkall"> All</div>
+          <div class="batches-op d-flex" v-for="category in categories" v-bind:key="category.id">
+            <input type="checkbox" @change="onCheckChange"
+            :value="category.id"
+            :checked="checkedValue==category.id"/>
+            <span>{{category.name}}</span>
+          </div>
+        </form>
+      </div>
       <div class="b" style="margin-left: 10px">
         <button class="btn btn-orange" @click="fetchAnalyticsBtn">Search</button>
       </div>
@@ -55,13 +68,17 @@
         <tbody>
         <tr v-for="data in inventory" :key="data.id">
             <td v-if="data.quantity != 0">{{data.batch.product_variant.product.name}}</td>
-            <td v-if="data.quantity != 0">{{showcategoryName(categories, data.batch.product_variant.product.category).name}}</td>
+            <td v-if="data.quantity != 0">{{showcategoryName(categories, data.batch.product_variant.product.category)}}</td>
             <td v-if="data.quantity != 0">{{parseInt(data.quantity)}}</td>
             <td v-if="data.quantity != 0">{{data.quantity * data.batch.product_variant.price}}</td>
           </tr>
         </tbody>
       </table>
-    <Paginator :count="counts.inventory" @pageChange="changePage"/>
+      <Paginator
+      class="mr-2 pager"
+      :count="counts.inventory"
+      @pageChange="changePage"
+    />
     <div class="stats">
       <div>
         <span>Total Quantity:</span>
@@ -79,7 +96,6 @@
       <button
       class="btn-orange btn mt-5"
      @click="printDiv('print', 'Stock Statement')"
-      :disabled="submitOrderButton"
       style="width:80px;margin-right:7px"
       ref="submitandprint"
     >
@@ -110,8 +126,10 @@ export default defineComponent({
   data() {
     return {
       src_img: require('@/assets/DefoultLogoAvatar-01.png'),
-      company: 0,
-      category:0,
+      company: "",
+      category:"",
+      checkall: false,
+      checkedValue: -1,
     };
   },
   computed: {
@@ -120,7 +138,7 @@ export default defineComponent({
       companies: 'getInventoryCompanies',
       userdata: 'getUser',
       categories: 'getCategories',
-      counts: 'getTotalCounts',
+      counts: "getTotalCountsOrderModule",
       logoimg: 'getLogoImg',
     }),
     admin(){
@@ -141,26 +159,42 @@ export default defineComponent({
       fetchUser: AuthActionTypes.USER_DATA,
       fetchCategories: ActionTypes.FETCH_CATEGORIES,
     }),
+    onCheckChange: async function(e: any){
+      this.category = e.target.value
+      this.checkall = false
+      this.checkedValue = e.target.value
+    },
+
+    onCheckAll: async function(e: any){
+      this.category = ""
+      this.checkall = true
+      this.checkedValue = e.target.value
+    },
     async fetchAnalyticsBtn() {
       await this.getProducts({
          company: this.company,
-         category: this.category,
+         category: this.category
       });
     },
-     changePage: async function (pageNo: number) {
-      await this.fetchCompanies({
-         company: this.company,
-        // search: this.search,
+    changePage: async function (pageNo: number) {
+      await this.getProducts({
+        company: this.company,
+        category: this.category,
         page: pageNo,
       });
     },
     showcategoryName: function(categories: Category[], id: number) {
-      return categories.find(function(data) {
-          console.log(data.name)
+      const name=categories.find(function(data) {
           if(data.id === id){
               return data.name
           }
       });
+      if(name){
+        return name.name
+      }
+      else{
+        return "NA"
+      }
     },
     printDiv(div_id: string, title: string) {
       printDiv(div_id, title, styles);

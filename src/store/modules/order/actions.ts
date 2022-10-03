@@ -105,7 +105,7 @@ export interface Actions {
   [ActionTypes.EMPTY_ORDER]({ commit }: AugmentedActionContext, error: any): void;
   [ActionTypes.FETCH_ANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
   [ActionTypes.FETCH_SALESANALYTICS]({ commit }: AugmentedActionContext, options: { start_end: Date; end_date: Date; company: number }): void;
-  [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number}): void;
+  [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company: number; category: number; page?: number}): void;
   [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string): void;
   [ActionTypes.FETCH_COMPARISON_ANALYSIS]({ commit }: AugmentedActionContext, options: { company_type: string }): void;
   [ActionTypes.FETCH_EXPENSE_SALES]({ commit }: AugmentedActionContext, company: number): void;
@@ -475,10 +475,12 @@ Actions = {
       commit(MutationTypes.SetSalesanalytics, response.data);
     }
   },
-  async [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company?: number; category?: number}) {
-    const response = await serverRequest('get', `inventory/?company=${data.company}&batch__product_variant__product__category=${data.category}`, true, data);
-    if (isAxiosResponse(response)) {
-      commit(MutationTypes.SetInventory, response.data.results);
+  async [ActionTypes.PRODUCT_QUANTITY]({ commit }: AugmentedActionContext, data: {company?: number; category?: number; page?: number}) {
+    const response = await serverRequest('get', `inventory/?company=${data.company}&batch__product_variant__product__category=${data.category}`, true, {page: data.page});
+    if(isAxiosResponse(response)) {
+      commit(MutationTypes.SetInventoryCount, response.data.count)
+      commit(MutationTypes.SetInventory, response.data.results)
+      commit(MutationTypes.SetInventoryTotalAmount, response.data.total)
     }
   },
   async [ActionTypes.TOTAL_PAYABLE_RECEIVABLE]({ commit }: AugmentedActionContext, id: string) {
