@@ -286,7 +286,7 @@ export default defineComponent({
       this.printOrder=true;
     },
     trimDecimalPlaces: function (value: string) {
-      return parseFloat(value !== undefined ? value : '0.0').toFixed(2);
+      return parseFloat(value !== undefined ? value : '0.0').toFixed(4);
     },
 
     ...mapActions({

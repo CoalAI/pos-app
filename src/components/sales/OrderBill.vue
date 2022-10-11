@@ -53,7 +53,7 @@
 					<td style="font-size: x-small; font-weight: bold;">{{ getProductName(orderItem) }}</td>
 					<td style="font-size: x-small; font-weight: bold;">{{getProductSize(orderItem)}}</td>
 					<td>{{ trimNumber(orderItem.quantity) }}</td>
-					<td>{{ trimNumber(orderItem.price) }}</td>
+					<td>{{ trimAmount(orderItem.price) }}</td>
 					<td>{{ getItemTotal(orderItem.price, orderItem.quantity) }}</td>
 				</tr>
 			</table>
@@ -72,7 +72,7 @@
 					</tr>
 					<tr>
 						<td><strong>Discount: </strong></td>
-						<td>{{ trimNumber(order.total_discount) }}</td>
+						<td>{{ trimAmount(order.total_discount) }}</td>
 					</tr>
 				</table>
 			</div>
@@ -84,15 +84,15 @@
 					</colgroup>
 					<tr>
 						<td><strong>Total: </strong></td>
-						<td>{{total}}</td>
+						<td>{{ trimAmount(total) }}</td>
 					</tr>
 					<tr>
 						<td><strong>Net Payable: </strong></td>
-						<td>{{trimNumber(order.total)}}</td>
+						<td>{{trimAmount(order.total)}}</td>
 					</tr>
 					<tr>
 						<td><strong>Received: </strong></td>
-						<td>{{trimNumber(order.amount_received)}}</td>
+						<td>{{trimAmount(order.amount_received)}}</td>
 					</tr>
 					<tr>
 						<td><strong>Change: </strong></td>
@@ -246,7 +246,7 @@ export default defineComponent({
 		},
 
 		getItemTotal: function(price: string, quantity: string): string {
-			return (parseFloat(price)*parseFloat(quantity)).toFixed(2);
+			return (parseFloat(price)*parseFloat(quantity)).toFixed(4);
 		},
 
 		getProductName: function(orderItem: any) {
@@ -271,6 +271,10 @@ export default defineComponent({
 
 		trimNumber: function(value: string) {
 			return parseFloat(value).toFixed(2);
+
+		},
+		trimAmount: function(value: string) {
+			return parseFloat(value).toFixed(4);
 
 		},
 

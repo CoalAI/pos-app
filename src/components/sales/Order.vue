@@ -380,7 +380,7 @@
                   type="text"
                   placeholder="0"
                   name="total_amount"
-                  v-bind:value="totalAmount.toFixed(4)"
+                  v-bind:value="totalAmount"
                   readonly
                 />
                 <span v-if="field_errors.total" class="form-error">{{
@@ -868,7 +868,7 @@ export default defineComponent({
         // eslint-disable-next-line
         .map((item: any) => {
           if (typeof item.totalPrice === "string") {
-            return parseFloat(item.totalPrice);
+            return + parseFloat(item.totalPrice);
           }
           return item.totalPrice;
         })
@@ -1292,7 +1292,7 @@ export default defineComponent({
 
     addOrderItem: async function () {
       this.errorIndication = false;
-      let quantity = parseFloat(this.product.quantity);
+      let quantity = + parseFloat(this.product.quantity).toFixed(4);
       quantity = isNaN(quantity) ? 0 : quantity;
       let price = parseFloat(this.product.buyPrice);
       price = isNaN(price) ? 0 : price;
@@ -1331,7 +1331,6 @@ export default defineComponent({
       if (this.product.discount && discount > 0 && discount < 100) {
         totalPrice = totalPrice * ((100 - discount) / 100);
       }
-
       const listOfBatches: {}[] = [];
       if (
         this.selectedBatchQuantity < quantity &&
@@ -1357,7 +1356,6 @@ export default defineComponent({
           quantity: quantity,
         });
       }
-
       listOfBatches.map((unproxiedBatchItem: any) => {
         const SingleOrderItem: OrderItem = {
           batch: isNaN(batch)
@@ -1385,7 +1383,7 @@ export default defineComponent({
               unproxiedBatchItem.quantity *
               price *
               ((100 - discount) / 100)
-            ).toFixed(0)
+            ).toFixed(4)
           ),
         };
         this.productName.push(this.product.name);
@@ -1430,7 +1428,7 @@ export default defineComponent({
         buyer: buyer && buyer.id ? buyer.id : this.userdata.id,
         seller: this.userdata.id,
         total_discount: isNaN(discount) ? "0" : discount.toString(),
-        total: this.totalAmount.toString(),
+        total: parseFloat(this.totalAmount.toString()).toFixed(4),
         cash_payment:
           this.paymentMethod === "cash"
             ? true
@@ -1447,7 +1445,6 @@ export default defineComponent({
       if (this.return_order) {
         singleOrder.status = "RETURNED";
       }
-
       if(await offlineStoreService.isInternetConnectionWorking() === false){
         this.orderoffline = true;
         this.latestOrder = singleOrder;
