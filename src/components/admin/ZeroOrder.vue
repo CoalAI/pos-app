@@ -1,7 +1,6 @@
 <template>
   <div id="zero-order">
     <div class="row">
-
     <div class="split-container diff-shadow col-3">
         <label class="td-head"
           ><strong>Date:</strong>
@@ -220,6 +219,7 @@
             type="checkbox"
             id="return_order"
             name="return_order"
+            :checked="return_order"
             @change="returnOrderChange"
           />
           <span><label class="pd-t-ex"><strong>Return Order</strong></label></span>
@@ -454,7 +454,6 @@
               @change="buyerVendorCheck"
             >
               <option disabled value="0">Select a buyer</option>
-              <template v-if="!return_order">
                 <option
                   v-for="user in users"
                   v-bind:key="user.id"
@@ -468,7 +467,6 @@
                     >- {{ user.company.company_name }}</span
                   >
                 </option>
-              </template>
               <template v-if="return_order">
                 <option disabled>----VENDORS----</option>
               <option
@@ -1246,7 +1244,7 @@ export default defineComponent({
 
     addOrderItem: async function () {
       this.errorIndication = false;
-      let quantity = parseFloat(this.product.quantity);
+      let quantity = + parseFloat(this.product.quantity).toFixed(4);
       quantity = isNaN(quantity) ? 0 : quantity;
       let price = parseFloat(this.product.buyPrice);
       price = isNaN(price) ? 0 : price;
@@ -1291,7 +1289,7 @@ export default defineComponent({
       if (this.product.discount && discount > 0 && discount < 100) {
         totalPrice = totalPrice * ((100 - discount) / 100);
       }
-
+      totalPrice = + parseFloat(totalPrice.toString()).toFixed(4)
       let batch;
       if (this.orderType === "to") {
         batch = currentVariant.batch
@@ -1315,7 +1313,7 @@ export default defineComponent({
         batch = {
           manufacturing_date: this.product.manufacturedDate.toString(),
           expiry_date: this.product.expiryDate,
-          quantity: this.product.quantity,
+          quantity: quantity.toString(),
           product_variant: this.productVariantId,
         } as Batch;
       }
@@ -1408,7 +1406,7 @@ export default defineComponent({
         buyer: this.buyer,
         seller: this.seller,
         total_discount: isNaN(discount) ? "0" : discount.toString(),
-        total: this.totalAmount.toString(),
+        total: parseFloat(this.totalAmount.toString()).toFixed(4),
         amount_received: isNaN(cash) ? "0" : cash.toString(),
         amount_discount: this.discountMethod === "amount" ? true : false,
         invoice_id: this.invoiceID,
@@ -1551,6 +1549,7 @@ export default defineComponent({
       this.cashReceived = "";
       this.totalDiscount = "";
       this.orderType = "from";
+      this.return_order = false;
       this.seller = 0;
       this.buyer = this.userdata.id;
       const vendor: User = {};
